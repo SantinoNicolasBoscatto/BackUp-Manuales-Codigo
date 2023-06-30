@@ -1,0 +1,195 @@
+Que es HTML: 1) Hyper Text Markup Language. 2) HTML describe/configura las estructuras de la pagina web. 
+3) Le indica al navegador que debe mostrar y como lo debe hacer. 4) Es un lenguaje que consta en etiquetas.
+5)HTML funciona como una estructura de arbol, como una subdivision de NODOS. Dentro de esto vamos a poder
+agregarle el cuerpo, la cabeza, etc. El Nodo padre o la raiz es la etiqueta HTML.
+
+Que es una ETIQUETA: 1) Esta consta de 3 partes: 1.1) Su apertura mediante las boquillas "<>" 1.2) Dentro
+de las boquillas va el nombre de la etiqueta. 1.3) el cierre de la etiqueta es igual solo que se le agrega
+una barra al principio de la etiqueta. Dentro del cuerpo de la etiqueta yo puedo agregar texto o mas 
+etiquetas.
+
+Para empezar nuestro codigo lo que debemos hacer es crear un archivo .HTML llamado index (Por convencion).
+Ahi escribimos "!" y TAB y nos generara la base de HTML. Ahi nos encontraremos con las etiquetas HTML, Head y
+Body. Tambien nos encontraremos con la etiqueta DOCTYPE que lo que hace es definir que tipo de archivo es al navegador,
+en este caso tendra definido que es un HTML. Sin DOCTYPE el navegador lo interpretaria como codigo viejo del
+internet de los 90, y esto causaria errores en la paginas.
+
+Es importante usar la identacion cuando coloco una etiqueta dentro de otra, como forma de poder 
+espaciar el contenido de cada etiqueta entre si.
+
+<HTML>: La etiqueta raiz de todo codigo HTML. 
+
+<Head>: Nos permite agregar mas descripciones que el usuario no necesariamente vaya a ver pero nos 
+permita incluir otro tipo de codigo a nuestra pagina web. Por ejemplo tenemos la etiqueta <Title> 
+Dentro de <Head>, esta nos permitira ponerle un titulo a nuestra pagina WEB.
+
+<Title>: Esta etiqueta le va a mostrar a los usuarios de los motores de busqueda cual es el titulo
+del elemento que esta buscando. Por ello debemos siempre poner una etiqueta de titulo que sea 
+relevante con el contenido que tenga nuestra pagina WEB, facilitando el aparecer en los motores de 
+busqueda.
+
+<Body>: Aqui vamos a colocar todo el contenido que va a ser visible para el usuario. Por ejemplo podemos
+agregar un <h1>, <p>, entre otras etiquetas.
+
+<Header>: Esta etiqueta es el encabezado, nos permite alojar links o logos de nuestra imagen. Podemos
+crear todas las etiquetas de Header que queramos siempre y cuando no este dentro de otro Header o 
+Footer.
+
+<Section>: Nos permite definir la seccion de contenido de nuestra pagina.
+
+<Article>: La etiqueta <article> en HTML se utiliza para representar una sección o contenido 
+independiente y autónomo dentro de un documento HTML. Se utiliza para agrupar un contenido que puede 
+existir por sí solo y ser distribuido o reutilizado de manera independiente, como un artículo 
+de un blog, una noticia, una publicación en redes sociales, entre otros.
+
+<Footer>: Se utiliza para colocar el pie de pagina de nuestra pagina web.
+
+<H1>: Es un titulo, el titulo principal. Se utiliza para darle un titulo al contenido que viene
+despues. Los motores de busqueda utilizan estas etiquetas para poder indexar el contenido de los motores
+de busqueda. Por ello es importante que usemos las etiquetas de H1 no para mostrar las letras  mas 
+grandes sino para indicar titulos en la pagina web.
+
+
+<H2>: Es similar a H1, pero en vez de ser un titulo este es un Sub-Titulo.
+
+<H3>: Viene a ser lo mismo que los anteriores, en este caso un Sub-Sub-Titulo.
+
+<H4, H5, H6>: Idem
+
+
+<P>: Es un parrafo. Este por si solo te permite escribir en una linea horizontal, para hacer 
+separaciones entre parrafos estan simple como cerrar y abrir otra etiqueta de parrafo.
+
+
+<Hr>: Esta etiqueta permite crear una linea divisoria con el texto anterior. Es utilizado para
+separar secciones de nuestra pagina WEB. Esta al no tener contenido dentro no utiliza cierre.
+
+
+<!-- -->: Estas son las etiquetas de comentario, obvio no van a aparecer es el explorador.
+
+<Br>: Es una etiqueta que permite pegar un salto de linea, cuando un texto es muy largo y quiero
+poner lo siguiente en otra linea lo que hago es llamar a la etiqueta <br>. Tambien si quiero puedo
+poner multiples saltos de linea <br><br>.
+
+
+<Span>: Nos sirve para refenrenciar texto que se encuentra dentro de otras etiquetas. Es como un 
+diferenciador de texto dentro de unas etiqueta. Basicamente su utilizadad es agarrar un trozo de 
+texto y hacerle pequeñas modificaciones (Como el color, el tamaño las dimensiones, moverlo, y varias
+mas cosas), dentro de un texto mas grande dentro de otras etiquetas. Basicamente agarrar una parte de un 
+texto y modearla. La configuracion del Span se hace dentro de su etiqueta de apertura.
+
+
+<a>: Es la etiqueta del hipervinculo, con esta etiqueta podre crear hipervinculos que me redireccionen
+a otra pagina o a secciones de mi misma pagina web. Para esto dentro de la etiqueta colocaremos la 
+palabra que va a tener el acceso al hipervinculo, y para definir el link al que nos llevara el 
+hipervinculo deberemos poner dentro de la apertura " href="" " y ahi dentro el link exacto de la url.
+Ejemplo:<p> <a href="https://www.serviprynt.com.ar/">ServiFamily</a> </p>
+Si quiero que mi hipervinculo se abra en otra pestaña y no sobre la misma que en la de mi pagina 
+debo agregar en la apertura de la etiqueta: " target="_blank" "
+<p> <a target="_blank" href="https://www.serviprynt.com.ar/">ServiFamily</a> </p>
+
+Tambien puedo hacer referencia a secciones o puntos de mi pagina, para esto dentro de href colocamos 
+un # y el id la etiqueta a la que queremos transportarnos.
+
+
+<Img />: Esta etiqueta sirve para mostrarle imagenes al usuario. Esta etiqueta no necesita un cierre
+aparte, sino que dentro de la apertura al final se le coloca "/" como cierre. Para colocar la imagen
+dentro de la apertura colocaremos " src="" " y ahi dentro colocaremos el link de la imagen o la direccion
+en pc de la imagen. Si a la imagen la ponemos dentro de la carpeta de nuestro proyecto HTML no hace
+falta ponerle una ruta entera, con el nombre bastara (si esta en una subcarpeta del proyecto con el 
+nombre de la subcarpeta y nombre de la imagen bastara). 
+Dentro de esta etiqueta tambien existe la propiedad "WITDH", en esta puedo manejar el ancho de la 
+imagen, para la altura utilizaremos la propiedad "HEIGHT". Ahora si yo manipulo el Ancho y no la 
+altura la imagen modificara automiticamente su altura para mantener la relacion aspecto con su largo.
+Ejemplo: <img src="img/Servi.jpg" width="300" height="200"/>
+
+
+<Form>: Con esta etiqueta lo que haremos sera interectuar con  el usuario con el fin de recopilar
+Informacion. Dentro de su apertura agregaremos action y ahi agregaremios una ruta de nuestro servidor
+donde guardar ese FORMS. Luego agregaremos "METHOD" que es el metodo que usaremos para enviar los datos
+al servidor, este puede ser GET or POST.
+
+
+<Label>: Estas son etiquetas de texto que suelen acompañar a los Input (Textbox). La propiedad "FOR"
+le da un ID a la LABEL que permitira asociarla con otras etiquetas. Para acceder al ID de la label 
+basta con llamar a la propiedad ID en la apertura de otras etiquetas. 
+Ejemplo:<label for="Contra">Contraseña</label>
+        <input id="Contra" type="Password" name="Password"  placeholder="Password">
+
+<Input/>: Esta etiqueta usa el formato de cierre de img. Input lo que crea es una Caja de texto 
+(Un TextBox). Podemos seleccionar su estilo con la propiedad "Type" si es un Textbox con texto visible
+(Label), oculto (Password), Transformalo en un Boton (submit), el esperar un correo ("email"), Transformarlo
+en un radio Button (radio), checkbox, boton de cargar archivos (file). Por defecto el Input tiene 
+el type Text.
+Otra propiedad de input es  "Name" cuando nosotros enviaemos los datos del 
+formulario a otro servidor este va a interpretar los datos segun el NAME que tenga. Es decir que el 
+name funciona como la clave del label (valueMember) y lo que escribamos en el input como el contenido.
+Otra propiedad es la de placeHolder, que permite agregar en el input el dato que debemos poner en ese 
+campo.
+Los input pueden tener valores por defecto, este se lo agregamos con la funcion VALUE.
+Ejemplo: <label for="Contra">Contraseña</label>
+         <input id="Contra" type="Password" name="Password"  placeholder="Password">
+
+<TextArea>: Es similar al input, con su ID, placeHolder, Name y su Type. Este se suele para que las 
+personas escriban comentarios o datos que desean agregar y que no se encuentran en otros campos del
+FORMS. Para modificar su tamaño usaremos la propiedad "COLS" && "ROWS", estas definen la cantidad de 
+columnas/filas que tienen el TextArea, que por ende definiran su tamaño.
+El valor por defecto de Text area no es con value, sino que se rellena con lo que haya entre las etiquetas
+de TextArea.
+Ejemplo:<form action="/formulario" name="Forms" method="POST">
+
+<Button>: Es una etiqueta para hacer un boton, esta es mas personalizable que el Input "Submit". Entre 
+las etiquetas pondremos el texto. En la apertura colocaremos el tipo de boton que es (Su funcion) puede
+ser Button(Su funcion es programable con JaveScript), Reset(Reseteara los valores de la pagina por 
+defecto) o Submit(Enviar Informacion).
+Ejemplo:<button type="Reset" style="color: rgb(25, 246, 209);"><img src="img/Servi.jpg" width="20"></button>
+
+<Ul>: Esta etiqueta es de listas no ordenadas. Cada vez que agreguemos un elemento dentro de esta 
+lista lo que hara sera agregar un punto negro al objeto. 
+
+<Ol>: Esta etiqueta me permite crear una lista ordenada de forma numerica. Puedo poner donde quiero 
+que inicie la lista con el VALUE en el primer elemento de la lista. Si quiero hacer una Sublista 
+ordenada lo que debo hacer es meter otra Ol. Si quiero cambiar la numeracion por otro tipo llamo a 
+style y ponemos list-style y seleccionamos el estilo. Esto se debe hacer con cada Sub-elemento.
+
+<Li>: Me permite agregar objetos a la lista con el punto negro incluido, si lo hago con <p> esta 
+no asignara el punto negro.
+
+<Table>: Una tabla se divide en filas y columnas. Las filas y columnas pueden tener una cabecera y un
+pie. Dentro de la apertura le puedo colocar el style border, donde le puedo definir el borde que recubre
+a la tabla entera.
+
+<Tr>: es la fila de la tabla, Table Row.
+
+<Th>: Table Header, Permite colocar el nombre en la cabecera de las filas de una tabla.
+
+<Td>: Representa el dato de una celda, Table Data.
+
+<Thead>: sirve para agrupar los elementos de nuestras cabeceras, las filas de nuestras cabeceras, ahi
+dentro colocaremos los <th>.
+
+<Tbody>: dentro de Tbody ira todo el contenido de nuestra tabla que pertenezca al cuerpo de nuestra
+tabla.
+
+<Tfoot>: Permite agregar filas al pie de la tabla.
+
+<Style>: esta etiqueta se coloca en Header y me permite definir estilos predeterminados para varios 
+elemento de ciertas etiquetas.
+Ejemplo:<style> table, th, td {border: 1px solid black;} </style>
+
+<div>: Se utiliza para dividir el contenido y agruparlo en secciones. Es un contenedor de etiquetas, cumple
+la misma funcion que  Header, seccion, Article y Footer, solo que con el mismo nombre.
+
+En algun momento vamos a querer darle un identificador unico a nuestras etiquetas de HTML, para poder
+interactuar con ellos ya sea con JavaScript, CSS o HTML. No puedo/debo poner un ID igual a distintas 
+etiquetas, ya que esto generara errores.
+Si yo quiero darle un mismo identificador a distintas etiquetas lo que debo hacer es darle el atributo
+CLASS y no el de ID. Con CLASS puedo albergar varias etiquetas distintas de forma empaquetada, encambio
+id debe utilizarse solo para una sola etiqueta. Con las clases podremos seleccionar las etiquetas desde
+CSS o JavaScript llamando a la clase.
+
+Lo que colocamos en las aperturas de las etiquetas se le conoce como atributos de las etiquetas.
+
+
+Con esto empezaremos a ver que se empiezan a formar bloques en la estructura de HTML, las etiquetas van 
+conformando bloques y sub-bloques.

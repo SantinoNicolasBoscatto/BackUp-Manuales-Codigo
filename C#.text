@@ -1,0 +1,2311 @@
+Programas: Una solucion a una problematica, a un problema. Una serie/conjunto de algoritmos de programacion escritos en
+un lenguaje que puede ser interpretado y ejecutado por una computadoracon el fin de solucionar un problema.
+
+Algoritmos: Un conjunto de instrucciones ordenados mediante una serie de pasos para lograr un resultado. (Receta)
+Esta ordenado de manera tal que se llegue a un resultado esperado.
+Un algoritmo es una secuencia finita y ordenada de instrucciones que deben ser seguidas en pos de resolver un problema.
+
+Instrucciones: Una orden (pedido) dentro de un conjunto de ordenes. Las instrucciones son quienes componen los algoritmos.
+Ejemplo de instrucciones:(Ingreso, Egreso, IF, Switch, Procesos, contadores, acumuladores, ETC)
+
+Sistema Operativo: Base de los Programas, es en ellos donde los programas se ejecutan.
+
+Programar: Solucionar un problema mediante un conjunto de pasos ordenados para llegar a un resultado.
+Para programar debo saber como resolver el problema antes, para plasmar mi solucion en codigo. Programar es el medio por el cual 
+se le comunica a la computadora la serie de pasos a seguir para solucionar el problema. Se realiza el camino basico de la programacion: 
+Te doy datos, que pasan por un procesamiento/proceso y te devuelvo informacion (Flujo estandar de una PC). Programar es enseñarle
+los pasos a la computadora que debe seguir para resolver el problema/que debe hacer la pc para resolver la problematica.
+
+Pensamiento Divergente: Basicamente que hay varias maneras de hacer las mismas cosas, varias formar de resolver un problema programando.
+
+Sistema Informatico: Este esta compuesto por 3 partes: El HARDWARE, SOFTWARE y el HUMANO. Ante la ausencia de algunos de
+estos no podremos completar o cerrar el circulo del sistema Informatico. Debido a que sin SOFTWARE no puedo hacer nada
+al no tener nada que hacer con el HARDWARE. Sin el HARDWARE no tengo una estructura sobree la cual ejecutar el SOFTWARE
+y sin el HUMANO no habria interaccion con el HARDWARE y SOFTWARE combinados.
+
+SOFTWARE: es todo lo que creamos para que una computadora funcione (Programas), pero requiere justamente una computadora donde 
+hacerlo, ahi entra el Hardware. El SOFTWARE es quien le da vida a la PC, lo que te permiten realizar cosas, acciones, ETC.
+
+HARDWARE: es todo lo que se puede tocar en una computadora: el monitor, el teclado, incluso todos los componentes 
+internos dentro de la misma. Sin embargo, sin programas para utilizar, todo ese poder de procesamiento, 
+no nos seria de utilidad.
+
+HUMANO: Se completa el ciclo con el humano que es quien hace uso de ese Software gracias a ese Hardware, y quiza 
+pueda sonar a una obviedad, pero es clave tener en cuenta este circulo.
+
+Dentro del SOFT encontramos 3 categorias basicas: SOFT Base (Los Sistemas Operativos) Bajo el Cual se ejecutara todo el
+resto del SOFT, es la base de todo el funcionamiento de la PC en cuestion de SOFT. despues encontramos el SOFT Utilitario,
+Programas que se complementan con el SO con el fin de mejorar su funcionamiento y administracion. (EJ: desfragmentador,
+analizador de memoria RAM, ETC) Y por ultimo los SOFT de aplicaciones que utilizamos cotidianamente.
+
+Tambien existen programas determinados que nos serviran para programar, estas vienen preparadas para desarrollar otras
+Aplicaciones/programas, es decir aplicaciones para programar.Estas aplicaciones se suelen conocer como IDE, 
+de sus siglas en ingles "Entorno de Desarrollo Integrado"
+
+Depende de lo que querramos programar utilizaremos un programa/lenguaje por encima de otro.
+
+Programacion: Es una disciplina, incluida en una ciencia, en las ciencias informaticas, en las ciencias de la computacion.   
+
+CPU: Central Process Unit (Unidad de procesamiento Central), el Micorprocesador. Es ella quien busca los datos que se 
+almacenan en la memoria ROM para utilizarlos, junto a la memoria RAM. El CPU sabe hacer las 4 operaciones basicas de la matematica y 
+responder preguntas logicas del estilo esto es mayor a lo otro (¿5>4?). Las operaciones basicas ya vienen programadas en el CPU y pueden ser resueltas por este.
+El CPU es el cerebro de la computadora y es quien ejecuta las instrucciones que nosotros escribimos/programamos.Se encarga de realizar 
+las operaciones matematicas, logicas y las operaciones de control de toda la computadora.
+
+ROM: Memoria permanente, guarda la informacion luego de el apagado de la PC.(HDD y SSD) 
+Bits<Bytes<KB<MB<GB<TB
+RAM: Memoria de acceso aleatorio (Random access memory), su rol es ser el soporte del CPU en el accionar diario. Cada vez que se apaga
+la PC Esa informacion se pierde. Todo lo que este en ejecucion pasa por la memoria RAM, mientras la PC este prendida. Esta le comunica
+las acciones y funciona de soporte del CPU. Le permite tener a mano las cosas que pueda solicitar el procesador. Basicamente hace mas 
+rapido el acceso de las cosas para el CPU, para que este no tenga que estar buscando en toda la memoria ROM la data.
+
+Dato: Un conjunto de simbolos que no tienen un significado alguno, informacion irrelevante.
+
+informacion: Es ese mismo conjunto de simbolos que el dato, pero con un significado atribuido.
+La diferencia entre dato e informacion es el significado que estos tengan, si este carece de significado es un mero dato
+sino, de lo contrario sera informacion. Tambien dependera del receptor si esto es un dato o una informacion.
+
+Variable: Una Variable es un contenedor donde yo guardo algo. Es un espacio de memoria dedicado/asignado que va a ser utilizado por nuestro programa para poder guardar un dato.
+Dentro de estos espacios de memoria voy a poder guardar determinado tipo de dato. Las variables es donde se guardan o alojan los datos
+y por variable solo se puede guardar un dato/valores/informacion a la vez. Estos datos/valores pueden llegar a cambiar. Cada variable
+tambien posee un nombre, el cual se lo atribuye el usuario. El nombre de la variable no puede tener espacio, ya que la maquina
+interpretara que estoy colocando 2 variables. Es en las varibles donde yo guardo/almaceno los datos.
+
+Lenguaje de programacion: Distintas formas o maneras de escribir codigo. Hay un monton de lenguajes de programacion distintos y
+sirven para comunicarse con la PC. Basicamente un Lenguaje de programacion es un lenguaje que permitira la comunicacion entre la 
+computadora y las personas/usuarios. Se le comunica que quiero hacer. Hay lenguajes de programacion de alto, medio y bajo nivel (Su nivel
+de complejidad). Mientras mas alto el nivel del lenguaje mas complicada la compilacion, mas lejos del lenguaje Binario.
+
+Compilar: La accion de transformar el codigo que nosotros escribimos en un lenguaje a el lenguaje de maquina, un lenguaje de computadora
+(Sistema Binario). Basicamente es pasar mi codigo de programacion, escrito en un lenguaje de programacion a el lenguaje que maneja la
+PC (Codigo Binario). La compilacion consiste en pasar/transformar traducir/pasar un Lenguaje/Codigo humano (C,C++, JAVA) a Lenguaje/Codigo de maquina
+(Codigo Binario).
+
+Sintaxis: La forma que tiene un lenguaje de programacion para ser escrita, lo mismo pasa con la Sintaxis en los lenguajes (Español, ingles)
+Como tenemos diferentes leguajes de programacion, Distintas formas de comunicarse con la computadora, tendremos Distintas formas de 
+escribirlo, Distintas palabras/metodos especiales y Distintas formas de armar las setencias y el codigo que nos permiten armar nuestros
+algoritmos. Es la forma de escribir un codigo determinado. Las reglas de escritruras en la programacion.
+
+Pseudocodigo: Escribir en nuestra lengua lo que debe ralizar la computadora.
+
+Diagrama de Flujo: Dibujo que nos permitira construir las instrucciones para nuestros programas. Cada dibujo en el diagrama es una 
+instruccion. Es un diagrama es el cual se va representrando todo el camino que transcurren los datos dentro de nuestro programa pasando
+por cada una de nuestras instrucciones.
+
+El signo = en programacion se denomina operador de asignacion, este nos permite asignar/dar un valor a una variable. La signacion se realiza
+de derecha a izquiera. (A=B) Lo que tenga la variable B sera asignado a la variable A.
+
+Pensamiento Logico:
+
+Constante: Datos estaticos, constantes. Es una variable que mantiene un valor estatico/constantes durante la ejecucion de un programa.
+Tambien puede ser inscripto en una instruccion.
+
+Bloque Condicional IF: Sirve para construir oraciones condicionales. El IF basicamente es una bifurcasion, una direccion distinta, 
+existiendo 2 posibilidades que pueden suceder, segun si se cumplen o no una serie de condiciones/variables. El IF consiste en preguntarle
+al procesador, pero bajo unas preguntas especificas, preguntas de SI o NO, eso es lo unico que puede responder el procesador. Para esto
+hay que formular correctamente la pregunta ¿Como? En el diagrama de Flujo el IF se representa por Rombo y 2 flechas/salidas hacia los 
+costados, mostrando un V o F, que camino se tome dependera si se cumple los requisitos de una serie de condiciones/variables.
+Dentro del Rombo se escribe la condicion, una sentencia logica, esto con el fin de que el procesador tengo la capacidad de responder.
+El CPU sabe responder si o no ante determinados escenarios, que impliquen sentencias logicas (X>Y, X<Y, X==Y, ETC).
+La respuesta que puede dar el procesador ante una pregunta establecida mediante una sentencia logica se denomina respuesta logica, respondiendo
+si o no segun si se cumplen o no las condiciones (Es verdadero o falso).
+
+Para armar una condicion/sentencia logica (y asi preguntarle correctamente al procesador) necesito contar con un valor, un operador logico
+y otro valor. Basicamente estoy comparando valores mediante un operador logico, y eso crea la/una sentencia logica.
+Los operadores son; >,<,>=,<=,==,!=. una sentencia logica esta compuesto por 1) Valor   2) Operador logico    3)otro valor
+El IF permite hacerle preguntas al procesador (Logica Booleana). 
+
+Cuando trabajamos con IF siempre debemos buscar la condicion verdadera.
+Es decir que a la hora de programar hay que preguntar lo "correcto" y escribir el codigo "correcto", esto quiere decir que si yo quiero
+saber que numero es el  MENOR  no voy a preguntar en el IF si un numero es mayor a otros (esto seria preguntar al reves), porque en
+ la rama del verdadero queda vacia. La respuesta quedaria en la rama del ELSE.
+ El Bloque ELSE es la rama del Falso del IF, el cual es opcional en el caso de que no se tenga pensado programar nada en la rama falsa.
+
+&&(AND) ||(OR), son Operadores concatenadores logicos. Concatenar es unir, por ende con estos operadores voy a unir/concatenar 2 sentencias 
+logicas, unir 2 preguntas que le haga al procesador. Esto sirve para unir 2 preguntas, para resolver la sentencia en un solo IF.
+En el AND Para que el IF sea verdadero deben cumplirse todas las condiciones expresados en esa condicion. En cambio en el OR
+con que una de esas condiciones sea verdadera haran que el IF sea verdadero, es decir que se ejecute el bloque IF y no el ELSE.
+En el caso del OR, si de todas las condiciones no se cumple ninguna el IF es falso. Si al menos se cumple una condicion sera verdadero.
+Para las concatenaciones logicas se suelen usar los parentesis para separarse entre si (A>B && B>20) || A==C
+PREGUNTA LOGICA (VALOR + OPERADOR LOGICO + VALOR) (A>B)
+
+En programacion existe el concepto acumulador y contador. Son 2 tipos de variables que podemos utilizar. El contador va contando 1,2,3,4,ET
+es decir el contador cuenta de 1 en 1. En cambio el acumulador es una especie de suma, tengo 10 y acumulo 15 = 25, de eso acumulo 8 son 33.
+El operador para el contador es el operador de incremento (++) y el de disminucion (--). Estos al ser operadores de un contador sumaran o 
+dismunuiran en 1. Estos operadores permiten evitar la asignacion. La acumulacion tiene como operador, el += o el -=, quedando A+=15. 
+EJ: A=10// A = A+15 o A=10//B=8// A=A+B.A=10// A+=15.
+La diferencia entre contador y acumulador es que EL CONTADOR suma o resta en uno y EL ACUMULADOR lo hace en mayores cantidades.
+Estos tienen como ventaja de poder evitar la asignacion en las variables, pisando el valor directamente al utilizar los operadores(++ o +=)
+
+Las comillas sirven para mostrar un valor literal en pantalla, un cadena de texto (String). Sino la PC va a buscar las variables con 
+este nombre al no poner comillas, generando errores.
+
+Switch: El switch es similar al IF, ya que el flujo de datos de ambos se separa/divide.  En el IF mediante una pregunta Logica este devolvera 
+un valor de verdadero o falso (Depende sila o las condiciones se cumplen o no) El Switch en cambio funciona a traves de una multiple seleccion, 
+es decir en vez de devolver un resultadode verdadero o falso segun la condicion se cumpla o no, en el Switch habra varias elecciones posibles 
+segun se cumpla o no una u otra condicion.
+En vez de ser una bifurcasion el switch sera de multiple opcion y la rama que siga depende de que condiones se cumplan o no. EJ: Si Hago una
+calculadora y pido 2 numeros y el signo operador que quiere utilizar. Si se utilizara IF deberiamos crear entre 3 o 4 IF para poder hacer la eleccion
+En cambio con el Switch podemos crear 4 ramas distintas que se ejecutaran si se cumple la condicion, es decir si presiono uno u otro operador
+matematico, eso si, estos operadores guardados en variables (OPERADOR1=A+B, OPERADOR2=A-B, OPERADOR3=A*B, OPERADOR4=A/B).
+El switch se va a separar en tantas aristas segun tenga la variable que se esta evaluando.
+Lo que hace el Switch Basicamente es evaluar una variable y a partir de eso elegir el camino que recorre la varible segun la condicion cumplida.
+En el Switch no se pueden utilizar ni operadores logicos ni concatenadores ya que directamente evalua la variable y elige un camino.
+Su funcionamiento entonces es ver el valor que se haya en la varible que evalua y a partir de ahi seguir alguna de sus ramas.
+En el caso de que el valor de la variable no corresponde con ninguna rama se utilizara la rama/branch Default. Esta rama es una rama que siempre
+se crea para el caso de que si la variable tiene un valor/dato no esperado vaya por esta rama y seguir el flujo. 
+Solamente se va a ejecutar un solo branch/rama/brazo al mismo tiempo, nunca mas de 1 al mismo tiempo (al igual que el IF)
+Si tengo que elegir una combinacion de elementos (EJ: RAM Y CPU) Lo mejor es hacer varios switch segun la combinacion de elementos que tenga.
+(EJERCICIO 9, GUIA 3).
+Si alguno de los branch no aporta un valor a la variable en analisis lo mejor es no escribir nada, en vez de asignarle a una variable el valor
+de 0 por EJ.
+
+Los simbolos y caracteres en programacion se deben escribir en String cuando su funcion no sea la de realizar esa operacion. Esto debido a que
+si yo busco referenciar ese simbolo o caracterer en mi codigo sin comillas el procesador lo tomara como varible, buscara una varible que contenga
+ese nombre. Por ello cuando se quiera referenciar algun caracterer o simbolo se debe hacer por cadena de texto, entre comillas.
+
+CICLO FOR: Ciclo FOR es un ciclo exacto, es una herramienta que permite ciclar/iterar una determinada cantidad de veces algo. Es decir que nos 
+permite Re-ejecutar ciertas instrucciones, podemos programar que una instruccion se repita tantas veces como necesitamos.
+El FOR es un ciclo exacto porque podemos configurarlo para que de una cantidad exacta de bucles que queramos, si queremos que se repita
+10 veces el ciclo se repetira 10 veces.
+Dentro del ciclo FOR podemos escribir todo tipo de instrucciones (Ingreso, Egreso, IF, Switch, Procesos, contadores, acumuladores, ETC).
+La programacion es secuencial, de arriba para abajo, y nunca vuelva para arriba. Se ejecutan los procesos y nunca vuelve hacia atras a un proceso
+anterior, sino que sigue su camino hacia abajo, de forma secuencial.
+El FOR no es que vuelva para atras a una instruccion o procesos anterior, sino que una vez terminado el bucle/ciclo pregunta cuantas veces
+se debe hacer ese ciclo y vuelve a empezar ese algoritmo/conjunto de instrucciones de nuevo. Basicamente Itera/Cicla el mismo conjunto de
+instrucciones segun se le haya asignado. (Esto no es volver atras hacia una instruccion anterior, sino la repeticion de ellas una cierta 
+cantidad de veces).
+El ciclo FOR se maneja/rige (depende) de una varible, que es la que manda y dice que es lo que tiene que hacer el ciclo.
+Lo primero para configurar el CICLO FOR es determinar quien va a ser la variable que vaya a manejar el ciclo (X por Ejemplo). Lo siguiente es
+crear un conjunto de parametros. El primer parametro es la inicializacion de la variable, que valor tendra la variable del ciclo al inicio del
+bucle (darle un valor a la variable). El segundo parametro a configurar/establecer es una condicion (>, <, >=, <=, !=, ==, &&, ||). Y el tercer
+parametro a configurar es la variacion que recibira mi variable cada vez que se termine un ciclo. 
+Inicializar una variable es darle un valor a una variable, por ende la inicializacion de la variable en el ciclo FOR se producira una vez, al
+comienzo del primer ciclo. Luego pregunta el valor de esa variable respecto a otro valor, mediado por un operador logico (X<10). Una vez
+respondido esa condicion pasara a modificar el valor de esa variable (X++). Y asi hasta que la condicion del segundo parametro no se cumpla.
+Configuracion estandar del Ciclo FOR: (X=0, X<10, X++) (Esto puede variar, tanto utilizando diversos operadores logicos y concatenadores
+al igual que en el tercer parametro el valor de X varie, no importa como ni en que cantidad).
+Aunque no es obligatorio en el FOR X se inicializa con 0 casi siempre, debido a que esto permite utilizar el indice del FOR. El indice del FOR
+es el que valor que va de 0 a N-1.
+El segundo parametro, el de si X vale tal determinara si el ciclo se sigue reproduciendo o no, si la condicion se cumple el ciclo sigue, sino
+se termina.
+La X es el indice, la varible que maneja al ciclo FOR. X va a recorrer de 0 hasta N-1, donde N es la cantidad de vueltas que vas a querer dar.
+Dentro del FOR puedo leer a la varible X y tambien asignarle otros valores, aunque esto provocaria que se puediera romper el ciclo o desordenarlo
+
+VARIABLE AUXILIAR/BANDERA: Es una variable de tipo booleano, que acepta el valor 1 o 0, un valor verdadero o falso.
+
+!: Simbolo negado, sirve para invertir el actuar de un IF/booleano. Es decir, que si un valor es falso, en vez de irse a la rama falsa del IF,
+gracias al simbolo negado (!) este ira a la rama verdadera, es decir hara el camino contrario. Si la BANDERA vale 1, con el signo ! valdra 0 en
+el if y si vale 0, valdra 1.
+
+
+Si la variable no tiene un valor al iniciar el Ciclo, se creara un IF que diga que si el bucle esta en el primer giro se inicialice la variable
+(Mayor o Menor) con el resultado del numero ingresado en el primer ciclo. Si ya paso el primer ciclo esa varible ya tendra un valor, que sera
+comparado con el nuevo numero ingresado.
+
+CICLO WHILE (Mientras): Este ciclo es un ciclo inexacto. Este ciclo es una herramienta que nos va a permitir hacer algo similar a lo que hace
+el ciclo FOR, girar, iterar, repetir una serie de instrucciones. Eso si, a este ciclo no le vamos a decir o determinar la cantidad de vueltas
+que queremos que de. Al ciclo WHILE le vamos a dar una condicion, le vamos a decir que queremos que gire, itere (haga bucle) hasta que suceda
+X cosa, o mejor dicho hasta que dicha condicion se deje de cumplir. En el caso de la configuracion del WHILE Solamente se configura el segundo
+parametro, ni se inicializa la varible ni se pone una condicion de variacion de la mismas (Ni X=0 ni X++/X--).
+La condicion (segundo parametro) en el FOR era una condicion que se usaba en un IF (VALOR    CONDICION   VALOR) y en el While sera lo mismo.
+Y mientras esa condicion se cumpla el ciclo While estara iterando, es por ello que es indeterminado, al no tener una cantidad de veces fijas
+en la cual girar. Eso si, el While tiende al infinito y que un ciclo sea infinito provocaria que no termine nunca y por ende que rompa la maquina
+(se sature la ram). Tanto FOR como While si se los configura mal estos ciclos pueden volverse infinitos, aunque es mas comun que suceda con While,
+porque es mas facil configurar mal un While que un FOR.
+El ciclo Do While es similar al While, solo que siempre ejecuta el cuclo al menos una vez y luego pregunta la condicion, si es verdadero sigue
+repitiendo el proceso, sino se para.
+¿Cuando se usa FOR o WHILE? Simple, si se cuantas vueltas debe dar mi ciclo para la funcion que yo quiera utilizo un FOR, si no se cuantas 
+vueltas debe dar mi ciclo uso WHILE. DO WHILE en algun momento random.
+
+ 
+ CICLOS ANIDADOS/COMBINADOS: Es basicamente combinar 2 o mas ciclos (meter dentro de un While un For por EJ). La combinacion puede ser de todos
+ exactos, exactos e inexactos o todos inexactos. Dependiendo de la consigna, ejercio o trabajo que debamos realizar debo determinar mis lotes
+ y sublotes.
+ Los Lotes/Grupos son los registros/ingreso de datos que hagamos. Estos lotes pueden ser complejos (varios datos distintos asociados a una misma
+ entidad, es decir si quiero ingresar un trabajador a una base de datos ingreso su nombre, edad y rol, todos son datos distintos pero de la 
+ misma entidad. otro ejemplo es ingresar un numero y una letra) o simples (Un registro puede ser un mero dato como un numero o una letra.)
+Sublote es una subdivision de los Lotes. Ejemplo, un Lote es el ingreso de 10 numeros, un sublote seria si ese ingreso de 10 numero quiero que 
+se haga 5 veces cada uno. Cada ingreso de 10 numeros sera un SUBLOTE, dentro del lote de 5. 
+Ejemplo: Tenemos un ciclo interno que pide 10 numeros y un ciclo externo que pide que se repita el ciclo interno 5 veces. Es decir que tenemos
+5 Grupos/Lotes de 10 numeros en total. Esto es un ejemplo de ciclo combinado.
+El Lote son todos los Registros/ingresos (Numeros por ejemplo) que ingresan en el programa, desde el principio hasta el final. Y cada vez que
+termina el ciclo interno (que se encuentra dentro del ciclo mayor) termina un sublote/subgrupo y vuelve a empezar y luego a generar otro.
+El lote basicamente es el ciclo externo donde se ingresan todos los numeros y el sublote es el ciclo interno que ingresa varios subgrupos de 
+numeros, el ciclo interno es quien genera los sublotes. El ciclo externo es quien determina la cantidad de sublotes que se crearan
+
+Para trabajar/ejercitar es clave crear una estructura previa que sea la estructura base y de ahi desarrollar el resto de cosas, por ejemplo
+en estos casos es principal ver cuantos ciclos voy a necesitar, cuantas vueltas o que condicion va a cumplir cada uno y ver que ciclos voy a 
+usar.  (REPASAR CICLOS ANIDADOS SI HACE FALTA)
+
+CORTE DE CONTROL: Es una metodologia para la manipulacion de datos, bajo determinado contexto/escenario. El Corte de Control es una adicion
+mas a lo trabajado con los Ciclos COMBINADOS. Este corte de control cuenta con una inteligencia que permite discriminar datos. Es decir que
+en los ejercicios anteriores cuando pediamos el ingreso de numeros y que cortara cuando esto valia 0 esa condicion manejada en el While
+con el corte de control ya no deberia ser requeria, ya que el corte de control deberia contar con la capacidad suficiente de hacerlo.
+Ademas el corte de control permite jugar/utilizar y discriminar/separar registros compuestos y no solamente valores simples como los numeros, 
+sino valores y entidades mas apegadas a la realidad.
+Una de las claves de corte de control es como van a estar esos datos y registros que utilizaremos. Lo clave y fundamental de estos datos/registros
+es que deben venir agrupados (no confundir con ordenados). Tenemos un Lote de datos/registros que deben estar agrupados, es decir que vamos
+a tener distintos ¿Sublotes? ¿subgrupos? discriminados (Una serie de registros por un lado, otro por otro lado y asi). A estos registros 
+discriminados debo categorizarlos de alguna forma y despues procesarlos, primero a un grupo, luego a otro, luego a otro y asi.
+Basicamente debo cargar todos los grupos (Ejemplo de Facturas) uno por uno. Ejemplo cargo todas las facturas A, Luego las B y despues las C
+(No importa el orden).
+La Magia (Utilidad) del corte de control es que solo se va a dar cuenta de cuando termino de cargar un grupo de registro y comienzo a cargar 
+otro. Ejemplo: El corte de control deberia darse cuenta solo de que deje de cargar facturas B cuando comienza a cargar facturas A en el 
+programa, y que ya no voy a volver a cargar mas facturas B, ya que al manejarse con grupos primero se ingresaran todos los grupos de B para 
+recien poder pasar a los grupos de A. El Corte DE Control esta preparado si o si para trabajar con grupos y no sin ellos, por ello es que debo
+ingresar registros (Que esten discriminados, en tipos de factura por ejemplo) de forma agrupada.
+El corte de control trabaja con lotes agrupados, grupos/sublotes. Cada agrupacion sera un sublote dentro de un gran  e unico lote.
+El corte de control tiene como estructura un While dentro de otro While. Si un ejercicio pide que algo este agrupado es un ejercicio con corte 
+de control. Los datos que se cargan en el corte de control siempre deben estar agrupados, es la clave del corte de control, sin ello no funciona
+(no confundir agrupado con ordenado). La agrupacion sera a partir de una variable que discriminara a unos de otros, marca de autos por ejemplo,
+el grupo de Ford, Chevrolet, Mazda, Renault, Mercedes, ETC.
+Tengo 3 momentos para mostrar los resultados o datos del procesamiento, 1) dentro del interno, los datos que ahi voy a mostrar son los registros
+y datos de cada registro, perteneciente a un mismo grupo. (MOSTRAR POR REGISTRO) 2)Dentro del While externo donde ahi es donde utilizo todos 
+los datos de un sublote  recolectado, la comparacion entre los registros de un mismo grupo. (MOSTRAR POR SUBLOTE) 
+3) La comparacion de todo lo ingresado en un lote, todo lo que paso por el programa (Comparacion de todos los registros de todos los subgrupos).
+En el 1) proceso los registros. En el 2) Proceso los datos de los sublotes y en el 3) los datos del lote entero
+
+ A la hora de resolver problematicas de programacion o ejercicios lo mejor es analizar la consigna y armar la estructura base del programa,
+ armar las raices de este y luego si resolver punto por punto los demas pedidos. Es decir que para resolver la primero que debemos hacer es armar
+la estructura principal del programa antes de individualizar punto por punto.
+
+FUNCIONES: Una funcion es un programa, un pequeño programa. Es un pequeño bloque de codigo (o diagrama de flujo) que lo que hace es resolver
+un cosa solamente. Yo le doy una informacion a esa funcion y espero que este pequeño bloque de codigo lo analice y resuelva para devolverme
+un valor/resultado. MAIN: (Programa principal donde estan contenidas todas las lineas de codigo). El Main basicamente es quien comanda el 
+programa, es el programa principal. Y este es quien le va ordenando a las funciones realizar X acciones para obtener valores/datos que despues
+necesite utilizar o mostrar. Dentro del Main va a estar compuesto por varias funciones. El MAIN no es quien va a tener que ejecutar esas acciones
+sino que de eso se van a encargar las funciones (pequeños programas). Una funcion puede ser tanto un mecanismo para la suma de numeros, como 
+para la busqueda de un numero primo.
+Las funciones al igual que todos los programas cuentan con un inicio y un final, pero tiene ciertas particularidades... Las funciones para
+trabajar puede que requieran informacion que se encuentra por fuera de ellas. En el caso del programa principal esto no es un problema
+ya que si necesita algo del exterior con una caja de ingreso le basta.
+En cambio las funciones estan especialmente preparadas para recibir datos e informacion, no pedir (nunca debe pedir), sino esta debe recibir.
+Esta recibira una determinada informacion la cual procesara y devolvera un resultado. Por ejemplo: la funcion requiere de un numero, mi programa
+le brinda esos datos y esta realiza su procesamiento devolviendo un resultado. La esencia de las funciones es no interactuar con el usuario
+externo para pedirle determinados datos, sino que este va a esperar la orden del MAIN, que le brindara los datos/informacion necesaria para 
+trabajar y asi procesar lo recibido. El MAIN le da una data a la funcion, esta la procesa y luego la devuelve procesada.
+Eso que yo le voy a dar a la funcion para que pueda trabajar y procesar lo que recibio se llama parametro/argumento. Basicamente yo le paso 
+un parametro para trabajar, un parametro sobre el cual se fundamentara su accionar, actuara en funcion de su parametro. La funcion generalmente
+devolvera un resultado (aunque no siempre es asi).
+En sintesis, el programa (el MAIN) llama a la funcion, la funcion recibe los parametros que le da el MAIN (la funcion procesa segun lo que 
+tenga en sus parametros) y luego devuelve, retorna (return) un resultado.
+PROGRAMA PRINCIPAL = FUNCION MAIN
+Una funcion es un bloque de codigo que realiza alguna operacion. Una funcion puede definir opcionalmente parametros de entrada que permiten 
+pasar a ejecutar los argumentos de la funcion. Una funcion tambien puede devolver un valor como salida.
+Una funcion es un conjunto de acciones que se van a ejecutar, las cuales pueden ser invocadas con algun nombre.
+
+Para llamar a la funcion antes esta debe estar definida/construida. Una funcion esta compuesta por varias partes: 1)El tipo de dato que va a
+tener la funcion. 2) Una funcion tambien debe estar compuesta por un nombre (el nombre sigue las mismas reglas que las varibles, es decir
+sin espacios o signos especiales, no puede ser una palabra reservada ni un nombre repetido de otra funcion/variable). 3) Y por ultimo se pondran
+los parametros/argumentos de la funcion, que es lo que va a hacer.
+En la primera parte se pondra el tipo de dato de la funcion, luego el nombre y luego sus parametros. Los parametros tambien deben estar 
+inicializados como variables, otrogandoles que tipo de dato son esos parametros y que nombre tienen. Esto porque la funcion para poder
+ejecutarse debe recibir determidos tipos de datos, por ejemplo si pido 2 int en la funcion y yo le doy 2 string la funcion no devolvera nada
+o quedara en error, porque la funcion especificamente pide para devolver un resultado 2 int. Una vez que llamo a la funcion a esta le debo 
+asignar una varible para que guarde el valor que obtuvo de la funcion. Porque si ejecuto la funcion sin mas, se ejecutaria el proceso pero el
+resultado se perderia porque quedaria en ningun lado, y por ello debemos darle una variable que guarde ese valor.Una funcion terminara 
+devolviendo solamente un valor (esto es lo normal, aunque podes parcharlo para que te devuelva varios).
+Dentro de las funciones hay 2 tipos de parametros a colocar/utilizar: Los parametros que se dan/pasan/otorgan por valor y los parametros que se
+dan/pasan por referencia. Los parametros pasados por valor genera que se produzcan una copia de los valores dados en otro espacio de memoria.
+Si yo le doy a una funcion por valor A y B se creara en la memoria 2 variables nuevas con el mismo valor (N1, N2). Basicamente se esta guardando 
+el valor de las variables en memoria atraves de nuevas varibles que se generan. Una vez termina la funcion estas nuevas variables creadas en
+memoria mueren. Para tener en cuenta que si modifico N1, A no se va a ver modificada, porque A es diferente de N1. N1 es solo la copia de su
+valor pero es una varible diferente. En sintesis un parametro por valor es crear una copia de los valores que otorgue en la memoria a traves
+de nuevas variables que se mueren una vez terminada la funcion. Todas las variables que se creen en la funcion, una vez terminada esta, se 
+mueren o se borran de la memoria (por ello es importante hacer que otra varible rescate el valor de lo que proceso la funcion).
+Hay que tener en cuenta que la funcion tiene su propio mundo dentro, en el estan sus propias varibles, N1 y N2 por ejemplo, que fuera de este
+no existen y una vez terminado el proceso estas mueren. Tambien pasa con las variables del exterior, dentro de la Funcion A y B no existen,
+no son nada. Todo lo creado y generado por la variable se borrara de la memoria una vez terminada la funcion. 
+Ojo, que A no exista dentro de la funcion no significa que en ella pueda reutilizar su nombre en la funcion, Pero esa A de la funcion no es la
+Misma A que ingrese dentro del Main, las variables dentro de una funcion son diferentes por mas que tengan el mismo valor o nombre, es como
+si las funciones crearan una realidad alterna en lo que se refiere a varibles, que aunque sean identicas en valor y nombre son distintas. y
+Esta realidad alterna que crean las funciones son las que me permiten crear varibles con el mismo nombre, ya que no se pisan ni se generan
+errores.
+Ahora cuando a los parametros pasamos los valores por referencia es similar el proceso, coloco el tipo y el nombre de la funcion y las 
+varibles que se crean nuevamente (N1, N2). Eso si en el MAIN, en la funcion ademas de dar A y B tambien pondre otra varible nueva que sera
+mi parametro (H). En la funcion tambien se creara otra varible parametro J, por ejemplo. Pero J no sera una copia de H, sino que estas varibles
+ocuparan el mismo espacio de memoria, por algun momento ese espacio de memoria tendra asignado el nombre de H y J al mismo tiempo, antes de que
+se destruya la funcion. De esta manera una vez terminada la funcion el valor que tenga J tambien lo tendra H, y luego todas las varibles
+de la funcion se destruiran pero H ya tendra el valor guardado.
+Pasar un parametro por referencia genera que le prestemos el espacio de memoria que tenemos ocupado en el espacio original, es decir si en un
+espacio de memoria tengo A y genero un parametro de referencia para una funcion donde tenga la variable B A y B coexistiran en el mismo espacio
+de memoria, no seran una copia de una de la otra, sino que compartiran el espacio y el valor que adopte una la otra tambien lo tendra.
+Una funcion de tipo VOID es una funcion que no devuelve ningun valor.
+DIMENSIONES ALTERNAS = SCOPE (rangos/alcances) diferentes
+La idea de las funciones es de que se encarguen de hacer una accion generica y atomica y que esa accion se pueda repetir varias veces.
+
+VECTORES Y ARRAYS: Un vector es una "coleccion" de elementos de un mismo tipo. Hay que tener en claro que una varible solamente puede guardar
+un dato a la vez, ya que si le quiero asignar otro datos mas alla del que tiene guardado esto provocara que se pise la informacion/dato que
+posee la variable. En esto caso los VECTORES vienen a romper con esto, ya que estos permiten guardar varios datos, siempre y cuando estos
+datos respondan a un mismo tipo de varible (Puedo guardar varios datos int juntos, pero no mezclar Int y String).  El vector te permite guardar
+muchos valores en una misma varible (La varible es Vector). Para guardar estos valores en un vector ademas de inicializarlo como una varible
+normal debo tambien debo poner la cantidad de valores que voy a querer guardar entre []. EJ: int numero[5]; Es por esto que el vector solo puede
+guardar un tipo de dato. Los vectores no son una variable de tipo simple, sino que son variables de estructura de datos o de tipo dimensional.
+ Cuando creo una variable simple esta se creara en un espacio random de la memoria, ocupando una "casilla" (tambien depende del peso del tipo
+ de dato). Con el vector pasara lo mismo solo que, depende de la cantidad de variables que querramos alojar en el, se va a crear un espacio 
+ random pero el resto de varibles que tiene que guardar el vector se guardara una al lado del otro. Es decir que la memoria guarda los vectores
+ de forma conjunta (no en la misma celda, pero si en celdas una al lado de la otra). Esto nos sirve para entender que aunque el vector sea una
+ varible este a su vez esta compuesto de varias variables con un mismo tipo de dato. Para guardar el valor de un vector debo referenciar el 
+ espacio de memoria al que quiero guardar. Para esto debo conocer mi indice. El indice va de 0 a N-1, N siendo la cantidad de datos que voy a
+ en ese vector. Porque sucede asi? Porque en programacion, en el indice se comienza a contar de 0 y no de 1. Para guardar el dato seria por 
+ EJ: Num[2]=5. Todos los vectores van a tener indices. La configuracion estandar de for (iniciar en 0) permite que guardemos de forma 
+ automatizada los valores que vaya a tener el vector, gracias a que los 2 empezarian con su indice en 0. Eso si, la cantidad de valores 
+ que guarde en el vector debe ser la misma cantidad de vueltas que de un ciclo FOR, porque sino, cuando busque un indice que el Vector no genero
+(Al no necesitar o querer guardar mas numeros) provocara que el FOR quiera guardar ese valor en un indice inexistente, dando a lugar a que se
+genere un error.
+EL INDICE DE LOS VECTORES VA DE LOS VECTORES VA DE 0 A 9 (0 a N-1). SU POSICION VA DE 1 A 10 (1 a N).  
+La forma de leer y escribir (asignarle un valor) un vector se suele hacer mediante ciclos FOR que comprendan al indice/tamaño del vector. 
+
+BURBUJEO/Metodo Burbuja: Es un algoritmo (serie de instrucciones) que nos permitira agarrar un vector y ordenarlo, intercambiando de lugar
+sus elementos. Hay varios metodos para ordenar un vector, el BURBUJEO aunque no sea el mas optimo es el mas sencillo.
+Basicamente consta en comparar los vectores colidantes (mediante un ciclo FOR) repetidamente y dandole una condicion, si es mayor por ejemplo
+y la condicion es TRUE se intercambiaran los valores del vector de posiciones.  Eso si, se debe crear una variable auxiliar para hacer un backup
+de una de los valores para traspasarlo, ya que al pisar el 1º con el 2º el 1º pierde su valor original, y es por ello que debemos guardarlo en un 
+auxiliar. Una vez hecho esto crear un FOR con X vueltas para ordenarlo completamente o un WHILE con un contador para evaluar que todo este 
+ordenado.
+
+LOTES DE CARGA Y PROCESO: Siempre vamos a tener un lote de proceso y uno o mas lotes de carga. En un lote de carga vamos a pedir los datos 
+y guardarlos (en vectores). En el lote de proceso tambien vamos a pedir datos pero no vamos a pedir un cantidad especifica de datos ya que vamos
+a procesar informacion que puede que sea precisa como que no. En el lote de carga siempre voy a tener la certeza de cuantas cosas voy a cargar
+(Precio y cantidad de productos) y es por eso que la guardamos en un vector. En cambio en el lote de proceso lo que hace es rescatar los datos
+de los lotes de carga y los trabaja/procesa con el fin de devolver un resultado. Este no busca guardar los datos debido a que no tenemos una 
+certeza de cuantos datos le voy a cargar, no tengo una cantidad definida (no se cuantas ventas me van a ingresar). Un lote de carga seria
+guardar la informacion de productos, ya que se con cuantos productos exactos tengo (El tipo de productos). En cambio en el Lote que no conozca
+la cantidad exacta de registros sera el Lote de procesamiento. Gracias a los vectores podemos trabajar con mas de un lote. Vectores (guardar
+bajo un mismo nombre muchos valores, una variable que posee subvaribles que responden a  un mismo nombre).
+En el lote de carga la unica funcion que tiene es pedir datos a la persona y guardarlo en uno o mas vectores, para despues reutilizarlos
+en el lote de proceso. Basicamente el lote de carga se centra en guardar registros/informacion que ingresa el usuario y despues reutilizarla.
+En el lote de proceso tambien vamos a pedir datos pero no una cantidad determinada de estos, sino indeterminada. Es por esto que este lote
+no guarda datos, ya que no se sabe cuantos datos se le van a ingresar. Esto lote recibe X registros indeterminados y junto a la informacion
+guardada en los lotes de carga se encarga de procesar datos y devolverlos como un resultado. Este nunca guarda datos. Solo hay un lote de 
+proceso (generalmente) por la simple razon de que este se encarga de mostrar los resultados procesados que quiere el usuario, una vez terminado
+este lote si paso a otro lote de proceso al no guardar datos se perderia todo lo procesado en este lote.
+Con esto posibilitamos poder guardar informacion, no como antes, que todo lo cargado devolvia un resultado. Si no que ya podemos guardar 
+informacion, al menos en memoria RAM. Sin el lote de proceso todo seria volatil, no guardando nada sino solo procesandolo. El lote de proceso
+sera aquel que no sabemos la cantidad exacta de registros.
+En sintesis, en el lote de carga debo pedir datos/registros y guardarlos en un vector, matriz, lista, etc. En cambio en el lote de Proceso
+tambien pido datos/registros y ademas rescato la informacion de los lotes de carga pero no voy a guardar esos datos ni registros, sino que solo
+los voy a procesar y despues mostrar los resultados de ese procesamiento (No voy a guardarlo por la simple razon de que no se cuantos datos
+o registros voy a tener en este lote, esa cantidad es indeterminada). La ventaja de trabajar con varios lotes y trabajar con informacion
+guardada es que puedo devolver informacion/datos mas robustos y completos. Ya no voy a devolver datos de una varible simple, sino que voy a 
+poder devolver datos de vectores.
+Para la resolucion de estas problematicas es principal primero plantear la estructura base del programa, y luego resuelta esta estructura 
+empezar a resolver punto por punto.
+Que el lote venga ordenado significa que la persona que carga la informacion del lote la carga de forma ordenada. Esto no quiere decir que yo 
+deba ordenar el lote mediante codigo, sino que la persona que utiliza el programa lo cargara de forma ordenada. Si el lote esta desordenado
+es que la persona lo carga de forma desordenada.
+
+"Nunca puedo pasar un vector por un parametro de valor en una funcion, por una cuestion tecnica. Siempre que deba pasar un Vector a un parametro
+de una funcion lo debo hacer por referencia y no por valor. La razon porque no puedo pasar un vector por valor es que la funcion sola puede
+devolver un valor al vector, en solo uno de sus espacios y nada mas.
+Poner el nombre del vector solo permite pasar toda su direccion de memoria, ya que empieza desde la direccion de memoria inicial. a partir de 
+esto y de declarar que la varible que se pasa es un vector (al crear la funcion) esta comprendera que luego de su esapcio de memoria inicial
+le siguen mas espacios. Basicamente poniendo la varible sola entiende el primer espacio, y una vez creada la funcion, si yo le pase que va 
+a comprender un vector... esta funcion entendera que luego del espacio de memoria inicial le seguiran mas espacios.
+
+CADENA DE CARACTERES: Es basicamente un vector de elementos de tipo CHAR. Un caracter es cualquier cosa que yo escriba mediante el teclado, cada
+pulsacion de tecla es tomado como un caracter. Cadena es string no es lo mismo como tal, string es un tipo de dato que se utiliza especialmente
+en la programacion orientada a objetos. Es como una version evolucionada de la cadena. Una vez terminada la cadena automaticamente se le creara
+un \0 en la cadena del lado. Este \0 determina el final de la cadena de texto.
+Cargar Cadena en codigo: CHAR CAD[] = "hola" Con esto basicamente dejamos abierto el vector, y escribimos una cadena
+y segun el numero de caracteres que tenga nuestra cadena el vector lo leera y determinara su tamaño. Es decir si escribi 5 caracteres en una cadena
+el vector entendera que su tamaño debera de ser de 5.
+
+Las variables dimensionables siempre deben estar declaradas, y en su mayoria inicializadas.
+
+MATRICES: Una matriz es un cuadrado, es hasta cierto puntos un vector de vectores. La matriz es una estructura dimensionada
+(con un determinado espacio) como el vector. La matriz de 2 dimensiones es una tabla de excel basicamente, con sus filas
+y columnas respectivas. Las columnas y filas se nombran de 0 a X ambas. Al igual que al vector a la matriz se le debe de dar un tipo
+de dato, pero solo un tipo de dato, no pueden ser mezclados. Para crear la matriz voy a necesitar darle el tipo de dato, el nombre de
+la matriz y crearle 2 pares corchetes (a diferencia del vector en el cual solo creaba un par de corchetes). El primer corchete representa
+las filas que va a tener mi matriz y el segundo las columnas. Las matrices en 2 dimensiones basicamente funcionaran como
+tablas. Para cargarle datos a la matriz lo que tengo que hacer es basicamente llamar a que fila quiero cambiarle el valor
+y a que columna, esto escrito atraves de 2 pares de corchetes. Los indices de la matriz seran igual que el de los vectores
+si son 10 espacios se guardaran en filas/colimnas del 0 al 9. 
+Las matrices en 2 dimensiones tienen un ordenamiento particular, una disposicion de tipo tabla. Para escribir en cada
+espacio de la matriz debo llamar un espacio de memoria en X y otro espacio de memoria en Y, y el cruce de estos 2 valores
+dara con el espacio de memoria al que accedere/cargare datos. Es decir que debo hacer referencia a las coordenadas de 
+X e Y, escrito como si fuera el plano cartesiano (X,Y). Esta es la forma (manual) de cargar los datos en una matriz, de 
+escribirlo elemento por elemento. Esta forma es solo para que el programador escriba algo en tal espacio de memoria, no
+es funcional de cara a un usuario.
+Una forma de cargar las matrices es mediante la utilizacion de ciclos anidados, pudiendo combinar 2 FOR, ya que se 
+cuantas filas y columnas tengo. El truco esta en dividir la carga mediante sublote de filas (o columnas), donde el primer
+ciclo for es quien se encarga de mantenerse estatico (filas en este caso) y el segundo va pidiendo la carga mientras va
+cambiando su valor de espacio de memoria. Una vez termine el ciclo menor el ciclo mayor aumentara su valor y volvera
+a ejecutarse el ciclo menor. Basicamenteel ciclo de las filas se mantiene estatico hasta que se cargan todas las columnas
+de esa fila, una vez que esas columnas terminen de completarse se sale del mini FOR y las filas mediante el ciclo FOR
+mayor cambian su valor, cambian la fila basicamente (pasan de la fila de espacio de memoria 0 a la 1) y ahi vuelven a
+esperar que se llenen todas sus columnas. basicamente creo sublotes para cada una de las filas.
+Para leer la matriz tambien se debe recucurrir (en su mayoria) a ciclos anidodos, de tipo FOR la mayor parte de veces,
+al conocer el tamaño de la matriz. En este sentido es similar a los vectores, utilizo ciclos (similares) de lectura como de
+escritura. la razon de porque se utilizan ciclos anidados para la inicializacion es simple, ya que necesito definir
+en una determina fila (o columna) todos sus elementos, es decir debo definir todas las columnas de una fila (o todas
+las filas de una columna).
+En general vamos a utilizar las matrices para la obtencion de resultados ya calculos, a los cuales llamaremos mediante
+estas matrices. Ejemplo, siquiero calcular cuanto se vendio de tales prouctos en cada mes de año con vectores necesitaria
+crear tantos acumuladores (con el tamaño de la cantidad de meses) vectoriales como productos tengo. Pero es mucho mas
+sencillo crear una matriz con 12 filas (cantidad de meses) y 20 columnas (productos) de esta manera puedo guardar en una
+sola variable (matriz) lo que se vendio cada producto en cada mes sin tanto quilombo. Es por esto que la matriz
+es llamada vector de vectores, ya que permite cumplir la funcion de varios vectores y relicionar la informacion gracias
+a su disposicion de tabla. Los espacios de memoria son los mismos que utilizaria creando varios vectores, pero en vez 
+de crear muuchos vectores creo una sola matriz que me permita relacionarlo. En vez de crear 12 vectores acumuladores
+de producto, cada uno por cado mes meses creo una matriz de 20x12 directamente.
+Con los datos que cargue en la matriz puedo hacer varias cosas; mostrarlos directamente, leerlos y apartir de ello 
+buscar algun resultado en base a una condicion, leerlos y mostrarlas condicionalemnte o apartir de esos valores 
+volver a introducirles otros calculos y finalmente mostrar esa informacion.
+Ya sabemos como crear una matriz, los tipo de datos que podemos usar, como escribirla manualmente, como leerla manualmente
+como escribirla y leerla segun lo ingresado por un usuario (medianto ciclos For anidados), como leerlas con condicionales
+etc.
+
+STRUCT: Es una palabra reservada de los lenguajes de programcion que nos permite crear un STRUCT y a su vez es un 
+tipo de dato. Pero este es un tipo de dato especial, ya que nos permite crear un tipo de dato nuevo. Para crear el STRUCT
+es como si creara una varible normal, STRUCT PICHI; Con esto crearia mi STRUCT, pero a partir de esto no se va a crear
+o generar una varible nueva, como pasaria con el resto de tipos de dato, sino que se va a generar un tipo de dato con el
+nombre que le colocamos a mi STRUCT, en este caso se crearia el tipo de dato PICHI, y no una variable PICHI. A partir de
+este STRUCT ya podria crear varibles con el tipo de dato PICHI. Esto sirve para poder crear tipos de datos complejos/compuestos 
+para poder solucionar una problematica. Un STRUCT puede ser utilizado para expresar datos extraidos de registros en un 
+formato mas complejo de lo que soportaria una varible normal. Con el STRUCT al crear un tipo de dato tambien creo una
+palabra  reservada. Una vez creado el STRUCT la magia consinste en darle las indicaciones de como debe manejar los datos
+que a este se le otorguen. Basicamente con el STRUCT guardo bajo el nombre de un tipo de dato (dato PICHI) puedo alojar
+varios tipo de datos, a diferencia del vector donde guardaba multiples variables pero de un solo tipo de dato.
+Yo dentro de este tipo de dato puedo crear varios tipos de varible, y con lo que cree una vez que llame al tipo de dato
+PICHI podre utilizar todos esas varibles que tengo cargadas. Es parecido a cierto punto a las clases. Una vez tengo
+un STRUCT con varias varibles puedo llamar al STRUCT y utilizar todas o alguna de las cargas de datos que tengo. Por ejemplop
+si en PICHI tengo contador de ladridos y un acu de ronquidos puedo utilizarlos a los 2 una vez que lo llame o llamar
+a uno de esos datos. En caso si creo la varible PICHI perro voy a tener una varible perro que contiene los datos de ladridos
+y ronquidos. Para acceder a cada variable del tipo de dato es tan sencillo como perro.ronquido = X.
+Gracias al STRUCT y los datos complejos puedo en vez de crear varios vectores que estan relacionados de forma logica los
+puedo directamente alojar a esos vectores y por ende relaciones dentro de un STRUCT. Esto lo creo basicamente como cualquier
+vector para cualquier dato primitivo, con la diferencia que el tipo de dato usuaremos el que creamos y le damos el valor
+del vector/matriz. Dentro de los espacio de memoria que voy a reservar cada espacio de memoria no guardara una sola 
+variable, sino que en cada espacio de memoria voy a guardar cada uno de los tipos de dato del STRUCT. Para acceder a cada
+dato seria: perro[0].ronquido = 5.
+DATO: Cuanto mas complejo es la solucion del problema, o la solucion que le aplico al problema mas facil es construirla.
+Basicamente mietras mas complejo sea el codigo que utilizo, menor cantidad de codigo voy a necesitar. Mienstras mas 
+simple sea mi codeado mas codigo debere escribir.
+Al tener un solo vector gracias al struct y sus datos complejos puedo minimizar la cantidad de vectores y no tener que 
+complicarme tanto con el juego y traspaso  de indices. De esta foram tengo un vector y un indice y varios tipos de datos
+cargados en el struct al cual accedo mediante el punto. Esto tambien ahorra el analisis relacional entre vectores que puede
+complicar, teniendo que ver si este se relaciona con aquel y si ese indice mesirve para relacionarlo con otro vector y ETC.
+Basicamente con el STRUCT puedo tener todos los tipos de datos que necesita divido en espacios de memorias y relacionados dentro
+de este.
+Las varibles que cree en mi STRUCT pueden tener cualquier nombre y el nombre de esatas no afectara en el programa Main.
+Es decir que si en PICHI creo la varible ronquido yo puedo crear una varible de igual nombre en mi programa MAIN incluso
+utilizando el STRUCT PICHI, esto debido a que se encuentran en diferentes dimensiones, diferentes SCOPES. Este ronquido
+seran 2 varibles distintas con diferente espacio de memoria, aunque compartan nombre, pero no se veran afectadas al 
+pertenecer a 2 scopes distintos. Para leer el STRUCT es mediante el ciclo for y especificando que tipo de dato del 
+STRUCT quiero leer (mediant el punto accedo al dato que quiero leer). 
+VECTOR de STRUCT: V[X].CA
+
+                                                  NIVEL 1 C# con .Net
+SDK: Software development kit (Kit de programas para desarrollo). Es un conjunto de aplicaciones invisibles, ya que no
+las vamos a ver como tal, pero que necesitamos tenerlas instaladas en la PC para que el codigo que escribamos en el
+VSCODE pueda funcionar y compilar correctamente.                                               
+
+Comandos de la TERMINAL: CLEAR(Limpio la consola) NEW CONSOLE -O (Creacion de una nueva carpeta con archivos base para
+programar) RUN (Correr el programa) CD (Change Directory)
+
+Dentro de la consola TERMINAL yo los comandos que ejecute lo voy a hacer sobre la carpeta que tenga seleccionada (donde 
+guardo mi proyecto en este caso). Cada vez que yo quiera ejecutar algo en la consola que este relacionado con dotnet (o 
+cualquier SDK) debo poner el nombre del SDK y las instrucciones.
+
+PASOS A LA HORA DE PROGRAMAR: Tenemos que posicionarnos en distintos roles: Tanto en la posicion del usuario que vaya a 
+utilizar nuestro programa, que va a interactuar con el, en donde esperara X resultados de esa interaccion. Y tambien
+posicionarnos en el rol del programa. Esto nos sirve para definir que parte/acciones va a cumplir cada una de estas partes.
+La persona (en este caso de la calculadora) Debe abrir el programa cargar los numeros a sumar y leer el resultado. El programa
+por su parte debera pedir informacion/datos, procesarlos y devolver un resultado. Estos son los pasos que debe realizar nuestro
+programa, por ende un conjunto de instrucciones ordenadas, ergo un algoritmo.
+En el codigo siempre vamos a necesitar declarar variables, esto con el fin de reservar un espacio de memoria y poder utilizar
+esos espacios de memoria para realizar los calculos, poder utilizar los valores para diversas tareas.
+
+DECLARAR VARIBLE: Avisarle al sistema que reserve X espacios de memoria ya que los voy a necesitar para trabajar con el, esto se
+lo hace mediante la declaracion de variables.
+Las palabras reservadas son palabras especiales que tienen una accion reservada en el lenguaje para X funcion
+EJ: int, float, static, void, class, if, ETC.
+
+Tipos de Datos: Int (dato numerico entero), float (dato numerico decimal), Char (caracter),
+Bool (True/1, False/0). Dentro de los datos enteros nos encontramos con muchos tipos de dato
+que abarcaran mas o menor cantidad de numeros, esto provocara que cada variable ocupe mas o 
+menos espacio de memoria en el programa. Por ejemplo Tipo short ocupara 2 Bytes, en cambio un
+int ocupara 4 Bytes. Depende del rango numerico deberemos optar por una u otra opcion para
+alojar nuestros enteros. Lo mismo pasa con los float. En los numeros decimales hay que tener en 
+cuenta que los float como los decimales se le debe agregar el sufijo F y M respectivamente. Debido
+a que todo numero decimal el codigo de primeras lo entendera como un double, asi que para aclarar
+se le agrega un sufijo.
+
+Para poder programar algo debo primero saber resolver la problematica que se me plantea. Porque 
+basicamente en la programcion enseño a la computadora a hacer algo, y para enseñar algo a alguien debo
+saber hacerlo. Si yo no se como hacer X cosa me sera imposible programarlo.
+la asignacion es destructiva en programacion, debido que mediante esta lo que hago es que piso el valor viejo que
+poseia mi varible por uno nuevo.
+Una de las convenciones espacificas en la programacion es que la separacion de palabras de una varible
+es mediante una letra mayuscula. Es decir cada palabra de mi varible, salvo la primera, debe estar separada
+por mayuscula.
+Por defecto el codigo en un numero decimal lo entendera como numero un DOUBLE, y si este esta siendo multiplicado
+con un float dara lugar a error. Es por ello que para especificar a que tipo de dato pertenece ese valor literal con
+decimales le agrego la letra F, de esta manera confirmo que ese numero es un float y no un DOUBLE.
+Esto debido a que el programa no puede convertir un DOUBLE a FLOAT directamente. Debido a que el DOUBLE es mucho mas
+grande que el FLOAT y si quiero convertir un DOUBLE que es mas grande decimalmente que lo que soporta un FLOAT se rompe 
+todo el programa.
+
+Valor literal: Un valor puro escrito, EJ: 15000, 0.05, 5, 95, 86, 43, ETC. Son valores directamente
+escritos e injectados a diferencia de las variables. Estos valores literales a diferencia de las variables
+no cambian durante la ejecucion del programa, son estaticos.
+
+VARIABLE CONSTANTE: valores estaticos durante todo el programa, estos valores son inicializados una
+vez creada la varible constante y no se volvera a modificar. Basicamente es una varible que apenas
+se crea se le asigna un valor literal el cual no cambiara por el resto del programa, por ello es una
+varible constante. La forma para que una varible constante sea inmodificable en codigo es mediante el llamado
+de la palabra reservada CONST, que vuelve a la varible imposible de reutilizar en casos de reasignacion de valores, no
+puedo reasignar un valor a esta varible de ninguna manera. Aunque si puedo reutilizar esa constante para modificar valores
+de otras varibles (SF = CONST+COMISION). Si yo llego a reasignar el Valor de una constante el compilador directamente dara error al entender que una
+constante no debe ser reasignada por otro valor.
+Esta variable al ser constante no va a modificar su valor en todo el programa.
+
+IF: existe una herramienta en programación denominada "If", del idioma inglés "si". Se trata de una herramienta que
+nos permitirá confeccionar condiciones (realizar preguntas) que tendrán como resultado posible SI o NO y dependiendo
+de cuál sea la respuesta podremos programar distintos sets de instrucciones.
+Una vez que se establece una condición If, lo que sucede es que se bifurca, se divide el flujo de ejecución del 
+programa, creando, por así decirlo, dos "dimensiones" o caminos alternativos. El programa deberá elegir uno de esos
+caminos a seguir, no ejecutará los dos al mismo tiempo ni primero uno y luego el otro. No. 
+Se evalúa la condición, y si el resultado es SI (recordemos que los posibles son SI o NO, o true o false, o 1 o 0),
+entonces se ejecutará el set de instrucciones programado en ese camino; pero si la respuesta a la pregunta es NO,
+entonces se ejecutará el otro set de instrucciones (en caso de haberlo, el NO puede no tener nada para ejecutar).
+El procesador solo responde preguntas logicas de si o no. Estas preguntas logicas deberan construirse como se detalla
+abajo.
+FORMATO DE LAS CONDICIONES: UN VALOR//UN OPERADOR DE COMPARACION//OTRO VALOR A SER COMPARADO.
+Operadores relacionales:
+> mayor
+< menor
+>= mayor o igual
+<= menor o igual
+== igual (nótese que no es = a secas, son dos símbolos juntos para la igualdad)
+!= distinto
+Operadores lógicos/Concatenadores Logicos:
+
+OR cuyo símbolo corresponde a || (doble pipe).
+En el caso del operador OR, el resultado será verdadero cuando cualquiera de las condiciones 
+dentro del If de como resultado verdadero. Ahora, cuándo el If se irá hacia el falso? 
+Cuando todas las condiciones den falso.
+Con OR Basicamente concateno 2 o mas condiciones en donde si alguna de esas condiciones se cumple,
+es decir es verdadero, el IF ira por la rama del verdadero. Con que una o mas condiciones se cumplan
+el IF se ira por la rama del verdadero. Si no se cumple ninguno  se ira por la rama del False/else.
+True || True = True
+True || False = True
+False || True = True
+False || False = False
+
+AND cuyo símbolo corresponde a && (doble ampersand).
+El and es el operador "y". Al usar este operador para c
+oncatenar dos o más condiciones lógicas. si todas las condiciones dan verdadero, 
+entonces el If dará como resultado verdadero, si una no se cumple  dara falso.
+Con AND Basicamente concateno 2 o mas condiciones en donde todas las condiciones
+deben cumplirse para que el IF vaya por la rama del verdadero, si una sola se incumple 
+(es false) el IF tomara la rama del falso/else.
+True && True = True
+True && False = False
+False && True = False
+False && False = False
+Con estos concatenadores logicos tambien puedo jugar con los parentesis, dando margen de prioridad
+ o jugando en como ejecutar la secuencia de condiciones. Por EJ (A=1 || B>5 && B<15 )
+ Aca estoy diciendo basicamente que para que sea verdadero A tiene que ser 1,O! en caso de no 
+ cumplirse eso pasamos a la segunda condicion (que esta concatenada). Esta segunda condicion dice
+ que B debe ser mayor de 5 y menor de 15. Si en esta condicion ambas partes se cumplen el IF
+ ira por TRUE. PERO si en la segunda condicion alguna de su concatenacion es falsa, peor ejemplo
+ B=20, la condicion sera falsa, y por ende toda la rama sera falsa.
+ Otra manera de jugar con los parentesis y en como armar estas condiciones es de la siguiente forma:
+ EJ ((A>0 || B>0) && A!=10) Aca basicamente en la primera condicion pido que una u otra varible sea
+ mayor a cero, si alguna de estas se cumple ya tengo mi primer verdadero, PERO para ir por la rama
+ TRUE debo (obligatoriamente al ser un AND en este caso) cumplir con la segunda condicion, es decir
+ que A no sea 10. Porque si A es 10 entonces la primera condicion pero incumplo la segunda y al ser
+ un AND todo se vuelve falso. Los parentesis sirven para armar formas de concatenaciones mas complejas
+y robustas, pero mejorar el tipo de preguntas logicas que quiero hacer al ser mas abarcativas O
+restrictivas y complejas. Los parentesis en si engloban a una condicion cada uno, por cada par
+de parentesis tendre una condicion (y en ella puede haber varias condiciones concatenadas).
+
+Tambien Existe un tercer operador logico que es el NOT, es el operador de negación,
+ cuyo símbolo es el "!". Este operador sirve para invertir/negar el resultado de una condicion
+ logica, que se de lo opuesto que coloque en la condicion logica del IF. Es decir que si la
+ condicion que plantee es verdadera el flujo ira al ELSE, en cambio si la condicion planteada
+ es falsa se ira para el verdadero. Basicamente toma el camino opuesto que tomaria la condicion
+ normalmente. Este operador no une sentencias logicas, sino que niega estas sentencias logicas, le invierte
+ el resultado que se obtenga de estas, es decir si se obtuvo un resultado verdadero de una condicion 
+ logica el NOT/! lo que hara sera invertir ese resultado TRUE en un false, y viceversa.
+ Si algo da TRUE, ira por el camino false. Si algo da FALSE ira por el camino del true.
+ !()
+ Con esto basicamente invierto el valor booleano que obtenga.
+
+
+
+Todas las herramientas de bloque como el IF, main, namespace ETC deben estar comprendida entre
+llaves.
+Poner un IF dentro de un bloque IF se le llama IF anidado. 
+Puedo presindir de usar llaves para el IF siempre y cuando yo le de una sola instruccion a este,
+si le doy mas instrucciones debere usar las llaves.
+
+Operador de incremento: ++/--
+Operador acumulacion: +=/-=
+
+Switch: Es una herramienta de desicion similar al IF, que permite evaluar el contenido/valor
+de una varible u operacion. A diferencia del IF este cuenta con multiples opciones/BRANCHS
+pero no se permite utilizar operadores logicos ni relacionales en el, solo analizar el valor
+de la varible. Segun el valor solo se ejecutara una sola rama del Switch.
+
+estructura de condigo del switch: switch(varibleALeer)
+                                  {case 1:/ case "+": ORDEN; break;}
+El Case representa el branch de nuestro switch, segun el nombre que le pongamos al branch
+sera el valor que acompañe a "case", contamos dentro de cada "case" el valor posible,
+"case" es cada brazo del Switch.
+Tambien contamos con un último "case" denominado "default", que es por donde pasará la 
+ejecución si el valor contenido en la variable que está siendo analizada no se corresponde
+con ninguna de las opciones seteadas, con ningunos de los BRANCHS anteriores.
+////int a = 3;
+////Switch(a){
+////case 1: 
+////Console.WriteLine("Hola");
+////break;
+////case 2:
+////Console.WriteLine("Chau");
+////break;
+////case 3:
+////Console.WriteLine("Blanco");
+////break;
+////case 4:
+////Console.WriteLine("Negro");
+////break;
+////default:
+////Console.WriteLine("Opción incorrecta");
+////break;}
+Con el Switch esta bueno utilizarlo cuando tengo que trabajar con opciones nada mas. Sino, suele rentar mas usar if`s antes
+que un Switch si no predominan una gran cantidad de opciones. No hay nada que un If no pueda hacer y un Switch si. Es mas
+el switch es mas limitado al no poder evaluar codiciones logicas ni utilizar operadores relacionaes como el IF.
+
+CICLOS: Un ciclo es una herramienta de la programación que nos permite repetir la ejecución de cierta instrucción o 
+cierto conjunto de instrucciones tantas veces como necesitemos. 
+El FOR es un ciclo que nos permite ejecutar un conjunto de instrucciones una cantidad de veces establecida.
+Para configurar un ciclo FOR vamos a necesitar contar con una variable, generalmente se usa como nombre para dicha variable
+ las letras "x", "y" o "z" aunque también encontrarán muy frecuentemente que la variable del FOR se denomina "i" 
+ (de "iterar", que significa ciclar, o dar una vuelta al ciclo).
+ Una vez con la variable hay tres factores que se requiere configurar en un ciclo:1) inicializacion
+ 2)condicion 3)Variacion de la varible.
+
+1)Inicializacion: Se trata de dar un valor inicial a la variable del ciclo. Esta instrucción se ejecutará una sola vez en toda 
+la vida del ciclo y es para darle un punto de partida al mismo. Se puede inicializar en cualquier valor, incluso en el valor 
+de otra variable, aunque en una configuración regular, se suele incializar simplemente en cero.
+
+2)condicion: La condición es la instrucción que determinará si se sigue iterando o no. Se ejecuta previo a comenzar cada vuelta 
+del ciclo y si da verdadero, se ejecuta la vuelta. Cuando sea falso, se dará por terminado el ciclo. Aquí se puede asignar cualquier 
+condición válida para un IF, ya que manejan exactamente el mismo formato, incluso se pueden agregar operadores lógicos. En una 
+configuración regular se suele hacer una comparación del tipo "menor a" el valor cuya cantidad de vueltas se quiere dar. 
+Por ejemplo "x < 5" si quiero dar cinco vueltas.
+
+3)Variacion de la varible: es la instrucción que se encargará de modificar el valor de la variable del ciclo para que, eventualmente, 
+la condición dé falso y el ciclo pueda concluir. De otro modo, la condición dará siempre verdadero y el ciclo no terminaría, lo que sería un problema (se conoce como ciclo que tiende a infinito).
+
+Hay que tener en cuenta que la cantidad de vueltas que dará el ciclo depende directamente de la configuración de su reloj, con lo cual 
+tenemos que tener muy claro qué es lo que estamos configurando y por qué.
+
+Configuracion estandar: (X=0; X<N; X++)
+
+WHILE:Hay ocasiones en las que no se conocerá la cantidad de veces que un algoritmo deberá ser ejecutado; en dichos casos se utiliza otro 
+tipo de ciclo, denominado ciclo inexacto, que repetirá el conjunto de instrucciones dado dependiendo de una condición establecida. Existen 
+básicamente dos tipos de ciclos inexactos en la programación. Por un lado el While y por otro lado en Do While.
+
+DO WHILE: Este ciclo funciona casi de la misma manera que el ciclo While tradicional. La diferencia fundamental es que la primer vuelta se 
+ejecutará siempre, y recién para la segunda es que la condición será evaluada para determinar si continuar ciclando o concluir el bloque. 
+Un ejemplo codificado sería:
+int N = 0;
+do{
+   n++;
+}while(n<10)
+
+LOTES Y SUBLOTES: El lote es todo lo que cargo y proceso, y el sublote en el ciclo que se encuentras dentro de otro ciclo
+y que termina cuando termina la iteracion del ciclo pequeño.
+El ciclo grande determina la cantidad de sublotes que tendra el programa y el ciclo pequeño el tamaño de cada sublote.
+
+FOR CON FOR= COMUN, se cuantos subgrupos tengo y el tamaño de estos.
+FOR CON WHILE= COMUN, se cuantos subgrupos tengo pero no se su tamaño.
+While Con FOR= RARO, no se cuantos subgrupos tengo pero si su tamaño.
+WHILE CON WHILE= RARO, Solo se suele usar en corte de control, no se ni el tamaño ni la cantidad de
+subgrupos.
+
+VECTORES: No es lo mismo una variable de tipo entero (int a;) que una variable de tipo vector de enteros
+(Int[] b;) Los indices me dan la ubicacion de cada espacio de memoria y es atraves de ellos que escribamos
+contenido en la varible.
+El valor del DIA por ejemplo puedo hacerlo coincidir con los espacios de memoria del vector mediante un pequeño ajuste (-1)
+no pasa lo mismo con un números discontinuos que no siguen un patrón de aumento, con estos no puedo hacer que su valor 
+(código) coincida con el de los espacios de memoria del vector.
+Es decir que si yo quiero recorrer el vector con una varible distinta de X debo buscar una variable que mediante un ajuste 
+me permita recorrer la memoria del vector [0, 1 ,2 ,3]
+sta estrategia suele funcionar cuando esa variable que quiere recorrer el vector esta compuesta por números consecutivos 
+como sucede en los días, meses, etc.
+Esto sirve cuando quiero cargar algo de forma desordenada, ya que mediante este método no fuerzo que me carguen en el 
+orden que me ordena X (del primero al ultimo)
+
+En el caso de no poder crear un vector de doble dato (en el que pueda ajustar el espacio de memoria a una varible que 
+no sea X como los días, de esta manera teniendo 2 datos en un vector
+siendo temperaturas que se guardan en la memoria y la numeración de los espacios de memoria, que aumentada en uno me
+dan los días de cada temperatura)
+
+Vectores relacionales: Son vectores diferentes pero que conceptualmente estan relacionados, ya que mediante el acceso a x
+espacio de memoria de uno de esos vectores puedo acceder x dato del otro vector. Ejemplo, creo un vector de codigo y Precio
+de productos, ambos son vectores diferentes, pero sabiendo la posicion del codigo por ejemplo, sabiendo en que lugar de la
+memoria esta puedo reutilizar su valor y acceder a su precio. 
+
+REGISTROS: Es un "Algo" que esta compuesto por mas de una varible. Es un ente conceptual. Por ejemplo
+un registro de venta es algo que toma varias varibles a la vez (Monto, cantidad, precio, fecha, ETC)
+Es basicamente un cojunto de varibles que se cargan con un fin... A esto lo llamamos registro.
+Estos datos que cargue aunque sean datos separados van a ser datos relacionados entre si al venir
+en el mismo registro (Si cargo un producto voy a cargar su precio y no el de otro)
+
+FUNCIONES: pequeño programita que se utiliza para realizar una sola funcion, este no debe pedir ingreso
+de datos, sino que el main se los provee este los procesa y devuelve. Las funciones son pequeños
+programas que resuelven algo especifico.
+Basicamente le doy unos parametros para que trabaje y procese y devuelva un resultado mediante un
+return.
+PARTES DE LA FUNCION: 1)CABECERA///1.1) Tipo de dato de la funcion/// 1.2) Nombre de la varible
+1.3) Parametros(opcional)/// 2) Cuerpo (Las instrucciones y algoritmos de la funcion, que hace
+mi funcion)
+Todo programa empieza por la ejecucion de la funcion Main y es atraves de esta que puedo llamar a 
+otras funciones que se encuentren en mi codigo. La idea de las funciones es modularizar el programa
+que cada funcion haga una parte del programa y que luego esta sea llamada por el Main, de esta
+forma mi programa se encuentra ordenado por partes.
+Para crear un nueva funcion hay que trabajar fuera del SCOPE/alcance principal de la funcion MAIN.
+DECLARACION==Creacion (Lo valores que creo aqui son los parametros que pedire)
+LLAMADO== usar (Los valores que coloque seran los argumentos que le pasare a la funcion, es decir
+le paso los argumentos a los parametros definidos en la funcion).
+
+Al enviar parametros por valor lo que creo es una replica/clon/copia de una varible. Esta copia tendra
+el mismo valor que la variable original pero se encontrara en un SCOPE diferente y en un espacio de
+memoria distinto. Una vez terminado la funcion estas copias mueren y liberan ese espacio de memoria.
+Cabe aclarar de que a pesar de que sean identicas ambas variables en valor estas ocupan diferente
+espacio de memoria.
+
+Al enviar un parametro por referencia no creo una copia, sino que envio el espacio de memoria de mi
+varible original, y si este se modifica en la funcion una vez que retorne el valor de mi variable se
+vera modificado.
+
+Una funcion por lo general debe encargarse de algo atomico, pequeño que pueda hacer y sea reutilizable.
+Cuanto mas generica una funcion mas reutilizable es.
+
+                                                CURSO DE NIVEL 2
+                              Clases, Objetos, Propiedades, Encapsulamiento
+
+FrameWork: Es un Marco de trabajo que se utiliza para el desarrollo de Software. La utilización de un FrameWork sirve para agilizar los 
+procesos de desarrollo y evitar la escritura de código repetitivo o empezar a codear desde la nada, esta framework yaa viene con clases, 
+funciones entre otras cosas ya programadas que nos facilitaran el trabajo.
+Ademas Agrupa modelos y herramientas necesarias para llevar a cabo el trabajo y un monton de estructuras ya preparadas
+(modelos) que contiene modelos ya preparados para su utilizacion. Tambien permite optimizar los desarrollos.
+En resumen es una estacion de trabajo, que posee determinados conceptos, practicas y criterios definidos y estandarizados, y este Framework
+nos brinda las herramientas necesarias para realizar el trabajo, el poder programar mucho mas rapido y no empezar de 0 y por ende al 
+poseer herramientas ya desarrolladas y con un soporte nos permite optimizar los desarrollos.
+Un FrameWork te ofrece un conjunto de herramientas para trabajar en un proyecto pero bajo ciertas reglas. Por ello decimos 
+que es un concepto estandarizado de conceptos, practicas y criterios, ya que este framework tendrá sus determinadas reglas 
+en como utilizarlo y llevarlo a la practica, pero que esta preparo para trabajar con el!
+Compilar: Transformar el código que escribimos en un lenguaje de programación a código de maquina, para que 
+esta la pueda ejecutar en un programa. El proceso de compilacion es mas complejo de lo que parece ya que este se separa
+en varias capas. 1)Compilacion 2) Desarrollo 3)CIL (Lenguaje intermedio comun) 4)Class Loader 5)JIT 6)CRL
+
+Cada vez que se quiera compilar cada lenguaje usara un compilador especifico para llevar a cabo la compilacion, esto
+se hace de forma automatica. Una vez compilado se obtendra el codigo CIL, es decir que esos distintos origenes
+se van a terminar transformando en una sola cosa. Luego entra en juego el CLASS LOADER, este es el cargador de clases
+que utilizamos en el projecto, estas clases vienen proporcionadas por nuestro FrameWork. De ahi entra en ejecucion la
+CONSOLA DE EJECUCION DE LENGUAJE COMUN (CLR) Esta consola lo que hace es cargar el codigo comun que utilizaste mediante
+el CLASS LOADER (Codigo proporcionado por el FrameWork) Mas el codigo que uno mismo creo para hacer una segunda compilacion,
+el JIT(JUST IN TIME). Este JIT Transforma el lenguaje medio a lenguaje de maquina y llevarlo a la ejecucion.
+
+.NET FRAMEWORK: Es una tecnologia (es una de las partes que compone a toda la tecnologia de .NET). 1)Esta incluye una plataforma que nos 
+permite crear y ejecutar nuestros desarrollos, 2) Los lenguajes de programacion que esta acepta (C#, VB, C++, C). Tambien cuenta con un IDE.
+
+IDE: Entorno de de desarrollo programado, es decir un programa preparado para programar, en este caso el Visual Studio Community.
+Con este IDE podemos construir aplicaciones de todo tipo (De consola, de escritorio, mobiles, servicios, etc).
+Dentro de las herramientas que nos provee este FRAMEWORK encontramos cosas ya progradas con las cuales podremos trabajar y nos facilitara
+el trabajo. Basicamente este framework nos provee herramientas en forma de codigo ya hecho que nos facilitar hacer determinadas cosas.
+MANEJO DE EXCEPCIONES: Basicamente hacer que nuestras aplicaciones no se rompan si se ingresa mal un dato u ocurre una situacion inesperada
+GARBAGE COLLECTOR: Funcion que permite liberar espacios de ram si es necesario.
+
+FAMILIA .NET: 1) .NET Framework:  20 años de vigencia, es el mas comun en general. 2) .NET Core: Evolucion del anterior
+aunque el proyecto ya dejo de desarrollarse por lo cual llego al tope. 3) .NET 5.0/6.0: El nuevo Framework que 
+desarrolla Microsoft que vendria a traer una evolucion de los 2 anteriores. 
+No hay en definitiva un Framework mejor que otro sino que  dependera de que necesitemos hacer elegiremos uno u otro
+framework.
+
+SOLUCIONES: Es un paquete en el cual dentro puedo poner muchos proyectos juntos
+EXPLORADOR DE SOLUCIONES: Es donde puedo visualizar esos paquetes de soluciones y gestionarlos
+
+SINTAXIS DE C# (REGLAS DE ESCRITURA DEL CODIGO):
+
+
+                                          PROGRAMACION ORIENTADA A OBJETOS
+
+POO: La programcion orientada a objetos es un paradigma(un modelo, una forma de hacer las cosas) de la programacion.
+El POO cambia radicalmente la forma de pensar la programacion. Ya no vamos a pensar en resolver los problemas con una
+pequeña serie de instrucciones sino que tenemos que pensar las cosas de forma mas Macro/Amplio. Ya no es solo resolver
+un ejercicio con una serie de algoritmos.
+En el POO vamos a empezar a abordar sistemas grandes, aplicaciones de la realidad. Basicamente Crear una aplicacion con
+sus funcionalidades y que esta sea escalable(Es decir que se pueda seguir desarrollando e implementando cosas, APP 
+escalable). Para poder tener una APP escalable debemos tener un buen analisis inicial del proyecto y de las formas de 
+proceder (buenas practicas).
+Ya no vamos a tener un programa que se ejecute en un bloque y termine, sino que voy a tener varios bloques de codigo
+que se iran comunicando de forma algo asincronica(No necesariamente) y de forma particular. La POO nos propone poder 
+abarcar problematicas mas amplias y mas grandes. El POO nos permite representar la realidad que nos rodea en forma digital.
+
+CLASE: Una clase es la estructura de un objeto. Mediante la creacion de una clase creamos un nuevo tipo de dato. A partir
+de la necesidad de manejar cosas mas complejas aparecen las clases que mediante ellas se nos permitira crear nuevos tipos
+de datos. STRUCT hasta cierto punto realiza una misma funcion que una Clase, al permitir crear nuevos tipos de datos mas
+complejos, pero las clases vendrian a ser una evolucion de estos al permitir no solo crear tipos de datos complejos sino
+que tambien nos permite manejar COMPORTAMIENTO.
+Cuando defina una clase, es decir cuando escriba un bloque de codigo que defina una estructura, una forma que va a tener algo
+Esa estructura de ese "Algo" va a ser el tipo de dato nuevo que se genere y que yo quiera representar. En este caso quiero
+representar algo que existe en la realidad que me rodea de forma digital. Una clase es el elemento de la POO que me 
+permite tomar como punto de partida algo de la realidad, para diseñarlo en lo digital y a partir de ahi manipular esa
+informacion mediante mi aplicacion. Ejemplo de la utilidad de las clases son los registros que creabamos en nuestras
+mini-apps. Estos eran registros que se manejaban de forma independiente mediante distintas varibles. Ahora, mediante
+una clase puedo englobar todas esas variables en una sola. Ya no vamos a manejar los datos por separado, sino de forma
+conjunta mediante el nuevo tipo de dato que cree mediante una clase. 
+Para poder diseñar esto debemos haciendo un analisis preliminar, viendo cual es el objeto de la realidad que quiero 
+representar, hacer un diseño preliminar y construyendolo. Para esto primero debemos analizar las caracteristicas del
+objeto que quiero representar en el plano digital. Para definir mi clase debo ver las caracteristicas generales de lo 
+que quiera representar, por ejemplo, si creo la clase voy a definir su: MARCA, TRACCION, MOTOR, COLOR, PUERTAS, MODELO,
+ETC. A esto nos referimos con caracteristicas generales, caracteristicas que engloben a todos los objetos que queremos
+representar bajo esa clase (Por ejemplo color rojo seria un registro y no una caracteristicas general, excepto que
+solo quiera tener autos rojos en mi clase). Todos estos datos que le de al objeto que quiera representar, a la clase por 
+ende, se denominan atributos. Estos distintos atributos me va a permitir tener distintos objetos de tipo auto. Cada
+Una con sus caracteristicas (Ford, toyota, Renault). Una vez definido los atributos de mi clase puedo decir que tengo 
+definida mi clase. A partir de esa clase puedo generar distintos objetos o varibles. Estas variables me van a permitir tener
+distintos objetos que voy a digitalizarlas en la app. Para utilizar una clase como tipo de dato debo instancialrla.
+*REVISAR DESDE EL MINUTO 11*
+El nombre de mi clase sera de aquello de la realidad que quiero representar en el plano digital.
+Toda aplicacion/programa nace con una clase por defecto que es la clase Program. 
+
+Una clase se crea apartir de la palabra reservada CLASS y un nombre conjunto a una apertura de llaves. La clase se vera contenida dentro de un namespace.
+Dentro de una clase yo puedo tener una o varias funciones. Una clase puede tener  atributos en los cuales
+se guarda informacion. A las clases las puedo utilizar para manipular una estructura de datos.
+
+ATRIBUTOS/MIEMBROS: Son las variables que nos permitiran guardar la informacion de la clase que estoy 
+creando. Por ejemplo si creo la clase persona en la clase se alojaran los datos que desee guardar en variables
+(Edad, nombre, sueldo, etc).
+
+VARIABLES Y OBJETOS: Las Variables son entidades elementales muy sencillas, pueden ser números, caracteres, booleanos,
+entre otras. Los Objetos son entidades complejas que pueden estar formadas por la agrupación de diferentes variables 
+y métodos.
+
+CREAR UN NUEVO TIPO DE DATO: Basicamente para crear un nuevo tipo de dato debo crear una clase, rellenarla con sus atributos
+y metodos y luego instancialar en otra parte del codigo.
+
+CREAR UN OBJETO: Persona(Clase/tipo de dato) p1(Nombre) = new Persona(); de esta forma creo una varible compleja/UN OBJETO
+de tipo Persona que alojara los datos que conformen a esa clase. 
+
+ENCAPSULAMIENTO: Es basicamente que un miembro de una clase no deberia poder ser accedido desde el exterior. Por EJ desde
+mi codigo principal yo no deberia poder acceder a la clase persona, ya que mi clase persona reconoce a mi codigo princiopal
+como un agente externo a la clase. El encapsulamiento permite que no se pueda acceder al codigo de una clase excepto que
+se lo permita.
+La razon del encapsulamiento es basicamente restringir el acceso directo a las varibles por medio del exterior, con el
+fin de proteger los datos sensibles que pueda contener el codigo.
+
+MODIFICADORES DE VISIBILIDAD: Son palabras reservadas que nos permiten calificar un atributo/funcion/clase como PRIVADO,
+PUBLICO, PROTEGIDO, INTERNAL, ETC.
+
+                                ¿COMO ACCEDER A LOS ATRIBUTOS PRIVADOS DE UNA CLASE?
+Mediante herramientas/mecanismos que pueden ser construidos desde distintas alternativas.
+La alternativa mas elemental y mas utilizada en los lenguajes POO que es la de crear una funcion/metodo de acceso publico
+mediante el cual pueda modificar la varible creada. public void setEdad(){}
+Cuando creamos una funcion dentro de una clase esta se denomina metodo. La diferencia entre funcion y metodo no es 
+tecnica, sino conceptual.
+
+PARA PODER INTERACTUAR CON UN OBJETO (CREADO A PARTIR DE UNA CLASE) LO QUE DEBO ES CREAR METODOS/FUNCIONES QUE ME permitiran
+ACCEDER A SUS ATRIBUTOS Y MODIFICARLOS, SIN ESTOS METODOS YO NO PUEDO ACCEDER  A LOS ATRIBUTOS DE MIS OBJETO/CLASE.
+Tambien para interactuar con un objeto puedo crear una propiedad. Una propiedad es la forma en la que C# maneja especificamente
+para acceder a los atributos del objeto y modificarlos/leerlos.
+La diferencia entre metodos y Propiedades es que para escribir y leer en el caso de los metodos necesito 2 de estos
+en cambio en las propiedades el get y el set lo puedo hacer a la vez. Ademas con la Propiedades el colocarle un valor
+de lo que esta devuelva estan sencillo como asignar una varible.
+Las propiedas se pueden escribir de manera larga y manual o de la manera corta invocando a prop. La diferencia entre estas
+formas es que la manera corta no nos dejara meodificar el setter mientras que la forma larga si.
+
+cuando armo el FOR para cargar el vector, dentro del ciclo lo primero que hay que hacer antes de escribir el vector es:
+articulos[x] = new Articulo();
+¿Por qué? Porque el vector está vacío. Es decir, yo reservo espacio de memoria para guardar 10 artículos, pero en cada 
+espacio de memoria no hay nada, entonces antes de poder guardar un dato a un artículo X, tengo que crear ese artículo 
+invocando al constructor con NEW. Esto se debe a que los objetos son tipos referenciales, pero esto lo charlaremos en la
+siguiente unidad.
+
+Una propiedad es un miembro que proporciona un mecanismo flexible para leer, escribir o calcular el valor de un campo privado. 
+Las propiedades se pueden usar como si fueran miembros de datos públicos, pero son métodos especiales denominados descriptores 
+de acceso.
+
+CONSTRUCTORES Y DESTRUCTORES: Son funciones que se van a ejecutar en distintas instancias/momentos. Es una funcion especial
+que la vamos a invocar ocasionalmente, que la vamos a ejecutar en una instancia especial en el ciclo de vida del objeto.
+Para trabajar con un CONSTRUCTOR debo construirlo, diseñarlo dentro de mi clase y a partir del momento que trabajemos
+con las instancias de nuestras clases (Objetos) vamos a estar invocando a un constructor u otro.
+Con la palabra NEW lo que hacemos es invocar al constructor de la clase. El constructor es una funcion que lo que hace
+es generar la instancia del la clase, es decir el objeto. Por ello para instanciar una clase llamo al constructor mediante
+la palabra NEW, de esta manera se crea mi objeto. Esta palabra NEW Viene creada por la clase madre de todas las clases,
+la clase OBJECT. Esta clase OBJECT es basicamente la clase base de todas las bases de C#. Todas las clases que se generen 
+heredaran de la clase OBJECT, es decir adquirira ciertas funciones y caracteristicas de esta clase.
+
+El constructor tiene la funcion de crear un objeto, ya que si yo creo una variable con la instancia de mi clase, de tipo
+auto por ejemplo, aunque se haga el reservorio de memoria eso va a estar vacio, y es por ello que invocamos al 
+constructor para que dentro de ese espacio vacio cree el objeto, tambien estara vacio.
+
+Tambien existe la posibilidad de crear mi propio constructor, para que por ejemplo algunos espacios del objeto no se 
+encuentren vacios, ya que no me interesa que estos espacios del objeto tengan valores variables. 
+FORMA DE ESCRITURA DE UN NUEVO CONSTRUCTOR: 
+PUBLIC CLASE(NOMBRE DE LA CLASE) (Parametros de que variables quiero que tengan un valor ya cargados)  {} 
+Botella b1 = new Botella(Parametros//puedo pasarle valores literales o variables);
+
+CONSTRUCTOR: Funcion que me va a permitir construir un objeto. Mediante mi propio constructor puedo decidir que algunos
+espacios de memoria que tenga mi objeto (algunas de ss variables) no se encuentren vacias al princio de la construccion,
+sino que se encuentren rellenas con un valor por defecto y no con basura. De esta forma cobra sentido el encapsulamiento,
+es decir tener varibles que no sean escribibles desde el exterior.
+
+En el caso de que yo quiera tener 2 Objetos de la misma clase y tener 2 constructores  de diferente funcionamiento lo 
+puedo hacer gracias a la sobrecarga. Es decir que voy a crear otro constructor mas, con los parametros y funcionamientos
+que yo desee en ese constructor. Si quiero replicar al constructor por defecto basicamente debo dejar los parametros Y
+bloque de llaves vacio.
+
+DESTRUCTOR: Se lo utiliza basicamente para destruir el objeto y de esta forma liberar espacio en memoria. En C# y en 
+.NET en general no suele ser lo mas utilizado debido a la funcion del GARBAGE COLLECTOR que va limpiando la memoria 
+de forma dinamica a medida que va encontrando objeto o variables que ya no son utilizadas.
+
+THIS: Cuando en el constructor que cree necesite asignarle a mi variable de la clase Botella (Material y color) un valor
+debos llamar al apuntador this.color = color// this.Material = Material. Esto debido a que por parametros en el constructor
+estoy pidiendo 2 variables de igual nombre que la que tengo que asignar, entonces para modificar la varible de mi clase
+debo llamar al apuntador THIS asi referenciar a mi varible de la clase y no al parametro que estoy pidiendo.
+El THIS basicamente es un apuntador que llama a la clase, toma la varible que haya en lo clase en la que fue creada.
+this.color = color; (El color creado en la clase, this.color, es igual al color que ingrese por parametros en el constructor)
+*VIDEO 4 MINUTO 7*
+
+GET: Es la accion de leer una variable, leer, ver su valor.
+SET: Colocarle un valor a la varible, modicarle cuanto vale.
+
+METODOS: Un metodo, es lo mismo que una funcion a nivel tecnico, por ello es que su diferencia es conceptual, segun
+el contexto en el que se aplique se llamara funcion o metodo. Un Metodo, a diferencia de la funcion, va siempre dentro
+de una clase, es parte de una clase, y este metodo realiza alguna accion sobre el objeto sobre el cual esta trabajando.
+Basicamente un metodo es tecnicamente lo mismo que una funcion pero se encuentra dentro de una clase.
+
+Los metodos son el comportamiento del objeto que creemos. Los objetos no solo van a tener informacion  a la cual 
+accedamos de forma indirecta, sino que tambien van a tener un comportamiento, que se creara mediante los metodos.
+Los metodos son los encargados de otorgarle un comportamiento al objeto. 
+El comportamiento de un objeto son los metodos que vamos a definir en nuestras clases. Estos metodos van a hacer uso del
+contenido/informacion/estado de la clase, del objeto para llevar a cabo el comportamiento.
+
+SOBRECARGA DE METODOS: Es copiar el metodo, duplicarlo pero hacerle ligeros cambios. Es decir tengo metodos que son similares,
+funcionan parecido, pero tienen ligeras diferencias entre si. Para crear una sobrecarga de metodos debo eviatar tener
+una firma/cabecera igual al metodo original/primario, pero no puedo cambiar ni el tipo de dato que devuelve ni el nombre.
+Es por ello que lo que modifico son los parametros que le paso.
+
+Cuando Hablamos de atributos(y propiedades) y metodos estamos hablando de caracteristicas de una clase, y no caracteristicas
+de un objeto. Cuando construimos una clase definimos una serie de atributos, propiedades y metodos.
+Ahora cuando hablamos de un objeto, un objeto vivo, la clase ya instanciada en el codigo, los atributos y propiedades
+se vuelven informacion. Esos atributos me van a permitir albergar la informacion de un objeto. EJ: Si yo tengo los
+atributos MOTOR, TRACCION y MARCA una vez que los cargue a cada uno estos tendran infromacion (J2Z, AWD, toyota). 
+Una CLASE tendra atributos y metodos y el OBJETO tendra informacion.
+La informacion que tenga el objeto creara lo que se denomina el ESTADO del OBJETO. EL ESTADO es basicamente la informacion
+que tiene el objeto en determinado momento. Si se dice que 2 objetos tienen el mismo estado es que estan cargados con
+la misma informacion.
+Aunque puedan haber objetos del mismo estado... cada objeto es unico, cada uno tiene su propia identidad. No pueden
+existir 2 objetos exactamente iguales (excepto que sean el mismo objeto).
+
+El comportamiento es lo que son capaces de hacer los objetos, que puden llevar a cabo estos. El comportamiento aplica
+para los objetos solamente y no para las clases, estas tienen metodos y no comportamientos. Cuando instancio una clase
+el objeto que se genere SI tendra comportamiento gracias a los metodos que tenga la clase.
+
+CLASE STRING: El tipo de dato STRING es una clase, como la mayoria de cosas del lenguaje/FrameWork de C# y .Net.
+El tipo de dato string nos permite manejar texto. Este tipo es alfa numerico (Puedo guadar letras, numeros, simbolos, 
+etc). STRING Al ser una clase ya viene con una variedad de metodos/funcione preparados para trabajar. EJ:
+LENGHT(Ver la cantidad de caracteres de la cadena) ToUpper (Todo a mayusculas). ToLower (Todo a minusculas).
+Replace(Pemite cambiar un caracter nuevo por uno viejo).
+
+Muchas veces es mejor investigar los metodos que tienen las funciones, ya que probablemente exista codigo que realice
+algo que nosotros querramos o nos facilite el trabajo como tal y no ponerse a crear el codigo de 0.
+
+HERENCIA POO: La herencia es una relacion entre clases que me va a permitir definir una familia y jerarquia de clases.
+La herencia es una relacion entre clases que definira que una clase incorporara, adquirira, las cualidades/particularidades 
+(metodos, atributo, propiedades) que tenga una clase madre/Base.
+Dentro de una familia de clases vamos a hablar de una clase padre, madre, hija, ETC. Dentro de una jerarquia de clases
+vamos a hablar de una clase base y una clase especifica.
+Las clases base van a ser aquellas clases primerizas sobre las cuales las otras clases heredaran, mientras mas
+se vaya bifurcando el arbol de las clases las clases pasaran a ser mas especificas. Ejemplo, la clase Base es persona,
+de ahi la clase nacionalidad heredara a persona y lenguaje heredara de nacionalidad y esta en apariencia. Esta ultima
+siendo la clase mas especifica de todas, ya que por si sola no se reutiliza para heredar a otra clase.
+
+Pensar estos modelos de relaciones entre clases nos permitira crear aplicaciones escalables, que puedan tener un crecimiento
+exponencial sin la necesidad de cambiar todo desde 0, al estar la informacion bien administrada.
+
+Modelo de clases: Es un modelo que debemos diseñar previamente a la codificacion, en donde definimos que clases utilizaremos
+y la relacion entre clases. Que clases herederan de otros, la jerarquia de clases, cuales son las bases y las Mas
+especificas, como estas se intercomunicaran con otras clases, ETC.
+El modelo de clases basicamente es el proceso previo a programar donde diseñare que clases voy a utilizar, como estas
+van a estar definidas, que escala jerarquica tiene cada una y como sera la comunicacion entre clases y como sera la 
+herencia.
+
+FAMILIA DE CLASES: La familia de clases es aquella que hereda de una clase padre comun. Para que sea una familia de clases
+debe haber una relacion entre las clases, las clases deben estar relacionadas de forma conceptual y ahi recien poder
+hacer la herencia. Por ejemplo no tiene sentido que de la clase animal herede persona, conceptualmente la herencia
+es incorrecta, porque persona no ES un animal. Si tendria sentido que perro heredara de animal, porque este si es
+un animal.
+Por ejemplo una familia de clases seria gato, perro y animal. Ambos heredarian de ANIMAL. ¿Porque? Simple, porque el perro ES un animal, el gato ES un animal, y por esto heredan de 
+la clase base. Y la estructura jerarquica queda definida por quien este mas alto en el arbol de herencia, la clase mas base tendra mayor jerarquia que las mas especificas.
+La razon de armar una familia de clases es que clases distintas van a compartir similitudes al  heredar de una misma clase base, lo que nos permitira generar modulos comunes 
+que nos permita administrar la informacion de ambas clases de manera similar. Por ejemplo de la clase Animal todos los Animales van a tener patas, todos van a respirar, ETC.
+caracteristicas que vamos a poder reutilizar al heredar la clase, esto a su vez nos permite ahorarr codigo.
+
+En sintesis una familia de clases son clases que estan relacionadas entre si tanto conceptualmente como por la herencia.
+Tenemos la clases Padre/base y a apartir de esta salen sus hijas. Estas clases tendran igualdad jerarquica cuando hereden de una misma clase.
+Aquellas clases que no se relacionen conceptualmente ni se hereden no conformaran una familia de clases, no tendran relaciones entre si.
+
+
+La relacion de la jerarquia de clases es de abajo para arriba, es decir que la clase base no hereda los atributos, propiedades Y
+metodos de la clase mas especializada, pero la clase mas especializada si  hereda de la clase base. Por ejemplo animal
+no hereda nada de perro, pero perro hereda todo lo que contenga animal. Esto por el sentido de que animal no es un 
+perro, sino un animal X, pero un perro si es un animal.
+Con esto yo puedo, por ejemplo decir que // Animal p1 = new perro();// Debido que los objetos que necesitan ser creados en la clase 
+Animal los tiene perro al heredar de Animal, todo lo que necesita  animal para poder construirse lo tiene la clase perro al heredar de esta.
+Pero yo no podria hacer // Perro p1 = new animal(); // debido a que mi objeto perro le faltaran variables para que este pueda ser construidos, 
+le faltaran varibles propias de perro  que no existiran en animal al esta clase no heredar de perro.
+
+A Lo anterior se resume facilimente en que a la clase animal le puedo asignar lo que tenga la clase perro debido que
+la clase animal y por ende el objeto animal puede construirse con lo que tenga perro, ya que las variables necesarias para su
+construiccion perro las tiene al heredar de esta. En cambio yo no puedo construir el objeto perro con el objeto/clase animal, porque 
+hay atributos que necesita perro que son inexistentes en animal.
+
+Tipo Valor y Tipo Referencia: Los tipo valor son las variables comunes(int, float, char, bool) son espacios en memoria
+que dentro almacenan un valor. El Tipo Referencial por otra parte, son los objetos. Para entender esto retomemos
+como se construye el objeto. A diferencia de las varialbles comunes para construir un objeto lo que debo hacer es
+// Persona p1 = new Persona();// Ya que si yo solamente creara una variable de tipo persona con la forma clasica
+// Persona p1; // Si crearia mi variable p1 de tipo persona pero no crearia el objeto(No instanciaria mi clase).
+
+Cuando hablamos de objetos hablamos de una instancia de algo que se encuentra presente en la memoria.
+CRL(Consola de ejecucion de .NET) A esta consola el SO le asigna memoria RAM con la cual trabajar con los procesos que
+posee. La CRL se encarga de distribuir esa memoria en distintas secciones. 
+Estas distintas secciones se encargan de trabajar con distintos elementos dentro de la aplicacion. Dentro de estas 
+secciones tenemos el espacio donde se declaran las variables y en otra seccion de memoria se generaran y almacenaran
+los objetos, la referencia a los objetos. La referencia va a ser la relacion que va a haber entre una variable de ese
+tipo de dato y el objeto.
+Entonces... cuando yo creo una varible de un tipo de dato de una clase lo que hago es que en una seccion de la memoria
+se cree la varible con su correspondiente tipo de dato, y luego cuando llame al constructor mediante NEW lo que hace
+es crear en la otra seccion de memoria el objeto y establecer una referencia/conexion entre la varible y el objeto
+creado. Si yo no llamara la construcctor mi variable quedaria vacia, ya que por defecto esta iria a parar a una referencia
+NULL.
+En los errores de NULL_Reference es por esto mismo, porque una varible no posee la instancia del objeto generada y por
+ende no esta conectada por referencia, yendo a parar en un valor NULL.
+Si yo creo a una misma variable 2 objetos de forma consecutiva lo que sucedera es que la referencia se creara con el 
+objeto 1 y luego con el 2, rompiendo la primera referencia con el objeto uno. Esto provocara que no pueda volver a 
+poner una referencia con el objeto 1, luego el GARBAGE COLLECTOR vera que este objeto al ser inaccesible lo tomara y 
+lo eliminara.
+Cabe resaltar que si otra variable apunta al mismo objeto se creara una nueva referencia y tanto v1 como v2 apuntaran
+al mismo objeto, y si llego a modificar en cualquier cosa el objeto esto impactara en ambas variables.
+En este caso podemos decir que las varibles v1 y v2 no solo tienen el mismo ESTADO (Misma carga de datos), sino que 
+son identicos, debido a que ambas varibles son el mismo objeto.
+
+Basicamente los tipos referenciales son las referencias que se crean para conectar una variable con un objeto. Para 
+crear esta instancia debo llamar al constructor, sino el objeto no se creara nunca y dara lugar a que tengamos una 
+referencia no hacia el objeto (Ya que nunca se creo) sino hacia un valor NULL.
+
+COLECCIONES: Las COLECCIONES son una evolucion de los vectores. El vector era una variable dimensional que me permitia 
+crear varias varibles del mismo tipo bajo un mismo nombre.
+La coleccion viene a ser una evolucion y una mejora del vector, por ejemplo este es de tamaño dinamico a diferencia del
+vector, si yo le agrego un elemento mi coleccion se agranda, si le quito esta se achica. La coleccion es un objeto que
+me permitira manipular varios objetos. Existen una variedad larga de colecciones distintas segun lo que querramos 
+manejar, tenemos los tipos: SETS/CONJUNTOS, MAPAS/DICCIONARIOS, LISTADOS, ETC. Dentro de estos 3 grupos tambien se 
+dividen en varios subgrupos mas. La razon de porque tantos tipos de colecciones es porque cada una va a tener una
+caracteristica/funcion especial que se va a adaptar a una u otra cosa que querramos hacer.
+La coleccion mas comun de usar es la tipo LIST. Para crear una coleccion debo llamar a LIST<>. Los piquitos del LIST
+Me sirven para decirle que tipo de lista quiero, si de int, bool, Camion, Telefono, ETC. Al ser una lista generica
+debo definirle de antemano una lista de que Tipo de dato voy a necesitar. Para crear el objeto lista debo seguir las
+mismas reglas que para crear otro objeto, es decir declaro la varible y luego llamo al constructor.
+LIST<Auto> listaAutos = new LIST<Auto>();
+Para manipular la lista tengo variaedad de funciones (ADD, Count, CLEAR, ADDARRAY, REMOVE). Si yo quiero leer algun elemento 
+de la lista es lo mismo que en un vector, poniendo entre corchetes la ubicacion del elemento, pero como es un objeto
+tengo varios valores asi que debo colocar el .(punto) para decir a que elemento quiero ingresar, leer, escribir ETC.
+Es decir como cuando quiero modficar o leer la varible de cualquier otro objeto.
+En el caso de que yo quiera mostrar todos los elementos de una lista debo hacer lo mismo que en los vectores, es decir
+recorrerla mediante un ciclo. En este caso como las listas son dinamicas el FOR es limitado y es dificil encontrar una
+correcta configuracion para el WHILE.Aca es donde entra un Ciclo nuevo, llamado FOREACH. 
+El FOREACH me permite recorrer una coleccion, esta especialmente diseñado para eso. Dentro de los parametros lo que 
+debo hacer es poner el tipo de dato de mi objeto (No es necesario porque el VAR actua como comodin para detectar
+automaticamente que tipo de dato se va a manipular), un nombre opcional de que manipulo y el nombre de mi LISTA/COLECCION.
+Este Nombre opcional que nombre puede ser cualquiera pero debe estar, debido que mediante este nombre voy a poder 
+acceder a que dato de la coleccion/objeto deseo acceder, si quiero acceder a su nombre, a su color, su tamaño ETC.
+EJ: item.color
+Lo que hace el FOREACH Es recorrer la coleccion entera hasta el final, guardando lo que tenga la coleccion. El nombre
+"Opcinal" (item) lo que hace es que por cada vuelta guarda la informacion del espacio de memoria de la propiedad seleccionada,
+y asi todas las vueltas. Es decir mediante item puedo acceder a cada elemento guardado en el objeto, siempre y cuando
+le especifique que variable/propiedad quiero que recorra (ya sea color, numero, nombre, etc).
+
+EJEMPLO DE REFERENCIAS: mi objeto tiene una referencia creada a la variable C1. Cuando yo cree una lista y quiera agregar
+a C1 y su objeto lo que voy a hacer es crear una referencia de la lista al objeto. Es decir que tanto por C1 como
+por mi lista tengo una referencia creada para acceder al mismo objeto. Si yo despues de la lista vuelvo a modificar
+el objeto mediante mi referencia de C1 cuando muestre mi lista tambien se vera modificada.
+Esto se explica simplemente porque tanto C1 como La LISTA accden al mismo objeto mediante la creacion de una referencia,
+no es que C1 uno tiene el objeto y la lista su copia, sino que ambos generaron una referencia para accder al objeto.
+
+SOBRESCRITURA DE METODOS: Sobrescribir un metodo es agarrar un metodo que ya existe y redefinirlo, volverlo a escribir,
+cambiarlo. Pero ese Metodo que voy a redefinir no lo tengo en la clase que estoy trabajando, sino que es un metodo
+que heredo de alguna clase padre y en mi clase hija lo voy a redefinir, reconstruir para sacar mas provecho de ese metodo,
+es decir voy a adaptar ese metodo a mi clase hija.
+Ejemplo de esto es el TO_STRING, este metodo lo que hace es devolver un valor en forma de cadena. Pero si lo que quiero
+es que a un valor de un objeto lo devuelva en string (En otra clase distinta a la del objeto) lo unico que va a devolver
+va ser la definicion de la clase del objeto que estoy utilizando, junto a su NAMESPACE. Entonces para sobrescribir la 
+funcion lo que debo hacer es ir a la clase debida (Es decir que si quiero cambiar el metodo TO_STRING para manipular
+el objeto barco debere Sobrescribir el metodo en la clase barco) y ahi poner PUBLIC OVERRIDE TO_STRING() y ahi podre
+cambiar el funcionamiento del metodo. Esto modificar el metodo en la clase hija pero no en la padre.
+Para hacer sobrescritura de metodos es clave la herencia, si yo no heredo un metodo de una clase padre no la puedo
+sobrescribir en la clase hija. Una vez que se hace la herencia yo puedo sobrescribir mi metodo en la clase hija
+para poder adaptar ese metodo a uno que me sea mas util.
+Para poder OVERRAIDER un metodo si o si el metodo debe tener el atributo VIRTUAL, sino no se podra sobrescribir.
+FUNCIONES DE CLASE OBJET: TOSTRING(Convierte cualquier cosa a cadena), GET TYPE(Te devuelve el tipo de dato) 
+GET HAS CODE (Te duvelve un numero indentificador propio del objeto) Equals (Compara los HasCode).
+
+Yo puedo hacer una lista donde se engloben a varios objetos de diferente tipo de dato (Perro, Gato, Aguila) siempre Y
+cuando estos diferentes tipos de datos tengan heredada la misma clase base. Es decir que si estos 3 animales tienen 
+heredada en algun momento la CLASE animal todos estos pueden ser catalogados en una lista animal, por la sencilla 
+razon de que todos son animales. Esto por la sencila razon de que, si hago una lista de animales los objetos que 
+agregue a esta lista debe tener las caracteristicas de animales y si GATO, PERRO Y AGUILA heredaron de animales tendran
+todas las caracteristicas de un animal y por ende y por ende seran aptos para entrar en la lista de animales, porque al
+final de todos SON animales, aunque cada uno con sus peculiaridades.
+
+Si yo creo una variable de tipo animal y le asigno lo que tiene el objeto de un gato, es decir le creo una referencia a ese
+objeto(Es decir si de la clase base se crea una referencia hacia un objeto de clase hija) yo voy a poder a acceder a ese 
+objeto pero solo con las cosas que tenga definida en la clase animal. Por ejemplo, supongamos que en animales tenemos la
+funcion respirar, que lo que hace es respirar solamente, y gato hereda de animal (por ende heredara este metodo), y gato
+tiene su propio metodo que se llama  maullar. Ahora si yo hago// ANIMAL a1 = GATO g1; // Creo una referencia entre la variable
+a1 a ese objeto de tipo Gato, porque GAto es un Animal. Pero solo voy a poder acceder a los metodos que tiene la clase 
+animal y no Gato, debido que mi clase Animal no conoce a Gato, pero gato si conoce a Animal. 
+Para aclarar, aunque yo desde a1 acceda al mismo objeto mediante otra referencia, yo no voy a poder acceder a los atributos
+o metodos de mi clase hija desde mi clase padre, ya que la clase padre desconoce los atributos particulares que tiene su
+clase hija, salvo aquellos que le heredo. Por ende la clase padre podra acceder al objeto de clase hija (Animal podra 
+accder al objeto gato), porque conoce algunos de sus atributos y/o metodos, debidos que estos provienen de su herencia,
+pero no podra acceder aquellos atributos particulares que se hayan creado en su hija. 
+*ESTO DEBIDO QUE LA DEFINICION DENTRO DE UNA JERARQUIA DE ATRIBUTOS/METODOS SE CONOCE ABAJO PARA ARRIBA*
+ANIMAL, LO UNICO QUE PUEDE ACCEDER/VER SON LOS METODOS/ATRIBUTOS/PROPIEDADES CREADAS A NIVEL DE ANIMAL.
+
+Ahora, si yo quiero decir que una varible// Gato g2 = a1; // Me va a tirar un error, porque aunque a1 se este referenciando
+al objeto gato, con todos sus atributos (Aunque a1 no los pueda ver a todos) el compilador dara un error, ya que dira que
+no sabe si esa varible a1 tiene referenciado un Gato, ya que es un animal y animal pude no ser un gato, o sea no ser 
+igual al objeto gato. Si yo estoy seguro que ese animal en su gato lo que hago es un casteo explicito// Gato g2 = (Gato)a1;//
+Con esto le aseguro al compilador que esa referencia al objeto lleva a un objeto Gato y no a un Animal diferente.
+
+Bien, ahora si creo una lista de tipo Animal con varios animales (Perro, Gato, Tigre, Canario) cada uno con su propia clase,
+Cuando quiera mostar en pantalla por ejemplo un mismo metodo para todos, como el metodo comunicarse, no mostrara lo mismo
+en todos los objetos, sino que mostrara la sobrescritura propia del metodo de cada objeto. Explayando, si perro dice 
+"Guau Guau" Gato "Miau Miau" Tigre "Roar" y Canario no tiene sobrescrito el metodo, por ende dira lo que tenga el metodo
+que se creo en Animal ("Ruido"), cuando mediante a una Lista de tipo Animal, es decir una lista de la clase base/padre de
+cada una de estas (Sino heredaran de animal no se podria crear esta lista) llamo a cada objeto para que ejecute la funcion
+de comunicarse no se comunicara con el metodo de Animal (El Comunicarse base->"Ruido") Sino que cuando llame a cada objeto
+cada uno se Comunicara con la SOBRESCRITURA propia de su clase, aunque Animal no conozca muchos de los metodos y/o atributos
+de Las otras clases si conoce COMUNICAR y tambien podra leer y reproducir las sobrescrituras de sus objetos hijos.
+
+Esto es debido a que, aunque albergue a cada subclase mediante una clase padre y por ende los atributos/metodos propios de
+cada una de estas subclase no las conozca y no pueda acceder, la definicion (La forma en la que funcione) del metodo, del
+compartamiento de Comunicarse sera definida por la sobrescritura de cada objeto y no por la clase padre. Esto es lo que 
+se denomina POLIMORFISMO.
+En este caso, el objeto LIST<ANIMAL> Reacciona de forma diferente ante el llamado del mismo metodo de forma ciclica.
+En este caso el POLIMORFISMO es debido a que cada objeto del OBJETO LISTA tiene una sobrecarga diferente del metodo 
+comunicarse y por ende reaacionaran de forma distinta.
+SOBRESCRITURA DE METODOS y POLIMORFISMO van de la mano.
+*REPASAR MINUTO 28*
+
+POLIMORFISMO: es la caracteristica que tienen los objetos, frente a un mismo estimulo de comportarse de manera diferente.
+
+DATO: Si yo quiero mostrar un objeto sin hacer referencia especifica a que cosa particular del objeto (Es decir si no
+referencio a que propiedad especifica del objeto quiero acceder y ver su valor) El programa devolvera el NAMESPACE y la
+CLASE de este objeto.
+
+DATO 2: Al constructor lo puedo llamar en cualquier momento siempre y cuando escriba new, por ejemplo en una lista puedo
+crear  un objeto y agregarlo a la vez: EJ: animales.ADD(new pez());  Definir=Crear
+
+
+INTERFACES: Una interface es una especie de contrato que vamos a implementar en alguna clase y esa clase debe cumplir
+con lo que el contrato que establece la interface le pide. Este contrato/interfaz puede definir comportamiento.
+Es decir que una interface puede definir que metodo/comportamiento debe llevar a cabo una clase, pero no modificara el
+como, sino que permitira el acceso al comportamiento/metodo pero no de como debo utilizar ese metodo. El comportamiento lo
+definira la propia clase. Lo unico que hace la interfaz es traer un metodo e con determinada firma pero nodefine ni 
+modifica el comportamiento de esa funcion.
+En una interfaz lo que vamos a hacer es establecer una serie de metodos pero sin su definicion (sin tocar el codigo del
+bloque) solamente crearemos la cabecera/firma de la funcion. Entonces cuando tengo una clase que implemente esa interfaz
+(no hereda) tenes permitido el acceso a esa funcion creada en la interfaz.
+Las funciones/finalidad de las interfaces son 2, por un lado obligar al programador definir los metodos de las interfaces
+que cree, definir estos metodos es obligatorio, es por ello que se dicen que las interfaces son contratos.
+
+Por otro lado la otra funcion es la de segmentar objetos, es decir discriminarlos segun sus caracteristicas. En el caso
+de los animales por ejemplo seria discrimnar por si vuelan o no vuelan. Es decir puedo clasificar distintos objetos/clases
+bajo distintos patrones. Por ejemplo no todas las familias necesitan implementar el Metodo Volar, ya que no todos vuelan,
+asi que a el metodo volar lo creo en una interface (Su firma solamente) y despues cuando lo quiera utilizar llamo a la 
+interface.
+En sintesis, las interfaces sirven: 1)Para definir metodos que despues deberemos escribir en nuestra clase una vez que llamamemos
+a la interfaz, ya que por "contrato", si llamamos a la interfaz deberemos escribir/definir el metodo que esta tiene.
+2)Tambien me sirve para poder segmentar objetos, clasificarlos entre si, esto simplemente discriminando por 
+aquellos objetos que poseen esa interfaz o no. EJ: discrimino los objetos por si son o no voladores, y lo podre hacer
+mediante el señalamiento de que si tiene la interfaz de VUELO van a ser objetos voladores, y los que no la tengan no seran
+voladores.
+3) Crear metodos que se van a utilizar en clases muy especificas que no valdria la pena heredar para todas las clases, sino
+para solo unas pocas.
+Las interfaces me permiten de algunas manera introducir mas metodos de los que ya tiene una una herencia normal, ya que
+podemos tener multiples interfaces que sean de un uso especifico para un o unos objetos especificos que no valdria la pena 
+ponerlos en una clase y despues hacerlos que varios objetos mas tengan ese metodo pero que no lo utilicen.
+*Repasar Minuto 8*
+Si yo implemento una interfaz en el codigo y no cumplo con lo que me pide la interfaz, es decir no defino el metodo que me
+paso, esta generara un error en el codigo.
+
+ASOCIACION: Es un tipo de relacion entre clases, al igual que la herencia. Es basicamente que una clase tenga un atributo
+o propiedad cuyo tipo de dato corresponde a otra clase. Es decir si tengo la clase DIRECCION y en ella tengo: Num, Calle,
+CP, Barrio, ETC. Y luego tengo la clase persona en donde utilizo una variable de tipo direccion, esto se denomina ASOCIACION.
+Tenemos 2 tipos de asociacion: La composicion y la agregacion. Estas funcionan practicamente de igual manera. Pero su 
+diferencia radica en el nivel de cercania que tenga el objeto que estoy trayendo de otra clase con el de la clase con la
+que estoy trabajando.
+El nivel de cercania se define a partir de que: Si el objeto de la clase sobre la cual estoy codificando puede nacer con
+ese otro objeto o pude no nacer sin el. Llevandolo al ejemplo seria que si mi auto puede nacer sin el Motor, el objeto
+motor seria una agregacion a la clase Auto. Es decir que podria construir mi objeto auto sin ese motor y luego agregarselo.
+En cambio composicion seria algo que sin eso no puedo crear mi auto, que sin eso no podria existir el resto de cosas. En
+este caso podria ser el Chasis, sin definir el chasis no puedo definir el resto de cosas de mi auto, o tambien la clase de
+de auto que es, sino defino eso no puedo definir sus prestaciones.
+
+La asociacion se lee como TIENE. El auto TIENE un motor, el auto TIENE un Chasis. Esta es la principal diferencia que se
+hace con herencia. Cuando tengamos que relacionar las clases deberemos ver como es la relacion entre los objetos que
+queramos relacionar. Por ejemplo el Auto NO TIENE un vehiculo, sino ES un vehiculo. El Auto no es un parabrisas, sino tiene
+un parabrisas. El Auto no va a heredar de motor y asi tener sus atributos, sino que tendra como atributos a un objeto
+de tipo motor, ya que es algo que tiene, no que es.
+
+MODELO DE DOMINIO: Es un grafico de clases, un esquema de clases. En el vamos a tener las clases de nuestro programa
+y los atributos/propiedades/metodos de cada una de estas clases, establecer las relaciones de herencia y asociacion,
+modularizar el programa en familia y jerarquia de clases. Armar este esquema de clases me va a permitir saber el 
+alcance de mi aplicacion. Este modelo de dominio es el paso previo para empezar a programar, ya que desde aca defino la
+mayor parte de cosas de mi aplicacion. Aca defino todas las clases/objetos que voy a necesitar utilizar para manipular.
+El modelo de dominio va a ser lo que nos empiece a definir los limites que va a tener nuestra APP, ya que este definira
+que cosas abarcara nuestra aplicacion. En el voy a plasmar los alcances que va a tener mi aplicacion. 
+Aca voy a empezar a definir las Clases(objetos de la realidad que quiero llevarlo a lo digital) y los atributos de estas
+clases (La informacion que cada clase va a manejar). 
+Tampoco voy a agregar una clase de ACCION, como buscar, borrar, filtrar. Eso no es parte del modelo de dominio.
+En el modelo de domino solo estaran las clases que necesite administrar y manipular, de aquellos elemento de la realidad
+que quiera representar en el plano virtual.
+
+TIPOS DE CLASES: Tenemos Clases ABSTRACTAS, clases ESTATICAS y clases SELLADAS. La Clase ABSTRACTA suelen ser esas clases
+bases que solas de por si no tienen utilidad en su uso, asi que cuando la defina la coloco la palabra abstract, esto
+va a generar que me resulte imposible crear una instancia, un objeto, de clase persona. La Clase ABSTRACTA Basicamente
+es una clase base de otras clases que sola de por si no sera utilizada y por ende evito que se instancie. La Clase 
+SEALED (sellado) lo que hace basicamente es no permitir la herencia de esa clase, esa clase nop puede heredar su 
+contenido. Puede servir para marcar el final de una jerarquia. 
+Por ultimo esta la Clase STATIC: Si yo creo una clase STATIC no puedo instanciar esta clase ni la puedo heredar. Lo unico
+que puedo hacer es utilizarla, llamando a la clase y algun metodo o propiedad de ella. Los miembros de la clase tambien
+deberan ser estaticos. Una Clase STATIC suele ser utilizada como una clase HELPER. Es decir que creeria una clase estatica
+con funciones las cuales use varias veces durante mi programa, de esta manera puedo llamar a los metodos de la clase sin
+tener que instanciar un objeto. Ejemplo de esto es Console, que sin tener que instanciar un objeto puedo llamar a la funcion
+WriteLine. En sintesis una clase estatica es una clase que esta disponible todo el tiempo y no necesita ser instanciada
+ni heredada, sino que yo la puedo llamar directamente con sus funciones.
+Lo malo de las clases estaticas es que estas se auto-instancian siempre en el programa, por lo que si creo muchas clases
+estaticas siempre voy a tener muchos objetos cargados y muchas veces sin usar.
+
+STATIC: asociado con un tipo en lugar de cualquier instancia del tipo. Con STATIC yo directamente puedo llamar a las 
+funciones mediante el tipo de dato  sin instanciar el objeto.
+
+POO: paradigma de programacion, es las diferentes maneras de escribir el codigo. Para poder empezar a construir el programa
+debo saber los elementos de la realidad que va a manipular ese programa (Clases) y la funcionalidad del programa.
+Por cada uno de esos elementos de la realidad que yo deba manejar voy a crear una clase de ellos. Antes de codificar
+voy a crear el diseño preeliminar de mi APP atraves de un modelo de dominio. Aca voy a definir toda la estructura a nivel
+de clases que voy a tener. Cada clase va a poseer que tener una definicion, es decir va a tener que tener Atributos, propiedades,
+metodos, constructores, OBJETOS. Es decir la definicion de una clase esta compuesta de las caracteristicas que la 
+componen.
+Tambien una Clase es una plantilla/Molde/definicion de lo que terminara siendo el objeto que quiero representar.
+El crear una APP no es solo programar, sino es un proceso de diseño previo, en que quiero representar, las relaciones
+entre los objetos, la informacion que cada uno de estos tiene, su comportamiento, ETC. Esto me permitira hacer de mi 
+APP escalable y podre discernir los limites de desarrollo que tiene esta aplicacion.
+
+Modificador PARTIAL: Es un modificador que permite dividir una misma clase en varias partes. Me permite tener pedazos
+de la misma clase.
+
+WINFORMS(INTERFACES GRAFICAS): El proyecto que creemos generara un FORMS1, que va a ser la ventana grafica que tendremos.
+Esto no es mas que una clase que hereda de FORMS, clase que posee todas las caracteristica para generar esa pantalla en el 
+escritorio. Es decir que el forms1 que se nos generere heredara de una clase base que permite una APP de escritorio.
+Todo lo visual y sus propiedades provienen de codeo.
+
+En el INITILIZE-COMPONENT se ira generando el codigo de lo que yo vaya editando en el WINFORMS. Este metodo se encuentra en
+el SCRIPT forms1.Designer. Todos los cambios a nivel visual que yo realice impactara en forma de codigo en este lugar.
+La edicion visual de mi APP la puedo hacer tanto en forma de codigo mediante el Designer o Mediante las herramientas 
+predeterminadas que se encuentran en la ventana de TOOLBOX y PROPIERTIES.
+En el FORMS1-Designer ire definiendo la parte visual de mi programa, en el FORMS1 definire el comportamiento de los 
+elementos de mi programa.
+La razon por la que ahora al ejecutar el programa y que este me traiga una ventana donde tengo todo programado es gracias al
+MAIN. En el Main se llama al objeto aplicacion que a su vez llama a una serie de metodos que permite correr nuestra APP.
+Es el disparador que ejecuta nuestra app. Es si, desde el Main yo solo ordeno la ejecucion de la ventana principal.
+
+La Razon por la que INITILIZE-COMPONENT esta dentro del constructor del FORMS1 es porque cuando el Main quiera disparar el
+programa instanciara la clase FORMS1, cuando la instancie llamando al constructor esto ejecutara la funcion INITILIZE-COMPONENT
+que a su vez llamara a todo el apartado visual que manejamos en la APP.
+
+Cuando yo genere un boton este me dejara su funcion en el codigo, su metodo. Este estara vacio, pero sera en este lugar
+donde podre programar la logica de mi boton. Este metodo del boton tendra la particularidad de que se ejecutara su funcion
+al darle click. METODO: private void buttonn_Click(objet sender, EventArgs e). Este metodo especial se lo denomina EVENTO.
+Un EVENTO es un metodo asociado a un determinado contexto. 
+En este caso el contexto es el de dar un click en el boton. La accion de dar el click y que esto ejecute el metodo se lo
+denomina evento. Es cuando una accion lanza el metodo.
+Basicamente un evento es un metodo que ejecuta apartir de cumplir cierta condicion o accion que requiere para su funcionamiento,
+en este caso, el boton necesita ser clickeado para desplegar un mensaje, si este no se clikea no hay evento. Es decir que
+para disparar el metodo (Por ende el evento) necesito de una accion que realice aquella persona que esta utilizando la app,
+si esta accion no es realizada no se ejecuta el evento, si se realiza dara lugar al evento.
+
+EVENTO REDEFINICION: Es un metodo especial que se invoca siempre y cuando se realice alguna accion referido con la interfaz
+del programa. Por ejemplo si clikeo el boton este me devuelve un "Hola Mundo", el Metodo/Evento se invocara cuando suceda
+esa accion de dar click, si esto no sucede el Evento nunca sera ejecutado.
+Este concepto de evento sera muy utilizado en el desarrollo FRONT-END tanto de APPS como WEBS.
+
+Todos los elementos visuales y que se encuentren en el TOOLBOX tienen eventos programado para ejecutarse.
+Aunque puedan venir eventos por defecto yo tambien puedo generarle los propios eventos que se ejecuten ante el estimulo
+de determinadas acciones, es decir que si realizo X accion se llame al metodo. Cada elemento vendra con una serie
+de eventos que podremos utilizar para ejecutar eventos a traves de nuestros objetos.
+Eso si, al crear un elemento del TOOLBOX este vendra ya con un evento programado, pero sera un evento default, que se lo
+puedo cambiar por otro o agregar otro evento mas ademas del que tiene.
+*VER MINUTO 5/6*
+Para poder manipular los objetos del frontend(Botones, campos de texto, labeles, ETC) desde el codigo lo que debo hacer
+es llamarlos por su nombre, porque al fin al cabo son objetos y para manipularlos necesito su nombre. 
+Una vez que tengo el tipo de nombre tengo que seleccionar a que atributo del objeto quiero acceder como a cualquier otra
+propiedad comun.
+
+Los botones, cajas de texto, listas, etc. Hay que entender que son objetos y es por ello que los podemos manipular de 
+estas formas. Por ende estos objetos tienen sus propios eventos, sus metodos, sus propiedades, ETC y esto sera lo que 
+nos permita configurarlos y manipularlo.
+
+OPERADOR TERNARIO: Tiene el funcionamiento de un IF pero se ejecuta en una sola linea. 
+Se escribe: string variable = bool  == true/false ? "Fue verdadero" : "Fue falso".
+
+APUNTE: A partir de este momento debemos entender que la programcion esta funcionando de forma distinta, ya no es solo
+una funcion main donde se ejecuta todo mi codigo de forma secuencial y termina el programa. En los programas que estamos
+construyendo el programa no termina luego de una ejecucion como sucedia en consola, en caso nuestro objeto ventana se
+mantiene vivo en la memoria hasta que decida cerrarlo, dandome lugar a poder ejecutar varias veces sus funciones sin que 
+este se cierre. Sobre este Objeto tengo mi funcionalidad construida que voy a poder ejcutar, y cuando yo decida terminar
+con el objeto mi APP recien ahi se cerrara. 
+Ya los programas no consisten en solo codigo que se ejecute de forma secuencial hasta que mi programa termine, sino que
+esta secuencialidad se va a ver modularizada, separada en modulos.
+
+CODIGO DE CASTEO: INT a; // Double x = 1234:// a = (int)x;
+                  Giraffe g = new Giraffe();// Animal a = g;//Giraffe g2 = (Giraffe)a;
+
+DATETIME: Es un STRUCT que implementa varias interfaces que permite una variedad de metodos para trabajar. Es un tipo de
+dato que se pasa por valor y no por referencia, es una variable simple. En la hora de trabajar con DATETIME y la base de
+datos lo mejor es trabajar con los datos puros que capture, y no convirtiendolos en STRING.
+
+Cuando se trabaja con Aplicaciones Windows Forms, se esta trabajando con el 
+espacio de nombre(namespace) System.Windows.Forms, este espacio esta 
+incluido en los archivos Form de nuestra aplicación con la sentencia using. 
+
+Muchos de los controles que se utilizaran derivan de la clase 
+System.Windows.Forms.Control, en esta clase se definen la funcionalidad básica de los 
+controles por eso algunas de las propiedades y eventos son Iguales. Y algunas de estas 
+clases son la base para otros controles
+
+EVENTOS
+Un evento es básicamente una función que se lanza bajo determinadas 
+circunstncias. Los eventos son disparados por los controles, generalmente esto sucede
+cuando el usuario realiza alguna acción sobre un control, por ejemplo, un click sobre 
+un botón. La clase System.Windows.Forms.Control define varios eventos comunes 
+para la mayoría de los controles. 
+
+EL CONTROL BUTTON
+El Control Button deriva de la clase System.Windows.Forms.ButtonBase que 
+brinda una funcionalidad básica, además el usuario puede usar esta clase para crear 
+sus propios buttons personalizados. 
+De esta clase básica derivan otros 3 controles, Button, CheckBox, RadioButton. 
+Normalmente los Buttons se usan para aceptar o cancelar un DialogBox, llamar a otro 
+formulario o aplicación y dar acción a los datos introducidos en un formulario.
+
+ATENCION APUNTE: El this muchas veces lo puedo utilizar como un apuntador hacia el objeto de mi clase.
+Por ejemplo si estoy en el evento de clickear el boton, y al hacer esto quiero que mi formulario cambia de color
+puedo llamar a mi formulario mediante el this! Sin tener que crear una referencia hacia el objeto FORMS1.
+
+Con el casteo yo basicamente le aseguro al compilador que ese objeto es de igual tipo que al otro que le asigno valor.
+Yo le digo que los 2 son del mismo tipo, mediante el uso de los parentesis.
+EventArgs e = new EventArgs();
+MouseEventArgs Click;
+Click = (MouseEventArgs)e;
+
+INGRESAR SOLO NUMEROS: if ((e.KeyChar < 48 || e.KeyChar > 59) && e.KeyChar != 8) 
+                           e.Handled = true;
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+
+Base de datos: Persistir = Guardar datos en la base de datos, basicamente poder guardar datos en la memoria ROM.
+Las bases de datos son un lugar en el cual vamos a guardar datos, informacion. Una base de datos no necesariamente debe
+ser una computadora o un servidor, es cualquier cosa que tenga como funcion almacenar datos (Una caja que contenga facturas
+por ejemplo, una agenda, etc).
+En programacion lo que vemos son SISTEMAS DE BASE DE DATOS, que normalmente se lo llama base de datos a secas. 
+Un sistema de base de datos es un lugar donde guardamos datos pero en el cual contamos con una aplicacion y funcionalidades
+que nos permiten manipular y dar mantenimiento a una base de datos. Esto por ejemplo nos permitira manejar reglas de 
+escritura, de lectura, permisos, usuarios, contraseñas, etc. 
+A grandes rasgos existen 2 tipos de base de datos: las base de datos RELACIONALES (las bases de datos basadas en SQL), son
+base de datos basadas en tablas y relaciones. Por otro lado son base de datos NO SQL, son base de datos no basadas en el
+lenguaje de SQL y no se manejan por tabla ni relacionalmente. Se utiliza mayoritariamente para guardar archivos de texto .JSON,
+documentos.
+SQL Server: Es un motor de base de datos desarrollado por Microsoft que es una base de datos relacional y trabaja mediante
+tablas y relaciones.
+SQL Server es el motor de base de datos con el que trabajaremos. Se trata de un motor de base de datos relacional, lo que
+quiere decir que se basa en tablas y relaciones entre las mismas. Es una herramienta de Microsoft y cuenta con varias 
+versiones. Vamos a usar la version Express 2019, que sirve para desarrollos con bases de datos que pesen hasta 10GB, 
+bastante interesante, especialmente porque es GRATIS. Lo que hace SQL server es convertir tu computadora en un servidor
+local de BD.
+El SQL server basicamente lo que hace es crear un servidor donde alojar mi base de datos y el SQL management es lo que 
+utilizo para manipular dicha base.
+Las base de datos tienen columnas, y una de ellas cumple el rol de clave primaria, es decir el dato indentificatorio de los
+registros que ingresen a la tabla (Como el DNI de los registros por asi decirlo), esto se lo llama ID.
+Dentro de SQL management yo puedo decir quienes tienen el acceso a las BD, a que base de datos y hasta que grado de
+permisos tienen para manipular estas BD. Dentro de las BD tengo la opcion de ordenar la base mediante un diagrama, ver
+el contenido de las tablas, consultas predefinidas mediante VIEW, el modulo Programmability, ETC.
+
+CONSULTA A UNA BASE DE DATOS SQL: SQL es un lenguaje de consultas, que se lo utiliza para consultar en una base de datos.
+Una vez que tenga creada mi base de datos y las respectivas tablas de esas bases, debere interactuar entre ellas mediante
+el lenguaje SQL y las consultas SQL.
+Hay 4 operaciones basicas que vamos a querer hacer contra la base de datos: 1) Leer Datos. 2) Insertar Datos. 3) Modficar Datos
+4) Eliminar Datos. El "--" Me permite comentar el codigo en SQL.
+
+                                                            1) Leer Datos.
+Para leer datos en SQL lo que debo hacer es llamar a la palabra reservada SELECT, luego que columna quiero (Con el * pido
+todo lo que contenga esa tabla), luego de palabra FROM (De que tabla voy a querer leer los datos) y la tabla que quiera
+leer. Toda esta linea lo selecciono con el cursor del mouse y apreto en ejecutar. Para ejecutar algo en SQL tengo  2
+formas: 1) Con el boton ejecutar ejecutara todo lo que este escrito en el Query. 2) Seleccionar con el mouse aquello
+que quiero que se ejecute.
+SELECT columnax FROM DATABASE
+Hay que tener en cuenta que para el cruce de tablas de BD yo no voy a cruzar los datos tales y como son, sino que
+los datos a cruzar les voy a asignar un ID que luego lo voy a utilizar para identificar cuando lo quiera cruzar con otra
+tabla de la BD. *VIDEO 4 SQL MINUTO 6*.
+En este caso cuando tenga cargado el ID en una tabla y quiera acceder al dato que se encuentra cargado en otra tabla
+debere hacer una combinacion de lectura de tablas. Para hacer esto tenemos INNER Join, que es una tecnica un poco mas
+avanzada, pero sirve para cruzar tabla A y B y devolver lo que comparta A y B.
+La otra forma es pedir los datos FROM y el nombre de las 2 tablas, pero a esto debo darles una condicion mediante la
+palabra reservada WHERE/donde. Este es una especie de filtro en el cual basicamento digo que cuando X Dato sea igual a Y 
+me lo traiga de la tabla. 
+El otro uso del WHERE es para decirle como quiero que me traiga los datos de 2 tablas. Para esto primero debo ponerle un
+Alias a las 2 tablas que voy a querer cruzar. Luego con el Alias selecciono que quiero traer de cada una. Y luego en la
+Condicion pongo que si el ID_Estilo de la tabla 1 es = al ID de la tabla 2 entonces traera el nombre del estilo y no su ID.
+Esto se lo llama lecutra de BD compuesta.
+
+Select d.columnax d.columnaidy e.columnay FROM base E, base2 d
+WHERE d.columnaidy = e.columnay 
+
+                                                            2) Insertar Datos.
+Para Escribir en una BD debo llamar a la palabra reservada "INSERT" into (El nombre de la tabla a la que le queremos
+Insertar), Entre () la columna en la que quiero introducir los datos "VALUES" y entre () Lo que quiera introducir en 
+cada columna, siempre que se respete el tipo de dato de cada columna. Tambien la otra forma si quiero rellenar todas
+las columnas del dato que quiero insertar me salto los primeros parentesis coloco "VALUES" y los valores en los (), respetando 
+el orden de las columnas.
+
+INSERT TO tablanombre (Columnas en las que quiero insertar el dato) VALUES (Datos a Insertar)
+                                                            3) Modficar Datos
+Debo llamar a la sentencia UPDATE, la tabla a la cual le quiero actualizar los datos, uso la palabra SET selecciono la
+columna y le asigno un nuevo valor mediane el = y debo usar el WHERE para filtrar a que dato/s debo actualizar a la
+nueva informacion.
+
+UPDATE tablanombre SET columnaNombre = 'Algun valor' WHERE "Poner un valor de la columna"
+
+                                                            4) Eliminar Datos.
+llamo a DELETE FROM (tabla) WHERE y selecciono una columna y valor que deseo eliminar, Por Ejemplo ID=1.
+
+
+GITHUB: Es una "Red Social" de codigo. Podes crearte una cuenta, seguir personas, que te sigan, compartir cosas, permisos
+para escribir codigo ajeno, utilizar codigo ajeno, colaborar con otro, etc. Es un espacio en el cual vamos a poder crear
+repositorios/espacios/proyectos/soluciones en donde vamos a poder guardar codigo de un proyecto. Es decir que en cada 
+repositorio que yo cree deberia tener un proyecto, para eso sirve cada repositorio, como un separador de proyectos.
+Estos repositorios pueden ser publicos o privados, si estas armando un PortFolio la gracias es que sea publico.
+La utilidad de GITHUB es poder compartir codigo y colaborar con otros. 
+Pero ademas tambien su principal utilidad es poder moostrar lo que estas haciendo/programando, es decir es como una 
+especie de PortFolio de codigo. Tambien  tiene la funcion de trabajar en equipo y servir como una especie de backup de 
+codigo. GITHUB te permite subir tu codigo en forma de versiones para tener los backup de tus proyectos.
+GITHUB es una web que pertenece a Microsoft, pero esta web esta basada en el motor de gestion de codigo GIT. Hay varias
+plataformas mas que cumplen un rol similar a GITHUB al utilizar el motor GIT.
+Una vez que cree mi repositorio en GITHUB, debere crear una carpeta local donde creare un clon de mi repositorio de GITHUB
+Mediante el LINK de mi repositorio y ejecutandolo en GIT BASH mediante el comanda GIT CLONE.
+Para subir los archivos primero te tenes que loguear con el usuario y mail, luego debo abrir el GIT BASH en la carpeta 
+contenedora, luego git status que te lanzara si hubo cambios en el repositorio, si los hubo ejecutamos GIT ADD . (si
+queremos agregar todo o la ruta y el nombre del archivo que queramos subir a GITHUB). git commit -m Y el nombre entre 
+comillas y luego GIT PUSH para subirlo.
+
+                                                    CONEXIONES A BD
+ADO .NET: Libreria de Microsoft que permite la conexion entre .Net y SQL Server. ADO=ACTIVEX DATA OBJECT
+
+Manejo de excepciones: En la programcion hay 2 tipos de errores, los errores de compilacion (Algun enrror en la escritura 
+de codigo) y los errores que se generan post compilacion, cuando el programa que creaste ejecuta y funciona OK pero a la
+hora de usar la aplicacion ocurre el error Exception. Es basicamente un error no esperado en tiempo de ejecucion o mejor
+dicho no esperado. 
+Las excepciones en tiempo de ejecucion se manejan con un TRY, ahi colo mi codigo donde hago algun calculo o asignacion de
+valores que espero y luego debajo del TRY coloco el CATCH con su objeto Exception (Objeto de excepciones generico).
+Yo al tener un TRY puedo tener los CATCH que quiera debajo de el, pero se entrara a cada CATCH segun la excepcion que ocurra,
+si ocurre un FORMATEXCEPTION no entrara a otra excepcion que no tenga que ver con un error de formato (salvo Exception que
+es el objeto generico de todas las excepciones). Ademas si yo tengo la excepcion de formato pero ocurre otro excepcion en
+tiempo de ejecucion que no tenga que ver con formato el programa se rompera, ya que el CATCH que tengo solo actuara cuando
+ocurra una excepcion que se relacione con el formato de una variable. Por ello se suele poner varios CATCH en el caso de
+tener varias excepciones.
+Es decir que puedo poner tanto CATCH como excepciones desee manejar en mi aplicacion (Siempre y cuando lo requiera).
+
+El Bloque Finnally es otro bloque opcional del bloque TRY. El Finnally se ejecuta independientemente de que salte el 
+bloque CATCH o no salte por razon de alguna excepcion. La utilidad que puede tener el Finnally es de querer que se 
+ejecute una accion independientemente de si se ejecuto correctamente o no el TRY. En vez de poner esa linea en el TRY 
+corriendo el riesgo de que este falle, salte al CATCH y por ende no se ejecute esta linea lo que hago es directamente
+colocarlo en el Finnally.
+Basicamente es el Finnally va todo codigo que quiero que se ejecute si o si independientemente de que la operacion del TRY
+falle o no.
+
+La funcion THROW significa lanzar, devolver. La funcion que tiene es la de devolver el error/excepcion que se haya generado
+en el programa. Por ejemplo en el caso de un metodo calcular la ruta TRY devuelve el resultado numerico, pero si ocurre
+un error en esa ejecucion pasa al CATCH que mediante el THROW devuelve del metodo de tipo INT una excepcion/error en 
+tiempo de ejecucion.
+
+CONEXIONES a BASE DE DATOS DESDE APPS: Para conectarse a una base de datos desde .NET hay muchos metodos distintos. En 
+este caso utilizaremos ADO .NET (Libreria de Microsoft que permite la conexion entre .Net y SQL Server).
+ADO .NET es una Libreria, Un NAMESPACE, dentro del FrameWork de .NET que nos permitira realizar conexiones con distintas
+base de datos (No asi archivos). En este caso buscaremos conectarnos a SQL, pero para eso deberemos bajar una Libreria
+adicional para que sea compatible con SQL.
+Para poder utilzar ADO .NET deberemos utilizar/agregar esta libreria en la clase en la que queramos realizar la conexion a la 
+Base de Datos. Como .NET es un FrameWork orientado a objetos la conexion a BD la manejaremos con una Clase aparte.
+
+Para Conectarnos a ADO .NET a una base de datos manejamos 2 posibilidades, 2 formas/modelos: 1) Modelo CONECTADO 
+2) Modelo DESCONECTADO.Desde el vamos segun el modelo de conexion que elijamos vamos a tener que configurar y crear una 
+serie de objetos u otra serie de objetos y configuraciones.
+
+Para elegir un modelo u otro debemos ver que acciones primero que nada realizamos contra una base de datos, basicamente voy
+a leer datos, insertar datos, modificar datos, borrar datos Y buscar datos filtrados.
+*MINUTO 4*
+A tener en cuenta que la base de datos y el programa nuestro no es lo mismo, son 2 cosas totalmente diferentes que se logran
+comunicar mediante la red, pero base de datos no viene dentro del programa. Son 2 cosas distintas. 
+Por eso es que si tengo que crear un programa que sea usado por mas de 1 persona no puedo tener la base de datos localmente
+en cada PC, sino esta debe estar alojada en un server.
+
+Modelo DESCONECTADO: Es el modelo mediante el cual voy hacia la base de datos y me traigo un set de datos con el cual 
+trabajar, lo cargo localmente en la memoria de mi aplicacion y la persona va a trabajar localmente sobre ese set de 
+datos, va a estar trabajando sobre un DATATABLE. Lo que hace este modelo es crear una copia de la base y cargarla localmente
+en donde se este ejecutando el programa una vez que solicite el manejo de la BD. Luego de un tiempo, o finalizado el
+trabajo (Segun como se haya programado) se envia a la base de datos esa tabla modificada por el usuario en una sola 
+transaccion. Este modelo tiene el inconveniente de que si mas de una PC utiliza el mismo programa y por ende la misma 
+consulta de datos en el mismo momento da lugar a fallos y errores al momento que envien a guardar esos datos modificados.
+Esta da lugar al DIRTY READ (lecutra sucia), es decir computadoras que esten leyendo informacion obsoleta que ya fue modificado
+por el otro usuario desde su PC, debido a que yo todavia conservo la copia anterior que le saque a la BD cuando la 
+solicite. Otro problema es la posible perdida de informacion a la hora de mandar la actualizacion de la base desde 2 
+compus. Tambien si esto sucede al mismo momento puede generar un bloqueo en la base de datos.
+Otra desventaja es que de esta forma el manejo de datos es plano, genera que debamos trabajar muy rudimentariamente
+con los datos de la tabla lo que lo hace algo pesado y a largo plazo poco escalable.
+La ventaja de este modelo es que da lugar a una menor utilizacion de recursos, ya que esporadicamente consulta y 
+realiza peticiones a la base de datos. Quizas en un dia una pc puede hacer 3 o 4 peticiones a la base y con el otro modelo
+son muchas mas ya que por cada accion va a la base de datos.
+
+Modelo CONECTADO: Obviamente para generar este modelo deberemos crear objetos diferentes en el codigo respecto al nivel 
+desconectado. Ahora, cada vez que el usuario quiera trabajar con la base de datos, quiera hacer una accion con la base
+de datos voy consulto y me trae los datos, y ahi nomas se cierra la conexion, cuando quiero insertar, pongo los datos
+los llevo y se cierra la conexion. El modelo conectado trabaja en tiempo real con la base de datos, esta trabajando 
+activamente sobre ella en todo momento, ya que a diferencia del desconectado yo no creo una copia, trabajo sobre ella 
+y luego le mando ese update de la tabla, sino que toda accion que haga contra la BD la hago sobre la BD activamente E
+impacta al momento en que realice un cambio y modificacion. Cada vez que termina de trabajar cierra y corta la conexion.
+La unica desventaja es una mayor utilizacion de recursos al tener quwe recurrir muchas mas veces a la BD.
+Cade vez que queramos conectarnos a algun lugar de la base vamos a tener un metodo de clase que va a ir a la base Y
+va a volver, Obviamente vamos a tener distintos metodos segun las acciones que queramos hacer y distintas clases Dependiendo
+a que parte de mi app estoy queriendo que ingrese a la BD.
+
+Para tener en cuenta se debera crear una clase para cada consulta distinta que quiera realizar a la base de datos. Es 
+decir depende el modulo o informacion que yo quiera acceder desde la base de datos debera existir una clase distinta para
+cada caso, esto como regla de diseño de APPS.
+Para poder utilizar SQL en C# necesito utilizar la libreria SQLClient, luego crear el objeto SQLCONNECTION(Para conectar a la base) y 
+SqlComand(Para manejar la base) y SqlDataReader (Luego de la lectura voy a obtener un set de Datos que se almacenaran en 
+este objeto) a este ultimo no se lo instacia ya que una vez tenga los datos que saque de la base ya tendre el objeto
+generado, asi que al READER le asignare ese objeto que devuelva la base de la lectura de Pokemones.
+
+Una vez creados los objetos lo proximo es configurar la cadena de conexion mediante el SQLCONNECTION.ConnectionString
+que lo que hace eas buscar el server al cual conectarse mediante una cadena de string donde va el nombre o direccion IP 
+del servidor que desea conectarse mas el nombre del server. Luego en el mismo string debo aclarar a que BD de mi servidor
+deseo conectarme poniendo "database=POKEDEX_DB". Luego tambien debo definir como me voy a conectar, existen 2 maneras:
+Una es mediante la seguridad integrada, mediante el Windows Authenticaction (esto no sirve si estoy trabajando desde una
+PC remota al servidor) o mediante el SQL server Authenticaction, en el cual debemos tener un usuario del motor de base
+de datos (De todo el servidor de SQL, no solo de la tabla que manejamos).
+conexionSql.ConnectionString = "server=.\\SQLEXPRESS01; database=POKEDEX_DB; integrated security=true";
+conexionSql.ConnectionString = "server=.\\SQLEXPRESS01; database=POKEDEX_DB; integrated security=false; Login=admin Password=admin";
+
+Con eso ya estamos conectados a la base de datos, ahora lo que tenemos que configurar es el control de la base de datos,
+mediante la conguracion del SqlComand (Comando). Lo que vamos a hacer desde C# es mandarle la sentencia SQL configurada
+desde el comando que yo quiero ejecutar. Es decir que el comando va a tener la sentencia de SQL que yo deseo realizar.
+Al comando le voy a especificar el Tipo de comando que quiero inyectar en SQL mediante la propiedad:
+"comando.CommandType = System.Data.CommandType" Para inyectar tenemos 3 tipos de comando: 1) El comando por texto, escribo 
+directamente la setencia que quiero ejecutar en SQL. 2) El comando StoreProcedure (Procedimiento almacendo) que es para pedir
+que ejecute una funcion que se encuentra guardada en la base de datos. 3) El comando TABLEDIRECT (Un enlace directo con 
+la tabla).
+Linea de condigo del comando: "comando.CommandType = System.Data.CommandType.Text;"
+Y luego debere modificar la propiedad .Text del comando introduciendo  el comando SQL que deseo inyectar.
+"comando.CommandText = "select Nombre, Numero, Descripcion from POKEMONS";"
+Por ultimo debere decirle al comando, que ejecute eso en el objeto que conexion que cree, mediante el siguiente codigo:
+"comando.Connection = conexionSql;"
+Luego debere abri la conexion con el server mediante el codigo: "conexion.Open();" Llamo a la funcion ExecuteReader 
+mediante el comando, y eso leera los datos que haya seleccionado en el commandText de la tabla. Pero esos datos debo
+guardarlo en algun lado, en este caso en la variable READER que no le creamos un objeto.
+"READER = comando.ExecuteReader();"
+
+Ya terminado esto, si todo se ejecuto bien voy a tener mi objeto lector con todos los datos que le solicite a la tabla
+SQL. Esto me genera una especie de tabla virtual con un puntero en memoria que vamos a transformar esos datos en la Lista
+que creamos. Basicamente los datos que recopilamos lo vamos a transformar para que se vuelvan del Tipo lista creado.
+Para ello crearemos un WHILE cuya condicion sera (READER.Read()) lo que significa que si lee un registro da verdadero, si lee
+un registro vacio da falso y se termina el WHILE. En la logica lo que haremos sera crear dentro del WHILE un objeto POKEMON
+auxiliar, y a este objeto le asignaremos (Mediante el llamado de sus propiedades) los Datos extraidos desde la tabla de
+SQL y una vez asignado cada atributo al objeto pokemon guardaremos ese objeto en la listapokemon que creamos al inicio.
+Codigo: "while (reader.Read())
+                {
+                    Pokemon auxiliar = new Pokemon();
+                    auxiliar.NumeroPokedex = reader.GetInt32(1);
+                    auxiliar.Nombre = reader.GetString(0);
+                    auxiliar.Descripcion = (string)reader["Descripcion"];
+                    listapokemon.Add(auxiliar);
+                } "
+Para tener en cuenta, cada vuelta crearemos un nuevo objeto POKEMON (Una nueva instancia) pero siempre reutilizando la 
+variable AUXILIAR de tipo POKEMON. Cada vuelta el objeto creado se va a ir guardando en la lista que creamos. Luego deberemos
+llamar a conexion.Close() para cerrar la conexion con la base de datos y si esto salio bien y no hubo errores finalmente 
+retornaremos la lista.
+
+Para Mostrarlos en nuestra APP lo que deberemos hacer es crear un "DataGridView". Deberemos agregar en el evento de cuando
+cargue el formulario que genere un objeto PokemonNegocio  y luego al objeto GridView acceder a su variable data sources
+ y que esta tengo los datos de PokemonNegocio.listar();
+PokemonNegocio negocio = new PokemonNegocio();
+dgvPokemon.DataSource = negocio.Listar();
+Lo que hacemos aca es que al dvg.DataSource le asignamos el valor que devuelve la funcion listar de negocio, en esta caso
+la lista de pokemones.
+El funcionamiento de la DVG es primero leer el objeto, lista en este caso, y agarra el primer objeto de esa lista y analiza
+su estructura, como esta conformado (Sus Atributos), lee sus PROPIERTIES y con estas mismas genera columnas con el nombre
+de las PROPIERTIES con su cabecera.
+
+Picture Box: Esta herramienta nos permita cargar una imagen mediante el. Para hacer lo que debo hacer es guardar el dato de
+la URL de la imagen en algun lado (Variable), en este caso en la lista de tipo Pokemon dentro de la propiedad imagen.
+Una vez realizado esto  lo que debo hacer es: "PictureBox.Load(lista[0].Imagen)" con esto consigo cargar la imagen en el
+PictureBox, el ajustar su tamaño y demas cosas se hace desde el frontend.
+Esto nos sirve para la imagen inicial, ahora si queremos que cada vez que seleccione otro Pokemon cambie su imagen deberemos
+utilizar el evento "SelectionChanged", que se ejecutara cada vez que cambie la seleccion en el DGV. Ahora, deberemos crear
+una variable de tipo pokemon y asignarle las datos que tenga la fila del DGV que este seleccionada y devolverle esos datos.
+"Pokemon datos = dgv.CurrentRow.DataBoundItems;" 
+OTRO DATO: Esto a la primera nos arrojara un error, debido a que en C# el manejo de objetos, la devolucion y trasformacion
+de los atributos y metodos de esto los devuelve pero un objeto de tipo OBJECT, es decir que C# devuelve los objetos de
+forma generica bajo el tipo OBJECT, como forma de simplificar el proceso, pero eso genera que cuando a nuestra variable
+"Datos" le queramos asignar el contenido de DGV nos salte el error de que no se puede realizar dicha conversion, debido
+a que no le puedo asignar a una variable de tipo pokemon un objeto de tipo OBJECT. Pero como sabemos que ese OBJECT es un 
+objeto Pokemon le hacemos el casteo explicito.
+"Pokemon datos = (Pokemon)dgv.CurrentRow.DataBoundItems;" 
+
+En este caso la grilla para poder modelar la lista de Pokemons debe manejar a cada pokemon como un objeto generico y 
+poder desplegar las datos en la grilla. Es por esto que cuando queremos capturarlo en una varible Pokemon debemos castearlo
+ya que el DGV lo transformo en un objeto generico para poder manejarlo.
+
+Cuando quiero mostrar un dato normal por pantalla el DGV lo imprime normalmente, pero cuando quiero mostrar un objeto lo 
+que hace es traerte el nombre del objeto. Lo que hace el compilador es pensar que mostrar por pantalla, ya que el objeto
+tiene muchas propidades y no entiende cual mostrar, asi lo que hace es implementar el metodo TO STRING.
+Es decir que cuando no sabe que mostrar ejecuta el TOSTRING del objeto/clase que queres mostrar por pantalla, y este 
+devuelve el nombre de la clase solamente. Por ello deberemos sobrescribir el metodo para que al implementarse automaticamente
+el TOSTRING devuelva el dato que nosotros queremos.
+
+Constructor Pokemon: public Pokemon(string type, string weakness)
+        {
+            this.Tipo = new Elemento();
+            this.Tipo.Descripcion = type;
+            this.Debilidad = new Elemento();
+            this.Debilidad.Descripcion = weakness;
+        }
+Propiedad Larga: Public (tipo) Capacidad
+                    {
+                        get{return capacidad} (Agarro, leo el valor de la propiedad que quiero leer y Setear)
+                        set {capacidad=value;} (Le asigno un valor mediante value, que le asigna un valor generico de
+                        ingreso)                
+                    }
+
+DATO: Las direcciones de las carpetas que estan escritas con barra invertida se le debe colocar una doble barra invertida
+porque sino el compilador lo toma como error al traterse de un caracter especial.
+
+Conexion de BD
+ public List<Pokemon> Listar()
+        {
+            List<Pokemon> listapokemon = new List<Pokemon>();
+            SqlConnection conexionSql = new SqlConnection();
+            SqlCommand comando = new SqlCommand();
+            SqlDataReader reader;
+            try
+            {
+                conexionSql.ConnectionString = "server=.\\SQLEXPRESS01; database=POKEDEX_DB; integrated security=true";
+                comando.CommandType = System.Data.CommandType.Text;
+                comando.CommandText = "select Nombre, Numero, Descripcion, UrlImagen from POKEMONS";
+                comando.Connection = conexionSql;
+                conexionSql.Open();
+                reader =comando.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Pokemon auxiliar = new Pokemon();
+                    auxiliar.NumeroPokedex = reader.GetInt32(1);
+                    auxiliar.Nombre = reader.GetString(0);
+                    auxiliar.Descripcion = (string)reader["Descripcion"];
+                    auxiliar.Imagen = (string)reader["UrlImagen"];
+                    listapokemon.Add(auxiliar);
+                }
+                return listapokemon;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                conexionSql.Close();
+            }
+        }
+
+NEGOCIO:En informática y ciencias de la computación, en particular en análisis y diseño orientado a objetos, el término 
+lógica de negocio es la parte de un sistema que se encarga de codificar las reglas de negocio del mundo real que 
+determinan cómo la información puede ser creada, almacenada y cambiada.
+La capa de servicios de negocio consiste en la lógica que realiza las funciones principales de la aplicación: procesamiento 
+de datos, implementación de funciones de negocios, coordinación de varios usuarios y administración de recursos externos 
+como, por ejemplo, bases de datos o sistemas heredados.
+
+ARQUITECTURA EN CAPAS: Es una forma de ordenar/refactorizar el codigo, dividir las tareas, distribuir las responsabilidades.
+Esto ya lo venimos haciendo, primero mediante el modelo de dominio que crea el esquleto de clases que utilizaremos en
+nuestro programa y la relacion entre estas. Y la clase de negocio, que es la clase que usamos para conectarnos a la 
+base de datos, tambien en la clase de negocio iria toda aquella logica que tenga impacto sobre el objeto "POKEMON" (o sea
+toda informacion que manipule el objeto que estoy cargando mediante una base de datos).
+Lo que si, no deberia poner un metodo que pertenezca a otro objeto en la clase negocio de POKEMON, debido a que cada objeto
+debe tener su clase negocio en donde se defina su logica y metodos.
+
+Recapitulacion de Capas: 1) Clase del Objeto (A que defino las propiedades del objeto, sus constructores y quizas algunas
+metodos)  2) Clase Negocio (En la clase negocio recaera la logica de mi objeto al igual que la logica del manejo de mi
+objeto, aca estaran las conexiones con la BD y la mayor parte de metodos/funciones se encontrarn en esta clase. En resumen
+en la clase negocio se define la logica y comportamiento que tendra mi objeto). 3) Clase "FORMS", La pantalla (En esta 
+clase no hay una logica fuerte como en las otras 2 clases, ya que la mayoria de acciones vienen derivadas de la logica
+de las otras 2 clases, por eso en esta clase lo unico que hago es traer lo desarrollado en las clases anteriores y 
+mostrarlo en pantalla).
+En sintesis vamos a manejar un modelo en 3 capas: 1) La Capa para las clases del modelar de domino (Clase del Objeto) 
+2) La Capa de la presentacion, las vistas, las pantallas (Clase "FORMS") 3) La Capa de Negocio, el controller de la 
+aplicacion (Clase Negocio).
+
+Para Poder separar mi programa en capas no me sirve ya solo con diferentes clases separadas, sino que debo separar cada
+Capa en un nuevo proyecto, en una Libreria de Clases. Para esto mediante el explorardor de soluciones seleccionamos agregar 
+un nuevo proyecto y elegimos CLASS LIBRARY(Biblioteca de Clases). Este es un proyecto que tiene como unica funcion 
+tener clases alojadas en el, por eso no tiene MAIN. Este proyecto no es ejecutable tampoco. Es basicamente un contenedor
+para separar las clases segun la funcion que cada una cumpla.
+Una vez que pongo cada clase en su proyecto debere corrigir el nombre del namespace de cada clase, ya que conservaran 
+el nombre del proyecto anterior en el que estuvieron.
+Luego deberemos hacer que los NAMESPACE de cada proyecto nuevo se reconozcan entre si, ya que al trabajar en proyectos 
+diferentes las clases no se reconocen entre si, ya que los proyectos vienen configurados como independientes el uno de los
+otros. Esto lo hago Agregando en un proyecto la referencia a otro mediante el modulo reference. Pero con esto no alcanza,
+sino que debo poner PUBLIC la clasee del proyecto al cual quiero acceder (No viceversa) y luego en el codigo donde quiera
+utilizar esta clase debere llamarlo como una libreria mediante la palabra USING y el nombre del proyecto al cual quiero
+acceder.
+Estas seran los 3 proyectos bases que toda las aplicaciones que desarrollemos deberan tener. Despues puedo desarrollar mas
+proyectos que no entren en ninguno de estos proyectos, por ejemplo puedo crear una capa de excepciones, de CLASES HELPERS.
+
+CLASE ACCESO A DATOS (CENTRALIZAR CONEXION): Cada vez que yo quiera hacer una accion contra la base de datos debere 
+crear una funcion, un metodo de acceso a datos (Como lo es la funcion listar). En este caso debere crear una conexion 
+para cada accion que quiera realizar sobre la base de datos (Leer, Agregar, modificar, borrar), tanto en cada metodo que
+cree.
+Para evitar tener que crear tantas veces la conexion a la base de datos por cada metodo que hagamos lo que haremos es crear
+una clase que me centralice el acceso/conexion a la BD.
+public class AccesoABaseDeDatos
+    {
+        private SqlConnection conexionBaseDatos;
+        private SqlCommand comandoDeSQL;
+        private SqlDataReader guardadorDeDatos;
+        public AccesoABaseDeDatos()
+        {
+            this.conexionBaseDatos = new SqlConnection("server=.\\SQLEXPRESS01; database=POKEDEX_DB; integrated security=true");
+            this.comandoDeSQL = new SqlCommand();
+        }     
+        //Con esta Propiedad tengo la posibilidad de leer los datos que tenga
+        // el guardador de datos (lo que encuentre en mi SQLDatbase).
+        public SqlDataReader GuardadorDeDatos
+        {
+            get { return guardadorDeDatos; }
+        }
+
+        public void QuerySQL(string query)
+        {
+            comandoDeSQL.CommandType = System.Data.CommandType.Text;
+            comandoDeSQL.CommandText = query;
+        }
+
+        public void EjecutarLectura()
+        {
+            try
+            {
+                comandoDeSQL.Connection = conexionBaseDatos;
+                conexionBaseDatos.Open();
+               guardadorDeDatos = comandoDeSQL.ExecuteReader();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+        }
+        public void CerrarConexion()
+        {
+            if (guardadorDeDatos!=null )
+            {
+                guardadorDeDatos.Close();
+                conexionBaseDatos.Close();
+            }
+        }
+    }
+
+Insertar Datos A la Base: Para insertar creo una ventana aparte y la configuro para que cada apartado del new POKEMON tome
+los datos que se carguen en la textBox. En negocio voy a crear la funcion agregar y le voy a pasar un Pokemon como parametro.
+El pokemon que pasa sera el pokemon que le tome los datos mediante el textBox. 
+En agregar llamaremos al acceso a base de datos, Al QuerySQL y pasarle por STRING el comando y concatenar los strings para 
+poder colocar las variables del pokemon.
+Una vez tengo todos esos datos deberemos crear una funcion similar al Ejecutar Lectura, ya que conectaremos el comando con
+la base, abriremos la conexion y en vez de usar el SqlDataReader para guardar los datos usaremos "comandoDeSQL.ExecuteNonQuery();"
+Esto en vez de leer nos permitira guardar los datos.
+Para Agregar un ComboBox de tipos lo que debo hacer es agregar los Box, Darle DropDonwStyle de Lista, Programar que 
+apenas cargue la segunda ventana El "ComboBox.DataSources = negocioElemento.ListarElementos();" (Esta funcion lo que 
+hace es devolver la lista de elementos y mediante el Data Sources el ComboBox los arma en lista).
+Y luego en la funcion AgregarButton Agregamos a poke.tipo/Debilidad y lo igualamos al ComboBox.SelectedItem. El 
+Poke.Tipo espera recibir un objeto de tipo elemento, y el comboBox al igual que el DGV, al manejar los objetos los 
+hace de manera generica, asi que deberemos castear ese objeto y decirle que es de tipo elemento.
+
+Otra manera de insertar es mediante el comando de SQL crear parametros vacios: @IdTipo, @IdDebilidad.
+Con esto lo que hacemos es crear 2 variables vacias para que SQL ejecute, pero que nosotros deberemos rellenar para que esto
+no de error. Para Ello debemos crear una funcion public que rellene estos valores, esta funcion ira en el AccesoABaseDeDatos.
+En esta funcion setear parametros pasaremos 2 parametros, un string (Para colocar el nombre del parametro que creamos en
+SQL @IdTipo/@IdDebilidad) y un object. Esto debido a que llamaremos al "comandoDeSQL.Parameters.AddWithValues()", esta
+funcion permite colocar el nombre del parametro que creamos para SQL y colocarle un valor, y como la funcion AddWithValues
+admite cualquier objeto es por ello que le pasamos por parametro un object.
+En la funcion AddWithValues le pasaremos el parametro string y object, para que setee un valor a la variable que creamos.
+
+Luego Iremos a la clase negocio y llamaremos a esta funcion/metodo, y le pasaremos el nombre de la variable vacia y el 
+valor correspondiente, este valor vendra del "poke.Tipo.id".
+
+Manejo de Null: Esto sirve para manejar las excepciones en donde la base de datos tiene un valor null y el programa
+tira la excepcion deciendo que X variable no se puede trasformar a X tipo porque es nula. Hay que aclarar tambien que 
+hay columnas en SQL que pueden tener un valor Nulo y no generar problemas y columnas que no pueden/deben tener columnas
+con valor NULL (columnas NULL y Not NULL).
+Ahora para manejar esta excepcion en la funcion lista debo preguntar (segun la columna que este dando el error de Nulo)
+
+"IF(!(guardadorDeDatos/reader.DBIsNull(GuardadorDeDatos.GetOrdinary("NombreDeLaColumna")))
+ "auxiliar.Imagen = (string)reader["UrlImagen"];"
+
+ Con Esto lo que hago es decir, si los datos de la tabla que se guardaron de en el SqlDataReader(guardadorDeDatos) Son nulos,
+ en la columna X del guardor de datos entonces que se ejecute tal accion. En este caso si NO es nula queremos que se ejecute
+ la accion de cargar la imagen de la base, es por eso es que a toda esa sentencia la negamos.
+
+ Otra Forma Seria: "IF(!(lector["UrlImangen"] is DBNull))"
+Con esto simplmente digo, si lo que tiene el lector, en la columna UrlImagen (Especificado entre []) Es en la Base de datos
+igual a Null, entonces que ejecute la accion. En este caso queremos que cuando NO sea nulo ejecute la accion de cargar 
+la URL en la variable auxiliar.UrlImagen, por eso negamos la sentencia.
+
+Esta validacion de nulo solo lo tengo que hacer con aquellas columnas que me estan o pueden que me devuelvan nulo.
+
+DGV Datos Varios: Existen opciones para ver como se selecciona la grilla, si cada columna, cada fila, toda la fila, toda
+la columna ETC, esto se modifica desde "SelectionMode".
+Para Evitar que se pueda editar las celdas puedo Aclararlo en el "EditMode" si pulsando un teclado, click, doble click
+o atraves de backEnd.
+Tambien Puedo habilitar o deshabilitar la seleccion multiple de columnas desde "MultiSelect".
+
+Para actualizar el DGV luego de que agregue un pokemon debo hacerlo en el evento de Agregar_Click, ya que aca esta el metodo
+de ShowDialog, que es la ventana secundaria emergente. Esto debido a que, este metodo ShowDialog termina cuando la ventana
+se cierre, y si la ventana se cierra querremos actualizar la grilla de la primera ventana.
+Para hacer esto deberemos hacer lo mismo que hacemos al cargar el formulario, pero para eso sera mejor crear una funcion
+que realice esa funcion y usarla tanto en el load como en el Agregar_Click.
+
+Los nombres de las columnas del DGV viene dado por el nombre de las propiedades del objeto que estoy representando en el 
+DGV. Para corregir o cambiar estos nombres debo ir a la clase donde se encuentran los nombres de mis propiedades y usar
+"Display Name" Con esto entre corchetes le paso como String el nombre que quiero que tenga mi columna de DGV. Para decir
+sobre cual columna es tan facil como colocar el Display Name sobre la propiedad a la cual quiero modificarle el nombre 
+que aparezca en el DGV.
+
+Para hacer el modulo de modificacion lo que debo hacer es reutilizar el Forms de carga y acceder a el mediante un nuevo
+boton llamado modificar. Aca lo que haremos es crear un objeto ventana2 y al ShowDialog para acceder a la nueva ventana.
+pero tambien crearemos un objeto pokemon el cual capturara los datos del pokemon que queramos modificar.
+Esto mediante la seleccion del DGV.
+Pokemon modificacion = DGV.CurrentRow.DataBoundItem;
+Para pasarle este pokemon que creamos al FORMS2 lo que haremos sera crear otro constructor que reciba un pokemon por parametro.
+Ahora en el FORMS uno el objeto ventana2 le pasaremos el pokemon al que le capturamos por datos y lo mandamos por constructor
+// Pasaje de parametros mediante el constructor
+            Pokemon seleccionadoParaModificar = (Pokemon)dgvPokemon.CurrentRow.DataBoundItem;
+            frmAltaPokemon modificar = new frmAltaPokemon(seleccionadoParaModificar);
+            modificar.ShowDialog();
+            ActualizarGrilla();
+Luego de esto en el Forms2 crearemos una variable pokemon de valor NULL, que se rellenara si llamamos al constructor para
+modificiar. En el constructor pondremos que esta varible tome los datos del objeto (tambien pokemon) que trajo el 
+construcctor.
+Lo que haremos ahora es ir al evento LOAD_FORMS2 y decir que cada TextBox es = a X dato del pokemon, SI, la variable
+pokemon es != de nulo. Esto con la finalidad de que cada vez que cargue el Formulario AutoDetecte si el valor del 
+pokemon es nulo es que se quiere agregar un pokemon, sino se quiere modificar (Es una especie de validacion).
+if (pokemon!= null)
+                {
+                    NumeroBox.Text = pokemon.NumeroPokedex.ToString();
+                    NombreBox.Text = pokemon.Nombre;
+                    DescripcionBox.Text = pokemon.Descripcion;
+                    UrlCaja.Text = pokemon.Imagen;
+                    try
+                    {
+                        pictureBox1.Load(UrlCaja.Text);
+                    }
+                    catch (Exception)
+                    {
+                    }  
+Ahora, para cargar los datos del ComboBox es un poco distinto, debo poder darle un valor pre-seleccionado.
+El comboBox maneja el DataSource como una especie de coleccion/lista de tipo clave/valor. La clave va a ser un valor 
+escondido el cual tendra asignado un valor, en este caso un ID.
+Lo que haremos es que cada comboBox tendra un ID y a ese ID le asignaremos un valor Predeterminado en este caso Predeterminado
+por el Pokemon.
+En este caso la clave/Id la maneja la propiedad ValueMember del ComboBox, a esta le tenemos que asignar un string que debe
+ser el nombre exacto de una propiedad del objeto que va a manipular. Y luego le asignaremos el nombre de la propiedad 
+con la cual queremos que le muestre el valor en base al ValueMember, esto mediante el DisplayMember.
+TipoCaja.DataSource = negocioElemento.ListarElementos();
+                TipoCaja.ValueMember = "Id";
+                TipoCaja.DisplayMember = "Descripcion";
+                DebilidadCaja.DataSource = negocioElemento.ListarElementos();
+                DebilidadCaja.ValueMember = "Id";
+                DebilidadCaja.DisplayMember = "Descripcion";
+Ahora cuando llame al comboBox debere hacer: " TipoCaja.SelectedValue = pokemon.Tipo.id;"
+Es decir el valor seleccionado de la Caja es el ID del TipoElemento del pokemon. Eso si, en la lectura deberemos hacer
+un ajuste, ya que la que tenemos por defecto no trae los ID de tipo ni debilidad, por lo que al ejecutar la app los ComboBox
+tomaron como que los Id son 0 y por ende los pokemon nom tendran Tipo.
+En mi caso seguramente por modificacion de tabla e ID me funciono poniendo el valueMeber en "Descripcion".
+
+Para seguir deberemos traernos el ID del pokemon en la BD, agregarle al Pokemon el Id como propiedad y que en la funcion
+listar Pokemon tambien se asigne su ID.
+Luego lo que hare sera en el Negocio crear la funcion modificar y pasarle un Pokemon por referencia, que sera el pokemon
+que queramos modificar. En este caso para ejecutar la funcion la haremos de igual manera que insertar, desde el boton 
+Agregar del FORMS2, pero tendremos que validar cual de las 2 funciones debe realizar si insertar o modicar, que funcion
+ejecutar.
+En mi caso obte por crear una bandera en el segundo FORMS, que sea true y que se vuelva FALSE cuando venga el constructor
+de modificacion. Entonces en el evento de agregar lo que hago es asignarle los datos al pokemon normalmente y que al
+presionar agregar Se ejecute un IF que ejecute segun la bandera, dando lugar a agregar o modificar.
+
+La logica de la funcion Modificar es poner el comando adecuado "UPDATE Pokemon Set Numero = 1, Nombre = '',ETC"
+poniendo todas las variables que correspondan a actualizar, pero al igual que en insertar las igualaremos a un parametro
+mediante el ARROBA-@.
+Una vez hecho esto llamaremos a nuestro Funcion De setear parametros a la cual le pasaremos el parametro y el valor de
+este que lo sacaremos del poke a modficar que le pasamos a la funcion modificar. Y luego llamamos a la funcion de 
+ejecutar accion.
+public void EjecutarAccion()
+        {
+            try
+            {
+                comandoDeSQL.Connection = conexionBaseDatos;
+                conexionBaseDatos.Open();
+                comandoDeSQL.ExecuteNonQuery();
+
+            }
+public void setearParametro(string nombre, object valor)
+        {
+            comandoDeSQL.Parameters.AddWithValue(nombre, valor);
+        }
+
+negocioInsertar.setearParametro("@Numero", mod.NumeroPokedex);       
+
+Una de las formas de pasar un objeto/variable por parametros entre clases es mediante el uso de los constructores.
+Tengo que poner en el constructor que ese valor que reciba de la A clase lo debo igualar a una variable local que tengamos
+en nuestra clase B asi poder reutilizar el valor de ese objeto en toda la clase.
+
+
+EL INDICE CONTROLADOR DE TODA LA LISTA DE POKEMONES
+PASA A VALER: 25
+
+IF(25 == lista[25-1].NumeroPokedex)
+
+El error era que la caja tomaba al
+indice que controlaba todo, que 
+provoca que buscara un pokemon en 
+un indice inexistente. Esto funcionaria
+si tuviera cargado todos los pokemones, porque habria todos
+los indices con los numeros de pokemon bien asociados.
+
+            y = x;
+            x = int.Parse(NumeroBox.Text);
+            try
+            {
+                if (x == listaDePokemones[x - 1].NumeroPokedex)
+                {
+                    x = x - 1;
+                    CargarTabla();
+                }
+                else
+                {
+                    x = y;
+                    y = y + 1;
+                    NumeroBox.Text = y.ToString("0");
+                }
+               
+/////////////////////////////////////////////////////////////
+
+Y = Int.Parse(NumeroBox.Text);
+int conta = PokemonNegocio.PokeBichosContador();
+int i=0;
+bd = true;
+While(i<conta)
+{
+	
+	if(y == listaDepokemones[i].NumeroPokedex)
+	{
+		x=i;
+		i=conta;
+		CargarTabla();
+		banderita=false;		
+	}
+    i++;
+}
+
+La solucion es Simple, una variable Y Toma el valor de la TextBox (Ya que si lo tomaba X iba a romper el manejo de los
+indices provocando un Catch al ingresar a un indice de la memoria de la conexion que no existia. Debido a que si tengo
+15 pokemon tengo 15 indices que van hasta el numero 14, y si a X mediante la Caja le cargo 25 se pasa de indice), retomando
+para solucionar esto creo un INT Y que se encargue del valor del TextBox.
+Luego debi ir a la funcion Listar Pokemon y crear un Contador que cuente cuantos pokemons cargo, y luego crear una funcion
+que retorne este contador. Por ultimo creo un INT i, que sera un indice provisiorio que probara en los indices existentes
+hasta encontrar un resultado.
+
+Para recorrer toda la coleccion de la lista pokemon de forma automatica digo que i(indice) debe ser menor al Contador.
+Esto porque el contador y el indice tienen la misma cantidad de numeros (15) porque el indice esta cargado de Pokemons 
+y el contador Conto cuantos pokemon se cargaron, asi que tienen cargado la misma cantidad, pero el indice va de 0 a 14 y 
+el contador llega a 15. Por eso es que la condicion para que se ejecute el WHILE es: WHILE(i<Conta){}
+De otra manera i valdria mas de lo que abarcan los indices y romperia el programa. Cabe aclarar que cada vuelta el i(indice)
+va aumentando en 1 (i++) como una especie de for mas complejo, con el fin de que cada vuelta corra y busque la informacion
+de la lista en un indice distinto.
+Ahora, todas las vueltas va a correr actualizando el indice en uno cada vuelta, hasta que el indice sea igual al contador,
+en esa vuelta no entrara al ciclo, si lo hiciera romperia el programa. 
+
+Ahora, para encontrar y cargar al pokemon debo poner el siguiente IF dentro del WHILE:
+IF(Y == listaDePokemones[i].NumeroPokedex)
+{
+    x=i;
+    i=conta;
+    CargarTabla();
+    bd = false;
+}
+
+Esto lo que hara sera preguntar si El numero que ingrese en el TextBox ees igual al numero de pokedex de cada pokemon de 
+la lista, los cuales van rotando segun su indice. La primera vuelta vera si se corresponde al numero de Bulbasaur, despues
+de Ivy, Veny, ETC. En caso de encontrarlo al numero del pokemon que ingresamos por la BOX guardaremos el indice/ubicacion
+del pokemon en X y ejecutar la funcion de CargarTabla que traera todos los datos del pokemon.
+La razon de asignarle lo que vale i a x es simple, ya que el indice en donde se encontro el numero de pokedex servira para
+traer todos los otros datos, y en CargarTabla se encarga de traer estos datos, pero utiliza a X para hacer esta tarea, es
+entonces que para que pueda llevar a cabo esa tarea lo que hacemos
+
+Ademas tenemos una pequeña correccion que se da despues del WHILE, en donde tenemos una BD(Bandera) que esta en true en 
+su declaracion, y que si entra al IF del WHILE se vuelve false. Esto con el fin de determinar que pasa si introduzco un
+numero y es pokemon no existe, si la bandera es TRUE el pokemon que ese numero no existe y se ejecutar esta accion:
+if (bd==true)
+                {
+                    MessageBox.Show("El Pokemon no existe");
+                    NumeroBox.Text = listaDePokemones[x].NumeroPokedex.ToString("0");
+                }
+Esto lo que hace es avisar que ese pokemon no existe, y luego el valor del Texto de la caja va a ser el indice del pokemon
+del que partimos al iniciar la busqueda(si quisimos buscar un pokemon mientras Bulbasaur estaba en pantalla pondremos
+que se cargue el numero de Bulbasaur en pantalla para que quede visualmente bien)
+
+Eliminar registros BD: tenemos 2 tipos de eliminacion en base de datos, la eliminacion Fisica y Logica. La eliminacion 
+fisica es borrar completamente el registro de la base de datos que tengamos.
+Por otro lado tenemos la eliminacion Logica de la tabla, que esta lo que hace es inhabilitar la visualizacion o acceso al
+registro desde la APP, mediante una columna BIT(bool) que activa o inactiva su visualizacion. En c# tendria que configurar
+en la lectura que si esta la columna Activo en 0 no muestre el registro.
+La ventaja de la eliminacion logica es que lo unico que hago es desactivar el acceso a X registros, lo que permite seguir
+teniendo los datos en caso de querer recuperarlo. Ademas la eliminacion fisica si datos de tablas estan relacionados esto
+me impedira la eliminacion de estos datos debido que crearia tablas o columnas huerfanas.
+
+Como dato el Message Box no nos permite avanzar hasta que nosostros le demos a aceptar al cartel, hasta ese momento nosotros
+no tenemos control de la APP. El MessageBox.Show Retorna un valor que podemos capturar y evaluar, mediante un DialogResult.
+Tambien en el MessageBox Tenemos muchas sobre cargas para configurar botones, iconos y otras cosas.
+Este DialogResult es un STRUCT que nos permite validar el resultado que devuelve un MessageBox para usarlo como validaciones.
+
+Dato, al crear una BD se crean relaciones entre tablas (de forma fisica), cuando esto sucede al querer eliminar ciertos datos
+de una tabla esto sera impedido por la otra tabla, ya que parte de esa tabla esta soportada en la otra. Esto es para 
+evitar que se creen registros huerfanos.
+
+Para mandar un valor opcional por parametro lo que debo hacer es igualarlo a un valor, por ejemplo (bool bd = false) por 
+defecto lo tomara como verdadero en caso de no pasarle ningun parametro.
+
+                                                            FILTRO RAPIDO
+FILTRO 1: Para crear un filtro debo crear una textBox y un boton de filtro. En el evento del boton filtro debo crear una
+Lista del objeto que tenga en la lista, esta ser mi lista filtrada. y esta lista tendra en el objeto lista de pokemones
+pero con la funcion FindALL. Aca le deberemos pasar un parametro, pero en este caso sera un parametro nuevo, mediante 
+una expresion LAMBDA(=>).
+Mediante la expresion LAMBDA y los parametros que le pasemos haremos una suerte de FOREACH, donde la lista retornara un 
+objeto SI algun objeto coincide con algunos de los valores que le pase.
+
+Desglosado Seria que, yo le doy una variable numeral que revise los indices de mi lista Pokemon Principal, esto para que
+recorra los objetos, Con la Expresion LAMBDA hare que recorrado todos los espacios donde haya objetos y luego le paso
+una condicion de que si el objeto en el indice X cumple la condicion que puse devuelva una lista con esos objetos. 
+X ademas de indice sirve para acceder a las propiedades del objeto que manejemos. Este nombre de la X puede ser cualquiera,
+es una especie de comodin igual que el ITEM en el FOREACH, ya que esta varible me permitira recorrer toda la coleccion
+sin problema. 
+Ejemplo de esto: "listaFiltrada = lista.FindAll(x => x.Nombre == FiltroBox.Text);"
+
+Luego lo que haremos sera cargar el DGV.DataSource con la nueva lista y si el valor del campo es vacia que cargue toda la
+lista original. 
+Para hacer que nuestro filtro no discrimine mayusculas y minusculas lo que haremos sera que en la condicion de matcheo en 
+el LAMBDA sera que el STRING de los objeto, como el STRING de la caja de texto le pondremos la funcion TOUPPER asi todas 
+son mayusculas. ToLower funciona igual.
+Tambien para que el filtro no sea tan estricto en la busqueda en vez de igualar lo que tiene el objeto de nombre con Lo
+que se escribio en el textBox en vez de hacer "==" llamaremos a la Funcion Contains, que lo que hace es ver si lo que 
+se escribio como cadena esta contenido en alguna de la cadena de nombres de los objetos. En Contains podriamos la cadena
+de texto que escribimos en el textBox, El Ejemplo:
+
+ listaFiltrada = lista.FindAll(Index => Index.Nombre.ToUpper().Contains(FiltroBox.Text.ToUpper()));
+            if (FiltroBox.Text!="")
+                dgvPokemon.DataSource = listaFiltrada;
+            else
+                dgvPokemon.DataSource = lista;
+
+Para filtrar por mas cosas que solo el nombre en la misma linea del FindALL lo que puedo  hacer es poner un || (OR) para
+darle diferentes tipos de matcheo.
+
+                                                        FILTRO AVANZADO
+Para  el filtro avanzado crearemos 2 ComboBox, 1 TextBox y Un Boton. En los desplegables  lo que haremos sera cargar 
+el campo por el cual quiero filtrar, es decir por que atributo/propiedad del pokemon quiero filtrar (Numero, Nombre,
+Descripcion, etc). Y segun la opcion anterior que elija mi opcion de desplegables debe ser diferente en el campo de 
+criterios (Para numeros sera una comparacion numerica y para las cadenas el contener letras entre otros). 
+Para esto pondremos que apenas cargue el forms el ComboBox del Campo este cargado con "Numero","Nombre" y "Descripcion".
+Esto mediante la funcion: CampoComboBox.Items.Add("");
+con esto introduciremos las opciones del ComboBox. Ahora, creamos el evento por defecto del ComboBox (SelecctionIndexChange)
+Que se ejecuta cuando cambio mi seleccion del desplegable del ComboBox. Dentro de este crearemos un String que validara
+la opcion que elijamos en el ComboBox Campo, segun cual de las 3 opciones elijamos esto provocara que el desplegable 
+de criterio sea distinto. Al String Opcion le asignaremos el valor del texto del ComboBox Campo, y mediante el IF preguntaremos
+cual de las 3 opciones es, y segun cual sea la opcion agregaremos los items desplegables de la misma forma de antes:
+Criterio.ComboBox.Items.Add("");
+
+Es importante destacar que si yo solo programo eso si selecciono otro desplegable estos item seguiran y se iran acumulando,
+por ello en cada IF deberemos poner al inicio un ComboBoxCriterio.Items.Clear(); Para que borre aquellos items que puedan
+venir de otra seleccion.
+
+Ahora lo que haremos sera configurar en el evento del apretado del boton los siguiente: 3 string, cada uno se va a rellenar
+con lo que tenga cada una de las BOX (2 Combo y una Text), un objeto Negocio, ya que en esta clase vamos a crear una 
+funcion similar a Listar pero con filtros aplicados y llamaremos mediante el objeto negocio a la funcion filtrar pasandole
+los 3 string que guardamos por parametro. Esta funcion devolvera una lista que guardaremos en el DGV.DataSource.
+Para configurar esta funcion sera similar a la funcion listar hecha antes, con la diferencia que en la inyeccion iran
+filtros.
+Para la configuracion de la funcion es sencilla, recibiremos los 3 campos de texto (Combo y Text), crearemos la lista que retornaremos y un
+objeto para la clase AccesoABaseDeDatos. Luego haremos un Switch que evalue el string de campo, y depende cada decision crearemos mas Switch
+para evaluar los criterios (su string). Segun el campo Y criterio que elijamos tendremos que crear una inyeccion diferente que deberemos concatenar.
+Luego de que haya elegido una rama llamare a la funcion SQLQuery para ejecutar la inyeccion y luego a EjecutarLectura. Esto mediante el objeto
+de AccesoABaseDeDatos que creamos.
+Unaa vez echo esto haremos los mismo que en Listar, ponemos un while con el Reader, dentro un PokeAuxiliar que vaya guardando pokes con los datos
+del guardador que recolecto de la base y acumulandolo en la listaFiltrada, para que al final de todo retornemos esa lista.
+
+Levantar y Guardar Imagenes localmente: Para poder cargar una imagen localmente lo que haremos sera crear un Boton, crear su evento click
+y crearemos el objeto OPENFILEDIALOG, esto lo que hace es abrir una ventana que es la ventana para seleccionar archivos. Eso si, para abrir
+esa ventana deberemos llamar a la funcion ShowDialog.
+OpenFileDialog cargarImagen = new OpenFileDialog();
+cargarImagen.ShowDialog();
+
+Ahora para cargar la imagen lo que haremos sera, primero poner el filter, esto para filtrar que archivos puedo seleccionar:
+"cargarImagen.Filter = "jpg|*.jpg";
+Para Poner mas de un filtro es asi: "jpg|*.jpg| png|*.png| gif|*.gif";
+
+Con esto le decimos al OpenFileDialog que archivos puedo cargar y cuales no. Luego de esto lo que haremos sera remover el ShowDialog y ponerlo
+en un IF como condicion, en donde preguntaremos: "IF (cargarImagen.ShowDialog() == DialogResult.OK)".
+esta condicion lo que validara es que una vez seleccione OK en la ventana que se abra realizara X accion, este caso pondremos que URLBox 
+es igual a cargarImagen.FileName.
+Esto ya me permitira cargar la imagen pero se guardara en la Base de datos, lo cual no es correcto, porque esto puede ocasionar problemas en 
+el caso de que la imagen se mueva o elimine de directorio lo que provocara que la aplicacion no encuentre esa imagen y no la pueda exponer.
+Es por ello lo que haremos sera crear una copia de ese archivo y pegarlo en algun directorio para que este sea estatico y no tenga posibilidad de
+desaparecer o corromperse.
+
+Para esto llamaremos a la clase estatica File (libreria System.IO) y a la funcion copy, a la que le tenemos que pasar el FileName del archivo
+y una direccion  de destino. La carpeta de destino debe estar en algun lugar basico y simple, ya que la app despues va a querer recuperar 
+las imagenes desde esa direccion y tenemos que entender que por ejemplo en la PC de otra persona no existen los mismos directorios que en
+nuestra PC, por eso lo recomendable es crearla en un directorio comun con "C:\Carpeta". 
+Ahora, para configurarle la ruta vamos a usar APP.Config, es un archivo XML que me permitira configurar algunas cosas de mi app. En este 
+XML tiene las configuraciones propias del FRAMEWORK, aunque podemos modificar cosas de nuestra APP.
+  <appSettings>
+    <add key="Imagenes" value="C:\Poke-Image\"/>
+  </appSettings>
+Ahora para que en la funcion COPY pueda leer la ruta que configure debo agregar como referencia el Ensamblado (Libreria) System.Configuration Y
+luego agregarla tambien en la clase. Ahora lo que haremos sera poner como destino el siguiente: 
+File.Copy(cargarImagen.FileName, ConfigurationManager.AppSettings["Imagenes"] + cargarImagen.SaveFileName);
+
+Llamando al ConfigurationManager puedo acceder a AppSettings y en los corchetes debo poner la Key que le asigne a cada configucion de APP 
+AppSettings. Este AppSettings funciona como una especie de clave valor, segun corresponda una clave devolvera un valor. Por ultimo le concatenaremos
+que el guardado del archivo sea con el mismo nombre del archivo original ("cargarImagen.SaveFileName").
+
+///Ademas vamos a agregarle un verificador para saber si la imagen esta guardada, mediante un IF: "IF (File.Exist(cargarImagen.FileName))";
+
+private void ImagenBoton_Click(object sender, EventArgs e)
+        {
+            cargarImagen = new OpenFileDialog();
+            cargarImagen.Filter = "jpg|*.jpg| png|*.png| gif|*.gif";
+            if (cargarImagen.ShowDialog() == DialogResult.OK)
+            { 
+                UrlCaja.Text = cargarImagen.FileName;
+                try
+                {
+                    pictureBox1.Load(UrlCaja.Text);
+                }
+                catch (Exception)
+                {
+                    pictureBox1.Load("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png");
+                }
+            }
+
+        }
+
+if (cargarImagen != null && !(UrlCaja.Text.ToLower().Contains("http")))
+    {
+       string ruta = cargarImagen.FileName;
+       string nombreArchivo = Path.GetFileName(ruta);
+        if (!(File.Exists(Path.Combine(ConfigurationManager.AppSettings["Imagenes"], nombreArchivo))))
+            {
+               File.Copy(cargarImagen.FileName, ConfigurationManager.AppSettings["Imagenes"] + cargarImagen.SafeFileName);
+               pokemon.Imagen = Path.Combine(ConfigurationManager.AppSettings["Imagenes"], nombreArchivo);
+            }
+    }
+
+Explicacion del codigo anterior: Para cargar una image debo crear un Boton y un OpenFileDialog como atributo privado de 
+la clase forms. En el evento del Boton lo que haremos es crearle/asignarle un objeto a ese OpenFileDialog que creamos, el null es para verificar 
+si se presiono el objeto en algun momento. Ahi asignado el objeto procedemos a ponerle filtros de archivos con la propiedad filter de la 
+siguiente forma: cargarImagen.filters = "jpg|*.jpg|png|*.png".
+Ahi mismo creamos un condicinal IF en donde esperamos que el OpenFileDialog.Show == ResultDialog.OK. Es decir le decimos que abra la ventana 
+para seleccionar el archivo y si el resultadoo de esa ventana es OK entre en la condicion. Dentro de esta condicion pondremos que la URLBox
+sea igual a la direccion del archivo (FileName), y llamamos a una funcion para que refresque la imagen.
+
+Ahora para crear las copias deberemos abrir el app config de la solucion y crear un AppSettings y ah dentro unn Add Key (Nombre X) y un Add Value,
+en este caso la ruta de nuestra carpeta, esto se lo hace con el fin de que mediante un nombre podemos llamar a valores. Deberemos agregar la
+libreria System.Configuration  para usar la clase HELPER ConfigurationManager.AppSettings[key] y poner nuestra llave que devolvera el valor
+de la ruta de la carpeta que elegimos para guardar.
+
+Ahora nos iremos al evento aceptar  de la segunda ventana y tanto en el aceptar como en el modificar deberemos crear un IF que  verifique si
+nuestro programa debe hacer una copia del archivo, esto lo hara si el OpenFileDialog es != null o si el TextBox no contiene http (url).
+pasada esta primera verificacio deberemos crear la segunda, la cual es que ademas de esto, para crear una copia del archivo debera no existir
+el mismo archivo en el repositorio (con el mismo nombre es decir). Para esto guardaremos la ruta en un string mediante el FileName y sacaremos
+el nombre del archivo mediante esta ruta haciendo Path.GetFileName(ruta) y lo guardamos en string.
+Esto nos permitira crear un if que dira IF (!(File.Exist(Path.Combine(ConfigurationManager.AppSettings["Key"], nombre))))
+Basicamente lo que hacemos es decir si no existe un archivo en nuestra ruta guardadora de documentos con el nombre del archivo a copiar entonces
+que si cree una copia del archivo.
+
+
+VALIDACIONES: Las validaciones es controlar que puede y que no hacer una persona en nuestra app. Es basicamente controlar
+aquellas cosas que haga la persona y se desvieen  de la funcionalidad normal de la APP.
+Hay 2 tipos de validaciones que podemos realizar: 1) Las validaciones Contraladas, que son aquellas validaciones en la Que
+sabemos que queremos controlar  (Que tales campos si o si deban ser cargados, que solo se carguen numeros en X campos
+que tal campo no tenga mas de X letras ETC). Basicamente las validaciones controladas son aquellas cuestones que podemos
+intuir que pueden fallar y le hacemos correciones.  
+Luego tenemos los escenarios no esperados, las excepciones, esto se maneja con el try AND catch.
+
+Validaciones que podemos hacer: Requeridos (Si o si se requiere ese dato para continuar), Tipo de datos que se pueden
+cargar (Ver que datos se pueden cargar en x Campos y cuales no), Estos 2 son errores manejables, el resto son errores que
+no son manejables.
+
+En sintesis la validaciones en programacion es el manejo de situaciones que no se contemplan en el uso correcto de nuestra
+aplicacion, es el manejar el uso incorrecto de la funcionalidad de nuestra app. Porque siempre va a suceder que las personas 
+puedan utilizar incorrectamente nuestra APP y esto de lugar a algun error o situacion inesparada para nuestra APP que
+nosotros deberemos manejar y controlar. Esto Mediante las validaciones.
+Tenemos errores que podemos esperar y por ende crear validaciones especiales para esos casos, como lo puede ser el evitar
+una carga de numeros, simbolos, letras en determinados campos, la obligatoriedad de seguir una serie de pasos para recien
+ejecutar una accion (Como lo puede ser rellenar todos los filtros del filtro avanzado, que si no relleno todos no puedo
+buscar), (o que si no tengo ninguna celda seleccionada no pueda eliminar o modificar ningun pokemon).
+
+Aquellos errores que no podemos esperar deberan ser tratados de controlar mediante un manejo de excepciones, (TRY CATCH).
+Deberemos colocar Try Catch en aquellas acciones en la que podamos intuir que puede llegar a darse un error pero que 
+no sepamos de que indole o forma pueda generarse, o que sea muy dificil de predecir, eso con el fin de que la aplicacion
+no clave y se muera.
+
+Para hacer validaciones esta bueno crear funciones para las mismas e irlas reutilizando a lo largo del codigo, no hacer
+las validaciones sobre el mismo evento, sino que hacerlas en pequeñas fnciones que despues podamos reutilizar.
+
+IDEA: Crear Clases Helper que pueda reutilizar en mis proyectos para ahorrar codigo  y tiempo en mis proyectosm, mediante
+la creacion de funciones simples pero utiles.
+
+DATO: el FOREACH se compone de la siguiente manera: 1) El Dato del objeto que se va a recorrer(int, bool, char, string, Articulo, ETC), que por
+defecto viene con el nombre VAR que funciona de comodin
+
+
+Manejo de NULL.
+Otra Forma Seria: "IF(!(lector["UrlImangen"] is DBNull))"
