@@ -1,0 +1,533 @@
+CSS: Cascading Style Sheets (Describe la presentacion de un documento escrito en HTML). Un documento HTML
+puede tener multiples estilos con CSS. 
+CSS Funciona en base a selectores, es decir que nosotros vamos a ir a seleccionar elementos que se encuentren 
+en nuestro codigo HTML y modificarlos desde CSS. Podemos Seleccionar un elemento, varios o todos, depende 
+de lo que queramos hacer. Uno lo referenciamos con ?????????, a un grupo mediante una clase y a todos mediante
+el "*". Una vez seleccionado abrimos "{}" y ahi dentro iran las propiedades que asignaremos al elemento (Estilos).
+
+A tener en cuenta que lo escribamos en nuestro codigo CSS Tendra un orden de ejecucion, y  la prioridad siempre la tendra
+lo que esta mas abajo. Es decir si le digo que el titulo es azul y abajo le digo que rojo terminara anteponiendose la ultima
+sentencia.
+
+Cargar Estilos CSS: Hay 3 formas: 1) Importando un archivo de CSS. 2) Escribiendo CSS dentro de nuestro documento.
+3) (La peor) Escribir codigo CSS dentro de nuestras etiquetas de CSS.
+La segunda forma para generar CSS en HTML escribirlo dentro de la etiqueta Style en nuestro "HEAD" y dentro de 
+Style seleccionar las etiquetas por sus nombres y asignarles las propiedades. 
+
+Ahora la mejor forma es escribir los estilos CSS desde un archivo CSS directamente. Para ello antes debo crear una 
+etiqueta de "Link" en HTML, con rel="stylesheet" href="Direccion/CSS".
+Ejemplo: "<link rel="stylesheet" href="style.css"/>".
+
+Selectores: Para seleccionar un archivo lo podemos hacer de varias formas: 1) Indicando directamente la etiqueta y
+poniendole las propiedades, esta modificaciones se aplicaran en todas las etiquetas del mismo nombre que creemos.
+Por ejemplo si pongo h1{} y las propiedades que vayan ahi dentro todas las etiquetas que escriba de h1 tendran esas
+mismas propiedades.  Ejemplo: body{background-color: blueviolet;}
+2) Otra forma de seleccionar un archivo es mediante el ID, esto nos permitira seleccionar solo una etiqueta especifica
+(Ya que no puede/debe haber 2 archivos con el mismo ID). Para referenciar al ID de una etiqueta lo que debemos hacer
+es colocar "#" y luego el ID al que queramos referenciar. 
+Ejemplo:#Titulo{color: rgb(86, 51, 25);}
+3) Para seleccionar y referenciar una clase desde CSS lo que haremos sera colocar en vez de un "#" sera un "."
+Con esto podremos referenciar a las clases que tenemos en HTML.
+Ejemplo:.Texto{font-size: 50px;}
+4)Si tengo distintas etiquetas con la misma clase y quiero modificar una etiqueta con esa clase lo que debo hacer es que
+antes del punto debo referenciar que etiqueta y de que clase quiero referenciar.
+p.Texto{font-size: 50px;}
+5) Otra forma de seleccionar etiquetas dentro de SubEtiquetas es poniendo el contenedor de la etiqueta
+a modificar, un espacio y la etiqueta a modificar y las llaves.
+Ejemplo:article p{color: blue;}
+6)Para concatenar selectores es tan facil como poner una  "," y poner la otra condicion.
+Ejemplo:article p, header h2{color: blue;}
+7)Para seleccionar todos los elementos usamos el "*". Este tiene la caracteristica de que solo se
+aplicara si ningun otro selector definio lo propiedad que se encuentra en el.
+**Luego podremos hacer combinaciones entre los selectores vistos para que organicemos las pagina a nuestro antojo.
+
+Comentarios: Para hacer comentarios en CSS deberemos poner lo siguiente: "/**/". Dentro de los 
+asteriscos iran los comentarios.
+
+UNIDADES DE MEDIDAS EN CSS: PX (pixeles) es la unidad minimas de medida que voy a poder mostrar en una web,
+CM (centimetro), MM (milimetro), IN (pulgada), PT (Punto). Las unidades de medida no son recomendadas de usar 
+debido a la diversidad de dispositivos con los que contamos, los cuales tienen distintas dimensiones y por ende 
+1CM en la PC no se vera igual que en un celular.
+EM es una medida relativa que intentara mantener el aspecto con respecto a otros tamaños de otras etiquetas.
+
+Como Reemplazo  de EM surge REM, que es una medida tambien relativa con respecto al tamaño de nuestra etiqueta de 
+HTML
+
+                                           Propiedades CSS
+
+COLOR: Esta propiedad permite modificar el color de las etiquetas. Para ver los Colores disponibles 
+podemos presionar CTRL+ESPACIO. Para los colores tenemos 3 formas/convenciones para agregarlos, estas
+son: 1)RGB. 2)HEXADECIMAL.
+1)RGB: para llamarlo colocaremos "rgb=(0,0,0) el primero es el rojo, segundo verde y tercero azul. Estos valores van
+del 0 al 255. Tambien existe el RGBA que es lo mismos solo que se agrega un numero que controla la trasparencia.
+2)HEXADECIMAL: Para este lo podemos hacer de 6 caracteres o 3, en ambos antes debo llamarlo con el simbolo "#".
+Los primeros 2 (o 1) contempla al rojo, los otros segundos al verde y los ultimos al azul. 0 es la minima expresion de color
+y "f" la maxima
+
+BORDER: Con esta propiedad le asignamos un borde a alguna de las etiquetas de HTML. Primero lo que 
+le pasaremos al borde sera su Espesor, luego su color y por ultimo el estilo que queramos que tenga el
+borde. La separacion de estos parametros debe ser por espacio y no por comas.
+Algunos estilos de border son: Solid(Linea continua), Dashed (Lineas discontinuas), Dotted (Linea Punteada),
+Double (Doble Linea), Grove (Especie de Enmarcado), Ridge (Enmarcado inverso al Grove) Inset/Outset (Mitad y mitad de colores),
+None (Nada) y Hidden (Oculto).
+
+BORDER STYLE: Me permite asignarle el estilo del borde sin pasos anteriores.
+
+BORDER COLOR: Colocar el color del borde.
+
+BORDER RADIUS: Nos Permite redondear nuesto borde, le vamos a dar un radio, esto mediante un valor 
+en pixeles.
+
+BORDER WIDTH: Permite definir la anchura del borde. Tambien tenemos pequeñas varientes del WIDTH que
+nos permite modificar cada linea del ancho del borde, estas mediante Top, bottom, left y right.
+
+BACKGROUND COLOR: El Color de fondo.
+
+BACKGROUND IMAGE: Con esta puedo cargar una imagen en el fondo, para ello llamo a la propiedad URL y 
+entre ("") le paso el nombre de la imagen.
+
+BACKGROUND SIZE: Nos permite redimensionar la imagen que cargamos en el fondo. Dentro de esto tenemos la propiedad COVER
+que ajusta la imagen al ancho maximo utilizado esta propiedad tambien permite adaptar la imagen si se visualiza el contenido en pantallas diferentes.
+Contains (Trata de contener la imagen en la medida que le demos). Tambien el BACKGROUND SIZE se lo puedo dar manual con valores manuales.
+
+BACKGROUND REPEAT: Permite manipular que hacer si se repite el background. Tenes No REPEAT (Evita repeticion) REPEAT X (repite en eje X)
+REPEAT Y(al reves).
+
+BACKGROUND POSITION:  Permite manipular la posicion del background con primero definiremos su posicion en el eje X y luego en el eje Y.
+
+BACKGROUND: Con esto puedo definir todas las propiedades anteriores de una sola. Primero el Color, Luego imagen, REPEAT y el POSITION.
+El SIZE no lo puedo manipular ese va aparte y luego de la propiedad BACKGROUND sino no la toma. Va en realidad si se puede solo que 
+luego de lo posicion de Y debo poner un "/" y las MEDIDAS.
+
+OPACITY: Esta propiedad permite manejar la opacidad de los elementos, sus valores van de 0 a 1.
+
+MARGIN: Nos permite manejar los margenes que tienen nuestras etiquetas de HTML, para manejarlas simplemente llamamos a MARGIN y le pasamos los valores de
+los margenes en PX (TOP, RIGHT, BOTTOM, LEFT).
+
+PADDING: PADDING lo que hara sera generar espaciado dentro del elemento, dentro de este generara espacios de PX segun los valores que le pasemos.
+
+BORDER: Nos permite crear un borde, este se va a encontrar dentro de MARGIN pero por fuera de PADDING.
+
+OVERFLOW: Es una propiedad que se encarga de trabajar con aquellos elementos que se sobresalen de algun elemento (por eso el nombre) OVERFLOW.
+Puedo poner HIDDEN para que oculte los elementos que se salen de los margenes o ponerles un SCROLL para que tenga una barra de deslizamiento.
+
+BOXMODEL: Es como se posiciona todo elemento en HTML. Cada etiqueta tiene un MARGIN, PADDING, BORDER y el contenido.
+
+OUTLINE: Es un borde que se posiciona por fuera del primer borde.
+
+TEXT-ALIGN: Esta propiedad nos permite manipular como se mostrara nuestro texto en pantalla. Por defecto viene en LEFT, pero existe RIGHT, CENTER,
+JUSTIFY, ETC.
+
+TEXT-DECORATION: Permite darle decoraciones a los textos, podria decirse que le da una especie de Estilos. Tenemos None (Sin decoracion), Underline
+(Subrrayado), line-through (Linea por encima), overline (linea por encima), etc.
+
+TEXT-SHADOW: Permite darle un Sombreado a las letras. Este recibe 2 valores, el primero es cuanto se va a mover a la derecha y el segundo cuanto 
+hacia abajo, es decir el primer valor modifica X y el segundo Y. Tambien le puedo modificar su color y el BLUR por PX, este BLUR sera el difuminado
+que tendra la sombra. A tener en cuenta que el text-shadow siempre aparecera por debajo del texto (al ser una sombra).
+
+FUENTES CUSTOM: Llamando a la propiedad FONT-FAMILY puedo cambiar la fuente, esta me presentara una serie de opciones varias, segun el orden de las 
+fuentes es la prioridad de cargado, si no puede cargar una fuente pasara a la siguiente e intentara cargarla y asi sucesivamente.
+Si quiero una fuente personalizada voy a GOOGLE FONT.
+
+LINKS Y ESTADOS: Los links en HTML tienen 4 ESTADOS: 1) Nunca fue visitado. 2)Fue visitado. 3) Cuando Pasamos el mouse por encima de el. 
+4) Cuando el Link se encuentra activo. Para modificar el estilo de un link  se hace asi: 1)"a:link". 2)"a:visited".3)"a:hover". 4)"a:active".
+A los links tambien se le aplican las propiedades antes vistas.
+
+Listas: Puedo modificar su STYLE-TYPE (El inicio de la lista), tambien puedo modificar la posicion de los simbolos de la lista con STYLE-POSITION.
+
+List-Style-Type: modifica los simbolos del inicio de la Listas.
+
+List-Style-Postion: Modifica la posicion del texto y los simbolos (inside o ouside por ejemplo).
+
+Border-Collapse: Permite evitar la separacion de tablas, permite juntar el border que la separa.
+
+CURSOR-POINTER: Colocara el icono de la mano cuando pasamos por X lugar.
+
+NTH-CHILD(): Permite seleccionar elementos con un cierto patron u orden, dentro de los parentesis con "even" seleccionaremos los elementos impares 
+y con odd los elementos pares.
+
+DISPLAY-BLOCK: Este viene por defecto en la mayoria de elementos de HTML este ocupa todo el ancho de la pagina independientemente del contenido.
+Al crear una nueva etique provocara que se de un salto de linea.
+
+DISPLAY INLINE: Permite tener etiquetas diferentes en las mismas Lineas. La nueva etiqueta continuara en el mismo renglon. Las etiquetas que tienen
+este display por defecto son "<a>, <span> y <img>".
+
+DISPLAY-INLINE-BLOCK: Es muy similar al INLINE Pero puedo agregarle las dimensiones a los elementos. Algo que en INLINE  no se puede.
+
+DISPLAY NONE: No permite la visualizacion de estos elementos.
+
+Visibility: Cambia si el elemento es o no visible.
+
+MAX WIDTH: Permite asignarle un ancho maximo a nuestro elemento. El maximo ancho que tendra son xPX, pero si disminuye su anchura tambien lo hara 
+el elemento.
+
+POSITION-STATIC: Es el valor por defecto de posicion que tienen todas las etiquetas de HTML. Dentro de position podemos agregar TOP, LEFT, BOTTOM y 
+RIGHT y darle las medidas que queramos.
+
+POSITION-FIXED: Lo que hace la posicion FIXED es dejar estatico el elemento durante el SCROLEO de la barra.
+
+POSITION ABSOLUTE: Este se va a posicionar de forma relativa con el elemento padre mas cercano que tenga.
+
+POSITION-STICKY: Es similar al FIXED pero no esta pegado arriba desde el inicio como el FIXED sino a medida que SCROLEO cuando encuentro este 
+elemento este se va a pegar a mi margen superior, de ahi el nombre de STICKY.
+
+FLOAT: Lo que hace esta propiedad es agarrar al elemento de la etiqueta y lo hace flotar hacia uno de los lados. Puede servir para colocar una 
+imagen y texto al lado.
+
+CENTRAR ELEMENTO: .CenterHorizontal{
+                    WIDTH: (Menor al 100%);
+                    MARGIN: 0, auto;
+                    //OPCINAL si deseo centrar un texto
+                    text-ALIGN: CENTER;
+}
+.CenterVertical{
+                    PADDING: 50, 0;
+                    WIDTH: (Menor al 100%);
+                    MARGIN: 0, auto;
+                    //OPCINAL si deseo centrar un texto
+                    text-ALIGN: CENTER;
+}
+
+BOX SHADOW: Muy similar a TEXT SHADOW, primero le pasamos cuanto se desplaza horizontalmente, luego 
+verticalmente, luego agregamos cuanto BLUR va a tener y por ultimo su color.
+
+TRANSITIONS: Podemos indicar con esto que propiedades de CSS queremos que sean animadas. Esto mediante 
+la palabra TRANSITIONS. Primero debemos colocarle un origen y un final. Por ejemplo el inicio de la animacion
+seria el BOX-SHADOW sin sombra, y el final el box shadow totalmente Sombreado. Luego de TRANSITIONS
+colocamos la propiedad animar, la cantidad de segundos y su estilo.
+Ejemplo: transition: box-shadow 0.3s ease;
+
+
+                                                        Curso Dalto
+
+CSS: Sirve para agarrar las etiquetas de HTML y modelarlas. Basicamente es agarrar una etiqueta/elemento de HTML y 
+personalizarlo.
+
+                                                            Selectores
+
+1)Universal: Con el "*" selecciono todos los elementos que hayas en HTML y los puedo modificar, se usa muy esporadicamente.
+
+2)De Tipo: Selecciona todos los elementos de un tipo de Etiqueta, es decir si yo pongo H1 y le cambio el color todos los 
+H1 tendran ese mismo color. Lo que hacemos es seleccionar por el nombre de las TAGS directamente.
+
+3)Clases: para seleccionar un elemento por clases debo un punto y el nombre de la clase. Esto modificara a todos los elementos
+que tengan esa clase. EJ:".Prueba".
+
+4)ID: para seleccionar un elemento por ID debo poner un ID SHARP y luego el ID. La diferencia mas sustancial con la clase es que
+varias etiquetas pueden tener la misma clase y compartir propiedades, pero el ID es y debe ser unico por cada objeto. Con el ID 
+busco modificar solo ese objeto, y por ende solo me quiero referir a ese objeto.
+
+5)Por Atributo: Para seleccionar por Atributo lo que debemos hacer es darle un atributo a nuestra TAGS en HTML y despues 
+en CSS la referenciamos con su nombre y valor Exacto. Este atributo debe estar entre corchetes.
+EJ: [name="Pichi"] or [mousehover()]
+
+6)Por Contenedor: Esta forma de seleccionar lo que debemos hacer es agarrar primero el contenedor y luego la etiqueta a 
+modificar. Es decir vamos a pedirle que modifique X elemento que se encuentre dentro de cierto contenedor, si X no esta dentro
+de ese contenedor ese elemento no se va a ver modificado.  EJ: "H2 p{color:red;}"
+En este ejemplo lo que decimos es que los elementos P que esten dentro de H2 deben tener un color Rojo, los P que no esten
+dentro de H2 no se veran afectados.
+
+7)Tambien puedo hacer algo similar con las clases y los elementos, decir .claseX y elegir a que etiqueta se va a modificar.
+Esto hara que solo esas etiquetas que contengan esas clases se modifiquen.
+
+8)Pseudo-Clases: Son 1) Hover. 2)Visited. 3) Active.
+
+
+ESPECIFICIDAD: La especificidad es basicamente el orden de prioridad en cuanto el cambio de diseño de los elementos. 
+El orden de especificidad es el sigueiente: 5) al fondo los Pseudo-elementos y los elementos, son los que menos jerarquia
+tienen. Si yo realizo un cambio de color de un H2 con estos y luego utilizo otros selectores para colocar otro color 
+siempre saldran ganando los selectores de mayor jerarquia. 4) Atributo, Pseudo-Clases y Clases. 3) Por ID  2) Estilos en 
+la linea de HTML (Etiqueta STYLE). 1) !Important.
+
+1) !Important: este se o llama desde CSS despues de escribir una propiedad: h1:{ color: red !Important}
+
+En sintesis lo que hace es que dara mas o menos prioridad a cambios de estilos segun el Selector que tenga cada elemento.
+Si yo selecciono por elemento a todos los H1 ("H1{color: red}") y les cambio el color y luego con otro selector, El ID 
+voy y cambio el color a mi H1 a su atributo de ID=XD por un color Violeta (#XD{color: Violeta}) el estilo que se va a terminar
+imponiendo es el de ID y no el de elemento debido al que el ID tiene mas jerarquia/especificidad.
+En este caso no importara la posicion de como este colocado en el codigo CSS, esto solo aplica cuando tenemos la misma jerarquia.
+
+Metodologia BEM: La Metodologia BEM es una metodologia en la que se busca evitar entrar en el conflicto de jerarquias en 
+las modificaciones de estilos. Lo que busca esta metodologia es ver que elemento estemos seleccionando mediante el nombre
+de la clase.
+La metodologia consiste en trabajar los elementos en bloques mediante el uso de los contenedores. Cada contenedor tendra Una
+clase y las etiquetas hijas de este contenedor en su clase tendran el nombre del contenedor, un doble guion bajo y un nombre
+representativo.
+EJ: <div class="contact-Forms">
+    <Input Type="text" class:"contact-Forms__Input".
+    <Input Type="password" class:"contact-Forms__Input".
+    <div/>
+
+Si quiero tener un Input diferenciado de esos puedo cambiarle ligeramente el nombre de la clase a alguno y asi modificarlo
+sin tener problemas de especificidad. Tambien lo puedo hacer con la propiedad: "contact-Forms__Input:selected.FirstChild".
+EJ: <div class="contact-Forms">
+    <Input Type="text" class:"contact-Forms__Input--Active".
+    <Input Type="password" class:"contact-Forms__Input".
+    <div/>
+
+El doble "__" solo se pone por bloques, si tengo un <p> dentro de un <div> y dentro de ese <p> un h2 entonces la clase de ese
+h2 seria class:"contact-Forms__p-h2". Con el guion medio separo elementos dentro de un bloque.
+
+                                                    Medidas CSS
+
+Unidades de Medida Relativas: Estas dependen de algo. Estas a medida que se agranda o achica la resolucion de vista hace que el
+elemento matenga sus proporciones. Existe EM y REM. Por defecto 1EM son 16px.
+
+View-Port-WIDTH: Estas medidas lo que hacen es ocupar todo el ancho de la pantalla. 100vw
+
+View-Port-Heigth: Estas medidas lo que hacen es ocupar todo el alto de la pantalla. 100vh
+
+Para modificar el valor EM de algun elemento debo cambiar el valor de la propiedad en su contenedor. Es decir si en el contenedor
+DIV al font-size le asigno el valor de 20px, en <p> el valor de EM en font-size sera 20px = 1EM.
+
+Unidades de Medida Fijas: Px, cm, mm, pt, etc.
+
+                                                Propiedades de Tipografias/Letras
+
+Font-Size: Cambia el tamaño de la fuente.
+
+Font-Family: Es la Tipografia del texto, estas se pueden extrer desde google fonts.
+
+Line-height: Es el interlineado, la separacion entre lineas.
+
+font-weight: La anchura de la fuente.
+
+font-stretch: ????
+
+font-variant: ????
+
+
+                                                        Normalize
+
+Normalize: Con esto  lo que hacemos es resetear todos los estilos del navegador por defecto a 0. 
+
+box-sizing: border-box: Esto mantiene el ancho/alto de la caja con sus valores default si le agrego PADDING, es decir si
+mi caja tiene 50px de alto y le agrego un PADDING de 10px mi alto pasara a ser de 70px (10px arriba y 10px abajo). Para 
+evitar esto llamamos  a esta propiedad, esto lo que hara es tomar 20px de altura y el resto lo usara para el contenido de 
+lo caja.
+
+                                                    Teoria de Cajas 
+
+Hay 2 tipos de Cajas en HTML, las que son en linea y las que son en bloque (display In-Line y display-BLOCK). La mayoria de
+etiquetas vienen con display-block por defecto. El ancho de un elemento de display-BLOCK ocupara todo el ancho de su 
+contenedor padre mas cercano, es decir que si su contendor es un div que ocupa media pagina la etiqueta ocupara todo el 
+ancho de su DIV, independientemente de su contenido. El Inline ocupa el ancho en base a su contenido, opuesto a lo que 
+hace BLOCK.   
+
+                                                        DISPLAY
+Permite modificar el comportamiento de las cajas con respecto a su ancho.
+
+Display-BLOCK: Esto lo que hace es que las cajas ocupen todo el ancho del contenedor-padre independientemente de su contenido.
+Si le podemos dar un HEIGHT y un WIDTH.
+
+Display-Inline: Hace que las cajas definan su tamaño segun su contenido, tiene un funcionamiento inverso a BLOCK. A estos
+elementos en linea no le podemos dar un HEIGHT, ni WIDTH. Se suele utilizar para texto solamente.
+
+Display-INLINE-BLOCK: Este tiene un funcionamiento muy similar al INLINE con la diferencia de que a estos si le podemos dar 
+un HEIGHT y WIDTH (Alto y Ancho).
+
+Display-Grid: La caja contenedora se comporta como un BLOCK, pero sus hijos no.
+
+Display-Flex: La caja contenedora se comporta como un BLOCK, pero sus hijos no.
+
+Inline-Flex:
+
+Inline-Grid:
+
+                                                    Propiedades de Caja
+
+BACKGROUND-COLOR: Permite modificar el color de fondo de la caja.
+
+PADDING: El PADDING basicamente es la distancia que hay entre los bordes de la caja y su contenido. Tenemos 4 PADDINGS, TOP
+RIGHT, BOTTOM y LEFT. El PADDING genera la distancia entre el contenido y el BORDER.
+
+HEIGHT: Altura de la caja. WIDTH: Anchura de la caja.
+
+box-sizing: border-box: Esto mantiene el ancho/alto de la caja con sus valores default si le agrego PADDING, es decir si
+mi caja tiene 50px de alto y le agrego un PADDING de 10px mi alto pasara a ser de 70px (10px arriba y 10px abajo). Para 
+evitar esto llamamos  a esta propiedad, esto lo que hara es tomar 20px de altura y el resto lo usara para el contenido de 
+lo caja.
+En sintesis lo que hace esta propiedad es ajustar el content, padding y Border para que logre mantener su Ancho y Alto, de 
+otra forma el Ancho y Alto de la caja no seria solo las medidas de la caja, sino que se les suma la del Content, padding Y
+Border. El valor por defecto es el Box-sizing: content-box.
+
+MARGIN: Es el margen que se crea entre las cajas. Es un opuesto al PADDING. Tenemos 4 MARGIN, TOPRIGHT, BOTTOM y LEFT. Este
+Nos separa la caja de otras cajas.
+
+BORDER-RADIUS:Es el radio del borde, es cuanto vamos a redondear un borde.
+
+BORDER: Con esta propiedad le asignamos un borde a alguna de las etiquetas de HTML. Primero lo que 
+le pasaremos al borde sera su Espesor, luego el estilo que queramos y por ultimo su color.
+La separacion de estos parametros debe ser por espacio y no por comas. Algunos estilos de border son: Solid(Linea continua),
+Dashed (Lineas discontinuas), Dotted (Linea Punteada), Double (Doble Linea), Grove (Especie de Enmarcado), 
+Ridge (Enmarcado inverso al Grove) Inset/Outset (Mitad y mitad de colores), None (Nada) y Hidden (Oculto).
+El Border puede ocupar parte del PADDING de nuestro elemento a causa de la propiedad Box-sizing: Border-Box;
+
+BOXMODEL: Este trabaja con 4 propiedades el Content (Contenido de la caja), el PADDING (la separacion interna del contenido
+con respecto a los bordes.), El Border (El Borde de la caja) y El MARGIN (La separacion de la Caja con respecto a otras 
+Cajas). Para Modificar el Content utilizamos el LINE-HEIGHT, Para modificar el PADDING llamamos a padding, BORDER con border
+y MARGIN con margin.
+La jerarquia es: 1)Content, 2)PADDING, 3)BORDER, 4)MARGIN.
+
+BOX-SHADOW: Como indica su nombre nos permite darle sombra a las cajas. Para utilizarla deberemos aplicarle cuanto desplazamiento
+tiene en horizontal y vertical, su efecto de BLUR, el tamaño de borde y el COLOR. Puedo concatenar BOX-SHADOWS para tener
+una mayor intesidad, esta concatenacion es separada por comas en la misma linea.
+
+TRANSFORM: *EXPLICA MAS ADELANTE* Con Rotate(xDEG) puedo darle grados de rotacion a un elemento.
+
+                                                        OUTLINE
+
+ShortHand: Es una propiedad acortada, porque es el conjunto de varias propiedades (Como Border, Margin o PADDING).
+
+OUTLINE: Es una ShortHand, esta no afecta al tamaño de la caja. Este es una especie de borde que no ocupa espacio de la 
+caja, y que al variar su tamaño no modifica las posiciones ni tamaños de las cajas o cajas aledañas. 
+En sintesis es una especie de borde que no ocupa espacio en el BOXMODEL y que ademas puede no ser visible/ocultarse al 
+superar los bordes.
+Este lo unico que hace es marcar el objeto sin ocupar un espacio fisico real como border.
+
+
+                                                        POSITION
+
+POSITION: Lo que hace es posicionar los elementos, lo que hacemos es agarrar un elemento y posicionarlo. Que un elemento este
+posicionado significa que adquiere nuevas propiedades (Top, Right, Left, bottom, Z-Index). Este propiedad es la que altera
+el flujo de orden del HTML (el orden en el cual colocamos las cajas).
+Cuando posicionamos un elemento lo que hacemos es que adquiera 4 Propiedades nuevas: TOP, RIGHT, BOTTOM y LEFT.
+LAs propiedades TOP y LEFT son las mas importantes, la que mas peso tienen. Si pongo un TOP y un BOTTOM el valor que prevalece
+va a ser el del TOP y hara caso omiso del bottom.
+
+POSITION STATIC: Es el valor por defecto, se considera que no esta posicionado el objeto, este no adquiere las propiedades
+de posicionamiento.
+
+POSITION RELATIVE: La Posicion del elemento respecto a su posicion normal. La nueva posicion de un elemento en relacion
+con su posicion normal. Si yo lo desplazo 20px se desplazara 20px con respecto a su posicion inicial dada por el flujo de
+HTML. En sintesis el Position relative es adquirir las nuevas propiedades de TOP RIGHT BOTTOM y LEFT, y tener como referencia
+posicional su posicion inicial, es decir mantiene su espacio en pantalla. Ademas adquiere la propiedad del Z-Index.
+
+POSITION ABSOLUTE: 1)El elemento que tenga position absolute pierde el espacio reservado que tenia, la caja pierde ese espacio
+reservado que poseia y esto ocasiona que se amontonen una caja encima de la otra debido a no tener un espacio reservado.
+2) Si no le colocamos un TOP/LEFT el punto de referencia del ABSOLUTE sera su contenedor, pero si le colocamos un TOP/LEFT
+su punto de referencia/anclaje sera el VIEWPORT si su contendor no esta posicionado.
+3) Tambien aunque el elemento con el que trabajemos sea DISPLAYBLOCK el elemento con POSITION se ajustara a su contenido.
+4) Para que los elementos ABSOLUTE de un contenedor se posicionen con respecto a un contenedor lo que haremos sera poner al 
+contenedor con una POSITION relative, de esta forma los elementos ABSOLUTE se posicionaran tomando como referencia el 
+contenedor y no el View-Port. 
+Para centrar un elemento con absolute en un contenedor lo que debemos hacer es que todas sus propiedades valgan 0 y darle 
+un margin auto.
+
+POSITION FIXED: Este funciona Igual que ABOSOLUTE solo que con la diferencia que queda fijado en pantalla. Al funcionar igual
+que el absolute esto lo que hara  es perder el espacio reservado que tenia y por ende contenido quedera debajo de este. para 
+resolver esto lo que hacemos es ponerle a body un padding de 100px y al elemento FIXED un margin del -100.
+
+POSITION STICKY: Es una mezcla de RELATIVE y FIXED. En este caso el espacio reservado se conserva y no se pierde, pero una 
+vez que me encuentre a la barra durante el Scroll esta se pegara a nuestro margen superior.
+
+Z-Index: Es el que permite poner los elementos uno por encima del Otro, es decir que le daremos el valor en Z que debe tener
+cada caja, mientras mas alto, estara por encima de otros elementos. El Z-Index solo aplica cuando las cajas estan posicionadas.
+Se recomienda dejar espacios de 10 en 10 entre Z-Index por si en algun momento queremos agregar algun nuevo Z-Index que este
+entre medio de los valores usados.
+El Z-Index presenta conflicto entre los elementos padres e hijos, es decir que si al contenedor padre le doy un Z-Index mayor
+al del hijo este igualmente seguira por debajo de sus elementos hijos. La unica forma de que este se posicione por encima seria
+No dandole Z-Index al padre y al hijo darle un -1 de Z-Index.
+
+                                                                OVERFLOW
+
+OVERFLOW: Lo que es manejar aquel contenido que se sale o desborda del contendor. Este lo puede esconder con HIDDEN o mostrar
+mediante una barra de deslizamiento con SCROLL, tambien esta AUTO que tambien coloca una barra de desplazamiento pero solo si
+es necesario (SCROLL la coloca sea o no necesario). Esta propiedad es un ShortHand que abrevia OVERFLOW-X y OVERFLOW-Y.
+
+                                                                FLOAT
+
+FLOAT: Su uso es para anclar una imagen a algun margen y que esta este acompañada de texto. 
+
+
+                                                            PSEUDO-ELEMENTOS
+
+DOM: Son las siglas de Document Object Model, es la estructura de un documeento de HTML, formado por las etiquetas y propiedades
+de cada una de estas etiquetas. 
+
+PSEUDO-ELEMENTOS: Es un elemento que realmente no es un elemento. Estos no forman parte directamente del DOM, pero si pueden 
+impactar en cambios visuales. Los Pseudo-elementos se aplican sobre algun elemento en CSS (Como el Hover). Para invocarlo 
+debemos colocar 2 puntos y colocar el nombre del P-E. EJ:".Text::first-Line".
+Aquellos Pseudo elementos que requieran de la propiedad "CONTENT" no forman parte del DOM. 
+
+::First-Line: Este elemento no funciona con Inline, pero si con el resto de Displays. Este sirve para modificar la primera
+linea de un texto. Este P-E si forma parte del DOM.
+
+::First-Letter: Lo mismo que First-Line pero con una letra. Este P-E si forma parte del DOM.
+
+::PlaceHolder: Es el P-E con el que podemos modificar el PlaceHolder de algun Input.
+
+::Selection: Cambia el seleccionador, se comporta como un elemento en linea.
+
+::After: Este genera un "Hijo" del elemento al que le estamos aplicando este Pseudo elemento. Este necesita si o si la propiedad
+content. Ademas estos son si o si elementos en linea. El Contenido de este Pseudo-elemento va a ser visible pero no se podra 
+seleccionar, es visible pero no interactuable, por eso es un Pseudo-Elemento.
+Dentro de content ira el contenido.
+
+::Before: Este genera un "Hijo" del elemento al que le estamos aplicando este Pseudo elemento. Este necesita si o si la propiedad
+content. Ademas estos son si o si elementos en linea. El Contenido de este Pseudo-elemento va a ser visible pero no se podra 
+seleccionar, es visible pero no interactuable, por eso es un Pseudo-Elemento.
+Dentro de content ira el contenido.
+
+La Diferencia entre Before y after es que uno se coloca antes del elemento seleccionado y el otro luego del elemento 
+seleccionado.
+
+
+                                                        PseudoClases
+
+PseudoClases: Lo que hacen es escuchar a algun evento, van a reaccionar o ejecutarse a partir de algun evento particular. 
+1) Hover (Mouse Encima de un elemento). 2) Visited (Cuando un link ya fue visitado). 3)Active(Cuando Pulsamos sobre algun
+elemento) 4) Link (Cambiar el estilo de un link que todavia no visitamos). 5) Focus (Se aplica cuando le estoy haciendo 
+foco a un Input). 6)Lang, es una funcion a la cual se le debe pasar un parametro, en este caso la abreviacion de un idioma.
+Para que esto sea detectado al texto que modifiquemos deberemos pasarle un LANG en sus atributos.
+
+
+                                                        Object Fit 
+
+Object Fit: Viene a solucionar el problema de tamaño de las imagenes, para que estas siempre mantengan su Aspect-Ratio.
+Esta maneja valores como Fil, Contain, Cover, None y Scale-Down.
+
+Contain: Esta propiedad lo que hace es adaptar la imagen al contenedor, que la resolucion de la imagen se adapten al 
+contenedor. En este caso no provocaria el estiramiento de la imagen, sino que conservaria su tamaño y se ajustaria en el 
+contenedor. Lo negativo de esta es que la imagen no va a ocupar necesariamente el todo contenedor, sino que solo se va a posicionar
+correctamente en el. En sintesis ajusta la imagen al contenedor sin llenarlo necesariamente.
+
+Cover: Esta lo que hace es ocupar todo el contenedor pero manteniendo su Aspect-Ratio, pero tambien provocaria que parte de
+la imagen no sean visibles al ser recortada del contenedor. En sintesis ocupa todo el contenedor manteniendo el Aspect-Ratio.
+
+None: Deja las resoluciones por defecto, no hace nada.
+
+Scale-Down: Compara Contain y None y elige la que tenga la menor resolucion.
+
+Object Position: Permite elegir el anclaje del con se agarra la imagen para mostrarla, si elijo Right se anclara al margen 
+Derecho y mostrara todo lo que se abarque desde ese borde.
+
+                                                        CURSOR
+
+Cursor: Este permite cambiar la visualizacion del cursor. https://www.w3schools.com/cssref/tryit.php?filename=trycss_cursor
+
+                                                        Colores
+Los colores primarios en programacion son el Rojo, Verde y Azul, y con estos sera los que trabajaremos.                                                       
+1)RGB: para llamarlo colocaremos "rgb=(0,0,0) el primero es el rojo, segundo verde y tercero azul. Estos valores van
+del 0 al 255. Tambien existe el RGBA que es lo mismos solo que se agrega un numero que controla la trasparencia.
+2)HEXADECIMAL: Para este lo podemos hacer de 6 caracteres o 3, en ambos antes debo llamarlo con el simbolo "#".
+Los primeros 2 (o 1) contempla al rojo, los otros segundos al verde y los ultimos al azul. 0 es la minima expresion de color
+y "f" la maxima
+
+                                                        Responsive Design
+
+Responsive Design: Es un concepto que se centra en trabajar con las distintas resoluciones.  Lo que hacemos es adaptar una
+resolucion a varios dispositivos. Es basicamente adaptar una WEB a distintos dispositivos. Mobile First es el contrario,
+es crear una Web para celulares y luego adaptarlo a escritorio.
+En sintesis es adaptar el diseño de una pagina WEB segun las distintas resoluciones de los dispositivos.
+
+Para trabajar con esto debo poner @media y especificar segun que tamaño voy a cambiar el formato de mi pagina.
+Para trabajar con esto tambien en mi HTML debo agregar la etiqueta META-VIEWPORT.
+                               
+Icons: <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script> Poniendo este script 
+ya puedo poner Icons desde la pagina: https://fontawesome.com/search
+
+Menu Responsive:
+
+HOVER: Para llamar a otro objeto cuando se haga Hover sobre X elemento es tan sencillo como: ".Nav:hover > a{}". Con esto 
+cuando se haga un HOVER al contenedor Nav el "a" se vera modificado.

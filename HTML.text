@@ -10,7 +10,8 @@ etiquetas.
 
 Para empezar nuestro codigo lo que debemos hacer es crear un archivo .HTML llamado index (Por convencion).
 Ahi escribimos "!" y TAB y nos generara la base de HTML. Ahi nos encontraremos con las etiquetas HTML, Head y
-Body. Tambien nos encontraremos con la etiqueta DOCTYPE que lo que hace es definir que tipo de archivo es al navegador,
+Body. 
+Tambien nos encontraremos con la etiqueta DOCTYPE que lo que hace es definir que tipo de archivo es al navegador,
 en este caso tendra definido que es un HTML. Sin DOCTYPE el navegador lo interpretaria como codigo viejo del
 internet de los 90, y esto causaria errores en la paginas.
 
@@ -18,15 +19,10 @@ Es importante usar la identacion cuando coloco una etiqueta dentro de otra, como
 espaciar el contenido de cada etiqueta entre si.
 
 <HTML>: La etiqueta raiz de todo codigo HTML. 
-
+                                                CONTENEDORES
 <Head>: Nos permite agregar mas descripciones que el usuario no necesariamente vaya a ver pero nos 
 permita incluir otro tipo de codigo a nuestra pagina web. Por ejemplo tenemos la etiqueta <Title> 
 Dentro de <Head>, esta nos permitira ponerle un titulo a nuestra pagina WEB.
-
-<Title>: Esta etiqueta le va a mostrar a los usuarios de los motores de busqueda cual es el titulo
-del elemento que esta buscando. Por ello debemos siempre poner una etiqueta de titulo que sea 
-relevante con el contenido que tenga nuestra pagina WEB, facilitando el aparecer en los motores de 
-busqueda.
 
 <Body>: Aqui vamos a colocar todo el contenido que va a ser visible para el usuario. Por ejemplo podemos
 agregar un <h1>, <p>, entre otras etiquetas.
@@ -44,6 +40,24 @@ de un blog, una noticia, una publicación en redes sociales, entre otros.
 
 <Footer>: Se utiliza para colocar el pie de pagina de nuestra pagina web.
 
+<div>: Se utiliza para dividir y agrupar  el contenido en secciones. Es un contenedor de etiquetas, cumple
+la misma funcion que  Header, seccion, Article y Footer.
+
+<Nav>: Este contenedor tendra la funcion de contener a la barra de navegacion que vayamos a crear. Si hago cambios entre 
+paginas siempre debo conservar el mismo NAV.
+
+<Aside>: Es contenido secundario que se encuentra en la pagina.
+
+<CENTER>: Todo lo que contenga esta etiqueta dentro lo va a centrar. Pero el CENTER solo centra a las cajas Hijas, pero no las
+hijas de las hijas.
+
+                                        Titulos y Subtitulos
+
+<Title>: Esta etiqueta le va a mostrar a los usuarios de los motores de busqueda cual es el titulo
+del elemento que esta buscando. Por ello debemos siempre poner una etiqueta de titulo que sea 
+relevante con el contenido que tenga nuestra pagina WEB, facilitando el aparecer en los motores de 
+busqueda.
+
 <H1>: Es un titulo, el titulo principal. Se utiliza para darle un titulo al contenido que viene
 despues. Los motores de busqueda utilizan estas etiquetas para poder indexar el contenido de los motores
 de busqueda. Por ello es importante que usemos las etiquetas de H1 no para mostrar las letras  mas 
@@ -56,28 +70,16 @@ grandes sino para indicar titulos en la pagina web.
 
 <H4, H5, H6>: Idem
 
+                                                Texto
 
 <P>: Es un parrafo. Este por si solo te permite escribir en una linea horizontal, para hacer 
 separaciones entre parrafos estan simple como cerrar y abrir otra etiqueta de parrafo.
 
+<B>: Permite resaltar el texto en negritas.
 
-<Hr>: Esta etiqueta permite crear una linea divisoria con el texto anterior. Es utilizado para
-separar secciones de nuestra pagina WEB. Esta al no tener contenido dentro no utiliza cierre.
+<I>: Permite poner el texto en Italica.
 
-
-<!-- -->: Estas son las etiquetas de comentario, obvio no van a aparecer es el explorador.
-
-<Br>: Es una etiqueta que permite pegar un salto de linea, cuando un texto es muy largo y quiero
-poner lo siguiente en otra linea lo que hago es llamar a la etiqueta <br>. Tambien si quiero puedo
-poner multiples saltos de linea <br><br>.
-
-
-<Span>: Nos sirve para refenrenciar texto que se encuentra dentro de otras etiquetas. Es como un 
-diferenciador de texto dentro de unas etiqueta. Basicamente su utilizadad es agarrar un trozo de 
-texto y hacerle pequeñas modificaciones (Como el color, el tamaño las dimensiones, moverlo, y varias
-mas cosas), dentro de un texto mas grande dentro de otras etiquetas. Basicamente agarrar una parte de un 
-texto y modearla. La configuracion del Span se hace dentro de su etiqueta de apertura.
-
+<Strike>: Tachar el texto.
 
 <a>: Es la etiqueta del hipervinculo, con esta etiqueta podre crear hipervinculos que me redireccionen
 a otra pagina o a secciones de mi misma pagina web. Para esto dentro de la etiqueta colocaremos la 
@@ -87,10 +89,34 @@ Ejemplo:<p> <a href="https://www.serviprynt.com.ar/">ServiFamily</a> </p>
 Si quiero que mi hipervinculo se abra en otra pestaña y no sobre la misma que en la de mi pagina 
 debo agregar en la apertura de la etiqueta: " target="_blank" "
 <p> <a target="_blank" href="https://www.serviprynt.com.ar/">ServiFamily</a> </p>
-
 Tambien puedo hacer referencia a secciones o puntos de mi pagina, para esto dentro de href colocamos 
 un # y el id la etiqueta a la que queremos transportarnos.
 
+Para conectarme a una pagina externa a la mia si o si debo llamar al protocolo https o http. Pero si yo quiero cambiar de
+pagina mediante este link a una pagina local mia es tan facil como poner en "href" el nombre de archivo de la pagina a la 
+cual quiero conectarme. 
+
+<Span>: Nos sirve para refenrenciar texto que se encuentra dentro de otras etiquetas. Es como un 
+diferenciador de texto dentro de unas etiqueta. Basicamente su utilizadad es agarrar un trozo de 
+texto y hacerle pequeñas modificaciones (Como el color, el tamaño las dimensiones, moverlo, y varias
+mas cosas), dentro de un texto mas grande dentro de otras etiquetas. Basicamente agarrar una parte de un 
+texto y modearla. La configuracion del Span se hace dentro de su etiqueta de apertura.
+
+                                                Divisores
+
+<Hr>: Esta etiqueta permite crear una linea divisoria con el texto anterior. Es utilizado para
+separar secciones de nuestra pagina WEB. Esta al no tener contenido dentro no utiliza cierre.
+
+<Br>: Es una etiqueta que permite pegar un salto de linea, cuando un texto es muy largo y quiero
+poner lo siguiente en otra linea lo que hago es llamar a la etiqueta <br>. Tambien si quiero puedo
+poner multiples saltos de linea <br><br>.
+
+                                                Comentarios
+
+<!-- -->: Estas son las etiquetas de comentario, obvio no van a aparecer es el explorador.
+
+
+                                                 Imagenes y Audio
 
 <Img />: Esta etiqueta sirve para mostrarle imagenes al usuario. Esta etiqueta no necesita un cierre
 aparte, sino que dentro de la apertura al final se le coloca "/" como cierre. Para colocar la imagen
@@ -101,8 +127,20 @@ nombre de la subcarpeta y nombre de la imagen bastara).
 Dentro de esta etiqueta tambien existe la propiedad "WITDH", en esta puedo manejar el ancho de la 
 imagen, para la altura utilizaremos la propiedad "HEIGHT". Ahora si yo manipulo el Ancho y no la 
 altura la imagen modificara automiticamente su altura para mantener la relacion aspecto con su largo.
-Ejemplo: <img src="img/Servi.jpg" width="300" height="200"/>
+Ejemplo: <img src="img/Servi.jpg" width="300" height="200"/>.
 
+La propiedad ALT en las imagenes nos permite poner una descripcion de esta, y sera fundamental en el CEO, debido a que 
+funciona como una especie de titulo para la imagen no visible. Tambien Tenemos la propiedad TITLE a una imagen que nos permite
+darle un nombre cuando pasamos el cursor sobre la imagen.
+
+<Video>: Nos permite colocar n video en nuestra pagina web. Yo coloco el video mediante el "SRC=" ahi coloco el link o ruta local
+del video. Pero para poder reproducirlo tambien debo llamar al atributo CONTROLS, este una vez llamado nos permitira por defecto
+acceder a los atributos del video.
+
+<Audio>: Similar al funcionamiento de video.
+
+
+                                                        Formularios
 
 <Form>: Con esta etiqueta lo que haremos sera interectuar con  el usuario con el fin de recopilar
 Informacion. Dentro de su apertura agregaremos action y ahi agregaremios una ruta de nuestro servidor
@@ -120,15 +158,27 @@ Ejemplo:<label for="Contra">Contraseña</label>
 (Un TextBox). Podemos seleccionar su estilo con la propiedad "Type" si es un Textbox con texto visible
 (Label), oculto (Password), Transformalo en un Boton (submit), el esperar un correo ("email"), Transformarlo
 en un radio Button (radio), checkbox, boton de cargar archivos (file). Por defecto el Input tiene 
-el type Text.
+el type Text. Tambien tenemos el Type "Number" que solo nos deja escribir numeros, El TYPE COLOR, el cual nos deja Seleccionar
+un color, TYPE RANGE nos permite generar una barra parecida a la de sonido (Podemos configurar el max y el min), El Date 
+te permite poner una fecha, time permite poner una hora, TYPE BUTTON el cual si o si necesita un value para funcionar (Un nombre).
+
 Otra propiedad de input es  "Name" cuando nosotros enviaemos los datos del 
 formulario a otro servidor este va a interpretar los datos segun el NAME que tenga. Es decir que el 
 name funciona como la clave del label (valueMember) y lo que escribamos en el input como el contenido.
+El NAME es un identificador que se utiliza en el BACKEND de la pagina para realizar procesamientos, sin este identificador
+el BACKEND no podria llegar a procesar correctamente.
+
 Otra propiedad es la de placeHolder, que permite agregar en el input el dato que debemos poner en ese 
 campo.
 Los input pueden tener valores por defecto, este se lo agregamos con la funcion VALUE.
 Ejemplo: <label for="Contra">Contraseña</label>
          <input id="Contra" type="Password" name="Password"  placeholder="Password">
+El nombre de Input viene debido a que se utiliza para la entrada/recopilacion de datos del usuario, mediante esta
+etiqueta busco que el usuario introduzca datos.
+
+Otra propiedad de los INPUT es el atributo REQUIRED, este lo que hace es que el Input que tenga esta propiedad debe ser 
+obligatoriamente llenado si deseamos enviar un FORMS.
+
 
 <TextArea>: Es similar al input, con su ID, placeHolder, Name y su Type. Este se suele para que las 
 personas escriban comentarios o datos que desean agregar y que no se encuentran en otros campos del
@@ -144,6 +194,8 @@ ser Button(Su funcion es programable con JaveScript), Reset(Reseteara los valore
 defecto) o Submit(Enviar Informacion).
 Ejemplo:<button type="Reset" style="color: rgb(25, 246, 209);"><img src="img/Servi.jpg" width="20"></button>
 
+                                                Listas
+
 <Ul>: Esta etiqueta es de listas no ordenadas. Cada vez que agreguemos un elemento dentro de esta 
 lista lo que hara sera agregar un punto negro al objeto. 
 
@@ -154,6 +206,8 @@ style y ponemos list-style y seleccionamos el estilo. Esto se debe hacer con cad
 
 <Li>: Me permite agregar objetos a la lista con el punto negro incluido, si lo hago con <p> esta 
 no asignara el punto negro.
+
+                                                        tablas
 
 <Table>: Una tabla se divide en filas y columnas. Las filas y columnas pueden tener una cabecera y un
 pie. Dentro de la apertura le puedo colocar el style border, donde le puedo definir el borde que recubre
@@ -177,8 +231,10 @@ tabla.
 elemento de ciertas etiquetas.
 Ejemplo:<style> table, th, td {border: 1px solid black;} </style>
 
-<div>: Se utiliza para dividir el contenido y agruparlo en secciones. Es un contenedor de etiquetas, cumple
-la misma funcion que  Header, seccion, Article y Footer, solo que con el mismo nombre.
+                                                Conexion Con otros archivos
+
+<Link>: Permite conectarnos con otros archivos como los de JS o CSS.
+
 
 En algun momento vamos a querer darle un identificador unico a nuestras etiquetas de HTML, para poder
 interactuar con ellos ya sea con JavaScript, CSS o HTML. No puedo/debo poner un ID igual a distintas 
@@ -187,9 +243,51 @@ Si yo quiero darle un mismo identificador a distintas etiquetas lo que debo hace
 CLASS y no el de ID. Con CLASS puedo albergar varias etiquetas distintas de forma empaquetada, encambio
 id debe utilizarse solo para una sola etiqueta. Con las clases podremos seleccionar las etiquetas desde
 CSS o JavaScript llamando a la clase.
-
 Lo que colocamos en las aperturas de las etiquetas se le conoce como atributos de las etiquetas.
 
+DATO: Las etiquetas de HTML Pueden tener varias clases, para colocarle mas de una clase separala por 
+un espacio. CLASS:"Parrafos Especial". Ahi tenemos 2 clases PARRAFOS y ESPECIAL.
 
-Con esto empezaremos a ver que se empiezan a formar bloques en la estructura de HTML, las etiquetas van 
-conformando bloques y sub-bloques.
+                                                        DALTO CURSO
+HTML se encarga de darle una estructura a la pagina web. Le damos la estructura, el esqueleto a nuestra pagina web. HTML funciona
+como una colocacion de cajas en la pagina web, yo voy colocando y acomodando la estructura primaria de mi pagina WEB ahora la estilizacion 
+ira por parte de CSS. Estas cajas que colocamos sobre la pagina WEB son las etiquetas o TAGS. En la Apertura de las TAGS yo les coloco las
+propiedades que van a tener mis etiquetas.
+Una pagina de HTML es pura estructura solamente, no debe importar como se ve, sino la estructrura que tiene.
+
+No es recomendable colocar mas de un H1, es semanticamente incorrecto. Ademas el posicionamiento de nuestra pagina WEB la definira en gran parte
+este H1. Es decir tiene un buen CEO.
+
+El nombre INDEX es debido a que con la conexion de servidores estos toman como referencia principal al archivo INDEX.HTML, ademas de que tambien 
+este nombre esta acentado por convencion.  
+
+Las etiquetas que tengan un display block (La mayoria) lo que haran es utilizar todo el ancho que le permita su contenedor.
+Si su cotenedorr su 400px esta etiqueta ocupara esos 400px, si el contendor es de 100 la etiqueta ocupara 100px.
+
+Cuando veo los tamaños del display mediante una pagina, el color celeste representa el tamaño real del objeto, el verde al 
+padding que tiene y el anaranjado su MARGIN.
+
+
+                                                        METADATOS
+
+METADATOS: Es una especie de Informacion que describe la informacion de los objetos de las etiquetas. En sintesis los metadatos
+lo que hacen es describir recursos. Para trabajar con METADATOS en HTML llamo a la etiqueta META en el HEAD.
+
+<Meta>: Con esta podemos realizar tanto cambios de CEO como de codificacion. Para trabajar con la codificacion de la pagina 
+llamaremos al atributo "CHARSET="  (CHARSET significa conjunto de caracteres). La codificacion general y universal suele 
+ser "CHARSET="utf-8"". 
+Tambien podemos trabajar con el Atributo NAME="KEYWORDS" y CONTENT="" y ahi dentro definiremos las palabras claves de nuestra
+pagina. Dentro de META NAME TENEMOS: DESCRIPTION (Descripcion no mayor a 150 caracteres) Author (Colocar autor de la pagina)
+Copyright (Poner los derechos de autor), ROBOTS (Define si nuestra pagina es indexada o no)
+
+HTML Semantico: Es la forma mas ordenada y mas optima de escribir nuestro codigo HTML. Consiste en colocar ordenadamente los
+elementos de mi HTML.
+
+<CENTER>: Todo lo que contenga esta etiqueta dentro lo va a centrar. Pero el CENTER solo centra a las cajas Hijas, pero no las
+hijas de las hijas.
+
+Para Colocar un Icono a la pagina llamamos a <Link> en rel colocamos "Icon" y le pasamos la ruta de nuestro archivo ICON.
+EJ: "<Link rel="icon" href="archivo.ico"
+
+DATO: No esta mal utilizar un DIV dentro de otro DIV si a los 2 DIV le quiero dar un acabado. Pero si solo a uno le quiero 
+dar estilo para ello uso un solo DIV.
