@@ -527,7 +527,164 @@ Para trabajar con esto tambien en mi HTML debo agregar la etiqueta META-VIEWPORT
 Icons: <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script> Poniendo este script 
 ya puedo poner Icons desde la pagina: https://fontawesome.com/search
 
-Menu Responsive:
-
 HOVER: Para llamar a otro objeto cuando se haga Hover sobre X elemento es tan sencillo como: ".Nav:hover > a{}". Con esto 
 cuando se haga un HOVER al contenedor Nav el "a" se vera modificado.
+
+Menu Responsive: Un menu responsivo es basicamente un menu que cambia o se adapta segun ciertos estimulos  (por ejemplo la
+resolucion).
+
+Box-Sizing: Maneja el como se calcula el tamaño de un elemento en una pagina web. Este afecta al Box-Model, es decir al 
+Contenido, Padding, Border y Margin. Por defecto el Box-Sizing usa el "Content-Box", que suma todos los elementos del 
+Box-Model.
+La otra opcion es el "Box-Sizing: border-box". Lo que hace esta propiedad es calcular el tamaño del contenido, el padding y 
+el border no sumaran mas tamaño al Box-Model, sino que utilizaran el tamaño del contenido y ocuparan parte de el. Es decir
+que el padding/border no hara mas grande el box-model, sino que chupara el espacio del contenido y se ajustara en el.
+
+Icons: Para colocar un Icono alcanza solo colocando la clase del icono dentro de algun contenedor/DIV, no solamente en la 
+etiqueta <i>.
+
+Calc(): Nos permite hacer calculos matematicos con las unidades de medida.
+
+FLEXBOX: Significa caja flexible, es una nueva forma de maquetar  las cajas. En su momento las webs se construian mediante 
+un modelo de tablas, con filas y columnas.
+
+Conceptos FLEXBOX: Flex Necesita un Contenedor (Flex-Container) y un Item (Flex-Item). Si a cualquier elemento lo manejo 
+con FLEX no se notara su efecto ya que este actuara como un BLOCK. La diferencia se nota cuando el ITEM esta dentro de un
+FLEX-CONTAINER. Es decir que el comportamiento que varia no es el del contenedor, sino el de los elementos dentro del con-
+-tenedor.
+FLEXBOX trabaja con los ejes X e Y (Main Axis y Cross Axis), mas que ejes son vectores. La punta de cada uno de estos vectores
+se denominan MAIN-START/MAIN-END y CROSS-START/CROSS-END. Los Flex-Items Son solo los hijos directos de un elemento con 
+display FLEX, no los sub-hijos, a esto no les afecta.
+
+Lo que hace Display-Flex es que los hijos del contenedor-FLEX, es decir los FLEX-ITEMS van a tender a acomadarse horizontalmente
+entre si, a diferencia de un BLOCK que se acomodaria uno debajo del otro. FLEXBOX por defecto siempre intenta ajustar el 
+contenido de los FLEX-ITEMS para que el tamaño del contenedor no varie, es decir que varia el tamaño horizontal de los 
+FLEX-ITEMS con el fin de mantener el tamaño horizontal del contenedor y de los FLEX-ITEMS. Si o si debo darle a los FLEX_ITEMS
+un WIDTH.
+
+FLEX-DIRECTION: Esta propiedad nos permite cambiar la direccion de los ejes del DISPLAY-FLEX. Esta propiedad se debe aplicar
+sobre el contendor FLEX. Tenemos ROW (Valor por defecto, acomoda los elementos por filas), Column (Acomoda los elementos por
+columna, de forma vertical), ROW-Reverse (Cambia el sentido, funciona como espejo), Column-Reverse (Idem).
+
+FLEX-WRAP:Lo que hace esta propiedad es respetar el ancho de un FLEX_ITEM, este si se reduce el tamaño del View Port
+No se achicara conjunto a este, sino que hara que los elementos hagan un salto de linea y se alineen abajo si es FLEX-WRAP y 
+arriba si es WRAP-REVERSE. 
+
+FLEX-FLOW: es una ShortHand que contiene a las 2 propiedades anteriores.
+
+JUSTIFY-CONTENT: Se utiliza para alinear los FLEX-ITEMS en X. Sus propiedades sn CENTER(centra el contenido), SPACE-AROUND (intenta
+dejar la mayor cantidad de espacio entre cajas), SPACE-BETWEEN (le da un margen automatico a todas las cajas),
+SPACE-EVENLY (Coloca un margen especifico a cada caja). Todas estas propiedades son para alinear en el MAIN-AXIS (Eje X).
+
+ALIGN-ITEMS: Se utiliza para alinear los FLEX-ITEMS en Y. Sus propiedades son: STRETCTH (Valor por defecto), CENTER (centra
+el elemento verticalmente al medio.), FLEX-START/END (Lo coloca al final o principio del contendor, START permite ajustar la
+CAJA a el contenido), BASELINE (Se usa con un WRAP-REVERSE y lo queremos colocar abajo).
+
+ALIGN-CONTENT: Cumple la misma funcion que ALIGN ITEMS solo que se utiliza cuando quiero usar varias lineas verticales.
+
+                                                    PROPIEDADES DE ITEMS
+
+ALIGN SELF: Esta modifica el posicionamiento en el CROSS Axis (Eje Y). Tiene las mismas propiedades que ALIGN Items.
+
+Margin: El Margin funciona distinto a como lo haria normalmente, el Margin Auto posiciona en la zona opuesta (Si pon Margin-Left: auto lo pega a 
+la derecha). Para centrarlo es tan sencillo como darle un margin auto en cada punta de los ejes.
+
+FLEX-GROWTH: Agarra el espacio sobrante y lo rellena con la cantidad de contenido en pantalla. Es decir, que modifica el tamaño horizontal de los
+objetos en base al espacio sobrante. Basicamente cuando si los elementos tienen un tamaño fijo una vez
+superado ese tamaño mediante el GROWTH decidiremos a que objeto darle prioridad en cuanto el espacio 
+sobrante, que elemento agarrara mas espacio de lo que sobre. Si no tienen un tamaño minimo crecera constantemente
+segun la asignacion de espacio dada por GROWTH.
+
+FLEX-BASIS: Modifica el ancho del Flex-Item. Funciona Igual que el WIDTH, solo que tiene mayor peso que 
+este en los elementos flex.
+
+Flex-Shrink: Es el espacio que va a ceder cada caja. Los flex items se encogerán para llenar el contenedor de acuerdo a su número flex-shrink , cuando 
+el tamaño por defecto de los flex items sea mayor al de su contenedor flex container.
+Permite elegir que caja va a ceder mas espacio y en que cantidad cuando no haya mas lugar. El espacio sobrante solo se 
+empieza a repartir cuando todos los FLEX-ITEMS tienen su medida estandar, cuando es menos no se reparte nada.
+
+FLEX: ShortHand de GROWTH, Shrink y BASIS.
+
+ORDER: El orden de los elementos en el eje X. Por ejemplo si tengo 2 elementos en HTML y quiero cambiarlos
+su posicion en el eje X lo puedo hacer simplemente con ORDER.
+
+                                                GRID 
+
+GRID: Es un estilo de Layaout, y es una propiedad del estilo display. Funciona a traves de un modelo de grillas.
+
+GRID CONTAINER: Es todo el contenedor, el contendor completo, al igual que el flex-container. Para hacer de un elemento un
+GRID container se debe asignarle un Display-GRID. La CAJA se comportara como un bloque pero cambia su estructura interna.
+Dentro del GRID-CONTAINER se formara una grilla.
+
+GRID ITEM: Cada uno de los Items que formen de la Grilla (Que formen al Grid-Container). Ojo, cada celda no es un elemento,
+sino que cada etiqueta que se encuentre dentro de un Grid-Container se considerara un GRID-ITEM.
+Los GRID-ITEM son los hijos directos de un GRID container. Pasa igual que en Flex, los sub-hijos no pertenecen a GRID.
+
+GRID-CELL: Son cada una de las Celdas que tiene nuestro GRID-CONTAINER, son cada una de las subdivisiones del contenedor.
+
+GRID-TRACKS: Son las filas y columnas del contenedor. Normalmente se las conoce como GRID-ROWS y GRID-COLUMN.
+
+GRID-AREAS: Son areas del contenedor que definimos nosotros. Las areas si o si deben ser celdas consecutivas.
+
+GRID LINE: Son las lineas del GRID-CONTAINER. Estas se dividen en Columns-Line y Row-Line.
+
+Cuanto Creamos un GRID-CONTAINER este por defecto crearta una sola columna y se comportara como un elemento de BLOCK.
+Ahora para crear mas ROWS y COLUMNS debemos llamar en el contenedor a GRID-TEMPLATE-ROWS/COLUMNS.
+
+GRID-TEMPLATE-ROWS (Se aplica al CONTAINER): Para definir la cantidad de ROWS debemos poner el tamaño de cada ROW por separado.
+Ejemplo, si quiero 3 Filas seria asi: "GRID-TEMPLATE-ROWS: 100px 125px 150px".
+
+GRID-TEMPLATE-COLUMS (Se aplica al CONTAINER): Es igual que TEMPLATE-ROWS.
+
+MEDIDAS: Para que las grillas sean dinamicas como FLEX, se trabajan con unidades como FR, que al final cumple una funcion
+similar a FLEX-GROWTH, se encarga de darle el espacio sobrante a esa columna o fila al varias la resolucion.
+
+GRID-ROW-GAP: Es una especia de MARGIN, es la distancia que va a tener cada celda con otra en cada borde, esta separacion es
+entre celda y no contra el borde.
+
+GRID-COLUMN-GAP: Idem. GRID-GAP es el ShortHand de ambos.
+
+                                                GRID ITEMS PROPIEDADES
+
+GRID-ROW: Con esta propiedad le definimos a una GRID-CELL que tamaño debe ocupar en la GRILLA, de que linea a que linea
+debe ocupar, por defecto empezara de la linea 1 a la 2 pero podemos modificar esto. EJ: Grid-ROW: 1 / 3. 
+Con esto estamos dificiendo que la primera ROW se dibuje de la linea 1 a la 3. Tambien existe la ayuda SPAN, con esta 
+lo que hacemos es decirle la cantidad de columnas que queremos que ocupe.
+EJ: Grid-ROW: 1 / SPAN 2. Aca estamos diciendo que empiece en la linea 1 y que desde ahi ocupe 2 columnas.
+
+GRID-COLUMN: Idem.
+
+NTH-CHILD(): Esto se utiliza para seleccionar algun hijo de alguna clase, dentro de los parentesis ponemos el numero del 
+hijo.
+
+REPEAT: para simplificar la creacion de COLUMNS y ROWS se llama en el TEMPLATE la funcio REPEAT(), en ella le debemos pasar
+2 parametros, primero la cantidad de ROWS/COLUMNS a crear y luego su tamaño.
+
+                                                GRID IMPLICITO y EXPLICITO
+
+Ahora que sucede si agregamos un elemento y este elemento se posiciona fuera de nuestra grilla del GRID-CONTAINER. El elemento
+que se genere por fuera del GRID que nosotros generamos se llama GRID IMPLICITO. El GRID que nosotros manejamos es el 
+GRID EXPLICITO. Tiene la diferencia que aca no vamos a definir cuantas filas vamos a crear, sino el tamaño de los Grids 
+implicitos que tenemos. 
+El Grid IMPLICITO por defecto se creara como una fila nueva, si queremos que en vez de fila se forme como columna lo que hacemos
+es llamar a: "GRID-AUTO-FLOW: COLUMN".
+
+GRID-AUTO-ROWS: Sirve para programar el GRID IMPLICITO, es el TEMPLATE del Grid EXPLICITO.
+
+GRID-AUTO-COLUMNS: Idem.
+
+GRID-AUTO-DENSE: Si se llega a generar un espacio vacio en el Grid lo que se debe hacer es llamar a AUTO-DENSE, esta propiedad
+se encarga de rellenar los espacios vacios de un GRID IMPLICITO con un elemento cercano.
+
+                                                    GRID DINAMICO
+
+Min-Max: Permite definir el maximo y el minimo que va a medir una Celda de GRID. Esto puede ser puesto como parametro en 
+el REPEAT. Dentro del Min-Max Tambien puedo agregar al Min-Content y al Max-COntent.
+
+Min-Content: La celda del Grid se va a adaptar al contenido minimo, su tamaño se va a achicar al minimo del contenido.
+
+Max-Content: La celda del Grid se va a adaptar al contenido  Maximo, su tamaño se va a achicar al minimo del contenido.
+
+Auto-Fill: Lo que hace es que si hay espacio sobrante para una celda mas la agrega. (Revisar)
+
+Auto-Fit: Lo que hace es escalar las columnas para que ocupen todo el contenedor. (Revisar)
