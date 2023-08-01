@@ -608,7 +608,7 @@ FLEX: ShortHand de GROWTH, Shrink y BASIS.
 ORDER: El orden de los elementos en el eje X. Por ejemplo si tengo 2 elementos en HTML y quiero cambiarlos
 su posicion en el eje X lo puedo hacer simplemente con ORDER.
 
-                                                GRID 
+                                                     GRID CONCEPTOS
 
 GRID: Es un estilo de Layaout, y es una propiedad del estilo display. Funciona a traves de un modelo de grillas.
 
@@ -620,7 +620,7 @@ GRID ITEM: Cada uno de los Items que formen de la Grilla (Que formen al Grid-Con
 sino que cada etiqueta que se encuentre dentro de un Grid-Container se considerara un GRID-ITEM.
 Los GRID-ITEM son los hijos directos de un GRID container. Pasa igual que en Flex, los sub-hijos no pertenecen a GRID.
 
-GRID-CELL: Son cada una de las Celdas que tiene nuestro GRID-CONTAINER, son cada una de las subdivisiones del contenedor.
+GRID-CELL : Son cada una de las Celdas que tiene nuestro GRID-CONTAINER, son cada una de las subdivisiones del contenedor.
 
 GRID-TRACKS: Son las filas y columnas del contenedor. Normalmente se las conoce como GRID-ROWS y GRID-COLUMN.
 
@@ -628,25 +628,28 @@ GRID-AREAS: Son areas del contenedor que definimos nosotros. Las areas si o si d
 
 GRID LINE: Son las lineas del GRID-CONTAINER. Estas se dividen en Columns-Line y Row-Line.
 
+                                                        GRID CONTAINER
+
 Cuanto Creamos un GRID-CONTAINER este por defecto crearta una sola columna y se comportara como un elemento de BLOCK.
 Ahora para crear mas ROWS y COLUMNS debemos llamar en el contenedor a GRID-TEMPLATE-ROWS/COLUMNS.
 
 GRID-TEMPLATE-ROWS (Se aplica al CONTAINER): Para definir la cantidad de ROWS debemos poner el tamaño de cada ROW por separado.
-Ejemplo, si quiero 3 Filas seria asi: "GRID-TEMPLATE-ROWS: 100px 125px 150px".
+Ejemplo, si quiero 3 Filas seria asi: "GRID-TEMPLATE-ROWS: 100px 125px 150px". 
+"GRID-TEMPLATE-ROWS: REPEAT(4, 1fr)".
 
 GRID-TEMPLATE-COLUMS (Se aplica al CONTAINER): Es igual que TEMPLATE-ROWS.
 
 MEDIDAS: Para que las grillas sean dinamicas como FLEX, se trabajan con unidades como FR, que al final cumple una funcion
 similar a FLEX-GROWTH, se encarga de darle el espacio sobrante a esa columna o fila al varias la resolucion.
 
-GRID-ROW-GAP: Es una especia de MARGIN, es la distancia que va a tener cada celda con otra en cada borde, esta separacion es
+GRID-ROW-GAP (Se aplica al CONTAINER): Es una especia de MARGIN, es la distancia que va a tener cada celda con otra en cada borde, esta separacion es
 entre celda y no contra el borde.
 
-GRID-COLUMN-GAP: Idem. GRID-GAP es el ShortHand de ambos.
-
+GRID-COLUMN-GAP (Se aplica al CONTAINER): Idem. GRID-GAP es el ShortHand de ambos.
+ 
                                                 GRID ITEMS PROPIEDADES
 
-GRID-ROW: Con esta propiedad le definimos a una GRID-CELL que tamaño debe ocupar en la GRILLA, de que linea a que linea
+GRID-ROW (Lineas): Con esta propiedad le definimos a una GRID-CELL que tamaño debe ocupar en la GRILLA, de que linea a que linea
 debe ocupar, por defecto empezara de la linea 1 a la 2 pero podemos modificar esto. EJ: Grid-ROW: 1 / 3. 
 Con esto estamos dificiendo que la primera ROW se dibuje de la linea 1 a la 3. Tambien existe la ayuda SPAN, con esta 
 lo que hacemos es decirle la cantidad de columnas que queremos que ocupe.
@@ -657,7 +660,7 @@ GRID-COLUMN: Idem.
 NTH-CHILD(): Esto se utiliza para seleccionar algun hijo de alguna clase, dentro de los parentesis ponemos el numero del 
 hijo.
 
-REPEAT: para simplificar la creacion de COLUMNS y ROWS se llama en el TEMPLATE la funcio REPEAT(), en ella le debemos pasar
+REPEAT: para simplificar la creacion de COLUMNS y ROWS se llama en el TEMPLATE la funcion REPEAT(), en ella le debemos pasar
 2 parametros, primero la cantidad de ROWS/COLUMNS a crear y luego su tamaño.
 
                                                 GRID IMPLICITO y EXPLICITO
@@ -673,18 +676,156 @@ GRID-AUTO-ROWS: Sirve para programar el GRID IMPLICITO, es el TEMPLATE del Grid 
 
 GRID-AUTO-COLUMNS: Idem.
 
-GRID-AUTO-DENSE: Si se llega a generar un espacio vacio en el Grid lo que se debe hacer es llamar a AUTO-DENSE, esta propiedad
+GRID-AUTO-FLOW: DENSE: Si se llega a generar un espacio vacio en el Grid lo que se debe hacer es llamar a AUTO-DENSE, esta propiedad
 se encarga de rellenar los espacios vacios de un GRID IMPLICITO con un elemento cercano.
 
                                                     GRID DINAMICO
 
-Min-Max: Permite definir el maximo y el minimo que va a medir una Celda de GRID. Esto puede ser puesto como parametro en 
-el REPEAT. Dentro del Min-Max Tambien puedo agregar al Min-Content y al Max-COntent.
+Min-Max (Container): Permite definir el maximo y el minimo que va a medir una Celda de GRID. Esto puede ser puesto como parametro en 
+el REPEAT. Dentro del Min-Max Tambien puedo agregar al Min-Content y al Max-Content. En sintesis, el Min-Max se aplica 
+en el TEMPLATE cuando creo las columnas y filas
 
 Min-Content: La celda del Grid se va a adaptar al contenido minimo, su tamaño se va a achicar al minimo del contenido.
 
 Max-Content: La celda del Grid se va a adaptar al contenido  Maximo, su tamaño se va a achicar al minimo del contenido.
 
-Auto-Fill: Lo que hace es que si hay espacio sobrante para una celda mas la agrega. (Revisar)
+Auto-Fill: Lo que hace es que si hay espacio sobrante para una celda mas la agrega.
 
 Auto-Fit: Lo que hace es escalar las columnas para que ocupen todo el contenedor. (Revisar)
+
+                                                    ALINEACION GRID
+
+Existen distintas formas de alineacion en Grid: La alineacion de todos los ITEMS (Una  alineacion que se aplica al contenedor),
+alineacion de ROWS y COLUMNS y la alineacion por elemento individual.
+
+Alineacion-Container: Tenemos JUSTIFY-ITEMS, que es igual a JUSTIFY-CONTENT, las cajas de GRID se comportan como elementos
+Flex. En cambio en flex los elementos dentro de la caja se comportan como flex, en GRID todas sus celdas se comportaran
+como FLEX. ALIGN-ITEMS es lo mismo, solo que es para la alineacion vertical. El JUSTIFY como el ALIGN como su nombre indica
+solo alinea ITEMS.
+
+ALINEACION-ROWS/COLUMN: Para esto debemos llamar a JUSTIFY-CONTENT o ALIGN-CONTENT segun el eje en donde queramos centrarla.
+Esto es combinable con la forma de alineciaon anterior, ya que de una forma puedo centrar ROWS/COLUMNS en un sector de un 
+contenedor y dentro de ese mismo sector darle otra forma de centrado. (AMBAS CONFIGURACIONES VAN EN UN GRID-CONTAINER.)
+Estas alineaciones tambien cuentan con SPACE-ARROUND/BETWEEN/EVENLY.
+
+ALINEACION-ITEM (Config dentro del item): Esta configuracion alinea individualmente a cada ITEM. Esto Mediante JUSTIFY-SELF
+y ALIGN-SELF. Ignora las posiciones del CONTAINER y de ROWS, aunque siempre se mantiene en los margenes del container. 
+PLACE-SELF Es el ShortHand para JUSTIFY y ALIGN.
+
+ORDER: Es igual que en FLEX.
+
+
+                                                        GRID AREAS
+
+Para Crear Areas en GRID lo que se hace es usar la propiedad GRID-TEMPLATE-AREAS. Una Area es un conjunto de Bloques GRID,
+no necesariamente consecutivos (aunque es lo comun).                    
+El uso de Areas consta en lo siguiente: mediante Comillas voy a definir mis areas y en forma de bloque, es como es dibujo
+las areas mediante los nombres de las secciones. Mediante las palabras defino la cantidad de filas y columnas que tengo.
+Para darle las medidas llamo a TEMPLATE-ROWS y COLUMN.
+
+EJ: GRID-TEMPLATE-AREAS: "HEADER HEADER HEADER"
+                         "Aside Main Main"
+                         "Aside Main Main"
+                         "Footer Footer Footer"
+
+Para otorgarle cada uno de estos sectores a los GRID-ITEMS debo colocarles en su GRID-AREA el nombre de su seccion.
+
+EJ: .GridItem{ 
+    GRID-AREA: MAIN;
+}
+
+                                                 14)  RESPONSIVE DESIGN
+
+Es una Tecnica que busca adaptar nuestra pagina Web a distintas resoluciones. Su objetivo es hacer que se vea bien en todas
+las resoluciones. Para esto el Responsive Design trabaja con estructuras flexibles, imagenes y videos flexibles, Media Queries.
+
+@MEDIA: Se usa para adaptar paginas para distintos dispositivos de distintas resoluciones. Este nos ayuda a consultar Y
+validar el Ancho/Alto de la ventana grafica, Ancho/Alto del dispositivo, La orientacion (Vertical u horizontal) y la 
+resolucion. Los Media Queries Son condicionales que se accionen sergun se cumplan o no una serie de condiciones.
+
+Tenemos Varios Medios Media-Queries: ALL (Apto para todos los dispositivos), PRINT (Impresion de la pagina WEB), SCREEN
+(Segun la resolucion de la pantalla le pagina se modificara) y SPEECH.
+
+orientacion: LANDSCAPE (Mayor tamaño horizontal)  y PORTRAIT (Mayor tamaño vertical).
+
+Mobile First: Crear una WEB para Mobile y luego adaptarla a dispositivos mas grandes. Desktop First es lo contrario.
+
+Para escribir una MEDIA-Queries: "@Media SCREEN and (Min-Width 992px) and (Max-Width 2000PX) {}
+
+
+                                                15) TRANSITIONS
+
+transition es una propiedad que nos permite realizar transiciones dentro de los elementos. Basicamente es los FRAMES que 
+hay entre un estado y otro (Con Hover por ejemplo). Lo que si para que Transition se ejecuta necesita un TRIGGER/LISTENER,
+un evento que dispare la transicion.
+
+Transition-Property: Es seleccionar a que propiedad se le va a aplicar la transicion, los valores pueden ser ALL, NONE o el
+nombre especifico de la Propiedad a la cual le queremos dar una animacion. Lo mejor es seleccionar la propiedad a la cual
+se le quiere dar una transicion, de esta forma se consumira menos recursos que seleccionar ALL. Esta propiedad es 
+obligatoria.
+
+Transition-Duration: Es la Duracion en segundos que va a tener la transicion que realizamos.Esta propiedad es obligatoria.
+
+Transition-Delay: es el tiempo de Retraso que va a tener la transicion una vez ejecutado el TRIGGER.
+
+Transition-Timing-Function: Linear(Velocidad de animacion lineal), ease(Propiedad/Valor por defecto, empieza rapido la 
+animacion y termina lento), ease-in (empieza lento y termina rapido), ease-out (empieza rapido y termina lento, es menos 
+brusco que ease) y ease-in-out (Arranca Lento, Tiene una mitad rapida y termina lento).
+
+                                                16) ANIMACIONES
+
+Las Animaciones funcionan de forma similar a las transiciones pero para poder invocar a las Animaciones antes se debe 
+llamar a una regla, llamada: "@KeyFrames". COn KEYFRAMES declaramos que vamos a crear una animacion, y luego le asiganamos
+un Nombre a esta animacion. Tenemos 2 formas para definir Animaciones:
+
+@KeyFrames AnimacionPrueba{
+    from {
+
+    }
+    to{
+
+    }
+}
+
+@KeyFrames AnimacionPrueba{
+    0% {
+
+    }
+    50%{
+
+    }
+
+    100%{
+
+    }
+}
+
+En FROM definiremos las propiedades iniciales que tiene el elemento antes de iniciar la animacion. En TO definiremos las propiedades
+finales que tendra ese elemento.
+
+Animation-Name: Con esta propiedad seleccionaremos la animacion que deseamos utilizar mediante su nombre.
+
+Animation-Duration: Duracion de la animacion.
+
+Animation-Timing-Function: Linear(Velocidad de animacion lineal), ease(Propiedad/Valor por defecto, empieza rapido la 
+animacion y termina lento), ease-in (empieza lento y termina rapido), ease-out (empieza rapido y termina lento, es menos 
+brusco que ease) y ease-in-out (Arranca Lento, Tiene una mitad rapida y termina lento).
+
+Animation-Iteration-Count: Con esto lo que hacemos es decir cuantas veces se va a repetir nuestra animacion. Para que sea
+infinite ponemos INFINITE.
+
+Animation-Direction: Esto lo que hace es definir como se van a ejecutar las ordenes de animacion: Normal (de 0 a 100), 
+Reverse (de 100 a 0), alternate (de 0 a 100 y cuando llega al 100 hace la animacion de 100 a 0 y asi constantemente) Y
+alternate-reverse. Solo funciona cuando el iteration Count es > 1.
+
+Animation-Fill-Mode: Define las propiedades del elemento al finalizar la Animacion. Fowards (Las propiedades del elemento
+son las que adquirio al final de la animacion.) y Both (Permite que el elemento tenga las propiedades antes del inicio antes 
+de que empiece la animacion).
+
+Cubic Bezier:  Es una propiedad del Animation-Timing-Function y Transition-Timing-Function. Esta es una curva que determinara
+la velocidad de las animaciones. Esta trabaja con 4 valores: Cubic Bezier (X1, Y1, X2, Y2) Estas coordenadas terminaran 
+definiendo la velocidad de las animaciones en distintos momentos de la animacion. 
+Lo recomendable es generar la curva de Bezier con un generador automatico.
+
+
+                                                    17) TRANSFORM
