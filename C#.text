@@ -940,7 +940,7 @@ que la vamos a invocar ocasionalmente, que la vamos a ejecutar en una instancia 
 Para trabajar con un CONSTRUCTOR debo construirlo, diseñarlo dentro de mi clase y a partir del momento que trabajemos
 con las instancias de nuestras clases (Objetos) vamos a estar invocando a un constructor u otro.
 Con la palabra NEW lo que hacemos es invocar al constructor de la clase. El constructor es una funcion que lo que hace
-es generar la instancia del la clase, es decir el objeto. Por ello para instanciar una clase llamo al constructor mediante
+es generar la instancia del la clase, es decir crear el objeto. Por ello para instanciar una clase llamo al constructor mediante
 la palabra NEW, de esta manera se crea mi objeto. Esta palabra NEW Viene creada por la clase madre de todas las clases,
 la clase OBJECT. Esta clase OBJECT es basicamente la clase base de todas las bases de C#. Todas las clases que se generen 
 heredaran de la clase OBJECT, es decir adquirira ciertas funciones y caracteristicas de esta clase.
@@ -1368,7 +1368,9 @@ estas formas. Por ende estos objetos tienen sus propios eventos, sus metodos, su
 nos permita configurarlos y manipularlo.
 
 OPERADOR TERNARIO: Tiene el funcionamiento de un IF pero se ejecuta en una sola linea. 
-Se escribe: string variable = bool  == true/false ? "Fue verdadero" : "Fue falso".
+Se escribe: string variable = Situacion Booleana ? "Fue verdadero" : "Fue falso".
+
+string numero = (numero>5)? "Es Mayor a 5" : "Es Menor a 5";
 
 APUNTE: A partir de este momento debemos entender que la programcion esta funcionando de forma distinta, ya no es solo
 una funcion main donde se ejecuta todo mi codigo de forma secuencial y termina el programa. En los programas que estamos
@@ -2311,4 +2313,344 @@ Manejo de NULL.
 Otra Forma Seria: "IF(!(lector["UrlImangen"] is DBNull))"
 
 
-                                                        CURSO 3
+                                                CONTROLADORES Y EVENTOS (SUBSCRIPCIONES)
+
+Suscribirse a un evento en el contexto de la programación significa conectar un controlador (también conocido como 
+manejador o handler) con un evento específico.                                                         
+Al suscribir un controlador a un evento, estás indicando que deseas que el controlador se ejecute cada vez que el 
+evento ocurra. Usar el operador += para suscribir un controlador a un evento es una forma de establecer esa conexión.
+
+
+
+
+                                                     CURSO 3 [Web .Net]
+
+                                                        UNIDAD 1
+
+HTTP: Protocolo de comunicacion de transferencia de hipertextos. Lo que viaja por HTTP es basicamente es HTML.
+
+Protocolo de comunicacion: Pautas para realizar una comunicacion eficaz.
+
+VPS: Un servidor privado virtual (VPS) es una máquina que aloja todo el software y los datos necesarios para ejecutar una 
+aplicación o un sitio web.
+
+Hosting: El alojamiento web u hospedaje web es el servicio que provee a los usuarios de Internet un espacio de 
+almacenamiento en línea, también conocido como webspace, que permite publicar todo el contenido relacionado con un 
+sitio web.​ 
+
+Con Microsoft vamos a tener 3 frameworks para trabajar la construccion de apps WEBS (no paginas, sino aplicaciones WEB), 
+estas Son .NET, .NET Core y .NET 7.0/8.0. Estas tendran diferentes alternativas a la hora de construir las aplicaciones web.
+En este curso se vera como crear APPS Web con ASP.NET de tipo WebForms. 
+
+Introduccion al Entorno Web: La estructura Web es diferente a la de las Apps de escritorio, ya que estas ultimas todas las
+consultas y demas funciones funcionan a nivel local. Es decir todo esta dentro de una misma red y se comunica ahi mismo.
+En el caso de las paginas Web no es asi, sino que en esta existe una relacion de Cliente/Servidor para la comunicacion.
+El usuario manda una peticion HTTP al servidor y este devuelve una respuesta. Esto quiere decir que el servidor y las conexiones
+ya no son locales como las apps de escritorio, sino por red. En el servidor sera donde alojemos toda la Logica de Negocio
+de nuestras Paginas Web.
+
+La Gran diferencia entre una app de escritorio y una Web es que la Web no sera necesario tenerla instalada localmente para 
+que esta funcione, a diferencia de la App de escritorio. Para que funcione nuestra App Web lo unico que necesitamos es un 
+navegador con  el cual podemos conectarnos y acceder a la URL de la App Web.
+
+Lenguajes de la Web: HTML (Lenguaje Interpretativo, no lenguaje de programacion), CSS (Decora la parte visual de HTML) y 
+JavaScript.
+
+Aplicaciones Web: Una vez que implementamos los Lenguajes de la Web con los lenguajes de Back-End con los cuales construimos
+Aplicaciones como C#, Java, Python, ETC. Da lugar a poder crear una App Web. La diferencia entre una Pagina Web y una App Web
+es que la App Web tiene de fondo un gran manejo de logica (BackEnd) a diferencia de una simple pagina que puede ser solo visual
+o realizar acciones muy basica/primitivas (Colocar comentarios, pegar una foto, Lectura).
+En la Aplicacion Web voy a necesitar un Tipo Servidor en el que pueda soportar/Ejecutar la arquitectura de mi Back-End. 
+En el Caso de .NET para poder ejecutar una aplicacion Web mi servidor debe contar con un servidor llamado IIS 
+(Internet Information Service).
+
+Sintesis-Arquitectura Web: Un Navegador (Cliente), Un servidor (VPS o Hostinger), una Peticion de HTTP (Del Cliente al Servidor), 
+Respuestas De la Peticion (Del Servidor Al Cliente), Lenguajes (HTML, CSS, JS) y Lenguajes BackEnd (C#, JAVA, Python).
+
+Antes de la respuesta del servidor pasan una serie de acciones logicas, una vez resuelta la peticion la respuesta es devuelta
+al navegador. En la Pagina no pasa ningun proceso logico como tal, sino que es un medio visual y es el medio que tiene el 
+Cliente de comunicarse con el Servidor. La parte Fron-End de la pagina no realiza ninguna accion logica, sino funciona como
+estimulo/intermediario o Trigger con el Back-End.
+
+HTML: Hyper-Text-Markup-Languaje. Es un lenguaje basado en TAGS y con una estructura en forma de arbol. Al no ser una lenguaje
+de programcion no necesita ser compilado, sino que el navegador directamente lo lee y lo interpreta.
+
+Los Header, Article, Section y Footer Tienen el mismo comportamiento  que un DIV, pero ayudan a la semantica y a la lectura 
+del codigo, es una forma mas correcta de escribir codigo HTML.
+
+CSS: Es un Lenguaje de configuracion, seteamos las configuraciones de estilo.
+
+JavaScript: Es un Lenguaje de programacion. Es un lenguaje de Scripting, este no se compila sino que es un lenguaje 
+interpretado. Para armar una  funcion en JavaScript Solo se necesita la palabra "Function" y el nombre de la funcion.
+JavaScript es un lenguaje debilmente Tipado en el cual no es necesario declararle los tipos de las variables. Solo con la
+palabra VAR alcanzara para eso. Aunque ya no se suele considerar buena practica el Uso de VAR, sino que es mas comun el uso
+de "LET" o "CONST". Estas son variables de Bloque, es decir empiezan y terminan una vez que el bloque de llaves se cierra.
+Const tiene la caracteristica de que es constante.
+
+Function Saludar(){  }
+
+En JS existe la palabra reservada document. Esta nos permite acceder al documento HTML y a sus elementos, por ejemplo mediante
+la funcion de "GetElementByID()" Que lo que hara sera seleccionar el elemento de HTML que contenga X id. para guardarlo en
+una variable se hace de la siguiente forma. Otra Funcion util en JS es Alert(). A esta le pasas un String y te lo muestra 
+por cartel.
+
+let nombre = document.GetElementByID("MyId").value;
+
+En el caso de que quiera sumar 2 valores que extraje de una caja de texto lo que debo hacer es implicitarle a la variable
+que los valores que tiene son numeros y no caracteres string. Porque sino al querer sumarlas lo que hara esto sera concatenarlos.
+Para decirle que son numeros tengo que llamar a la funcion ParseInt() y dentro de los parentesis pasarle el value que es un
+numero.
+
+                                                Unidad 2 - Intro ASP .NET
+
+Con .NET podemos hacer tres tipos de Web: 1)WebForms, Similar a los WinForms de las apps de escritorio. 2)MVC, este es  un 
+patron de diseño de  arquitectura de aplicaciones. 3) WebAPI / ApiRest / WebServices, servicios Web, Basicamente es una aplicacion
+Web pero sin la parte de la interfaz grafica.
+
+En este caso vamos a crear una App WebForms, la cual solo esta disponible en .NET (los nuevos frameworks dejan de usarla), Ya
+que WebForms es la primera forma en la que se pudo crear Apps Webs Con .NET (Es la tecnologia mas vieja) y por ello ya suela estar
+en desuso. 
+
+La Solucion de este proyecto Web Contara con mas archivos que los proyectos anteriores: 1) Connected Services, propiedad para conectar servicios
+de la nube (Docker, Azure), 2) Propierties: las propiedades de la APP. 3) References: Las Referencias a otros proyectos o librerias.
+4) App_Start: Configuraciones profundas de la App (BundleConfig y RouteConfig) 5) Content: Son carpetas de configuracion pero de CSS.
+6) Script: Algunos Scripts de JS. 7) WebConfig: Similar al AppConfig, con configuraciones iniciales de la APP.
+
+En Este entorno de desarrollo los archivos que conociamos como .HTML son los .ASPX. La gran diferencia es que estos proyectos .ASPX no son 
+entendidos de forma nativa por el navegador a diferencia del HTML. Por ello para poder ejecutar un .ASPX necesito alojarlo en un Contenedor Web
+asi este logra interpretarlo y ejecutarlo. En este caso el contenedor en el cual se alojara nuestro proyecto en el desarrollo sera en el IIS,
+el cual cumplira el rol de contenedor Web e interpretara el proyecto para que este pueda ser ejecutardo en la WEB. En este caso el IIS actua como
+una especie de maquina virtual donde alojaremos nuestra App Web para poder ejecutarla y que el navegador la entienda.
+
+Dentro del proyecto tendremos varios archivos .ASPX que oficiaran de HTML (Con una Sintaxis diferente por cada distinta Pagina tendremos un archivo
+ASPX, es decir la pagina del menu de OLE tendra su .ASPX, la pagina de Una noticia tendra otro ASPX, la pagina de la tabla otro y asi con el
+resto de paginas).
+
+Diferencias entre Pagina HTML y ASPX: El ASPX (al igual que el WinForms) no esta compuesto por un solo archivo, a diferencia del HTML. La cabecera
+del ASPX dictamina el lenguaje en el cual se va a correr el codigo, el CodeBehind(cual va a ser el archivo que contenga el codigo Backend de la 
+Pagina), Entre otros. En sintesis la primera gran diferncia es que el HTML es un Archivo plano y el ASPX no, son varios archivos interconectados
+que lo componen.
+
+Dentro del ASPX puedo usar las <% %> para comunicarme con codigo C#, por ejemplo puedo crear una Propiedad a la cual acceder. 
+EJ: <h2><%: Title %>.</h2> Con esto lo que hago es poder acceder a esa propiedad y tenerla en el back para modificarla y no solo tener un 
+texto plano. En Sintesis la segunda gran diferencia es que mientras que en HTML solo tengo texto plano en ASPX puedo generar propiedades que se
+comuniquen con el BackEnd para desde ahi poder manipularlas.
+
+Master-Page: Hay 2 maneras de crear un WebForms: 1) Crearlo solo, directamente desde un documento ASPX y ahi configurarlo (ahi tambie tendre la
+plantilla de HTML). 2) Crear un WebForms con Master-Page, basicamente un WebForms Manager, la cual actuaria como una Pagina Padre de las otras 
+paginas, una plantilla del resto. La Master-Page sirve para usarla de plantilla base para el resto de paginas ASPX.
+
+Dentro de la estructura WEB del Master Page este tiene dentro de una etiqueta  <asp:ContentPlaceHolder> un ID. El ContentPlaceHolder
+es basicamente un Guardador de Contenido y mediante el uso del ID de la etiqueta  <asp:ContentPlaceHolder> voy a poder guardar
+contenido en ese guardador.
+Es decir, yo creo una caja (el ContentPlaceHolder) donde poder guardar contenido, y le doy una llave (el ID) para poder 
+acceder a esa caja y guardar contenido. Esto es basicamente lo que hacemos en las otras paginas, en vez de desarrollar 
+toda la estructura HTML lo que hacemos es crear una etiqueta de contenido que luego se desplegara en el Master, siempre y cuando
+la guardemos en la caja creada. En el master esta presente todo el codigo HTML que reutilizaremos en las otras paginas, al igual
+que los Frameworks y Scripts. Por esto decimos que el Master-Page es una plantilla de las otras paginas.
+Tambien dentro de Master-Page Puedo crear las propiedaedas que despues puedo reutilizar en otros paginas ASPX como la 
+PROP Title.
+Tenemos la posibilidad tambien de crear nuestra propia Master-Page y crear nuestro propia Plantilla/esquleto de pagina como mas prefiramos.
+Como Dato a destacar esta Master-Page por defecto trae configuraciones de base de CSS, al traer librerias de BootStrap y algunos Script de JS por
+defecto.
+
+BundleConfig: Los Archivos CSS y JS los puedo agregar de igual forma que si estuviera en un HTML normal.
+Pero tambien existe otra forma de agregarlo mediante BundleConfig (Bundle es manejo, asi que seria Configuracion del 
+manejo de archivos, o Manejador de Paquetes). Para Configurar esto tenemos el BundleConfig, ahi tenemos Bundles configurados, que
+con una sentencia podemos llamar varios paquetes. Tambien los podemos colocar individualmente en un <asp:ScriptReference>.
+Cualquiera de las 2 maneras termina siendo la correcta.
+
+En BundleConfig: bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+                            "~/Scripts/modernizr-*"));
+
+En Master-Page: <asp:PlaceHolder runat="server">
+                    <%: Scripts.Render("~/bundles/modernizr") %>
+                 </asp:PlaceHolder>
+
+Diferencias De etiquetas/Controles HTML y ASP: La primera diferencia es que las etiquetas ASP es que cuando lo quiera 
+manejar desde el Back este podra acceder a Metodos y Propiedades a las cuales un control de HTML no puede. Por ejemplo
+si a ambas le coloco la etiqueta Runat="server" tanto <input> como <asp:textbox> seran accesibles desde el back, pero solo en
+<asp:textbox> tendre la posibilidad de accder y modificar su Text, ya que <input> no cuenta con esa capacidad debido a que C#
+en el Back no lo interpreta, al no ser un objeto de .NET, sino solo es un elemento de HTML puro.
+En Sintesis la  gran diferencia es que los controles <asp:> son mas manipulables y maleables desde el BackEnd que 
+un control HTML, esta basicamente es plano a la hora de manipularlo desde el Back de C#.
+
+Dentro de las etiquetas <asp:> para generar un evento debo llamarlo desde la etiqueta y ahi seleccionar un evento existente o crear
+uno nuevo. 
+EJ: <asp:Button ID="Button1" runat="server" Text="Buy" data-text="Awesome" class="button" OnClick="Button1_Click"/>  
+Al tocar este boton a diferencia del Boton HTML este va a hacer una peticion al servidor y este ejecutara el codigo Back
+programado para ese evento, algo que no se puede con un boton de HTML comun.
+
+Navegacion Entre Paginas: Es similar a HTML, en vez de href="#ID" es href="~/NombrePaginas". Poniendo ~ y el nombre de 
+mi archivo ASPX (sin la extension) podre ir de pagina en pagina. Depende el Sitio en que este no es necesario usar ~.
+
+Otra Forma de hacerlo sin el uso de un href es mediante el BackEnd. Ahi por ejemplo al tocar un boton si quiero redireccionarlo
+lo que hago es generar un evento al tocar el boton (colocarle la propiedad OnClick) y utilizaremos una Propiedad de Page, 
+Response, este tendra acceso al metodo Redirect() que permitira colocar un link al cual debemos ser redireccionado. Si es
+uno de mis archivos locales debo colocar el nombre con su extension. EJ: Response.Redirect("Prueba.aspx");
+Eso si, se debe tratar de evitar el uso muy frecuentemente de Response.Redirect(); debido a que es una consulta pesada, y 
+esto puede dar problemas si son a gran escala. Por ello no se considera buena practica usar muchos de estos Response.Redirect().
+
+En algunos casos le deberemos pasar un false como parametro al Redirect() para que en caso de alguna excepcion que ocurra 
+este nos redirija a otra pagina. Response.Redirect("Prueba.aspx", false);
+
+
+
+FOREACH: Foreach (var item in collection){}. En donde esta var se puede poner el tipo de variable que estamos buscando o dejar directamente var que
+funciona como comodin. Item es el nombre temporal que se le asignara a cada variable de la lista/coleccion. y collection es la Coleccion en la que
+buscara las variables.
+
+Ejemplo: Foreach(int numeroImpar in listaNumeros)
+         {
+            if(numeroImpar%2==0)
+                console.WriteLine("Par");
+            else
+                console.WriteLine("Impar");
+         }
+
+                                                  Unidad 3 - BootStrap
+
+BootStrap: Es una libreria/FrameWork de CSS. Una vez que tengo cargada la libreria tengo la posibilidad de usar clases por 
+defecto de BootStrap en mi proyecto. La puedo actualizar mediante paquetes NuGet o agregando 2 lineas de codigo que brinda
+la pagina de BootStrap. 
+(Para identar el codigo debo presionar Control+K+D).
+
+                                               Unidad 4 - Eventos ASP .NET
+
+Eventos Web: Los eventos son similares a los eventos  de las apps de escritorio, la diferencia es que estas son muchas 
+menos que en escritorio. Tambien tiene la peculiaridad de que su comportamiento se va a ver afectado por el POST-BACK.
+
+Los eventos Web tienen la caracteristica (debido a su arquitectura) que cada vez que se dispare algun evento proveniente del
+Front-End Este ejecutara antes el evento Page_Load();. Es decir que cada vez que se vaya a ejecutar un evento siempre se 
+ejecutara antes el evento del Page_Load();. 
+
+PostBack: Cuando Se carga la pagina por primera vez se genera una primera carga de la pagina. Pero si realizamos un click
+que como consecuencia-efecto deriva en una peticion al servidor se generara una segunda llamada a este, Esto es lo que 
+llamamos un PostBack.
+Es decir que PostBack Es la peticion que realiza el cliente al servidor luego de la primera peticion (la conexion inicial)
+con el servidor. Ante esta nueva peticion el Servidor devolvera una respuesta (tambien parte del PostBack), de ahi sale 
+el termino Post-Back (Envio de Vuelta).
+Es Decir que el PostBack consiste en una nueva peticion del cliente al servidor (luego de la inicial) que derivara en que el
+servidor envie de nuevo la informacion de la pagina al cliente. La informacion que volvera a enviar (si no manejamos el 
+PostBack) es todo lo que se encuentre en el evento Page_Load();.
+
+Para manejar el PostBack debo preguntar SI se esta realizando la primera carga de la pagina o es un PostBack. Se hace de 
+la siguiente forma: If(!IsPostBack){}
+De esa forma pregunto que si no es PostBack (si es la primera carga) se ejecutar todo lo que este en ese IF, sino no.
+
+Dicho esto tenemos que entender que los eventos en ASP .NET se ejecutaran cada vez que se realice un PostBack, sin el PostBack
+no se disparan los eventos. Dentro de esto hay eventos que tienen un Auto-PostBack y otros que no. Es decir que hay elementos
+que al interactuar con ellos, como el Click por ejemplo, automaticamente genera un PostBack (Auto-PostBack), lo que da 
+lugar a que se ejecute el Page_Load() y luego el click y toda su sentencia. Pero hay otros eventos que no tienen ese 
+Auto-PostBack, sino que deben esperar a que suceda un PostBack para que su evento se ejecute, aunque ya se haya interactuado
+previamente con el elemento y el evento. Por ejemplo, el TextChanged No tiene un Auto-PostBack, sino que aunque el texto cambie
+y se detecte esto, para que su evento se ejecute se tiene que dar lugar a un PostBack.
+
+Para Habilitar o Deshabilitar el auto PostBack debo hacerlo desde la etiqueta <asp:> con la propiedad AutoPostBack="true/false".
+Con eso activare o desactivare que el boton cuente con un PostBack Automatico.
+
+Parametros Por URL - QuickWatch: Para Pasar un parametro por URL lo que debo hacer es hacer mi Response.Redirect(); pasar
+el nombre de la pagina a la que quiero ser redireccionado y una vez colocado el nombre colocaremos un:
+"?nombreVariable="+ variableX. de Esta forma tendremos capturado el valor de la varible al pasar a otra URL. Estos datos
+se veran reflejados en el URL de la pagina, lo cual no es seguro si queremos pasar datos como contraseñas o usuarios.
+
+Response.Redirect("Default.aspx?nombreVariable=" + variableX, false); - Pasar un parametro
+Response.Redirect("Default.aspx?nombreVariable=" + variableX + "&variableY=" + variableY, false); - Pasar mas de un parametro
+<a href="default?id=1">  LINK </a> 
+
+Ahora para recuperar esa informacion en otra URL lo que debo hacer es hacer un Request (Un Pedido/Solicitud) de un QueryString
+(de una cadena de Consulta) de X nombre. Es decir hago una solicitud de tomar el valor de un string de X nombre. Eso si, debo
+manejar la excepcion de que cada vez que se ejecute ese Request exista el parametro que estoy queriendo pasar, y que este no
+sea nulo.
+
+string user = Request.QueryString["nombreVariable"].ToString();
+
+si selecciono una linea de codigo o parte de ella puedo acceder al QuickWatch (Vista Rapida) que me permite saber que 
+resultado o como se resuelve esa sentencia de codigo, ademas me permite reevaluar valores. Sirve como una herramienta para
+poder depurar, ver los errores mas simplemente y ver el funcionanmiento de la app detalladamente.
+
+IF en HTML: Para hacer un If en HTML debe colocarlo dentro de <% %> y ahi escribir la sentencia.
+<% if(user != "")
+    {%>
+    <a>
+    <p>
+<%}else 
+    {%>
+    <h1>
+    <br>
+<%} %>    
+
+Parametros Por Session: En este caso utilizaremos el objeto "Session", pero es la Sesion de parte del servidor, es decir
+la instacia de sesion que se genera en el servidor al conectarme a esa pagina. Una Vez cerrada la pagina y por ende cortada 
+la comunicacion con el servidor esta Session se corta. Session es una especia de coleccion/lista que funciona como clave 
+valor (al igual que el QueryString de Request), es decir que accedo a los objetos mediante su clave. Para agregar Objetos 
+a estas coleccion lo que debo hacer es llamar al metodo Add() y ahi pasarle la clave y el objeto que quiera guardar y cuando
+lo quiera recuperar debo llamar a sesion y colocar la clave del objeto a recuperar. De esta forma podemos manejar de forma mas 
+segura el transporte de parametros que por URL.
+Por cada usuario conectado Session Genera una instacia.
+
+string Password = labelPass.text;
+Session.Add("PassKey", Password);
+
+labelMostrarPass = Session["PassKey"] !=? Session["PassKey"].ToString(); : "Usted no tiene Pass";
+
+GridView: El dgv es similar a lo que ya habiamos visto antes. Para su armado tenemos que darle una Lista a su DataSource y agregando el uso de la 
+funcion DataBind (esta funcion lo unico que hace es renderizar o dibujar la tabla) crearemos nuestro DGV. Esta no es mas que una Tabla de HMTL
+con los datos que nosotros le cargamos. Ahora su visualizacion sera fea y simple, si queremos mejorarla usaremos BootStrap, haciendo uso de sus
+clases. Con el F12 en la seccion de elementos, bajo los elementos HTML tengo un boton ".cls" que me permite agregar clases a mis etiquetas HTML Y
+me permite renderizarlas y ver como se ven en vivo.
+
+Las Columnas de el DGV son generadas automaticamente segun las propiedades del objeto que le pasemos, si queremos manejar esto podemos activar Y
+desactivar las columnas que queremos que se muestren. Para esto le damos al DGV que la propiedad (en las etiqueta ASP) generacion Automatica de 
+columnas este en false. Para Configurar las columnas entonces debo crear dentro del DGV una etiqueta <Columns> </Columns> y en su interior llamar
+a una etiqueta ASP de columna (de las cuales hay varias), por ejemplo <asp:BoundField>. Esta tiene propiedades como HeaderText (Nombre de la columna),
+DataField (Ahi deberemos colocar el nombre de la propiedad del objeto de nuestra lista, ya que de ahi la columna tomara los datos).
+
+Formulario: 1) Para Hacer que un Textbox se convierta en un <textarea> debemos llamar a la propiedad de TextMode, con esta
+propiedad podre decirle que el textbox sea multilinea. Tambien tiene la posibilidad de configurarlo mediante TextMode que
+sea un Mail, Password, selector de color, Telefono, DATE, fecha, numerico, ETC. 2) Para tener en cuenta que todos los 
+elementos ASP se terminan transformando en elementos HTML al pasar a la ejecucion de la Pagina, estos tienen la funcion 
+de poder comunicarse con el Back a diferencia de los HTML. 3) Para que los Radio Button entiendan que pertenecen a un
+mismo grupo debo darle en la propiedades de su etiqueta un Group Name.
+4) Para Trabajar directemente con la lista de Autos que tengo guardada en Session "Session["Lista"]" En vez de crear una 
+lista nueva, agregar la lista vieja y el nuevo registro a la lista nueva, borrar la vieja de Session y agregar la nueva, 
+puedo simplemente trabajar con la lista que ya tengo en Session, ¿Como? Simple, Coloco el objeto session con su llave, le 
+casteo que es una lista y le agrego por fuera de eso una Capa de parentesis, con esto podre llamar a la funcion add y usarlo
+como lista.
+EJ-Forma Corta: if (Session["Lista"] != Null)
+                    ((List<Auto>)Session["Lista"]).Add(ejemplo);
+
+Ej-Forma Larga: //List<Auto> aux = new List<Auto>();
+                //aux = (List<Auto>)Session["Lista"] != null ? (List<Auto>)Session["Lista"] : (List<Auto>)new List<Auto>();
+                //aux.Add(ejemplo);
+
+5) Aclaracion, en la forma larga no hace falta un Session.RemoveAll(), debido a que en la lista nueva "aux", al asignarle
+lo que tiene Session["Lista"] ya no le estoy dando un valor, sino estoy creando una referencia al objeto Session["Lista"] Y
+por ende todo cambio que genere la lista aux tambien se vera reflejado en el Session["Lista"], debido a que ambos tienen al
+mismo objeto solo que con distintas referencias, aux no obtiene un valor en su asignacion, sino un referencia a un objeto
+ya existente con valor.
+Agrego que las variables de tipo Objetos (no los objetos en si) solo pueden una referencia a la vez, una variable no puede referenciar
+a 2 objetos a la vez, si ya tengo una referencia y le asigno otro objeto (por ende otra referencia) la referencia anterior se 
+corta por la nueva.
+
+Seleccionar Elementos de la grilla: Para seleccionar elementos de la grilla debo poner dentro de mi DGV un <asp:CommandField>
+(un campo de comando) Este colocara una columna mas en la que colocara un boton, ya sea de edicion, eliminacion, seleccion,
+Etc. Cada uno de estos botones tendra su propiedad text (SelectText, EditText, DeleteText).
+
+Cuando quiero ocultar una columna en el DGV no lo puedo hacer mediante un Visible=false, debido a que al hacer esto, esa 
+columna no va a ser dibujada y por ende no puedo capturar su valor ni trabajar con el, por ende deberiamos ocultarlo 
+mediante CSS. Esto creando una clase de CSS con Display: none;, luego se lo tengo que asignar al <asp:BoundField>, pero al
+display none se lo tengo que dar 2 veces (debido a que este elemento ASP despues se muestra en HTML como 2 elementos), por 
+ende la clase oculto la debo colocar en HeaderStyle-CssClass="Oculto" y ItemStyle-CssClass="Oculto".
+
+Otra forma de trabajar esto es NO crear la columna del Id, sino que a mi DGV mediante la propiedad DataKeyNames le puedo 
+asignar un dato clave para trabajar la grilla pero que quiero que se mantenga oculta. Aca adentro tengo que colocar el
+nombre de la propiedad (del objeto de la lista de objetos con la que trabajo), es igual que un DataField.
+
+Para buscar un valor en especial en una lista debo utilizar la LAMBDA Expresion, esta consiste en declarar una variable auxiliar dentro 
+del Metodo Find(), luego le coloco una flecha y le indico a que propiedad apunta el aux, y le digo que tiene que ser igual a un valor.
+Con esto me traigo un objeto de la lista.
+
+                                                         LAMBDA Expresion
+
+lista.Find(aux => aux.propiedad1 == ValorBuscado);

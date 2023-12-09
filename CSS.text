@@ -203,7 +203,7 @@ Ejemplo: transition: box-shadow 0.3s ease;
 CSS: Sirve para agarrar las etiquetas de HTML y modelarlas. Basicamente es agarrar una etiqueta/elemento de HTML y 
 personalizarlo.
 
-                                                            Selectores
+                                                           0) Selectores
 
 1)Universal: Con el "*" selecciono todos los elementos que hayas en HTML y los puedo modificar, se usa muy esporadicamente.
 
@@ -375,7 +375,7 @@ una mayor intesidad, esta concatenacion es separada por comas en la misma linea.
 
 TRANSFORM: *EXPLICA MAS ADELANTE* Con Rotate(xDEG) puedo darle grados de rotacion a un elemento.
 
-                                                        OUTLINE
+                                                    0) OUTLINE
 
 ShortHand: Es una propiedad acortada, porque es el conjunto de varias propiedades (Como Border, Margin o PADDING).
 
@@ -386,7 +386,7 @@ superar los bordes.
 Este lo unico que hace es marcar el objeto sin ocupar un espacio fisico real como border.
 
 
-                                                        POSITION
+                                                       1) POSITION
 
 POSITION: Lo que hace es posicionar los elementos, lo que hacemos es agarrar un elemento y posicionarlo. Que un elemento este
 posicionado significa que adquiere nuevas propiedades (Top, Right, Left, bottom, Z-Index). Este propiedad es la que altera
@@ -429,18 +429,18 @@ El Z-Index presenta conflicto entre los elementos padres e hijos, es decir que s
 al del hijo este igualmente seguira por debajo de sus elementos hijos. La unica forma de que este se posicione por encima seria
 No dandole Z-Index al padre y al hijo darle un -1 de Z-Index.
 
-                                                                OVERFLOW
+                                                               2) OVERFLOW
 
 OVERFLOW: Lo que es manejar aquel contenido que se sale o desborda del contendor. Este lo puede esconder con HIDDEN o mostrar
 mediante una barra de deslizamiento con SCROLL, tambien esta AUTO que tambien coloca una barra de desplazamiento pero solo si
 es necesario (SCROLL la coloca sea o no necesario). Esta propiedad es un ShortHand que abrevia OVERFLOW-X y OVERFLOW-Y.
 
-                                                                FLOAT
+                                                               3) FLOAT
 
 FLOAT: Su uso es para anclar una imagen a algun margen y que esta este acompañada de texto. 
 
 
-                                                            PSEUDO-ELEMENTOS
+                                                          4) PSEUDO-ELEMENTOS
 
 DOM: Son las siglas de Document Object Model, es la estructura de un documeento de HTML, formado por las etiquetas y propiedades
 de cada una de estas etiquetas. 
@@ -473,7 +473,7 @@ La Diferencia entre Before y after es que uno se coloca antes del elemento selec
 seleccionado.
 
 
-                                                        PseudoClases
+                                                       5) PseudoClases
 
 PseudoClases: Lo que hacen es escuchar a algun evento, van a reaccionar o ejecutarse a partir de algun evento particular. 
 1) Hover (Mouse Encima de un elemento). 2) Visited (Cuando un link ya fue visitado). 3)Active(Cuando Pulsamos sobre algun
@@ -482,7 +482,7 @@ foco a un Input). 6)Lang, es una funcion a la cual se le debe pasar un parametro
 Para que esto sea detectado al texto que modifiquemos deberemos pasarle un LANG en sus atributos.
 
 
-                                                        Object Fit 
+                                                      6) Object Fit 
 
 Object Fit: Viene a solucionar el problema de tamaño de las imagenes, para que estas siempre mantengan su Aspect-Ratio.
 Esta maneja valores como Fil, Contain, Cover, None y Scale-Down.
@@ -502,11 +502,11 @@ Scale-Down: Compara Contain y None y elige la que tenga la menor resolucion.
 Object Position: Permite elegir el anclaje del con se agarra la imagen para mostrarla, si elijo Right se anclara al margen 
 Derecho y mostrara todo lo que se abarque desde ese borde.
 
-                                                        CURSOR
+                                                      7) CURSOR
 
 Cursor: Este permite cambiar la visualizacion del cursor. https://www.w3schools.com/cssref/tryit.php?filename=trycss_cursor
 
-                                                        Colores
+                                                       8) Colores
 Los colores primarios en programacion son el Rojo, Verde y Azul, y con estos sera los que trabajaremos.                                                       
 1)RGB: para llamarlo colocaremos "rgb=(0,0,0) el primero es el rojo, segundo verde y tercero azul. Estos valores van
 del 0 al 255. Tambien existe el RGBA que es lo mismos solo que se agrega un numero que controla la trasparencia.
@@ -514,7 +514,7 @@ del 0 al 255. Tambien existe el RGBA que es lo mismos solo que se agrega un nume
 Los primeros 2 (o 1) contempla al rojo, los otros segundos al verde y los ultimos al azul. 0 es la minima expresion de color
 y "f" la maxima
 
-                                                        Responsive Design
+                                                      9) Responsive Design
 
 Responsive Design: Es un concepto que se centra en trabajar con las distintas resoluciones.  Lo que hacemos es adaptar una
 resolucion a varios dispositivos. Es basicamente adaptar una WEB a distintos dispositivos. Mobile First es el contrario,
@@ -544,6 +544,9 @@ Icons: Para colocar un Icono alcanza solo colocando la clase del icono dentro de
 etiqueta <i>.
 
 Calc(): Nos permite hacer calculos matematicos con las unidades de medida.
+
+
+                                                            10) FLEXBOX
 
 FLEXBOX: Significa caja flexible, es una nueva forma de maquetar  las cajas. En su momento las webs se construian mediante 
 un modelo de tablas, con filas y columnas.
@@ -582,7 +585,7 @@ CAJA a el contenido), BASELINE (Se usa con un WRAP-REVERSE y lo queremos colocar
 
 ALIGN-CONTENT: Cumple la misma funcion que ALIGN ITEMS solo que se utiliza cuando quiero usar varias lineas verticales.
 
-                                                    PROPIEDADES DE ITEMS
+                                                  10.1)  PROPIEDADES DE ITEMS FLEX
 
 ALIGN SELF: Esta modifica el posicionamiento en el CROSS Axis (Eje Y). Tiene las mismas propiedades que ALIGN Items.
 
@@ -608,7 +611,7 @@ FLEX: ShortHand de GROWTH, Shrink y BASIS.
 ORDER: El orden de los elementos en el eje X. Por ejemplo si tengo 2 elementos en HTML y quiero cambiarlos
 su posicion en el eje X lo puedo hacer simplemente con ORDER.
 
-                                                     GRID CONCEPTOS
+                                                 12)    GRID CONCEPTOS
 
 GRID: Es un estilo de Layaout, y es una propiedad del estilo display. Funciona a traves de un modelo de grillas.
 
@@ -628,7 +631,7 @@ GRID-AREAS: Son areas del contenedor que definimos nosotros. Las areas si o si d
 
 GRID LINE: Son las lineas del GRID-CONTAINER. Estas se dividen en Columns-Line y Row-Line.
 
-                                                        GRID CONTAINER
+                                                     12.1) GRID CONTAINER
 
 Cuanto Creamos un GRID-CONTAINER este por defecto crearta una sola columna y se comportara como un elemento de BLOCK.
 Ahora para crear mas ROWS y COLUMNS debemos llamar en el contenedor a GRID-TEMPLATE-ROWS/COLUMNS.
@@ -647,7 +650,7 @@ entre celda y no contra el borde.
 
 GRID-COLUMN-GAP (Se aplica al CONTAINER): Idem. GRID-GAP es el ShortHand de ambos.
  
-                                                GRID ITEMS PROPIEDADES
+                                               12.2) GRID ITEMS PROPIEDADES
 
 GRID-ROW (Lineas): Con esta propiedad le definimos a una GRID-CELL que tamaño debe ocupar en la GRILLA, de que linea a que linea
 debe ocupar, por defecto empezara de la linea 1 a la 2 pero podemos modificar esto. EJ: Grid-ROW: 1 / 3. 
@@ -663,7 +666,7 @@ hijo.
 REPEAT: para simplificar la creacion de COLUMNS y ROWS se llama en el TEMPLATE la funcion REPEAT(), en ella le debemos pasar
 2 parametros, primero la cantidad de ROWS/COLUMNS a crear y luego su tamaño.
 
-                                                GRID IMPLICITO y EXPLICITO
+                                              12.3)  GRID IMPLICITO y EXPLICITO
 
 Ahora que sucede si agregamos un elemento y este elemento se posiciona fuera de nuestra grilla del GRID-CONTAINER. El elemento
 que se genere por fuera del GRID que nosotros generamos se llama GRID IMPLICITO. El GRID que nosotros manejamos es el 
@@ -679,7 +682,7 @@ GRID-AUTO-COLUMNS: Idem.
 GRID-AUTO-FLOW: DENSE: Si se llega a generar un espacio vacio en el Grid lo que se debe hacer es llamar a AUTO-DENSE, esta propiedad
 se encarga de rellenar los espacios vacios de un GRID IMPLICITO con un elemento cercano.
 
-                                                    GRID DINAMICO
+                                                 12.4)   GRID DINAMICO
 
 Min-Max (Container): Permite definir el maximo y el minimo que va a medir una Celda de GRID. Esto puede ser puesto como parametro en 
 el REPEAT. Dentro del Min-Max Tambien puedo agregar al Min-Content y al Max-Content. En sintesis, el Min-Max se aplica 
@@ -693,7 +696,7 @@ Auto-Fill: Lo que hace es que si hay espacio sobrante para una celda mas la agre
 
 Auto-Fit: Lo que hace es escalar las columnas para que ocupen todo el contenedor. (Revisar)
 
-                                                    ALINEACION GRID
+                                                  12.5)  ALINEACION GRID
 
 Existen distintas formas de alineacion en Grid: La alineacion de todos los ITEMS (Una  alineacion que se aplica al contenedor),
 alineacion de ROWS y COLUMNS y la alineacion por elemento individual.
@@ -715,7 +718,7 @@ PLACE-SELF Es el ShortHand para JUSTIFY y ALIGN.
 ORDER: Es igual que en FLEX.
 
 
-                                                        GRID AREAS
+                                                      12.6)  GRID AREAS
 
 Para Crear Areas en GRID lo que se hace es usar la propiedad GRID-TEMPLATE-AREAS. Una Area es un conjunto de Bloques GRID,
 no necesariamente consecutivos (aunque es lo comun).                    
@@ -829,3 +832,94 @@ Lo recomendable es generar la curva de Bezier con un generador automatico.
 
 
                                                     17) TRANSFORM
+
+TRANSFORM nos permite transformar el objeto, estas transiciones reciben funciones.
+
+TRANSFORM: translateX: Aca se dara el valor de cuanto se movera/trasladara el elemento en el eje X. Si yo trabajo el moviento con 
+porcentaje el porcentaje de moviento sera en relacion al tamaño del objeto, es decir si yo pongo 100%, se movera el ancho
+del objeto.
+
+TRANSFORM: translateY: Es lo mismo que en X solo que en el eje Y.
+
+TRANSFORM: translate: Es un ShortHand para el Eje X y el Eje Y.
+
+TRANSFORM: Scale(): Esta funcion nos permite modificar el tamaño del elemento, nos permite escalarlo. En los parentesis le 
+pasamos el valor al cual queremos escalar nuestro objeto, 1 es conservar el mismo tamaño, 2 es duplicarlo ETC.
+EJ: Transform: Scale(2.5);
+
+TRANSFORM: ScaleX(): Escalara el tamaño solo en el EJE-X.
+
+TRANSFORM: ScaleY(): Escalara el tamaño solo en el EJE-Y.
+
+En TRANSFORM yo puedo definir tanto Scale como Translate. Pero si en un elemento defino Translate 50px y luego en el Hover
+Defino un Scale(2) el elemento va a perder su translate de 50px, porque volvi a redifinir TRANSFORM y no coloco el Translate.
+*8:46:30*
+
+TRANSFORM: Skew(deg): Con esta funcion lo que hago es darle grados de inclinacion al elemento, el valor numero debe estar 
+acompañado de la medida deg (Grados/Degrades).
+
+CLIP-PATH: Buscando esto en GOOGLE iremos a una pagina que nos permite generar formas para nuestros elementos en CSS.
+https://bennettfeely.com/clippy/
+
+TRANSFORM-Translate es la forma mas optima de realizar animaciones, consume muchos menos recursos que otras tecnicas.
+
+
+                                                        18) BACKGROUND
+
+BACKGROUND-Color: Dar un color al fondo.
+
+BACKGROUND-IMAGE: URL(): Lo que hace basicamente poniendo el link de  una imagen puedo poner una imagen de BACKGROUND. 
+Para modicar el tamaño de la imagen se utiliza a BACKGROUND-SIZE.
+
+BACKGROUND-SIZE: Con esta propiedad puedo modificar el tamaño del fondo de la imagen, se recomienda usar la propiedad cover
+para hacer que la imagen mantenga la resolucion, tambien esta Contain y Fill. Contain puede provocar que se repita la 
+imagen en el fondo.
+
+BACKGROUND-REPEAT: Si utilizamos Contain la imagen se va a repetir en el fondo de nuestro BACKGROUND,  para evitar esto 
+llamamos a esta propiedad y seleccionamos la opcion "no-REPEAT".
+
+BACKGROUND-ORIGIN: Permite configurar desde donde se va a empezar a mostrar la imagen, con respecto al BOX-MODEL, desde que 
+elemento del BOXMODEL se va a empezar a mostrar la imagen, Puede ser: BORDER-BOX(la imagen comienza en donde empieza el Borde),
+Padding-BOX (Se muestra desde donde empieza el Padding) y Content-Box (Se muestra desde donde empieza el contenido del BOX-MODEL).
+
+BACKGROUND-CLIP: Es similar al ORIGIN pero esta va a  recortar la imagen y va a empezar desde donde le indiquemos. BACKGROUND
+ORIGIN no recorta la imagen sin o que la adapta para que empiece en  X lugar, en cambio CLIP si la recorta. CLIP indica 
+a la imagen de donde empezar pero a causa de esto recorta parte del contenido.
+
+BACKGROUND-Position:  Permite definir el posicionamiento de nuestra imagen en el BACKGROUND, las posibilidades  son varias
+pero consiste en mezclar LEFT, RIGHT, CENTER  + TOP, BOTTOM, CENTER. La Primera define la posicion horizontal y la segunda
+la vertical.
+
+BACKGROUND-ATTACHMENT: Con el valor FIXED nos permite dejar fija la imagen cuando hagamos un SCROLL Down, lo que da un lindo
+efecto visual.
+
+
+                                                        19) Variables en CSS 
+
+:root{
+    --Variable: #000;
+}
+.Container{
+    background-color: var(--Variable);
+}
+
+                                                        20) Filter
+
+Filter: Es una forma para darle filtro a imagenes. Este filtro trabaja con diversas propiedades: none(sin filtro), BLUR 
+(Le hace un efecto BLUR a las imagenes, las vuelve borrosas, las desenfoca), Brightness (selecciona la cantidad de brillo
+ que va a tener una imagen), Contrast (Contraste), Drop-shadow (Genera una sombra como el Box-shadow, pero es diferente, el
+ efecto se ajusta a los elementos de la imagen y no al recuadro si la imagen es trasparente), GrayScale(Permite modificar la
+ imagen en la escala de grises), OPACITY (Nivel de opacidad de 0 a 1), Saturate (Saturado). 
+Estos filtros se lo puede aplicar a cualquier aspecto visual, no solo a imagenes.
+
+                                                    21) Otras Propiedades
+
+Letter-Spacing: Defino el Espaciado de las letras.
+
+Scroll-Behauvior: Nos permite Suaviazar (o no) el efecto del SCROLEO. Esta propiedad se le da al body. Para que sea 
+suave le ponemos el valor SMOOTH
+
+User-Selected: Con esta propiedad modificamos si el usuario puede o no seleccionar algun elemento.
+
+
+GUIA DE SELECTORES: https://www.w3schools.com/cssref/css_selectors.php
