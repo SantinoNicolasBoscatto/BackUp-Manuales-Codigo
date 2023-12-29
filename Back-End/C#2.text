@@ -1,0 +1,15 @@
+API REST: Es una aplicacion Web desde el lado del Back-End ( un servicio web), en el cual tenemos una serie de Metodos 
+configurados que realizan ciertas funcionalidades como la interaccion con la base de datos, Logica, etc, que puede ser
+consumida (utilizada) mediante el protocolo HTTPS por cualquier tipo de cliente que entienda el protocolo HTTPS.
+En esta API vamos a crear distintos metodos que necesitemos utilizar, para cada uno de estos metodos definiremos una ruta
+y cada una de esas rutas tendra un Metodo HTTPS diferente (Get, Head, Post, Put, Delete, Connect, Options, Path).
+Normalmente el ApiRest devuelve los datos en un JSON (Es mas organizada y liviana que un XML).
+
+En Sintesis: Un ApiRest es una App-Web que tenemos en el Back-End, en donde tenemos una serie de URL que nos devuelve o le 
+enviamos un resultado en un archivo JSON.
+
+Un API es como una página web, pero no para ser leída por personas sino para ser leídas por programas.
+
+Un API no lo consume/Utiliza una persona, la consume/Utiliza un programa. Al consumirla no lo hace a través de un navegador
+de internet, sino que envía un pedido a una dirección http también, pero en lugar de recibir un HTML, una API va a regresar
+un contenido JSON para ser consumido por el programa que envió el pedido.

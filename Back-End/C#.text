@@ -2653,4 +2653,263 @@ Con esto me traigo un objeto de la lista.
 
                                                          LAMBDA Expresion
 
-lista.Find(aux => aux.propiedad1 == ValorBuscado);
+lista.Find(objetoDeLaLista => objetoDeLaLista.propiedad1 == ValorBuscado);
+
+                                             Unidad 5 - Conexion de Base de Datos
+
+Listar con StoreProcedure: El StoreProcedure es una funcion prearmada en la base de datos que podemos llamar. Los StoreProcedure estaran
+dentro de las Bases de SQL, en la seccion de Programmability. Para crear un StoreProcedure debo poner la siguiente linea de codigo:
+"create procedure storedListar as " + La consulta que yo quiera usar.
+Ademas que en C# debo cambiar el setearConsulta, en la parte del CommandType, debo cambiar el CommandType.Text por 
+CommandType.StoreProcedure.
+
+DGV vs Foreach: Con Foreach tambien vamos a poder dibujar una tabla HTML, al igual que Foreach.
+
+Listar Con Foreach: El Listar con Foreach nos permitira dibujar codigo HTML de lo que queramos, segun la cantidad de objetos que 
+tengamos. Es decir que si tengo 6 Pokemon mediante el Foreach dibujare 6 Cartas Por pantalla. Para hacer esto debo escribir un Foreach
+en el codigo HTML, utilizando las llaves <% %>, ahi dentro colocaremos el Foreach y su primera llave, y las segundas llaves la colocaremos
+en el cierre del bloque del Foreach. Entre el Medio de las llaves estara el codigo HTML que quiero generar por cada vuelta del Foreach.
+    <%foreach (dominio.Pokemon item in ListaPokemons)
+      {%>          
+        <div class="col">HTML</div>
+    <%} %>
+
+Para Manipular el texto/datos del HTML en cada uno de los objetos que generemos lo haremos con el item que tenga cada vuelta el Foreach,
+es decir el pokemon de la primera vuelta podre acceder a sus datos y propiedades y colocarlos en los campos de HTML, siempre entre 
+<%: %>. Con esto lo que haremos sera que cada vuelta no solo generemos un objeto HTML sino que este venga cargado con los respectivos 
+datos de la base de datos.
+
+Ejemplo: <h5 class="card-title"><%: Poke.Nombre %></h5>
+
+Listar Con Repeater: Es una Herramienta nativa de ASP que me va a permitir repetir codigo HTML. Este va a ser una etiqueta/control ASP,
+y dentro de este crearemos la etiqueta <ItemTemplate>, que sera una especie de plantilla, todo lo que se encuentre dentro de ella sera 
+repetido una cierta cantidad de veces. Para configurarlo deberemos desde el back usar el DataSource y el DataBind al igual que en el
+DataGridView.
+Para agregarle los datos de los objetos de mi base al repetidor deberemos colocar en los campos <%#Eval("NombreDeLaPropiedad")%>.
+
+Ejemplo: <h5 class="card-title"><%#Eval("Nombre") %></h5>
+
+Foreach VS Repeater: 1) La ventaja de Repeater es que tiene una Sintaxis mucha mas limpia que montar un Foreach, el cual es un poco 
+engorrosa aveces. 2) Otra ventaja de Repeater es que puedo mandar Datos al CodeBehind dentro de la misma pagina (sin necesidad de 
+trasladarse a otra pagina), para esto debo crear un Boton por ejemplo y darle 2 Propiedades, CommandArgument Y CommandName. La primera 
+tomara el valor de la varible y el segundo le dara un nombre.
+
+EJ:<asp:Button ID="Ejemplo" runat="server" CssClass="btn btn-primary btn-dark" CommandArgument="<%#Eval("Id") %>" CommandName="PokeId"/>
+
+Para acceder a este valor desde el Back, deberemos utilizar el sender (el objeto que disparo el evento, el boton en este caso), castearlo
+para que sepa que es un boton y evolverlo en una capa de parentesis (una capa envolvente de parentesis permite tratar a toda esa linea
+como el objeto que es, lo mismo que pasaba con la List del session) y ahi accedo al CommandArgument del Boton.
+
+EJ: string valor = ((Button)sender).CommandArgument;
+
+GridView vs Foreach vs Repeater: La utilizacion de uno u otro va a depender de una cuestion de diseño y funcinalidad. En el
+Caso del Repeater y Foreach dependera de lo que unico mas comodo le resulte, la unica diferencia es que el Repeater tiene 
+una Sintaxis mas limpia y permite capturar un argumento sin tener que trasladarte de pagina. Pero con el Foreach tendriamos
+mas versatilidad al acceso de los elementos de nuestra base, al no tener que usar el #Eval().
+
+                                             Unidad 6 - Desarrollo APP
+
+Paginacion: el DGV tiene una propiedad que permite el paginado de elementos y la cantidad que debe haber. Para esto debo acceder a 
+la propiedad AllowPaging (debere poner true si quiero que tenga un paginado) y PageSize (defino cuantos elementos tiene la tabla por 
+pagina). Ademas debo llamar al evento OnPageIndexChanging, para que la tabla se vuelva a redibujar con los datos cargados al principio
+del dgv, para esto le debo pasar el nuevo index en el que se encuentra el dgv de la siguiente forma.
+DgvPokemon.PageIndex = e.NewPageIndex;
+Con esto lo unico que necesito es llamar de nuevo al DataBind.
+
+DropDownList y Update Panel: Los DropDownList son los ComboBox de toda la vida. Los Update Panel son un control invisible que permitira
+que nuestra pagina no se recargue totalmente al realizar un PostBack.
+
+DropDownList: Para Cargarlo tengo varias maneras: 1) Si son con datos estaticos debo crear el DropDownList en el codigo ASPX y dentro de
+el crear los <asp:ListItems>, estos seran los items de la lista, de esta forma tengo cargada el DropDownList cargado con datos locales.
+2) Si quiero cargar datos desde la base de datos es igual al DGV, llamo al DataSource y le doy la lista que quiero cargar y luego le
+doy un DataBind para que lo dibuje.
+
+3) Podemos Tener DropDownList Enlazados, es decir al cargar uno con un valor se cargara el segundo con unos determinados valores. Es
+decir que el segundo DropDownList depende de lo que seleccione del primero. Para crear este tipo de DropDownList debo primero crear 
+2 DropDownList, al Primero le daremos un AutoPostBack="True" y el Evento OnSlecetedIndexChanged (para que se ejecute al cambiar la 
+opcion seleccionada). Aclaramos que el AutoPostBack es necesario para que se ejecuten los eventos del control, si no deberia 
+esperar a que otro control haga un postaback para quese ejecute su evento. 
+Para configurar el DropDownList debo darle ademas del DataSource y el DataBind Entre medio debo darle un DatatextField (DisplayMember) y
+DataValueField (ValueMember), que es una especie de Clave valor. El DataValueField funcionara como una especie de valor oculto del objeto
+y el DatatextField el valor a mostrar, aunque ambos estaran relacionados entre si. Para Configurar estos campos con los valores debo 
+pasarle alguna de las propiedades del elemento que tenemos en nuestra lista, en el caso de elemento tenemos el ID y Descripcion, el 
+atributo que no queremos que sea visible y funcione como manager sera el que le asignemos al DataValueField y el otro al DataTextField.
+
+DropDownList.DataValueField = "Id";
+DropDownList.DataTextField = "Descripcion";
+
+Ahora el Evento OnSelectedIndexChanged debere crear un int y guardar el valor del DropDownList.SelectedItem.Value(este nos devolvera el
+value del DataValueField segun como lo hayamos configurado) con este valor lo unico que haremos sera colocar un DataSource al DropDownList
+y que los valores lo tome de un FindAll();, Donde el Id del Tipo coincida con el ID del DataValueField (valor que guardamos en el int).
+DATO: la variable del FinALL sera del tipo de objeto que tengamos en la lista.
+
+Int valor = DropDownList.SelectedItem.Value;
+DropDownList.DataSource = ((List<Pokemon>)Session["Lista"].FindALL(X => X.TIPO.ID == valor))
+DropDownList.DataBind();
+
+Lo Malo de esta Forma es que al tener el AutoPostBack en true, y por ende cada vez que cambie de item seleccionado se de lugar al PostBack,
+La pagina se recargara por completo, lo que podra dar lugar a lentitud en carga de cosas si la pagina es muy grande. Para esto existe la
+herramienta del Update Panel.
+
+Update Panel: El Update Panel Basicamente lo que hace es que: El PostBack que genera en un evento no recargue toda la pagina, sino que 
+recargue solo el pedazo de la pagina que va a necesitar modificarse, solo actualiza lo que debe actualizarse y no todo la pagina.
+Este es una Etiqueta de ASP, los eventos que se encuentren dentro del UPDATE-PANEL (los eventos en sus respectivas etiquetas) solo 
+generaran un PostBack de los elementos que se encuentren en el UPDATE panel. Es decir, si yo tengo un boton que dispara un OnClick dentro
+de un Update Panel... solo se recargaria lo que se encuentre dentro de ese Update-Panel y no todos los elementos HTML.
+Cabe aclarar que dentro del Update-Panel va un <ContentTemplate>, y dentro de este todo el contenido del Update Panel.
+
+En Sintesis, en el Update-Panel solo iran los elementos que quiero que se actualicen al ejecutarse un evento/PostBack dentro
+de ese mismo Update Panel, si sucede un evento fuera de ese Update Panel este no actuara, este solo funciona con eventos que ocurran
+dentro de su etiqueta.
+
+Para Agregar es que para que funcione este Update Panel se necesita una Etiqueta de <asp:ScriptManager> en cualquier parte en esa pagina 
+o en la Master del projecto.
+
+Seleccionar Elemento: A diferencia de la forma que trabajamos en las apps de escritorio yo no puedo tener objetos puros para manejar 
+las listas, debido a que todo lo que recibe el cliente es texto plano en HTML, por eso debere manejar el DropDownList con el SelectedIndex
+Para seleccionar un elemento, segun algun valor, lo puedo hacer desde el Back lo puedo hacer de 2 formas:
+1) Cargo su DataValueField y DataTextField y Selecciono el valor que utilizare para precargar el campo. Luego configurare que el 
+DropDownList.SelectedIndex = -1;, de esta forma deselecciono el Item que tenga seleccionado, y luego le digo que 
+DropDownList.Items.FindByValue("Valor").Selected = true;. En Esta linea lo que hacemos es basicamente decir que en el Desplegable, en 
+sus items encuentre el valor en los valores ocultos del objeto (DataValueField) y Selected nos permite decir si ese item que encontramos
+es el seleccionado, por eso le asignamos un True.
+
+DropDownList.SelectedIndex = -1; (Deseleccionamos el Item)
+DropDownList.Items.FindByValue("Value").Selected = true; (Decimos que encuentre el Item que tenga en sus valores ocultos X valor y que 
+este sea el seleccionado)
+
+2) El Segundo es similar pero enrevesado de explicar, pero viendo el codigo es Simple asi que lo dejo plasmado.
+DropDownList.SelectedIndex = DropDownList.Items.IndexOf(DropDownList.Items.FindByValue(value));
+IndexOf(): Es lo que hace es devolverte el Index de un Elemento segun el Item (argumento) que le pasemos.
+
+Carga de Imagenes Rapido: Para cargar imagenes es tan facil como darle a una etiqueta IMG su propiedad de la imagen una Propiedad de Back
+<% Imagen %> y esta en el back le diremos que cada vez que un TextBox cambie (configurado con un AutoPostBack) Imagen valdra lo que
+tenga el TextBox.
+
+StoreProcedure Insert: Para hacer un StoreProcedure de un insert, Update o Delete necesito declarar los parametros, esto lo vamos a 
+hacer directamente en SQL poniendo @Parametro int (su tipo).
+EJ:
+create procedure InsertPoke 
+@numero int, @nombre VarChar(50), @pokedex Varchar(300), @activo bit, @tipo int, @deb int, @Url varchar(2500)
+as
+Insert into POKEMONS (Numero, Nombre, EntradaPokedex, Activo, IdTipo, IdDebilidad, UrlImagen) values (@numero, @nombre, @pokedex, @activo, @tipo, @deb, @Url)
+
+DATO: El problema de guardar muchas cosas en sesion es que puede sobrecargar la memoria de la pagina, si es que tengo muchos registros
+guardados en ellas.
+
+DATO: Para Forzar a que un evento ocurra solo basta con llamarlo y darle sus atributos correspondientes (sender, e).
+
+DATO: Si estás haciendo un postback (por ejemplo, al hacer clic en un botón), ten en cuenta que la página se recarga y los 
+valores de las variables se pierden a menos que se almacenen en un lugar persistente, como ViewState o Session.
+
+                                             Unidad 7 - Desarrollo APP++
+
+Enum / Tipos Enumerados: Son un conjunto de variables Constantes con un nombre mediante el cual son accesibles.
+Sirven para representar y manejar valores fijos (constantes) en un programa. Los Tipos Enumerados se los suele crear 
+en los NameSpaces debido a que suelen ser reutilizados en varias clases y no en una sola. A cada elemento que coloquemos 
+dentro de la lista enumerada C# le dara un valor automatico, al primer elemento le dara el valor de 0, al segundo 1 y asi
+sucesivamente. Estos valores los puedo reasignar y cambiar a mi antojo. El unico problema es que si quiero acceder al 
+valor de algunos de los elementos del tipo Enumerado debo si o si hacer un Casteo Explicito. Los Enum suelen ser publicos
+y colocados en el NameSpace asi son facilimente accesibles dentro de esa capa.
+
+En Sintesis, los Enum o Lista de Enumerados son un tipo de dato que me permite almacenar Constantes y manejarlos ahi mismo,
+esto nos permite mayor legibilidad para aquellas variables constantes de nuestro codigo que queramos almacenar.
+
+Login Y Permisos: Para hacer un login primero necesito una Tabla de usuarios en SQL que tenga Nombre, Contraseña, ID y 
+un nivel de usuarios (para manejar los permisos). Una vez creado esto creo una clase usuario con las propiedades iguales 
+a la de la tabla de SQL. Luego de esto voy a crear el metodo loguear, que devuelva un bool, en esta lo que voy a hacer
+es pasarle un usuario por parametro y le voy a pedir que me traiga el ID y los permisos del Usuario si es que el nombre de 
+usuario y clave coinciden con alguna que esta en la base de datos. Ahi Hacemos un While(conexion.Lector.Read()) y guardamos
+en el usuario que pasamos como argumento el ID y el Nivel de permiso y retornaremos true, en el caso de no entrar al While
+devolveremos un False.
+Ahora una vez creado el metodo deberemos llamarlo, este lo llamaremos al presionar el boton de Login, ahi crearemos el
+objeto usuario y el objeto NegocioUsuario para acceder al metodo, al Usuario le cargaremos los datos de Nombre y Pass de los
+TextBox y llamaremos a la funcion del negocio Loguear pasandole nuestro usuario, si da True Lo redireccionamos a la pagina 
+de login y guardamos el objeto usuario en Session, sino a la pagina de error.
+Como metodo de seguridad debo poner en todas las paginas la consulta If(Session["Usuario"] == NULL) y si es verdadero redireccionarlo
+a una pagina de error, esto para que no pueda acceder a distintas paginas si el usuario no esta logueado.
+El deslogueo se genera al borrar el objeto de usuario de la Session.
+
+Para entrar a las paginas segun los permisos es muy similar a la verificacion del usuario NULL, preguntaremos si existe 
+un el usuario de la session if (Session["User"] != Null) y si ese usuario de la session es tiene el permiso necesario. Como
+la forma de preguntar deriva en que en la rama del verdadero no debamos codificar nada haremos un If Not con !
+If (!(Session["User"] != Null && ((Usuario)Session["User"]).TipoPermiso == ListaEnum.Admin))
+
+Envio de Emails: Para esto debo crear una Clase Nueva, En este caso se llamara EmailService. En esta debere usar los objetos 
+MailMessage (este objeto contendra el Mail del Destinatario, el Asunto y el Cuerpo del Mail) y el SmtpClient (este sera la configuracion
+del protocolo de envio de mails, este necesita que se le configure la propiedad de Credentials = New NetworkCredential() donde le pasaremos
+un Correo y contraseña que sera quien envie el mail, El EnableSsl = true, El Port y el Host = "smtp.gmail.com"). 
+Segun el servidor de mail que vayamos a utilizar pueden variar algunas configuraciones.
+
+private SmtpClient server;
+Public EmailService
+{
+    server = new SmtpClient();
+    server.Credentials = new NetworkCredential("Correo", "Clave");
+    server.EnableSsl = true;
+    server.Port = xNumber;
+    server.Host = "Algun protocolo de mail, normalmente el: smtp.gmail.com";
+}
+
+Una vez configurado el servidor de mail para el envio tengo que configurar el armado del correo. Para esto voy a crear un metodo que 
+reciba 3 string (el Destinatario, El Asunto y el Cuerpo). Para Crear esto primero debo crear el objeto del MailMessage, darle 
+el valor del asunto en la propiedad Subject, La propiedad From Se rellenara con la construccion de un MailAdress en donde o podemos poner
+un correo definido o colocar algun parametro que capture el valor del correo de la persona que envia el mensaje, Luego en la propiedad
+To, accederemos a su metodo Add() en donde colocaremos el mail al cual se va a enviar el correo, En la propiedad Body ira el cuerpo del
+mensaje.
+
+Public void ArmarCorreo(string Destinatario, string remitente, string Asunto, string Cuerpo)
+{
+    Correo = new MailMessage();
+    Correo.From = new MailAdress(remitente);
+    Correo.To.Add(Destinatario);
+    Correo.Subject = Asunto;
+    Correo.Body = Cuerpo;
+
+    Correo.IsBodyHtml = true; //opcional
+}
+
+Para Enviarlo solo debo llamar al Metodo Send del SmtpClient y adjuntarle como argumento el MailMessage que creamos. Esto es una 
+Base para el envio de mail aunque se puede hacer mas configuraciones y mas complejo.
+
+Registro de Usuario: Para Esto necesito crear una Clase que funcione como usuario (Trainee en este caso). Al hacer click en el
+boton registrarse crearemos un usuario trainee y que guarde los datos de los campos de mail y pass, estos los enviaremos a un Metodo 
+que va a estar en la capa de negocio, este metodo se encargara de hacer un Insert del usuario para el Registro. Una Vez creado el
+SP para insertar vamos a crear un nuevo ejecutar accion, que ejecute Scalar (este devolvera el primer valor de la primera columna), 
+esto con el fin de capturar el ID del usuario que acaba de ingresar. Con el ID podemos hacer un AutoLogueo en la Pagina,
+podemos verificar que usuario esta en sesion en la pagina, que otro usuario esta tambien conectado en la session.
+
+OutPut SQL: En el Insert Para capturar el ID en la accion de insertar puedo llamar a la palabra reservada OutPut, lo cual me permitira 
+rescartar el valor de esta clave foranea. Lo que hace OutPut es rescartar algun valor del ultimo elemento insertado (El que estamos 
+insertando), devolviendolo como lo hace un select.
+
+Insert Users (Email, Pass) OutPut inserted.id values ('@gmail','1234')
+
+MailTrap: Esta es una pagina que servira de servidor para poder enviar Mails, ya que gmail ya no lo permite.
+        https://mailtrap.io/
+
+
+CLASES STATIC/HELPERS: Como sabemos las clases static son aquellas que no debemos instanciar para acceder a sus objetos 
+y propiedades, se las suele llamar para llamar a pequeños metodos utiles. Para hacer esto debo darle la propiedad Static
+a la clase y si lo requiero public. Los metodos que queramos utilizar les pondremos las mismas propiedades  (static y public).
+Para acceder a los metodos y propiedades solo debo llamar a la clase del objeto y acceder a la propiedad como si este 
+fuera un objeto comun. EJ: ClaseEstatica.MetodoEstatico();
+
+Verificar-Session: Luego de los pasos anteriores, con la clase estatica puedo verificar si la persona esta logueada o no 
+y si esta no esta logueada debera ser redireccionada al Login, el problema de esto es que lo estamos haciendo en cada 
+pagina a esta verificacion, lo cual puede ser engorroso, por lo que lo mejor seria dejar esta validacion en el Page_Load del
+Master Page, que si no detecta una session existente redirija a Login. Esto tiene un problema, ya que el Login tambien se 
+encuentra dentro del MP y por lo cual nos dara un error en el redireccionamiento. Para excluir a Login de esta sentencia usaremos el
+objeto PAGE, esta es una propiedad de la MasterPage, esta propiedad guardara la clase de la pagina que se va a mostrar por pantalla,
+si se va a mostrar Default la Clase de Page sera Default, si se carga Detalle la clase de Page sera Detalle. Ahora con esto pregunto 
+Si Page (la pagina a cargar) no es Login entonces que valide si la Session esta activa, si es Login no hace falta.
+
+if (!(Page is Login))
+    {
+       if (!(Seguridad.SessionActiva(Session["Trainer"])))
+           Response.Redirect("Login.aspx", false);
+    }
+
+Cierre de Sesion: Al cerrar la sesion lo recomendable es borrar todos los datos de Session que tenga el usuario con el Clear.
+
+Ocultar Botones: Quizas es mas sencillo ocultar los botones con If() condicionales en el Front que el .Visible desde el Back.
