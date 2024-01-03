@@ -2913,3 +2913,194 @@ if (!(Page is Login))
 Cierre de Sesion: Al cerrar la sesion lo recomendable es borrar todos los datos de Session que tenga el usuario con el Clear.
 
 Ocultar Botones: Quizas es mas sencillo ocultar los botones con If() condicionales en el Front que el .Visible desde el Back.
+
+Cargar Imagen: Los mas comun de hacer es cargar la imagen y guardar en la base de datos una referencia a esa imagen. Para Ello en 
+la carga de imagen debo agregar un Input (HTML) de tipo File, esto me permitira seleccionar un elemento como un OpenFileDialog. Para
+Hacer esto deberemos crear una ruta de imagenes en nuestro proyecto, luego accederemos a la propiedad Server y a su metodo MapPath, 
+este lo que hace es a la ruta fisica en la que se encuentra nuestro proyecto recuperarlo luego de forma virtual donde tengamos el server,
+es decir que este metodo no ahorrara el tener que configurar la ruta de la carpeta de nuestro proyecto en el server ya que con esta
+funcion la conseguira automaticamente, luego a esta ruta le haremos "./" y colocaremos la subcarpeta de imagenes a la que queremos 
+acceder.
+MapPath es basicamente un metodo que devuelve la Ruta fisica desde donde la pagina se esta ejecutando (en el servidor).
+Luego accederemos al PostedFile del Input (es basicamente el archivo seleccionado por este OpenFileDialog) y llamaremos
+al metodo SaveAs(ruta), lo que hace este metodo es guardar el archivo seleccionado en una determinada ruta que nosotros 
+le demos, ahi mismo tambien le concatenaremos el nombre y la extension del Archivo. Con esto ya podremos guardar una 
+imagen en el servidor.
+
+string ruta = Server.MapPath("./Imagenes/");
+int id = ((Trainee)Session["Trainer"]).Id;
+SeleccionarImagen.PostedFile.SaveAs(ruta + "Trainer-"+id + ".jpg");
+
+Luego Cargaremos el resto de datos del perfil a cargar y crearemos la funcion en negocio de Actualizar el Perfil, esta
+sera un Update. Ahora el guardado de la imagen en el servidor y la lectura de esta imagen funciona de Forma diferente, yo 
+no puedo con las ruta anteriores leer y mostrar la imagen. Es similar a como se hace en HTML y CSS pero con la diferencia 
+en que en vez del punto se usa "~/" (No necesario). Cabe destacar que en la base de datos solo vamos a guardar el Nombre 
+de la imagen mas no su ruta.
+Luego Busco mi Imagen con el FindControl, lo casteo como Imagen y luego accedo a la propiedad ImageUrl, ahi le asignare el
+valor de la ruta (como en HMTL y CSS) y el Dato Del Nombre.
+
+user.ImagenPerfil = "Trainer-" + user.Id + ".jpg";
+Image img = (Image)Master.FindControl("Avatar");
+img.ImageUrl = "~/Imagenes/" + user.ImagenPerfil;
+
+Con esto cargo la imagen, lo que queda por agregar es que en la master page puedo poner la condicion de que si encontro un usuario
+logueado que Imagen.ImagenUrl si lo que tiene la imagen del usuario en session es != de null entonces lo cargue, sino que cargue una 
+imagen generica. Esto validara en todas las recargas por lo que en cada carga de pagina cargara la imagen del perfil.
+
+else
+Avatar.ImageUrl = ((Trainee)Session["Trainer"]).ImagenPerfil != "" ? "./Imagenes/" + ((Trainee)Session["Trainer"]).ImagenPerfil : "Generico";
+
+DATO: Si quiero accder a objetos que se encuentran en otras pantallas (Al menos de la MasterPage) deberemos llamar a la 
+Prop Master y al Metodo FindControl y poner el ID del Control, esto me genera una referencia al objeto.
+
+Sintesis: Creeo Carga de Imagen, Con un Input File, Cargo la Ruta fisica de donde se van a guardar las imangenes con 
+"Server.MapPath("./Imagenes/)", guardo lo capturado con el input configurando la ruta anteriormente caputurada mas nombre
+de archivo "input.PostedFile.SaveAs(ruta +nombre.jpg)", cargo los datos varios del forms, llamo a la funcion actualizar 
+perfil, Me redirecciono al inicio. Ademas debo agregar que al loguearme tambien me traiga los datos de mi Foto a Session,
+en la Master Pregunto que cuado haya un usuario activo, la UrlImagen sera igual a la imagen de mi perfil si esta no es 
+null, si esta es Null sera igual a una imagen stock.
+
+DateTime en Web: Es similar al normal, nada que anotar.
+
+NullOrEmpty: Metodo que evalua si es nulo o vacio y devuelve un Bool.
+
+Enviar Null a DB: El problema que tuvimos es que en la version de C# que trabajamos en el operador ternario no se permite devolver 2 
+tipos de datos diferentes (un string y DbNull.value), algo arreglado en FrameWorks posteriores, pero se soluciona tan facilmente con 
+castear al DbNull como un object, al ser la clase base de todos los tipos de datos se considerara como valido. 
+(object)DBNull.Value
+
+Null Coalesing: Otra forma de manejar el null es con un operador especial, el "??", este es un condicional que si el objeto que voy 
+a enviar a la base de datos tiene un valor Null le aplica un DBNull. Para esto el dato que voy a enviar a la base debe estar casteado
+como object. 
+(object)Persona.Nombre ?? DbNull.Value;
+
+Object: Es la clase padre de todas las clases en la programacion orientada a objetos y engloba a todos los tipos de datos, un int, bool,
+char, string, List<>, Persona, heredan de la clase object, por lo cual son un object.
+
+Datos Primitivos y null: Los objetos complejos si pueden manejar valores null como hemos visto, pero los datos  primitivos no los 
+admiten como tambien vimos. Pero existe una forma (si nos es necesario) de que nuestros datos primitivos manejen null y es tan simple
+como al declarar el tipo de dato colocarle un "?". int?, string?, char?, bool?.
+
+Manejo de Excepciones Web: Es el mismo manejo de Try-Catch, donde guardo en session el error y redirijo a la pantalla de error 
+mostrandolo, esto lo debo hacer en todas las ventanas Front donde crea que pueda saltar una excepcion. Tambien puedo crear una 
+clase estatica en la que cree una funcion para mandar y devolver la excepcion convertida o casteada para que lo vea el usuario.
+    catch (Exception ex)
+    {
+        Session.Add("error", ex.ToString());
+        Response.Redirect("Error.aspx", false);
+    }
+
+Manejo de Errores Genericos: Para manejar errores genericos que se nos pueden escapar de nuestros Try-Catch o si queremos evitar 
+colocar tantos Try-Catch en el Front podemos utilizar un evento en la pagina Global.asax. En esta configuraremos un evento de donde
+Crearemos una Varible Excepcion que Tomara la ultima excepcion ocurrida en nuestra App, mediante Server.GetLastError(), luego 
+preguntaremos si ese Excepcion es una Excepcion Http No manejada (HttpUnhandledException), si es true Usaremos Server.Trasfer() y 
+pasaremos por argumento el la pagina a la cual nos redirigiremos y un parametro por Url de la excepcion. Cabe recalcar que debemos usar
+Ser.Transfer() y no Response.Redirect() para trasladarse de una Pag a otra porque el redirect entrara en conflicto.
+Tambien podemos modificar esto y manejar manualmente nuestro los errores genericos.
+
+Exception exc = Server.GetLastError();
+if (exc is HttpUnhandledException)
+{
+    Server.Transfer("Error.aspx", true);
+}
+
+Lo Mejor que podemos hacer es combinar la captura de excepciones del Try-Catch para poder decidir que hacer ante cada caso que 
+genere una excepcion y luego agregarle el Manejo del Global.asax, Que ante cualquier excepcion que no hayamos manejado esta se 
+encargara.
+
+Niveles de Validaciones: Los niveles de validaciones puede variar si es alguna validacion para el usuario (que cargue los tipos de 
+datos correctos en determinados campos interactuables), La validacion de un cierto valor con la base de dato que en cuyo caso de 
+que falle manejar eso, entre otras situaciones. 
+
+El Primer Nivel de validacion es una validacion para el usuario, donde se le pide que cargue correctamente con el formato o tipo los 
+campos a cargar. Esto lo podemos hacer directamente desde el Front, Como por ejemplo la etiquea REQUIERED, que obliga a cargar ese 
+campo, lo malo de esta es que al ser solo una validacion por HTML un cliente puede modificar eso desde el HTML y evitar esa validacion.
+Es decir que todas las validaciones que pueda llegar a hacer desde el Front Mediante el HTML pueden ser modificadas por el cliente, 
+por lo que es importante saber que no deben ser las unicas tipos de validaciones que tengamos que hacer, seguramente estas las 
+debamos manejar desde el BACK.
+1) Una Forma seria apenas capturo los datos los evaluo, si estos son incorrectos disparo una Excepcion que haga saber esto al usuario, 
+o 2) en algun metodo de negocio en donde puedo hacer algo muy similar. 3) Otro nivel seria en la capa del Modelo_De_Dominio, en ella
+puedo crear una propiedad que devuelva su valor pero ponerle condiciones en el Set que evalue lo que se le esta cargando a esa 
+propiedad y que si es incorrecto tire una Excepcion. 4) Otro nivel es el que se encuentra en la base de datos, mediante la configuracion
+de Constraints (reglas) entre tablas, o las reglas propias de las columnas.
+
+Validaciones: Una Buena forma para validar desde el Back-End es tener una Clase Estatica de validaciones para no tener que crear por cada
+validacion una funcion que valide X cosa.
+
+
+                                                        Tipos de Validaciones
+
+1) Validacion de Tipo: Asegurarse que el usuario que ingreso los datos lo haya ingresado con el tipos indicado (que no coloque
+letras en un campo en el que espero numeros).
+2) Validacion de Rango: validar que el dato ingresado este dentro de un rango esperado, por ejemplo que un entero no pase de los limites 
+esperados.
+3) Validacion de Longitud: Verifica las longitudes de las cadenas, listas o arrays.
+4) Validacion de Formato: Asegurarse que el usuario que ingreso los datos lo haya ingresado con el formato indicado (Mail, Fechas, Telefonos).
+5) Validaciones de Seguridad: Realizar validaciones para prevenir ataques comunes, como la inyección de código (por ejemplo, SQL injection)
+o la ejecución de scripts no deseados
+6) Validación de Reglas de Negocio: plicar reglas de negocio específicas de la aplicación para garantizar que los datos cumplan con las 
+políticas y requisitos del negocio.
+7) Validación Personalizada: Implementar lógica de validación personalizada para casos específicos de la aplicación.
+8) Validación de Referencia: Verificar que las referencias a objetos o datos externos sean válidas y no nulas antes de utilizarlas.
+
+ASP Validators: Son herramientas que nos brinda Asp.Net para poder validar campos u otros objetos. Dentro de estos tenemos varios 
+tipos de validadores, dentros de ellos encontramos a: 1) <requiredfieldvalidator> Este validara que el campo sea obligatorio de completar,
+este tendra un ErrorMessage configurable y un ControlToValidate para seleccionar el ID del control a validar, en el caso de que valide 
+algo incorrecto tirara un mensaje de error. 
+2) <rangevalidator> Este validara los rangos de algo. Mediante su propiedad Type Puedo acceder a que tipo de dato voy a analizar 
+en el rango, Puede ser Double, Integer, String, Date o Currency. Luego deberemos configurar el MinimunValue y su MaximunValue.
+3) <regularExpressionValidator> Esta validara las Expresiones Regulares que hayamos configurados, puede ser que a X campo como el 
+mail querramos que tenga un formato de mail obligatorio le podemos colocar una expresion regular de mail y obligar que ese campo 
+tenga ese formato. Para configurarle la Expresion Regular que quiero que siga usare la propiedad ValidationExpression.
+
+Formato Email
+^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$
+
+Regular Expression: Las expresiones regulares son patrones de búsqueda y manipulación de cadenas de texto. Se utilizan para realizar 
+operaciones avanzadas de búsqueda, coincidencia y manipulación de patrones en cadenas de texto. En C#, el espacio de nombres 
+System.Text.RegularExpressions proporciona clases y métodos para trabajar con expresiones regulares. 
+Algunas de las clases clave incluyen Regex, que representa una expresión regular, y Match, que representa un conjunto de resultados de 
+coincidencia.
+
+Cabe aclarar que para estas validaciones estamos usando JS desde una libreria por lo que deberemos tener el Scrip Necesario de JS para 
+ejecutar esto. Lo que si es necesario es manejar lo que sucede antes de que salte la validacion, es decir si yo tengo que guardar algo al
+presionar el boton la validacion se ejecutara luego de que se realice todo lo que esta en el evento del boton, esta validacion es lo 
+ultimo que sucede, por ende debo manejar todo lo que suceda en el evento segun si mi validacion se cumple o no.
+Para esto voy a usar Page.Validete(), este es un metodo que lee si la pagina es o no valida segun todas las validaciones que tenga, y el
+bool de si es valida o no se guarda en Page.IsValid, aca evaluaremos que si es valida ejecute los evento que normalmente tenemos 
+programados o sino que haga un Break; o return; para que finalice el hilo normal de ejecucion.
+
+Page.Validate();
+if(!Page.IsValid)
+    return;
+
+Validaciones JS: Las validaciones de forma manual con JS nos permitira manejar las validaciones directamente en el Front, a diferencia 
+de las validaciones de ASP que pasan por el servidor. Esto debido a que es un lenguaje con la capacidad de correr en el navegador 
+directamente (por eso no debe ir al servidor). Esto esta bueno al no tener que ir al Back para la consulta y devolver un resultado.
+
+Para trabajar con JS debemos impletar el manejo del DOM (Document Objeto Model, Todo el HTML), la manipulacion del DOM es similar a 
+como manipulamos las etiquetas ASP o HTML en .NET, accediendo a ellas mediante el ID. Al control que quiera validar le debere asignar
+la propiedad ClientIDMode="Static". Esto porque al castear las cosas de ASP a html los objetos quedan con el nombre del ContentPlaceHolder
+y no del elemento, al ponerlo static mantiene su propio ID. Luego Creare mi funcion JS normalmente, ahora a la ahora de llamarla tengo que
+entender que al hacer click en el boton (por ejemplo) ya estoy viajando al server que es lo que queremos evitar, para esto le asignaremos
+al boton una propiedad que sea OnClientClick, es decir un evento que se ejecutara en el cliente al hacer click, esto sera previo al 
+OnClick que va al server. Dentro de esa propiedad colocaremos un "return MiFuncion()". El return lo ponemos con la intencion de que 
+devuelva un T/F, si la validacion no esta OK devolvemos un False y esto frenara la ejecucion de un OnClick y por ende una ida al server.
+
+Si quiero agregar o sacar una clase de algun elemento con JS lo puedo hacer con: MiTextBox.classList.add("MyStyle"); Para remover 
+solo necesito usar Remove.
+
+En sintesis lo mejor para las validaciones es combinar las de Front (Propiedades, los Validators y JS) y las de Back (En Capa de Web, 
+En la Capa de Negocio y en la Capa de Modelo de dominio).
+
+
+Application_Error(object sender, EventArgs e)
+{
+    Excepcion ex = Server.GetLastError();
+    
+    if(ex is HttpUnhandledException)
+    {
+        Session.Add("Error", ex);
+        Server.Transfer("Pagina.aspx");
+    }
+}
