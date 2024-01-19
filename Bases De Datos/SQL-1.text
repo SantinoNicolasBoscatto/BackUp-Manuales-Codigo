@@ -1,0 +1,347 @@
+Para instalar SQL son 2 etapas. 1) instalar el motor de SQL SERVER que sera el "servidor" como tal, para esto descargamos el SETUP de 
+la version mas actual, vamos a instalation y configuramos lo que queramos. 2) Luego toca instalar el acceso visual al SQL SERVER que seria
+SQL MANAGEMENT STUDIO.
+
+SQL MANAGEMENT: Desde Este podemos acceder a diferentes bases de datos, en ellas podemos crear tablas, STORE-PROCEDURES, Diagramas de 
+Base de Datos, ETC. Entonces este programa nos permitira gestionar el motor SQL y configurar todo lo referido a nuestras Bases de 
+Datos. Cada Base de Datos que tengamos por motor SQL se llamaran Instancias (Similar a cada objeto creado, que es una instancia de una clase).
+
+En este motor tenemos 2 Paneles: 1) El Object Explorer, ahi encontraremos las instancias de nuestro Motor SQL y las configuraciones de 
+esa Base de Datos (Sus Tablas, Columnas, Triggers, Store-Procedures, Seguridad, Etc). 2) Y el otro se llama Solution Explorer. Si yo tengo un 
+Query Abierto, y le doy click a FILE me permitira guardar la solucion.
+A esta Solucion le Podremos agregar Proyectos y dentro de esos proyectos las Querys. Esto Es Util para poder organizar bien los Script 
+y Querys que voy a utilizar y no tenerlo todo en un archivo o varios archivos desparramados. Estos Querys Debo crearlos En la Carpeta 
+Llamada Queries.
+
+En los Menus Superiores podemos encontrar FILE(Podemos Abrir o Cerrar la conexion, guardar o Cargar Querys/Soluciones), View (Nos permite 
+el acceso a todas las ventanas de SQL MANAGEMENT), El Menu QUERY, Project (Crear un nuevo Projecto, Item, Query o Conexion),Tools.
+Dentro de SQL MANAGEMENT hay una Herramiente muy interesante que es Parse, esta permite verificar Consulta esta bien o mal escrita, pero
+a diferencia de EXECUTE esta no manda una Consulta a la Base, solo se encarga de que la consulta este correctamente escrita. Tambien 
+tenemos una Herramienta para comentar codigo  y descomentarlo. Tambien hay otro funcion de identado.
+
+Una Solucion, Al igual que en .NET, Puede tener varios Proyectos. En Sintesis Esta solucion me servira para poder organizar mis 
+Scripts de forma eficiente y de forma modular.
+
+Base De Datos: Las Base de Datos van a contar con Tablas(El cual esta Conformadas por los Campos), Campos(los campos son propiedades 
+de las tablas, estas tienen una Tipo de Dato) y Registros.
+
+Campos: Las Propiedades que componen a la tabla.
+
+Registro: El Registro son los datos cargados de la tabla, se los ve en ya que estan en las filas
+
+Valor Null: Un Valor Null Representa la Ausencia de Valor de una columna en una Tabla, es distinto a "" o 0 debido a que estos sin son
+valores que ocupan espacio en memoria, encambio Null representa la ausencia de Valor.
+
+PRIMARY KEY: Para Definir una PRIMARY KEY lo hacemos sobre algun campo de nuestra Tabla. La PRIMARY KEY se utiliza para aquellos registros
+que queremos que sean unicos en nuestras bases de datos, como lo pueden ser los ID. 
+
+1) La PRIMARY KEY me permite reprensentar de forma Unica a Cada registro de la tabla. 2) Esta PRIMARY KEY sera NOT NULL, es decir no 
+aceptara Null como valor. 3) Una Tabla puede tener mas de un campo con PK, a eso lo llamaremos clave compuesta. 4) Pero cada tabla 
+solo tendra una PK.
+
+FOREIGN KEY: 1) Una FK es una relacion entre 2 tablas, en donde En la Tabla A pongo un valor que lo reutilizare en la Tabla B. El valor 
+del campo de las FK (Su tipo de dato) debe ser igual en ambos llaves. La FK se declara en la tabla A. 2) Acepta NULL. 
+3) Una Tabla puede tener mas de una FK. 4) Estas FK se suelen configurar para implementar las reglas de integridad referencial.
+5) Esto tambien me permite una Consistencia de Datos, es decir que en la tabla B yo no voy a poder cargar Registros de Datos que no
+existan en la tabla A. 6) Los registros de la FK tabla A Determinara la Serie de valores que puede tener la FK de la tabla B.
+
+Regla de Integridad Referencial: Si se configuro una FK Esto permite que no se puedan borrar registros de la Tabla A (Elementos) si 
+existen registros de estos en una Tabla B. 
+EJ: Si tengo la tabla A Elementos y ahi un campo con Clave foranea 'Agua', si la tabla B que esta relacionada con la FK tiene el valor 
+'Agua' no podre  borrar el Registro 'Agua' de la tabla A.
+ 
+Normalizacion De Base de Datos: Una de las ventajas de la Normalizacion es que se evitan problemas de borrado, insercion y Modificacion
+de Datos y poder realizar menos trabajo al necesitar hacer una ampliacion de la base. Tenemos 3 Formas de Normalizacion de Tablas:
+
+1) Una Tabla estara en Primera Forma Normal Existe una Clave principal, Todos los atributos son atomicos (que no se trate de guardar mas 
+de un valor en un campo) y no debe haber valores nulos.
+
+2) Para que una Tabla este en Segunda Forma Normal Todos los Atributos deben estar relacionados directamente a la PK. Es decir mis 
+Atributos no claves deben depender funcionalmente exclusivamente de mi PK, si esto no se cumple no llega a la segunda Normalizacion.
+
+3) Una Tabla esta en Tercera Forma Normal solo si los campo/Atributos solo dependen de la Clave PRIMARY y no de otro atributo no clave.
+Es decir que los atributos no clave dependan de otro no clave, sino que todos los atributos no claves dependan de atributos claves para
+que no se puedan a llegar a mezclar datos.
+
+En Sintesis la 1-FN Es que cada registro sea unico, que no exista un mismo registro repetido y que se utilice una PK. 2-FN es que los
+Atributos no claves de la tabla dependan todos de la PK. 3-FN es que ningun atributo no Clave depende de otro no clave, sino que todo 
+atributo no clave dependa de una PK.
+
+Tipo De Dato: al igual que en programacion el tipo de dato se refiere al formato del valor que se almacena en un campo. Dentro de estos 
+estas los Numericos: 1) INT (Ocupa 4 Bytes) 2) TINYINT (0 a 255, ocupa 1 byte) 3) BIT (0 o 1) 4) Money (Ocupa 8 bytes, admite solo 4 decimales) 
+5) Decimal (el mas preciso a nivel decimal)  
+
+Los de Texto: 6) Char (1 byte por cada caracter, de 1 a 8000 Caracteres, se lo tiene que usar cuando sabemos la cantidad exacta de 
+Caracteres que va a usar cada registro para ese campo, como las siglas de los paises)  7) VarChar (1 byte por caracter variable, de 1 a 
+8000 Caracteres, es decir segun la cantidad de caracteres que le carguemos a ese campo ese va a ser el espacio que ocupara)
+
+Los de Tiempo: 8) DateTime
+
+Para Crear nuestra base es tan sencillo como abrir en Object Explorer Database, new Database y configurar el nombre y la ruta. Esto
+nos generara 2 Archivos: 1) uno de Extension MDF (Master Data File) Este es el principal archivo de la Base de datos, este contiene 
+las tablas, indices, Procesos Almacenados y otros objetos. 2) El Archivo LDF, es un archivo de registro de Consultas / Transacciones 
+de una Base SQL, Registra toda Transaccion y cambio en la base y permite la recuperacion y restauracion de la misma.
+
+Para elegir la base por defecto en la que vamos a trabajar tengo que entrar a Security, a mi usuario y ahi selecciono la Default DB.
+
+
+                                             1.0) Crear Tabla Por Object Explorer
+
+Para Crear una Tabla por el explorador es tan sencillo como abrir la base, la carpeta de tablas y en New encontraremos la opcion de Table.
+Para configurar la tabla tendremos que configurar sus columnas, en este caso tendremos 3 Atributos para colocarles a los campos de la 
+Base de Datos: 1) Column Name. 2) Data Type. 3) Allow Nulls. Para guardar le damos Ctrl-S
+
+                                         2.0) Modificar Tabla existente Por Object Explorer
+
+Para Modificar una Tabla ya existente deberemos darle click derecho a la tabla y acceder a Desing. Ahi haremos las modificaciones pero
+la primera vez que queramos guardar los cambios no nos dejara por tema de configuracion. Para ello iremos a Options en la caja Tools,
+Designers y Desmarcamos la Opcion de Prevent Saving.
+
+                                                3.0) Definir PK Mediante Desing
+
+Es tan simple como ir a Desing, seleccionar el campo y arriba a la derecha veremos un Logo de KEY, lo pulsamos y nuestro campo se volvera
+una PK.
+
+                                                4.0) Activar Propiedad Identity
+
+Para configurar Identity en el Desing deberemos seleccionar el campo e ir a column propierties y ahi ir a la propiedad Is Identity y 
+poner que si. Esta Propiedad se le suele colocar a la PK de tipo int, debido a que este al insertarse un registro  se crea 
+automaticamente incrementando en uno su valor del registro anterior. 
+Podemos Tener mas de un campo con Is Identity. Este campo no puede ser borrado.
+
+
+
+                                             0.1) Crear Base de Datos Por T-SQL
+                                                                                 
+                                              CREATE DATABASE *Nombre de Base*
+
+                                             1.1) Crear Tabla en T-SQL 
+ 
+                                            CREATE TABLE *Nombre Tabla*(
+                                                *Nombre Campo* *Tipo* Identity (1,1) ,
+                                                Nombre Varchar(50) Not Null,
+                                                Apellido Varchar(50) Null
+                                                Fecha Date null,
+                                                IdPais Char(3) not null
+                                                CONSTRAINT *PK_NombreLlave* PRIMARY KEY (*Nombre del Campo*)
+                                            )
+
+Definir PRIMARY KEY Compuesta:  En el caso que yo necesite repetir una clave primaria para relacionar datos lo que se suele hacer es 
+Crear PK compuestas asi podemos evitar la repeticion. Esto Permite una Mayor Flexibilidad a la hora de definir las PK.
+
+
+Crear Un Tipo De Dato: EN SQL puedo crear tipos de datos con nombres personalizados, estos tipos de datos se basan en una ya 
+existente pero cambia su nombre. Esto me evita que otro usuario que pueda modificar la BD no pueda utilizar otro tipo de datos 
+para una tabla. Para hacer esto lo podemos hacer desde la BD, en Programability/Types/User-Defined-Data-Types.
+Tambien en T-SQL lo puede hacer poniendo: 
+
+                                        CREATE TYPE *Nombre*  from *tipo de dato* null/not null
+
+Conceptos de Relaciones entre Tablas: 
+Primero que nada las relaciones entre tablas no son obligatorias, una base puede funcionar sin tablas relacionadas. Sin embargo una 
+tabla sin relaciones puede correr el riesgo de perder la integridad de los datos en las tablas, ya que no tiene definidas las reglas 
+de integridad referencial RIR.
+Estas Reglas son relaciones entre tablas, en donde un Campo PK se relaciona con un campo de otra tabla al cual llamamos FK. Esto 
+me sirve para que yo no pueda colocar un valor en la FK que no este en mi PK, permitiendo manejar mejor lo Consistencia de datos.
+Otra Caracteristica es que no podremos borrar los registros PK de una tabla si estas se encuntran en una FK de otra tabla.
+Esto mismo me evita los errores en el manejo de datos al evitar que Inserte o Actualice Datos inexistentes o que borre datos.
+
+Crear desde el Explorer: Vamos a la tabla a la cual queremos crearle una relacion y vamos a su Keys y seleccionamos crear new FK. Ahi
+Pondremos Tables and Columns Spec y ahi nos dejara configurar a que tabla le queremos colocar esta clave foranea. Estas claves foraneas
+son claves primarias de una tabla A que son reutilizadas en una tabla B, los registros que tenga en la tabla A limitaran que registros 
+puedo poner en la tabla B. Como dato la FOREIGN KEY que vamos a Crear (Especificar) ya debe tener el campo creado en la tabla B, es decir
+si a la tabla B le quiero hacer una FK de IdPais, en la tabla B debe existir un Idpais.
+
+La tabla A sera la tabla principal que manejara los registros de los datos, la tabla B sera a la cual se le restringira el inserte de 
+registros segun los valores que dicte A.
+
+Relacion Uno a Muchos: Es una relacion en la que tenemos una PK que va a tener registros unicos que van a estar representados en la 
+tabla B. Es decir Se conecta un Registro de un campo a muchos registros de ese campo, es decir un Registro de una tabla para muchos
+registros de otra tabla.
+
+Relacion Muchos a Muchos: Es cuando Una tabla puede estar relacionada con muchos registros de otra tabla.Es ahi en que un registro puede
+tener muchos otros registros, es decir un mismo medico puede tener muchas especialidades. O una especilidad con muchos medicos. 
+Es decir un medico Puede tener Varios Id de Espacializaciones y las especializaciones varios IdMedico, en cambio el pais tiene varios 
+pacientes, pero el paciente un solo pais.
+Estas Relaciones de muchos a muchos si o si necesitan tener una Tabla Intermediaria, sino estas no se pueden relacionar entre si, ya que
+sino no podriamos configurar las PK.
+
+Relacion Uno a Uno: Para cada Registro solo voy a tener un registro. Es decir que cada InfoPaciente va a tener un IdPaciente, y cada 
+paciente va a tener un registro. En esta Relacion Uno a Uno es indiferente donde definir la FK.
+
+En Sintesis 1) Una Relacion de uno a Muchos Se da cuando se conecta una PK con un campo de una Tabla que no es clave. 2) Una Relacion 
+Muchos a Muchos se da cuando una tabla Intermediaria tiene 2 PK que vienen de otras 2 tablas y por ende por cada registro de una puede 
+haber muchos registros de la otra. 3) La relacion Uno a Uno se da cuando se conectan 2 PK, esto significa que por cada registro solo 
+puede haber otro registro.
+
+Tablas de Relacion: Son tablas en las que traeremos los ID de otras tablas para generar relaciones. En estas tablas no colocamos Identity 
+debido a que estas tablas van a tomar directamente valores de otras tablas, no son registros nuevos que se generan, estamos tomando 
+registros ya existentes.
+
+Las Reglas de Integridad relacional son basicamente las relaciones entre las tablas donde la tabla A le pasa el Campo PK a 
+una tabla B que la toma en un campo FK.
+
+
+                                                         1) CLAUSULAS
+
+CLAUSULAS SQL: Las CLAUSULAS basicamente son condiciones que se le hacen a las tablas para que estas devuelvan un valor.
+ 
+ 1) TOP => Con esta CLAUSULAS podemos indicar que  Numero de Filas queremos seleccionar. EJ: Select Top 5 * Pacientes 
+
+2) Order BY => Con esta Clausula traere los registro de forma ordenada, si quiero que sea ascendente o descendente es tan facil con 
+poenr ASC o DESC. EJ: Select Nombre, Precio from Auto Order By Precio DESC.
+
+3) DISTINCT => Con esta Clausula Traere todos los Valores no repetidos de una Columna/Campo, Traere solo valores unicos.
+   EJ: Select DISTINCT Tanque from Autos.
+
+4) Group By => Hace algo similar a DISTINCT, Ordena por Grupos, trae todos los valores no repetidos de una columna. La diferencia entre 
+    Group By y DISTINCT es que con Group By Nos permitira ejecutar funciones de agregado con esta Clausula, lo que nos permite hacer 
+    cuentas sobre los campos agrupados, Sumatorias, Promedios.
+   Select Precio from Autos Group by Precio Order by Precio DESC
+
+5) WHERE => Nos permite Buscar o Filtrar Registros segun los valores de ciertos campos.
+
+
+DELETE en FK: Si quiero eliminar algun Valor de la Tabla A que pertenece a algun registro de la FK de la tabla B saltara el error. Esto
+es para prevenir dejar registros Inconsistentes.
+
+
+                                                     2) Funciones de Agregado
+
+1) Funcion Min-Max: Estas funciones me permitiran acceder al registro de mayor o menor valor. Tambien se puede usar para elementos VarChar,
+Este devolvera los registros ordenados alfabeticamente. EJ: Select Max(fecha) as Fecha from Pago
+
+2) Funcion SUM: Esta funcion permitira sumar registros. A esta funcion le podemos pasar varios campos para sumar. Tambien le puedo 
+concatenar un + para sumarle otros valores que puedan venir por parametros o fijos. Dentro del Parentesis no debido a que si lo 
+colocamos dentro del Parentesis por cada registro realizara es operacion
+
+EJ: Select Sum(Kilometraje) from Autos.  Select Sum(Precio)*1.21 from Autos.
+
+3) Funcion AVG: Esta nos permite calcular un promedio de un campo numerico que le pasemos segun su cantidad de registros. 
+Select AVG(Precio) from Autos.
+
+4) Funcion Count: Cuenta la cantidad de registros que tengo en mi tabla. Select Count(*) from Autos
+
+5) Funcion Having: Esta Funcion Trabaja con la Funcion Count y Group By. Es similar al Where, pero este trabaja Si existe con Group By. Trabaja 
+Con un conjunto de registros. Cuando ejecutas una consulta que tiene una cláusula GROUP BY, el HAVING te permite filtrar por las filas 
+una vez agrupadas.
+EJ: Select estado from turno Group by estado Having Count(estado) = 2
+
+La funcion Having, a diferencia de Where, permite Usar Alias y Funciones agregadas para Filtrar, en cambio Where Solo usa el Nombre de 
+las columnas para el filtro, en ese Sentido Having es mas Flex.
+
+
+                                                     3) Operadores Logicos
+
+1) AND: Concatenamos varias condiciones en la Clausula WHERE, todas estas condiciones se deben cumplir para que el registro sea devuelto.
+
+2) OR: Concatenamos varias condiciones en la Clausula WHERE, Para que de Verdadero y devulva el registro debe cumplir al menos una de 
+estas clausulas OR.
+
+3) IN: Es un operador al cual le pasaremos valores que esperemos que nos devuelva. En el Siguiente ejemplo la tabla me devolvera los Autos
+que valgan 150.000 y 200.000. EJ: Select * From Autos where Price IN(150.000, 200.000)
+
+4) Like: Es un operador que me filtrara por valor Un valor Exacto. Tambien puedo usar los %% para especificarle si empieza, termina o 
+Contiene Ese valor. EJ: Select * From Autos Where Nombre Like '%Coupe%'
+
+5) NOT: Este me permite Negar el Operador LIKE e IN, de esta forma cumplirian una funcion opuesta, desfiltrando esos valores.
+        Select * From Autos Where Nombre NOT Like '%Coupe%'
+
+6) BETWEEN: Este Operador me permite filtrar en un Rango. Puede Tener un Rango Numerico, Un Rango de Fechas o Un Rango de textos
+(Ordenados por el orden del Abecedario). 
+            EJ: Select * From Autos Where Price BETWEEN 100.000 and 200.000.
+            EJ: Select * from Turno Where Fecha BETWEEN '2024-01-25' and '2024-02-28'
+
+                                                    4) Store Procedures
+
+STORE PROCEDURE: Es una Consulta SQL que creamos y la empaquetamos o enlatamos. Estos Store Procedures tienen la finalidad de realizar
+Acciones Concretas, O Multiples acciones concretas.
+
+ANSI-NULL: Si yo tengo esta funcion en ON y busco valores NULL en mi Store Procedure esta no me va a devolver Nada, Anula el Retorno de
+Valores NULL. Si quiero que me devuelva los NULL es tan sencillo como colocar ANSI_NULLS OFF.
+
+QUOTED_IDENTIFIER: Permite Nombrar Tablas como palabras Reservadas si la coloco entre ""
+
+
+                                                    5) Declarar variable
+
+Una variable es un espacio de memoria que nos permitira alojar un valor en la memoria. Para Declarar una variable deberemos Usar 
+la Palabra Declare. EJ: DECLARE @Nombre Char(7) = 'Ejemplo'. 
+Si no inicializo el valor de la variable esta tendra por defecto NULL.
+
+Si yo quiero asignar el Valor de una Variable a Otra varible puede llegar a Pasar que la varible a la cual le quiera sacar el Valor 
+Sea Null, en estos casos nos conviene usar la Funcion ISNULL(), esta evalua y en el caso de que la varible sea null se le dara un 
+valor por defecto que nosotros coloquemos. EJ: @variable = ISNULL(@Variable2, 'ERROR') as valor
+
+                                                     6) SUBCONSULTAS
+
+Una SUBCONSULTA es una Sentencia SELECT dentro de otra Sentencia SELECT, Para hacer esto lo debo hacer Antes del FROM y hacerlo entre 
+Parentesis. Como aclaracion Los SubQuerys no pueden devolver mas de un valor por registro de Query principal.
+
+Select Nombre, idPais, observacion
+(select pais from Pais ps WHERE ps.idPais = pa.idPais) as Descripcion
+From pacientes pa 
+Where IdPaciente = @Variable
+
+                                                    7) Estructuras de Control
+
+
+
+                                                      10) Sintaxis General
+
+0) GO: Delimita cada Bloque de Ejecucion en SQL.
+
+1) Select Nombres, Precios from Auto
+
+2) Insert into Auto (Nombre, Precio) values ('Corola', 5000), ('Sprinter', 6000)
+
+3) Update Auto set Nombre = 'Toreno', Precio = 45000 WHERE Id = @MyID
+
+4) Delete From Auto where Id = @MyID
+
+5) TOP: Select Top 5 * Pacientes 
+
+6) Order By: Select Nombre, Precio from Auto Order By Precio DESC
+
+7) DISTINCT: Select DISTINCT Tanque from Autos.
+
+8) Group By: Select Precio from Autos Group by Precio
+
+9) Min-Max: Select Max(Precio) as Precio from Autos // Select Min(Precio) as Precio from Autos
+
+10) Sum: Select Sum(Precio)*1.21 From Autos where id = @MyId
+
+11) AVG: Select AVG(Precio) from Autos
+
+12) Count: Select Count(*) from Autos
+
+13) Having: Select Price from Autos Group by Price Having Price < 300000
+
+14) IN: Select * From Autos Where Anio IN('1990', '1998') 
+
+15) Like: Select * From Autos Where Nombre Like '%Coupe%'
+
+16) NOT: Select * From Autos Where Nombre NOT Like '%Coupe%'
+ 
+17) BETWEEN: Select * from Turno Where Fecha BETWEEN '2024-01-25' and '2024-02-28'
+
+18) SP: CREATE PROCEDURE *Nombre* *@Parametros* as *Acciones SQL*
+
+19) SP-Llamado: Exec SP_MyStore *Parametro1, Parametro2*
+
+20) Declarar Variable: DECLARE @Nombre Char(7) = 'Ejemplo' // Set @Nombre = 'Hola'
+
+21) ISNULL: @variable = ISNULL(@Variable2, 'ERROR') as valor
+
+22) TYPE: CREATE TYPE *Nombre*  from *tipo de dato* null/not null
+
+
+
+
+
+Shor-Cuts: Ctrl-N(Abre un Query en Blanco). Ctrl-R(Oculta Ventana de mensajes). F8(Object Explorer). Ctrl-Alt-L(Mostrar Solution Explorer)
+Ctrl-F5(Permite Ejecutar Parse). Ctrl-Shift-U(Cambiar el texto seleccionado a mayúsculas). Ctrl-Shift-L(Todo Minusculas).
+Ctrl-K-C (Comentar la codigo). Ctrl-K-U (Descomentar la codigo.) Ctrl-Shift-Flecha(Para Seleccionar Palabras)
+
+Ctrl + D: Modo de visualización de cuadrícula. Ctrl + T: Modo de visualización de texto.
+

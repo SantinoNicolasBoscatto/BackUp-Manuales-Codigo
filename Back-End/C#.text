@@ -3093,7 +3093,6 @@ solo necesito usar Remove.
 En sintesis lo mejor para las validaciones es combinar las de Front (Propiedades, los Validators y JS) y las de Back (En Capa de Web, 
 En la Capa de Negocio y en la Capa de Modelo de dominio).
 
-
 Application_Error(object sender, EventArgs e)
 {
     Excepcion ex = Server.GetLastError();
