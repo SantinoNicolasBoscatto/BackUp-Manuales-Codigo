@@ -137,12 +137,14 @@ Tambien en T-SQL lo puede hacer poniendo:
 
                                         CREATE TYPE *Nombre*  from *tipo de dato* null/not null
 
+                                                        1) CONSTRAINTS
+
 Conceptos de Relaciones entre Tablas: 
 Primero que nada las relaciones entre tablas no son obligatorias, una base puede funcionar sin tablas relacionadas. Sin embargo una 
 tabla sin relaciones puede correr el riesgo de perder la integridad de los datos en las tablas, ya que no tiene definidas las reglas 
 de integridad referencial RIR.
-Estas Reglas son relaciones entre tablas, en donde un Campo PK se relaciona con un campo de otra tabla al cual llamamos FK. Esto 
-me sirve para que yo no pueda colocar un valor en la FK que no este en mi PK, permitiendo manejar mejor lo Consistencia de datos.
+Estas Reglas (CONSTRAINTS) son relaciones entre tablas, en donde un Campo PK se relaciona con un campo de otra tabla al cual llamamos FK.
+Esto  me sirve para que yo no pueda colocar un valor en la FK que no este en mi PK, permitiendo manejar mejor lo Consistencia de datos.
 Otra Caracteristica es que no podremos borrar los registros PK de una tabla si estas se encuntran en una FK de otra tabla.
 Esto mismo me evita los errores en el manejo de datos al evitar que Inserte o Actualice Datos inexistentes o que borre datos.
 
@@ -154,6 +156,7 @@ si a la tabla B le quiero hacer una FK de IdPais, en la tabla B debe existir un 
 
 La tabla A sera la tabla principal que manejara los registros de los datos, la tabla B sera a la cual se le restringira el inserte de 
 registros segun los valores que dicte A.
+     
 
 Relacion Uno a Muchos: Es una relacion en la que tenemos una PK que va a tener registros unicos que van a estar representados en la 
 tabla B. Es decir Se conecta un Registro de un campo a muchos registros de ese campo, es decir un Registro de una tabla para muchos
