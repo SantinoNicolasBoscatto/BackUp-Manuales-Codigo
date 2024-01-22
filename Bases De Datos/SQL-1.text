@@ -194,12 +194,12 @@ CLAUSULAS SQL: Las CLAUSULAS basicamente son condiciones que se le hacen a las t
 2) Order BY => Con esta Clausula traere los registro de forma ordenada, si quiero que sea ascendente o descendente es tan facil con 
 poenr ASC o DESC. EJ: Select Nombre, Precio from Auto Order By Precio DESC.
 
-3) DISTINCT => Con esta Clausula Traere todos los Valores no repetidos de una Columna/Campo, Traere solo valores unicos.
+3) DISTINCT => Me Permite Traer los Valores De forma agrupada (sin repeticiones) de una Columna/Campo
    EJ: Select DISTINCT Tanque from Autos.
 
-4) Group By => Hace algo similar a DISTINCT, Ordena por Grupos, trae todos los valores no repetidos de una columna. La diferencia entre 
-    Group By y DISTINCT es que con Group By Nos permitira ejecutar funciones de agregado con esta Clausula, lo que nos permite hacer 
-    cuentas sobre los campos agrupados, Sumatorias, Promedios.
+4) Group By => Hace algo similar a DISTINCT, Permite Traer los Valores De forma agrupada (sin repeticiones) de una Columna/Campo. 
+La diferencia entre Group By y DISTINCT es que con Group By Nos permitira ejecutar funciones de agregado con esta Clausula, lo que nos 
+permite hacer cuentas sobre los campos agrupados, Sumatorias, Promedios.
    Select Precio from Autos Group by Precio Order by Precio DESC
 
 5) WHERE => Nos permite Buscar o Filtrar Registros segun los valores de ciertos campos.
@@ -288,9 +288,146 @@ Where IdPaciente = @Variable
 
                                                     7) Estructuras de Control
 
+Estructuras de Control: Son Estructuras que vamos a poder usar en SQL Server para evaluar un bloque de codigo y tomar deciones.
+
+1) IF: Este nos sirve para evaluar el valor de una variable o de una consulta y si se cumple ejecutar acciones. Este por defecto 
+    solo tomara como dentro del IF a la primera linea que este por debajo de ella(al igual que en C#) pero si quisiera armar un 
+    por si se cumple la condicion debere usar BEGIN que iniciara el bloque y END lo terminara (como si fueran las { }).
+        EJ: IF @Id = 7
+            BEGIN
+            select * from paciente where IdPaciente = @Id
+            print 20
+            END
+
+2) EXISTS: Esta Funcion me permite evaluar si existe uno mas registros de determinada consulta. A este se lo suele usar con IF, para 
+decir que SI Existe haga tal cosa, Sino tal otra. 
+EJ: IF EXISTS(select * from Autos where Id = 1)
+    Delete from Autos where Id = 1
+
+3) WHILE: Esta Estructura nos permite ejecutar un bloque de codigo hasta que se deje de cumplir una condicion. Tambien deberemos usar 
+la Estructura BEGIN y END.
+
+4) RETURN: Return basicamente lo que hace es cortar la ejecucion del Codigo. Se suele usar en funciones y procedimientos almacenados para
+finalizar la ejecución del Script actual y devolver el control al llamador de la función o procedimiento. Todo lo que haya despues de un 
+bucle tampoco sera ejecutado, el return Elimina toda la ejecucion del Script. 
+
+5) BREAK: El BREAK Es similar a RETURN, pero este a diferencia de RETURN solo rompe el ciclo donde se encuentra, Este sale del ciclo pero
+el resto de la ejecucion del SCRIPT se mantiene. Basicamente el BREAK lo que hace es interrumpir un WHILE.
+
+6) TRY-CATCH: Se encarga de manejar los errores en tiempo de ejecucion, los errores no controlados. En este caso lo que hace SQL 
+al detectar el Error con el Try Catch es parar la ejecucion y devolver la Consola.
+
+BEGIN TRY
+END TRY
+BEGIN CATCH 
+END CATCH
+
+7) CASE: Este condicional nos permite elegir una ruta segun el valor de una variable o un campo, un Swich basicamente. A Este por ejemplo
+lo podemos usar en el SELECT y colocar al CASE como una Columna mas a devolver. La Opcion de default se coloca con ELSE.
+         EJ: set @COLOR = (CASE WHEN @valor = 10 THEN 'ROJO'
+                                WHEN @valor = 20 THEN 'Verde'
+                                WHEN @valor = 30 THEN 'AZUL'
+                            ELSE 'GRIS'
+                                END)
 
 
-                                                      10) Sintaxis General
+                                                 8) DATOS UTILIES
+
+Para seleccionar el ultimo ID Insertado este tiene que estar configurado con Identity. Para acceder a este ultimo valor 
+debo llamar a la varible del sistema @@IDENTITY.
+
+                                                8.1) Ver un SP desde la Consola
+
+sp_helptext *Store procedure*.
+
+Tambien desde el menu tools puedo ir a modificar los ShortCuts.
+
+                                         9) Alter Table / Column y Drop Column
+
+Alter Table: Con la sentencia Alter Table podemos modificar la Estructura de una tabla. 
+1) Alter Table Paciente ADD Numero int. 2)  Alter Table Paciente Drop Column Numero. 
+3) Alter Table Paciente Alter Column Numero smallint
+
+                                        9.1) Crear Script de CREATE TABLE
+
+Debo seleccionar una tabla desde el explorardor, click derecho Script Table y Creat TO.
+
+1) SET ANSI_NULLS: activa o desactiva la comparación contra valores NULL.
+
+2) GO: separa una instrucción de otra
+
+3) SET QUOTED_IDENTIFIER: activa o desactiva el uso de comillas dobles para palabras reservadas.
+
+4) CLUSTERED: genera una indexación que define cómo se organizan los datos en una tabla en función de la clave primaria.
+
+
+                                            10) Definir una FK desde T-SQL
+
+                                                  Alter Table Paciente
+                                                ADD Foreign KEY (IdPais) 
+                                                REFERENCES  Pais(idPais)
+
+
+                                                11) CREATE FUNCTION
+
+                                        CREATE FUNCTION MyFunction (@parametro int)
+                                        RETURNS int
+                                        as
+                                        BEGIN
+                                            set @var = @var * 5
+                                            return @var
+                                        END
+
+                                                      LLAMADO
+
+                                              select dbo.nombrefun (20)
+
+Las Funciones si o si las debo llamar desde el select y le debo colocar su esquema dbo. Un Esquema es un grupo o un espacio de nombres en
+el que podemos agrupar las tablas y los SP.
+
+
+                                                    12) TRUNCATE
+
+TRUNCATE lo que hace es eliminar por completo los registros de una tabla y resetear los campos que tengan configurado IDENTITY.
+
+EJ: TRUNCATE table Paciente
+
+                                                13) Funciones LEFT and RIGHT
+
+Son funciones para tratar variables de tipo CHAR o VARCHAR. Nos permiten conseguir determinados caracterers que esten a la derecha o
+a la izquierda. Para esto le tengo que pasar la cadena y la cantidad de caracteres que quiero seleccionar.
+
+Select LEFT(Nombre, 1), LEFT(Apellido, 1) from paciente
+
+                                                  14) Funcion LEN
+
+Es una FUNCION que se encarga de contar la cantidad de caracteres que tiene una cadena de caracteres. Esto me sirve para usar en el 
+WHERE cuando quiera filtrar texto que no tenga mas de tantos caractereres o cosas similares. Tambien lo puedo Combinar con LEFT y 
+RIGHT.
+EJ: select Nombre from Medico where Len(Nombre) > 10
+                                                15) Funcion LOWER y UPPER
+
+Estas Funciones nos va a permitir formatear variables de Tipo Texto. Lower Sera para llevar a Minusculas todo el texto y Upper a Mayus.
+
+EJ: Select TOP 1  Upper(LEFT(Nombre, 1)) + LOWER(RIGHT(Nombre, LEN(Nombre)-1)) from Paciente
+
+                                                16) Funcion Replace
+
+Nos permite reemplazar un caracter por otro. Sirve cuando quiero formatear caracteres incorrectos que se cargaron. Por 
+Ejemplo si se cargo un @ en vez de una A. El primer parametro es la cadena, el segundo el caracter  a reemplazar y el 
+tercero el reemplazo.
+
+Select REPLACE('Mi @migo Pepe', '@', 'A') 
+
+                                                17) Funcion REPLICATE
+
+La funcion Replicate me permite repetir un Caracter o una cadena de caracteres la cantidad de veces que le especifiquemos.
+Con esta funcion podemos formatear numero, pero necesitaremos de otra funcion para poder hacerlo.
+
+Select REPLICATE(Nombre, 5) Nombre  from Paciente  
+
+
+                                                  20) Sintaxis General
 
 0) GO: Delimita cada Bloque de Ejecucion en SQL.
 
@@ -337,6 +474,43 @@ Where IdPaciente = @Variable
 21) ISNULL: @variable = ISNULL(@Variable2, 'ERROR') as valor
 
 22) TYPE: CREATE TYPE *Nombre*  from *tipo de dato* null/not null
+
+23) IF:  IF @Id > 7
+         BEGIN
+         select * from paciente where IdPaciente = @Id
+         print 20
+         END
+
+         Else
+         BEGIN
+         select * from paciente where IdPaciente = 0
+         print 0
+         END
+
+24) EXIST: IF EXIST(select * from Autos where Id = 1)
+           Delete from Autos where Id = 1
+
+25) CASE: set @COLOR = (CASE WHEN @valor = 10 THEN 'ROJO'
+                             WHEN @valor = 20 THEN 'Verde'
+                             WHEN @valor = 30 THEN 'AZUL'
+                             END)
+
+26) Operador Numerico Distinto: <>
+
+27) Alter Table: 1) Alter Table Paciente ADD Numero int. 2)  Alter Table Paciente Drop Column Numero.  3) Alter Table Paciente Alter Column Numero smallint
+
+28) Drop Table: Drop Table MiTabla
+
+29) TRUNCATE: TRUNCATE table Paciente
+
+30) LEFT-RIGHT: Select LEFT(Nombre, 1), LEFT(Apellido, 1) from paciente
+
+31) LEN(): select Nombre from Medico where Len(Nombre) > 10
+
+32) Lower y Upper: Select TOP 1  Upper(LEFT(Nombre, 1)) + LOWER(RIGHT(Nombre, LEN(Nombre)-1)) from Paciente
+
+33) REPLACE: Select REPLACE('Mi @migo Pepe', '@', 'A') // Select REPLACE(Nombre, 'S', '@') Nombre  from Paciente  
+
 
 
 
