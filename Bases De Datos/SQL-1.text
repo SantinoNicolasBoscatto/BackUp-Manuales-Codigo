@@ -1,4 +1,4 @@
-Para instalar SQL son 2 etapas. 1) instalar el motor de SQL SERVER que sera el "servidor" como tal, para esto descargamos el SETUP de 
+5Para instalar SQL son 2 etapas. 1) instalar el motor de SQL SERVER que sera el "servidor" como tal, para esto descargamos el SETUP de 
 la version mas actual, vamos a instalation y configuramos lo que queramos. 2) Luego toca instalar el acceso visual al SQL SERVER que seria
 SQL MANAGEMENT STUDIO.
 
@@ -137,7 +137,7 @@ Tambien en T-SQL lo puede hacer poniendo:
 
                                         CREATE TYPE *Nombre*  from *tipo de dato* null/not null
 
-                                                        1) CONSTRAINTS
+                                                        X) CONSTRAINTS
 
 Conceptos de Relaciones entre Tablas: 
 Primero que nada las relaciones entre tablas no son obligatorias, una base puede funcionar sin tablas relacionadas. Sin embargo una 
@@ -426,8 +426,277 @@ Con esta funcion podemos formatear numero, pero necesitaremos de otra funcion pa
 
 Select REPLICATE(Nombre, 5) Nombre  from Paciente  
 
+                                                18) Funcion LTRIM y RTRIM
 
-                                                  20) Sintaxis General
+Me permite eliminar los espacios (espacios vacios) de una cadena de caracteres tanto a la derecha Como a la izquierda. Lo puedo mandar 
+de forma anidada asi se borra los espacios a la izquierda y a la derecha.
+ 
+EJ: Select LTRIM(RTRIM(Nombre)) from Paciente
+
+                                                    19) Funcion CONCAT
+
+Me permite concatenar 2 o mas Valores. EJ: CONCAT(@Var1, @Var2)
+
+                                              20) Funcion GETDATE y GETUTCDATE
+
+Estas funciones se las suele utilizar cuando necesitamos almacenar la fecha y la hora de cuando se creo el registro. GETDATE() Nos devolvera
+la hora exacta en la cual esta instalado el Sistema de Base de Datos, en cambio GETUTCDATE() nos devolvera la hora sin la diferencia horaria.
+Hay que tener en cuanta que si el servidor se encuntra en un lugar distinto de donde quiero consultar los datos vamos a tener que manejar 
+esa hora, debido a que seran horas distintas debido al UTC.
+
+EJ: Insert Into Ejemplo (FechaLog) values (GETDATE())
+
+                                                    21) Funcion DATEADD
+
+Esto nos permite agregarle Dias, Meses y Años a una Fecha Date o Datetime. tambien en el caso de DateTime puedo agregarle Horas y Minutos.
+La Funcion DATEADD() recibe 3 Parametros, 1) El Intervalo de Tiempo, es decir que quiero modificar, si el dia, Mes, Año, ETC. 
+2) La Cantidad de Dias/Meses/Años que quiero agregar. 3) Sobre que Fecha quiero hacer esta modificacion.
+
+Update Ejemplo Set MiFecha = DATEADD(day, 3, MiFecha)
+
+                                                    21) Funcion DATEDIFF
+
+Esta Nos Devuelve la diferencia entre 2 fechas, segun el intervalo de tiempo que especifiquemos (dias, meses, años). Esta Funcion tambien
+Recibe 3 parametros: 1) El intervalo. 2) La primera Fecha a Comparar por la diferencia. 3) La segunda fecha a comprar por la diferencia.
+
+                                                    22) Funcion DATEPART
+
+Esta Funcion nos permite tener el intervalo especifico de una Fecha. Para esto le tenemos que pasar 2 parametros: 1) El Intervalo 
+2) La Fecha.
+
+EJ: Select DATEPART(month, GETDATE())
+
+                                                    23) Funcion ISDATE
+
+Es una funcion que nos permite evaluar si una fecha consta de un formato correcto, por ello esta nos devolvera un TRUE o FALSE. Se lo 
+suele usar con IF para ejecutar una accion si la fecha es correcta o incorrecta.
+
+EJ: Select ISDATE('20240123')
+
+                                                  24) FUNCIONES CAST y CONVERT
+
+Las Funciones CAST y CONVERT son funciones de conversion de tipos de datos (puedo convertir un campo de un tipo de dato o una variable
+a otro tipo de dato). Estas son similares entre si, solo que CAST es mas generica y solo me deja castear Tipo de datos de la misma familia
+(Numero con numero y texto con texto), en cambio CONVERT es mas flexible con eso y mediante parametros puedo hacer mas conversiones, especialmente
+cuando se trata de fechas.
+
+Parametros de Convert: 1) El Tipo de Dato al Cual quiero convertir mi variable o Campo. 2) La varible o campo. 3) OPCIONAL para DateTime,
+en este le tengo que pasar el formato de fecha que quiero que me devuelvan.
+
+1) EJ: Insert into Ejemplo (Dinero) values (CAST(500.40 as int))
+
+2) EJ: SELECT CONVERT(DATE, MiFecha, 112) from MiTabla
+
+                                              25) Estructura De TRANSACCIONESS
+
+La Estructura de las Transacciones se suele usar en las funciones o los SP, para que si ejecuto un SP por ejemplo y en la mitad del SP 
+capturo un Error con el TRY CATCH, La primera mitad del SP no se ejecute, que vuelva atras los cambios que realizo. En sintesis, esta
+estructura se la suele utilizar para una parte del codigo en el que estamos actualizando, Insertando o Eliminando Datos.
+Para establecer el inicio de la Transaccion colocaremos BEGIN TRAN. Esta Transaccion no se terminara hasta que se encuentre con un 
+COMMIT o un ROLLBACK.
+
+BEGIN TRY
+    BEGIN TRAN
+        DELETE FROM Autos
+    COMMIT TRAN
+END TRY
+
+BEGIN CATCH
+    ROLLBACK TRAN
+END CATCH
+
+Begin TRAN 
+    Delete from Autos where Precio = 160.000
+IF @@RowCount = 1
+    COMMIT Tran 
+Else 
+    ROLLBACK Tran
+
+1) @@RowCount: Variable del sistema que me permite contar cuantas celdas fueron actualizadas en una ejecucion.
+
+
+                                                     26) JOINS y UNIONS
+
+1) JOINS: Estos me permiten conectar 2 o mas tablas entre si y obtener resultados. Para poder cruzar las tablas necesitaremos darle un 
+nombre o alias a cada tabla. Dentro de los JOINS encontramos a 1)INEER JOINS. 2) LEFT JOIN. 3) RIGHT JOIN.
+
+1.1) INNER JOIN: Con esta Clausula traeremos los registros que existen en ambas tablas a la vez.
+
+Select * from Paciente P
+INNER JOIN TurnoPaciente TP 
+ON TP.IdPaciente = P.IdPaciente
+
+1.2) LEFT JOIN: Con esta Clausula traeremos Todos los registros de la Tabla A y los que coicidan con respecto a la clausula ON de La 
+Tabla B.
+
+Select * From Paciente P
+LEFT JOIN TurnoPaciente T
+ON T.idPaciente = P.idPaciente  
+
+1.3) RIGHT JOIN: Al Reves de LEFT JOIN.
+
+1.4) FULL OUTER JOIN: Selecciona Todo de ambas tablas.
+
+1.5) Consideraciones Con INNER JOIN: Siempre que podamos deberiamos usar las PK de las tablas para realizar un INNER JOIN, aunque no esta 
+mal utilizar otros campos lo recomendados es cruzar PK, debido a que el Rendimiento del SQL es mayor cruzando las PK que otros campos.
+Otra Buena Practica es colocar en la comparacion del ON la tabla B primero que la tabla A "ON B.idTabla = A.idTabla".
+Esto tambien por una cuestion de Rendimiento.
+
+2) UNIONS: La diferencia entre la clausula UNION con la clausula INNER es que UNION nos permite unir 2 Resultados de 2 consultas diferentes.
+Es decir con UNION yo puedo hacer 2 Consultas y que esta me devuelva un registro fusionado con ambas consultas. Si los registros son 
+repetidos UNION los fusionara en uno solo. Esto es Util cuando quiero Seleccionar de una misma tabla registros discriminados por WHERE, ya
+que UNION solamente puede unir consultas de Tablas que tengan la misma estructura (misma cantidad de Campos y tipo de dato).
+
+Select * from Autos where Price = 55000
+UNION
+Select * from Autos where Price > 150000
+
+2.1) UNION ALL: La unica diferencia con UNION es que esta no elimina la repeticion de registros cruzados, trae directamente todos los 
+registros que encuentra.
+
+                                             27) Funciones definidas por el usuario
+
+1) Funciones Escalares: Son Funciones que nos permiten recibir uno o mas parametros y devolver un  valor de tipo especifico.
+Create Function VerPais(
+	@idpaciente paciente
+	)
+RETURNS VARCHAR(50)
+as
+BEGIN
+	declare @aux varchar(50)
+	set @aux = (Select PA.Pais From Paciente P
+	INNER JOIN Pais PA
+	ON PA.IdPais = P.idPais
+	where idPaciente = @idpaciente)
+	RETURN @aux
+END
+
+Llamado: Select dbo.VerPais
+
+2) Funciones De Tipo Tabla: Nos permiten Recibir Uno o Mas parametros pero en vez de devolver un resultado nos permitira retornar una 
+tabla o un Conjunto de registros.
+
+Create FUNCTION ListaPaises(@Nombre Varchar(20),@ID Char(3))
+RETURNS @Paises Table(Descripcion VarChar(50), idPais Char(3))
+as
+BEGIN		
+	Insert Into @Paises (Descripcion, idPais) values (@Nombre, @ID)
+	RETURN
+END
+
+Llamado: Select * from dbo.ListaPaises('Sri Lanka', 'GOD')
+
+                                                    28) Tablas Temporales
+
+1) Tabla Temporal En Memoria: Una tabla temporal en memoria va a existir mientras el Script se este ejecutando, una vez termine el 
+script esta tabla en memoria se destruye. Para declarar una tabla en memoria usamos DECLARE @NombreTabla TABLE (@Campo1, @Campo2)
+
+EJ: Declare @MiTabla Table(id int Identity (1,1), pais varchar(50))
+
+2) Tabla Temporal Fisica: La tabla temporal Fisica cuando la creamos va a existir en la base de datos hasta que reiniciemos el servicio
+de Base de Datos. Mientras el Motor este corriendo esta tabla va a seguir existiendo. Esta tabla se crea como una tabla normal solo que 
+al nombre se le agrega una #.
+
+EJ: Create Table #MiTable(
+    id int Identity(1,1),
+    pais varchar(50)
+)
+
+Drop Table #MiTabla
+
+3) Insertar Registros en una Tabla: insert into @turnos (idturno, idpaciente)
+                                    select TP.idturno, P.idPaciente from Paciente P
+                                    INNER JOIN TurnoPaciente PA
+                                    ON TP.idPaciente = P.idPaciente
+
+4) Recorrer Tabla: Para Recorrer una tabla la hacemos con un bucle WHILE.
+                    
+                    @Declare @X int, total int
+                    set @i = 1
+                    set @total = (SELECT Count(*) from @turnos)
+                    
+                    WHILE @i <= @total
+                    BEGIN
+
+                    IF(select idpaciente from @turnos where id = @i) <> 8
+                        delete from @turnos where id = @i 
+
+                        set @i = @i + 1
+                    END   
+
+                    select * from @turnos 
+
+                                                        29) VISTA
+
+Se la crea desde el EXPLORER en la carpeta Views y ahi puedo seleccionar las tablas que quiero ver. Lo que hace una Vista es almacenar 
+una consulta en la BD y cuando ejecutamos la vista lo que hace es ejecutar hace consulta y actualizar esos datos. En sintesis una vista
+viene a ser una especie de tabla virtual que nos sirve para guardar una consulta especifica.
+
+CREATE VIEW *Nombre* AS 
+* Consulta *
+
+Para llamar a esta vista lo hacemos como si fuera una tabla por su nombre. -> Select * from MiVista
+
+Una vista en SQL es una tabla virtual que se deriva de una o más tablas existentes en una base de datos. En lugar de 
+almacenar los datos físicamente, una vista es una consulta predefinida que se puede utilizar para recuperar los datos de 
+una o más tablas en una base de datos.
+Una vista se crea mediante una instrucción SELECT y puede contener cualquier cláusula válida de SQL, como WHERE, GROUP BY,
+ORDER BY y JOIN. Una vez creada la vista, se puede consultar como si fuera una tabla real, lo que significa que se pueden
+realizar consultas y aplicar filtros, y los resultados se devolverán como si se hubieran consultado directamente desde una 
+tabla.
+
+Las vistas son útiles en situaciones en las que se requiere una consulta frecuente de una misma tabla o combinación de 
+tablas, ya que pueden simplificar la consulta y reducir la complejidad de las consultas que se ejecutan con frecuencia. 
+También se pueden utilizar para restringir el acceso a datos confidenciales o para proporcionar una capa adicional de
+seguridad en una base de datos.
+
+                                                      30) TRIGGERS
+
+TRIGGERS: Un Trigger es un desencadenador o disparador de un Evento. Tenemos 3 eventos que desencadenan un Triggers: 1) Insert. 2)Update.
+3) Delete. Nosotros podemos crear un Trigger cuando suceda alguno de esos 3 eventos, en relacion a la informacion que actualizo esa 
+accion. Vamos a poder guardar ese registro nuevo en el LOG, guardar ese nuevo registro en una tabla.
+
+1) Trigger Insert EJ: CREATE TRIGGER *Nombre Trigger* ON *La tabla sobre la cual se dispara el Trigger* AFTER INSERT
+
+2) Trigger Delte EJ: CREATE TRIGGER borrado ON Paciente FOR Delete as
+
+
+                                                    31) Crear BackUps
+
+1) Necesitamos crear una carpeta en nuestro sistema para guardar los BackUps. 2) Vamos a nuestra BD desde el explorer, a la opcion de 
+Task y a BackUp. 3) Dentro del BackUp podremos elegir si hacer un BackUp FULL (Con la toda la estructura y registros) o uno diferencial
+(Solo hace un BackUp de loss objetos nuevos con respecto a un BackUp anterior)
+
+1.1) Crear BackUp desde Script: declare @var varchar(100) = Replace(Concat('D:\BackUp_BD\NombreBack', Convert (char(8),GETDATE(), 112), 
+								Replace (Convert (char(5),GETDATE(), 108), ':','') ,'.bak'),' ', '')
+								BackUp DATABASE CentroMedico 
+                                TO DISK = @var
+                                WITH NO_COMPRESSION, NAME='NombreBack'
+
+                                                    32) Restore BackUp
+
+1) Deberemos ir a Database desde el explorador y entrar en Restore Database. 2) Seleccionamos DEVICE y buscamos nuestro archivo.
+3) En la Opcion de destino tenemos que asegurarnos que este seleccionado la Base de Datos que queremos Restaurar.
+
+                                                    33) SCHEDULED JOBS
+
+1) SCHEDULED JOBS: Son basicamente tareas programadas que se realizan automaticamente, estas estan programadas por el SQL Agent.
+El SQL Server Agent Es un Componente dentro del SQL Server que administra las tareas programadas. Las Tareas programadas son un 
+proceso el cual nosotros podemos crear y  decirle que ejecute ciertos Scripts en determinados momentos.
+
+Para crear un JOB debo ir a la carpeta de JOB y Luego darle click a NEW JOB. Ahi encontraremos las configuraciones del Nombre, del nivel
+de permisos que necesita ese JOB, la Descripcion, los Procesos que va a Ejecutar(Store Procedures por Ejemplo). Tambien se encuentra la
+Config de Schedule, ahi puedo configurar cada cuanto se va a ejecutar ese Script.
+
+2) Configurar el SCHEDULED: 1) le Colocaremos el Nombre y a que usuario pertenece. 2) Si nuestra tarea es de varios pasos lo podremos 
+configurar desde STEPS, si tiene una sola solo agregaremos un STEP. 3) En el step configuramos un Nombre, El tipo de Comando (normalmente
+T-SQL), la BD sobre la cual se va a ejecutar y los comandos. 4) Vamos a Scheduled y lo configuramos cada cuanto queremos que se ejecute 
+esa accion.
+
+
+                                                    34)
+
+                                                    40) Sintaxis General
 
 0) GO: Delimita cada Bloque de Ejecucion en SQL.
 
@@ -510,6 +779,63 @@ Select REPLICATE(Nombre, 5) Nombre  from Paciente
 32) Lower y Upper: Select TOP 1  Upper(LEFT(Nombre, 1)) + LOWER(RIGHT(Nombre, LEN(Nombre)-1)) from Paciente
 
 33) REPLACE: Select REPLACE('Mi @migo Pepe', '@', 'A') // Select REPLACE(Nombre, 'S', '@') Nombre  from Paciente  
+
+34) LTRIM y RTRIM: Select LTRIM(RTRIM(Nombre)) from Paciente
+
+35) CONCAT: CONCAT(@Var1, @Var2)
+
+36) GETDATE:  Insert Into Ejemplo (FechaLog) values (GETDATE())
+
+37) DATEADD: Update Ejemplo Set MiFecha = DATEADD(day, 3, MiFecha)
+
+38) DATEDIFF: Select DATEDIFF(year, GETDATE(), 20170123)
+
+39) DATEPART: Select DATEPART(month, GETDATE())
+
+40) ISDATE: IF ISDATE(Fecha)
+
+41) CAST: Insert into Ejemplo (Dinero) values (CAST(500.40 as int))
+
+42) CONVERT: Select CONVERT(Date, MiFecha, 112) from MiTabla
+
+43) Transacciones: BEGIN TRY
+                        BEGIN TRAN
+                            DELETE FROM Autos
+                        COMMIT TRAN
+                    END TRY
+
+                    BEGIN CATCH
+                        ROLLBACK TRAN
+                    END CATCH
+
+44) JOINS: Select * From Paciente P
+           INNER/LEFT/RIGHT JOIN TurnoPaciente T
+           ON P.idPaciente = T.idPaciente
+
+45) UNIONS: Select * From Paciente P where Id= 44
+            UNION
+            Select * From Paciente P where Id= 33
+
+46) Tabla Temporal en memoria: Declare @MiTabla Table(id int Identity (1,1), pais varchar(50))
+
+47) Recorrer Tabla: @Declare @X int, total int
+                    set @i = 1
+                    set @total = (SELECT Count(*) from @turnos)
+                    
+                    WHILE @i <= @total
+                    BEGIN
+                    IF(select idpaciente from @turnos where id = @i) <> 8
+                        delete from @turnos where id = @i 
+
+                        set @i = @i + 1
+                    END   
+                    select * from @turnos 
+
+48) TRIGGERS: CREATE TRIGGER *Nombre Trigger* ON *La tabla sobre la cual se dispara el Trigger* 
+              AFTER INSERT AS
+              IF (SELECT idPais FROM Inserted) = 'ARG'
+                 Insert into PacienteLog (Idpais, idpaciente, fechaAlta)
+                 Select Idpais, idpaciente, GETDATE() from Inserted i
 
 
 
