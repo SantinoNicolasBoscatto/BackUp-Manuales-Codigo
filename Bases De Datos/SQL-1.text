@@ -1,4 +1,4 @@
-5Para instalar SQL son 2 etapas. 1) instalar el motor de SQL SERVER que sera el "servidor" como tal, para esto descargamos el SETUP de 
+Para instalar SQL son 2 etapas. 1) instalar el motor de SQL SERVER que sera el "servidor" como tal, para esto descargamos el SETUP de 
 la version mas actual, vamos a instalation y configuramos lo que queramos. 2) Luego toca instalar el acceso visual al SQL SERVER que seria
 SQL MANAGEMENT STUDIO.
 
@@ -209,7 +209,7 @@ DELETE en FK: Si quiero eliminar algun Valor de la Tabla A que pertenece a algun
 es para prevenir dejar registros Inconsistentes.
 
 
-                                                     2) Funciones de Agregado
+                                               2) Funciones Escalares de Agregado 
 
 1) Funcion Min-Max: Estas funciones me permitiran acceder al registro de mayor o menor valor. Tambien se puede usar para elementos VarChar,
 Este devolvera los registros ordenados alfabeticamente. EJ: Select Max(fecha) as Fecha from Pago
@@ -231,7 +231,8 @@ una vez agrupadas.
 EJ: Select estado from turno Group by estado Having Count(estado) = 2
 
 La funcion Having, a diferencia de Where, permite Usar Alias y Funciones agregadas para Filtrar, en cambio Where Solo usa el Nombre de 
-las columnas para el filtro, en ese Sentido Having es mas Flex.
+las columnas para el filtro. Where se usa para filtrar Registros, HAVING para filtrar Grupos, Por eso HAVING solo se usa cuando 
+Existe Group BY.
 
 
                                                      3) Operadores Logicos
@@ -281,10 +282,18 @@ valor por defecto que nosotros coloquemos. EJ: @variable = ISNULL(@Variable2, 'E
 Una SUBCONSULTA es una Sentencia SELECT dentro de otra Sentencia SELECT, Para hacer esto lo debo hacer Antes del FROM y hacerlo entre 
 Parentesis. Como aclaracion Los SubQuerys no pueden devolver mas de un valor por registro de Query principal.
 
-Select Nombre, idPais, observacion
+Select Nombre, idPais, observacion,
 (select pais from Pais ps WHERE ps.idPais = pa.idPais) as Descripcion
 From pacientes pa 
 Where IdPaciente = @Variable
+
+Tambien la SUBCONSULTA puede ser en forma de tabla: 
+
+SELECT MAX(total_sum) AS max_total_sum
+FROM (
+    SELECT SUM(valor) OVER (PARTITION BY alguna_columna) AS total_sum
+    FROM tu_tabla
+) AS subconsulta;
 
                                                     7) Estructuras de Control
 
@@ -694,7 +703,84 @@ T-SQL), la BD sobre la cual se va a ejecutar y los comandos. 4) Vamos a Schedule
 esa accion.
 
 
-                                                    34)
+                                                      34) Usuarios
+
+1) Usuarios: Dentro de Nuestro Motor SQL tendremos Una carpeta de Usuarios, pero dentro de cada base de datos nueva que 
+generemos tambien se generara una Carpeta con Usuarios. Esto es porque SQL SERVER tiene 2 niveles de acceso, 1) al motor 
+de la base de datos (el primer login, que sin ese no podremos acceder a la base directamente), este lo llamaremos Login
+        2) El acceso a cada base de datos, El usuario. Entonces Para Crear Usuarios de una BD debo crear antes su Login para 
+Ingresar Base de Datos.
+
+2) Crear Login y Usuarios: 1) Iremos a Security de la BD y crearemos un Login. 2) Luego iremos a la carpeta Security pero de nuestra
+Base de Datos, y pondremos el Mismo nombre que colocamos en nuestro login. 
+
+3) Permisos y Restricciones: Desde el mismo panel de creacion del usuario, en Sucurables Ahi mismo podremos restringir al Usuario de
+que cosas puede modificar y cuales no en la base de datos. Tambien le puedo configurar a que Esquema quiero que pertenezca el usuario.
+
+                                                        35) Roles 
+
+1) Rol: Un Rol es un Grupo que establece permisos especificos a los usuarios que tengan ese rol asignado. Igualmente que en los Logins
+y usuarios tenemos tanto en el motor como por Base de Datos Roles de Usuario. Para Crear un nuevo Rol Debo ir a la carpeta Roles de mi
+DB y darle a New Rol. Ahi Colocaremos el Nombre del Rol, El Owner (Puede ser un usuario o un rol, pero solo ese usuarios o ese Rol podran
+modificar el rol que se esta creando) y definir los permisos tambien desde Securable.
+
+2) Crear Rol desde T-SQL: Create ROLE *NombreRol* AUTHORIZATION *Nombre del Propietario del ROL*
+
+3) Agregar Usuario a Rol: Alter Role *Nombre* Add Member *Nombre del usuario*
+
+                                                       36) SCHEMA
+
+1) SCHEMA: Un esquema es un espacio de nombres que agrupa objetos (Tablas, vistas, SP, Funciones, ETC). El Esquema por defecto es dbo que
+se crea al generar la Base de datos. Tambien se genera un Usuario admin en la base de datos de nombre DBO. El Usuario DBO puede ver 
+todos los esquemas que haya en la Base de datos, pero los usuarios comunes solo podran ver el Esquema al que estan asignados.
+
+2) Usos: Los Esquemas los podemos usar si queremos Aislar ciertas tablas de determinados usuarios.
+
+3) Agregar objetos al Esquema desde T-SQL: Alter SCHEMA *nombre* transfer *Objeto que quiero asignar a ese esquema*
+
+                                                    37) SQL Profiler
+
+1) SQL Profiler: Esta Herramienta nos va a permitir rastrear los procesos que se estan ejecutando en nuestra base de datos. Desde Tools
+Puedo Acceder. Ahi vamos a Generar un TRACE.  Lo que normalmente vamos a monitorear seran SP y ejecuciones T-SQL.
+
+2) TRACE: Monitoreo de todos los procesos que estan activos en SQL.
+                                                    38) Buenas Practicas
+
+1) Definir nombres de campos cortos y que representen lo mejor posible el valor que almacena. Para nombrarlos usen el idioma que más
+ prefieran, pero respeten ese idioma durante todo el proyecto.
+
+2) Cuando definan el nombre de un campo, por ej OrderID, asegúrense que el campo se llame igual si deben definirlo en otra tabla, eso 
+les ahorrará muchos dolores de cabeza cuando tengan que realizar JOINS.
+
+3) Al momento de elegir un tipo de dato para un campo, evalúen los valores que almacenará y elijan el tipo de dato adecuado. Por ejemplo, 
+si el campo almacenará edades, no es necesario definirlo como INT, un tipo TINYINT es más que suficiente. Ahorrar en bytes mejorará la 
+performance de la base de datos a largo plazo.
+
+4) Normalicen las tablas; deben crear tantas tablas como requiera el modelo de base de datos. Normalizar en 3ra FN es suficiente. 
+Si consideran que hay campos que deben colocarse en otra tabla, háganlo.
+
+5) Realiza las consultas filtrando siempre en lo posible por los campos Primary Key. Si usas JOINS, siempre coloca en la cláusula 
+ON los campos PK. Esto hará que la consulta sea óptima.
+
+6) Si has implementado Scheduled Jobs, asegúrate que se estén ejecutando en horarios nocturnos o cuando la base de datos esté con 
+poca actividad, a fin de no afectar la performance al usuario.
+
+7) Eviten el uso excesivo de Triggers. Cuando estos desencadenadores están vinculados a inserts, updates o deletes muy concurrentes, 
+puede afectar la performance.
+
+8) Realiza un Backup periódicamente y almacena los archivos preferentemente en un disco o dispositivo externo.
+
+
+                                                    39)   STUFF
+
+STUFF: Lo que hace esta funcion es cortar una cadena de string en X posicion y eliminar X Cantidad de caracteres desde la posicion en 
+la que esta y lo reemplazara por una cadena de texto que le pasemos.
+
+Select STUFF(Nombre, 1,1, 'T')
+from Autos
+
+Esto Cortara en el Primer Caracter, Eliminara Un caracter desde la posicion del primer caracter y colocara una T en ese lugar.
+
 
                                                     40) Sintaxis General
 
@@ -837,7 +923,60 @@ esa accion.
                  Insert into PacienteLog (Idpais, idpaciente, fechaAlta)
                  Select Idpais, idpaciente, GETDATE() from Inserted i
 
+                                                    40) TRUCOS
 
+1) NOT IN:  Select ID from Clientes where ID NOT IN (Select customerId from Orders). Variante del IN para buscar algo que 
+no existe en otra tabla, opuesto al INNER JOIN.
+
+2) La función COUNT en SQL se utiliza para contar el número de filas que cumplen con cierta condición. COUNT puede llegar 
+a contar el numero de Filas en las que se agrupan los grupos.
+
+3) DISTINCT permite contar valores unicos al usarlo dentro de Count.
+
+4) Si quiero Columnas en Filas y sus registros lo puedo hacer con UNION.
+SELECT  product_id ,'store1' AS store, store1 AS price FROM Products WHERE store1 IS NOT NULL
+UNION 
+SELECT product_id ,'store2' AS store, store2 AS price FROM Products WHERE store2 IS NOT NULL
+UNION
+SELECT product_id ,'store3' AS store, store3 AS price FROM Products WHERE store3 IS NOT NULL
+
+5) A los UNIONS no se les puede colocar un WHERE final, sino que cada UNION debe filtrar con su propio Where.
+
+6) Si en un select uso Max() puedo recuperar el mayor de algun registro de una columna
+
+7) Para descriminar precios por userID lo unico que tengo que hacer es SUM(Pagos) y hacer un Group by userID
+
+
+                                            41) Funciones de agregación
+
+1) Las Funciones Agregadas se usan con HAVING y no con WHERE. Where se usa para filtrar Registros, HAVING para filtrar 
+Grupos.
+
+2) Cantidad de Unicos: Select Count(Distinct Nombre) as nombreDistintos from Estudiantes
+
+3) Count Por Grupos: Select Count(Nombre) as Name from Estudiantes Group by Nombre; Esto mostrara los Nombres y la cantidad
+de veces que aparecen por registro.
+
+                                                42) SubQuerys
+
+1) Para usar la tabla Padre en el SubQuery es tan sencillo como llamar a la tabla padre por su nombre o alias.
+
+
+
+                                                43) INNER 
+
+1) El INNER segun al valor que lo iguale sera con esa columna que se matchee no por numero de fila. Ejemplo, si yo 
+tengo ID (1,2,3,4) en una columna y Friend_ID (2,3,4,1)  en otra y quiero hacer INNER si lo hago asi 
+INNER JOIN Friends F ON F.Friend_ID = S.ID
+Estaria Borrando la relacion de amistad de cada a uno y a cada uno le estaria asignando a su mismo ID (1,2,3,4 // 1,2,3,4)
+En cambio si hago 
+INNER JOIN Friends F ON F.ID = S.ID
+Mantendria los valores de las amistades, al cruzar valores que son relacionados (los ID representan a cada persona y es Logico
+Cruzarlos entre si ya que de ellos me traen los datos de las personas). Tambien recordamos que los INNER se deben cruzar 
+normalmente con los PK y con COLUMNAS que equivalgan lo mismo generalmente 
+(1,2,3,4 // 2,3,4,1)
+
+por eso debo cruzar por las PK que tengan las tablas.
 
 
 
@@ -847,4 +986,128 @@ Ctrl-F5(Permite Ejecutar Parse). Ctrl-Shift-U(Cambiar el texto seleccionado a ma
 Ctrl-K-C (Comentar la codigo). Ctrl-K-U (Descomentar la codigo.) Ctrl-Shift-Flecha(Para Seleccionar Palabras)
 
 Ctrl + D: Modo de visualización de cuadrícula. Ctrl + T: Modo de visualización de texto.
+
+                                                    44) LAG and LEAD
+
+ Estas funciones nos permiten Acceder a un registro anterior (LAG) o Posterior (LEAD).
+
+
+                                                    45) UNIQUE
+
+Esta CONSTRAINT nos permite que por cada campo solo haya un valor unico.
+
+ ---------------------------------------------------------------------------------------------------------------------------------------
+                                                       CURSO DE DALTO 
+
+1) SQL: Structured Query Language -> Lenguaje de Consultas Estructurado.     
+
+2) Entidad: Son las tablas que representan aquellas cosas que quiero guardar. Por ejemplo La tabla Provedor es la entidad del Proveedor.
+Esta entidad tiene sus Atributos (Nombre, Empresa, Direccion, Precios).
+
+3) Atributos: Tenemos los Atributos: 1) Simples, son aquellos atributos que solo tienen un dato comun, ordinario, Nombre por ejemplo.
+              2) Compuestos, estos atributos estan compuestos a su vez por mas atributos, como el tipo de un pokemon. 3) MultiValor, 
+              Por ejemplo son aquellos atributos que tiene mas de un valor. 4) Atributos Derivados, valores que puedo obtener de otros
+              atributos.
+
+4) Tablas: Estructuras de Datos organizados en filas y columnas.
+
+5) Campo: Nombre de la columna, el atributo.
+
+6) Query: Consultar o Pedir Datos a una base de datos. Los Insert, Update y Delete tambien se los tiene como consultas.
+
+7) FK: Las FK Hace referencia a una PK de otra tabla. Las FK se suelen implementar para mantener la 
+consistencia de Datos y Evitar elimiciones. Son las Reglas de Integridad Relacional. Sirven cuando quiero realizar Relaciones 
+entre tablas, con ellas me traigo las PK de otras tablas y las relaciono/Combino.
+
+8) Select: El Select Nos devuelve nuevas Tablas al realizar una consulta.
+
+9) AS: Permite colocarle un alias a la columna.
+
+10) Order By: Clausula para pedir que devuelva la tabla ordenada ASC o DESC segun un Campo. Si quiero poner varios campos para el Order
+              By los separo por coma. Order By Campo1 DESC, Campo2 ASC NULLS LAST
+              En Caso de Ordenar VARCHARS  lo que Menos Valor Son: 1) NULLS, Numeros, Caracteres especiales, Letras.
+              2) En el Caso de que quiera agregar los NULLS al final de mi Tabla Lo puedo hacer con la Condicion NULLS LAST
+
+11) DISTINCT: Esto me devolvera solo los Valores Unicos de un Campo, los repetidos los suprime.
+
+12) NOT: Realiza lo opuesto de la Condicion. Price > 40 me trae todos los precios mayor a 40, NOT Price >40 me traera todos los precios 
+que no sean mayor a 40. Niega una Condicion.
+
+13) Like: Funciona Similar a un = pero se lo diferencia gracias a los comodines (%,_) que permiten filtrar.
+
+14) IS NULL y IS NOT NULL: En vez de Hacer un = NULL / != NULL lo correcto es hacer un IS NULL / IS NOT NULL 
+
+15) IN y NOT IN: Tengo especificar a Que campo le quiero dar la Clausula y dentro de la Clausula los valores que quiero que tengan los 
+campos que traiga. Con Not IN es lo Opuesto. Tambien aca puedo realizar SubConsultas para Filtrar. Se puede Usar en Select, Update Y
+Delete.
+
+Select IdAuto from Autos Where IN (Select id from Ventas) 
+
+Select IdAuto from Autos Where NOT IN (Select id from MiAuto) 
+
+16) Group By: La Clausula GROUP BY se utiliza para agrupar Uno o varios registros. Esta va despues del Where ya que Where Filtra 
+los Registros y Group By Agrupa por los registros que filtro Where. Segun la Columna que elija para agrupar esta me devolvera los 
+valores Agrupados (No va a haber 2 nombres o valores iguales), Y si lo uso con COUNT() me permitira saber cuantos veces se repite 
+ese Grupo. Tambien me permite Usar una Funcion De Agregado Escalar y que esta haga la operacion pero por grupos.
+
+Por Ejemplo, si yo agrupo por User_ID y quiero sumar todas sus Transacciones. Al usar SUM(Transacciones) sin agrupar me sumara 
+todos los registros de Transaccion, pero si los tengo agrupados por User_ID Sumara las transacciones por los Grupos.
+
+16.1) A la Hora de trabajar con Funciones de Agregacion no filtraremos las funciones de agregacion con WHERE, sino lo haremos con HAVING, 
+Ya que las funciones de Agregacion funcionan con los grupos y HAVING permite filtrar Por grupos, en cambio Where Filtra por Registro. 
+WHERE FILTRA REGISTROS, HAVING FILTRA GRUPOS.
+
+17) Funciones de Agregacion: No puedo Fusionar 2 funciones de agregacion, salvo que use una SubConsultas o SubQuery.
+
+
+                                                            18) SubQuerys
+
+18) SubConsultas: Estas se utilizan cuando quiero unir o trabajar con 2 tablas. Una SubConsulta es una consulta de otra consulta. 
+                  Las SubConsultas son solo Selects. Las SubConsultas Pueden aparecer en distintos Lugares: 1) En el SELECT.
+                  2) En el WHERE. 3) En el FROM para crear una tabla virtual. 4) En Un HAVING.
+                   Depende del Valor que devuelva la SubConsulta sera su clasificacion (puede devolver un valor unico, una fila,  
+                   una tabla)
+
+                  1.1) SELECT (select id from Autos) from Ventas
+                  2.1) SELECT id from Ventas Where  id = (select id from Autos)
+                  3.1) Select * from (select id, nombre from Ventas where HP > 200)
+
+1.1) En las subconsultas del SELECT yo no puedo utilizar un SubQuery que me devuelva mas de una Columna, debido a que en el SELECT yo
+Coloco columnas, si me devuelve mas de una columna la subconsulta sera interpretada como una tabla y quere meter una tabla donde va 
+una Columna da lugar a Error.
+Para hacer que una subconsulta en el SELECT debo filtrar esa subconsulta con algun dato de mi tabla Padre:
+1.2) select (select ProductName from Products P where O.productID = P.productID) as Nombre, Quantity from [Order Details] O
+
+1.3) Ejercicio: select (select ProductName from Products P where O.productID = P.productID) 
+as Nombre, SUM(Quantity) as Cantidad,(select UnitPrice from Products P where O.productID = P.productID) 
+as Price, (select UnitPrice from Products P where O.productID = P.productID)*SUM(Quantity) as Total
+from [Order Details] O
+Group By ProductID
+Order by Total DESC
+
+3.1) Para Poner Tablas en el WHERE es tan facil como colocar una SubConsulta que devuelva una Tabla. La ventaja de esto es que me 
+trae una tabla virtual filtrada.
+
+
+
+
+DATO: No podemos Usar ALIAS en el select para hacer operaciones matematicas.
+
+
+
+
+
+
+
+
+                                                    X) JERARQUIA DE SELECT
+
+                                                    1) SELECT
+                                                    2) TOP / DISTINCT
+                                                    3) FROM
+                                                    4) WHERE
+                                                    5) GROUP BY
+                                                    5.1) HAVING
+                                                    6) ORDER BY
+
 

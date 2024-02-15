@@ -1,15 +1,121 @@
-API REST: Es una aplicacion Web desde el lado del Back-End ( un servicio web), en el cual tenemos una serie de Metodos 
-configurados que realizan ciertas funcionalidades como la interaccion con la base de datos, Logica, etc, que puede ser
-consumida (utilizada) mediante el protocolo HTTPS por cualquier tipo de cliente que entienda el protocolo HTTPS.
-En esta API vamos a crear distintos metodos que necesitemos utilizar, para cada uno de estos metodos definiremos una ruta
-y cada una de esas rutas tendra un Metodo HTTPS diferente (Get, Head, Post, Put, Delete, Connect, Options, Path).
-Normalmente el ApiRest devuelve los datos en un JSON (Es mas organizada y liviana que un XML).
+                                                        CURSO 1 MVC 
 
-En Sintesis: Un ApiRest es una App-Web que tenemos en el Back-End, en donde tenemos una serie de URL que nos devuelve o le 
-enviamos un resultado en un archivo JSON.
+C#: Lenguaje Multiparadigma, Fuertemente tipado, Basado en clases(Estas contienen Atributos y Metodos).
 
-Un API es como una página web, pero no para ser leída por personas sino para ser leídas por programas.
+Funciones de Primera clase: 1) Podemos pasar Funciones como parametros a otras Funciones. 2) Asignar una funcion a una varible. 
+3) Asignar Funciones Anonimas. 
 
-Un API no lo consume/Utiliza una persona, la consume/Utiliza un programa. Al consumirla no lo hace a través de un navegador
-de internet, sino que envía un pedido a una dirección http también, pero en lugar de recibir un HTML, una API va a regresar
-un contenido JSON para ser consumido por el programa que envió el pedido.
+ASP.NET CORE: Framework para desarrollar Apps Web. Active Server Pages. 1) Sistema de Ruteo. 2) Sistema de usuarios. 3) Inyeccion de 
+dependencias.
+
+ASP.NET Core MVC: 1) MVC se refiere al patron Modelo-Vista-Controlador, esto nos permite separar nuestra app en distintas partes, Es decir
+que nos permite separar la manipulacion de la DATA de la visualizacion. 2) Modelo se refiere a la data(informacion) de nuestra aplicacion,
+vendria siendo el modelo de Dominio de la app, donde iran la mayoria de clases concretas de nuestras apps. 3) La Vista se refiere a la 
+plantilla sobre la que muestro la data(informacion) de un modelo. Basicamente la Vista es la parte visual de nuestra App. 4) El Controlador
+se encarga de actualizar los modelos y le pasaa los datos a la vistaa para que muestre el contenido final al usuario. Basicamente el 
+Controlador es el que responde a las acciones del usuario, recarga la info del Modelo y La lleva hasta la vista para que se le muestre
+al usuario.
+En MVC una peticion la recibe el controlador, este se encarga de construir (cargar de informacion) un modelo el cual se lo pasara a una 
+vista y de esta forma se generara lo que vera el usuario.
+
+Web APIs: Esto es una APP en CORE cuando solo quiero desarrollar mi parte logica de la aplicacion sin interfaz de usuario. Basicamente es
+un MVC que elimina la capa de VISTA. Si lo deseo puedo combinar proyectos MVC con Web APIs. Los Web API son utiles cuando necesito 
+maanejar peticiones HTTP al servidor sin necesidad de usar una interfaz grafica.
+
+Blazor: Este Framework envia codigo C# Directamente al navegador. Este Framework Nos permite Crear Apps Web Interactivas. Existen 2 
+variantes de Blazor: 1) WebAssembly donde enviamos el codigo Directamente al navegador del usuario para que lo ejecute, lo cual nos permite
+no necesitar de un servidor tan potente para su ejecucion. 2) Server Que nos permite ejecutar Blazor desde el Server Lo que requerira un 
+servidor mas potente
+
+gRPC: Es Un Framework que permite hacer llamadas de procedimiento remoto. La idea de gRPC es que nos permita comunicarnos de una
+manera muy rapida entre distintas aplicaciones.
+
+                                                        1) BootStrap
+
+
+1.1) Contenedores: Los Contenedores en BootStrap Nos permiten acomodar los elementos HTML y ademas darles Responsive Design. La Clase 
+Container de BootStrap es la que nos permite centralizar el contenido en medio de la pantalla.
+
+1.2) Container-Fluid: Este me permite tener un ancho de mi contenedor del 100% en todas las medidas de pantalla.
+
+BREAK-POINTS: Es un concepto importante en BS, debido a que estos representan A los distintos tamaños de anchura. Segun el ancho de la 
+pantalla el container se comportara de formas diferentes. Los rangos son: 1) Extra Small <576px. 2) Small >576px. 3) Medium >768.
+4) Large >992px. 5) X-Large > 1200px. 6) XX-Large > 1400px. Segun el tipo de la class Container que use sera el Ancho del contenedor.
+2) SM. 3) MD. 4) LG. 5) XL.
+
+1.3) Sistema GRID: Esta Sistema se compone por las clases "row" y "col". Segun la cantidad de COL que yo ponga dentro de mi row 
+estas ocuparan automaticamente el espacio que haya. Sino yo les puedo indicar la cantidad de espacio del contenedor quiero que 
+ocupe cada COL hacien un col-1 hasta col-12.
+
+Tambien en el caso de que quiera colocar las columnas de forma vertical unitaria puedo utilizar las medidas que vimos en el container,
+que segun cierto ancho de la pantalla mis Columnas  pasara a ocupar el 100% del Ancho de la pantalla y tirara a las otras  para abajo.
+"col-sm-4"  hara que las columnas en el caso de una pantalla pequeña se acomoden ocupando todo el ancho, sino en otra resolucion funcionara
+como un "col-4".
+
+1.4) Alinear la fila de Columnas en el Container: <div class="row align-items-start"><div> // <div class="row align-items-center"><div> //
+                                        <div class="row align-items-end"><div>. Esto alineara todas las columnas de esa fila.
+
+1.5) Alinear verticalmente cada Columna: <div class="col align-self-center"><div> // <div class="col align-self-start"><div> // 
+                                        <div class="col align-self-end"><div>. Esto permitira alinear cada columna verticalmente.
+
+1.6) Offset: <div class="col-6 Offset-2"><div> El Offset agregara un espaciado de X cantidad de columnas segun lo indique.
+
+1.7) MS-AUTO: Esta clase me permite pegar 2 objetos a los extremos de la fila. Margin Start
+
+1.8) GUTTERS: Es otra forma de darle espaciado a las columnas, con esta le daremos padding a nuestras cols. para esto se le aplicaremos
+a la etiqueta de nuestro row. Gx es Gutter Horizontal y Gy Gutter vertical. los valores van del 0 al 5.
+<div class="row gx-5"><div>
+
+Tambien los puedo combinar con los BREAK-POINTS: <div class="row gx-sm-0 gx-lg-3 gx-xl-5"><div>
+
+1.9) Manejo de Imagenes en Columnas: Para esto usaremos la clase IMG-FLUID que nos permitira adaptar la imagen al ancho de nuestra 
+columna. A cada Imagen le debo dar la clase de IMG-FLUID.
+
+1.10) Colores: 1) bg-Primary // Azul. 2) bg-Secondary // Gris. 3) bg-Success // Verde. 4) bg-Danger // Rojo. 5) bg-Warning // Amarillo. 
+                6) bg-Info  // Celeste 7) bg-light // Casi Blanco. 8) bg-dark  // Negro
+
+1.11) Table: 1) Table-stripe(alterna colores en mis filas). 2) Table-hover(cambio de color en la fila al hacer hover) 3) Table-bordered
+            (agrega bordes).
+
+1.12) Video Con Aspect-Ratio: Para colocarle un AR a un video debo colocar el video dentro de un DIV con las clases "ratio ratio-16x9"
+
+1.13) Width: Puedo determinar el ancho de un contenedor o elemento usando la clase "w": 1) "w-25" (25% del ancho). 2) "w-50" (50% del ancho).3
+3) "w-75" (75% del ancho). 4) "w-AUTO". Lo mismo para el Height, se lo usa conn la clase "h". Tambien existe vw(viewport Width) y 
+vh (viewport Height).
+
+1.14) Margenes: 1) MT: Margin Top. 2) MB: Margin Bottom. 3) MS: Margin Start. 4) ME: Margin End. 5) MY: Margin Bottom y Top a la vez
+6) MX: Margin End y Start. 7) M: Margin en todas las direcciones. El Padding sigue las mismas nomenclaturas que Margin.
+
+1.15) Utilidades de Texto: 1) Alinear Texto: text-star // text-center // text-end. Esto lo podemos combinar con los BREAK-POINTS.
+                           2) Text-Wrap: Esto evita que el texto se salga del contenedor y empuja el texto hacia abajo.
+                           3) Text-BREAK: Para tirar abajo el texto sin espacios que se sale del contenedor uso Text-Break.
+                           4) Text-LowerCase: Todo a minusculas.
+                           5) Text-UpperCase: Todo a Mayusculas.
+                           6) Text-capitalize: Cada Palabra empieza con mayus.
+                           7) fs-1 hasta fs-6: Son los tamaños de texto.              
+
+1.16) Badge: Un pequeño contenedor de texto que se puede usar para las notificaciones.
+
+1.17) form-floating: Esto nos permite tener un texto flotante en mi label.
+<div class="form-floating mb-3">
+  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+  <label for="floatingInput">Email address</label>
+</div>
+
+1.18) Acordion: https://getbootstrap.com/docs/5.1/components/accordion/
+
+1.19) Alertas: https://getbootstrap.com/docs/5.1/components/alerts/
+
+1.20) Carroussel: https://getbootstrap.com/docs/5.1/components/carousel/
+
+1.21) Modal: https://getbootstrap.com/docs/5.1/components/modal/
+
+1.22) Menu Lateral con OffCanvas: https://getbootstrap.com/docs/5.1/components/offcanvas/
+
+1.23) Toasts: Son pequeños mensajes que puedo mostrar al usuario al realizar una accion. 
+https://getbootstrap.com/docs/5.1/components/toasts/
+
+                                                      2) Proyecto de PortFolio
+
+Temario: Introduccion a MVC, Layouts, vistas parciales, Introduccion a Razor, Intercambio de Datos entre controlador y vista y viceversa,
+Inyeccion de dependencias.

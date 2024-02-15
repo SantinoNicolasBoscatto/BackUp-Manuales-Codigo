@@ -1,0 +1,187 @@
+                                                            1) CONSTRAINTS
+0) Borrar CONSTRAINT: ALTER table Autos 
+                      DROP CONSTRAINT CK_edad;
+
+0.1) Agregar CONSTRAINT: Alter table Autos
+                         ADD CONSTRAINT U_Motor Unique (motor);
+
+0.2) Crear CONSTRAINT Con Tabla: CREATE table Motor(
+                                 idMotor int,
+                                 CONSTRAINT PK_idPrimary Key (idMotor)
+                                )
+
+0.3) Crear CONSTRAINT Con Tabla: CREATE table Motor(
+                                 idMotor int IDENTITY(1,1) PRIMARY KEY,
+                                )
+
+
+
+1) UNIQUE: Es similar al PK ya que no permite repetir un valor de una columna, pero a diferencia de PK estas si permiten alojar valores 
+NULL.
+
+1.1) ADD CONSTRAINT En tabla ya creada
+ALTER TABLE Autos
+ADD CONSTRAINT nombre_unique UNIQUE (nombre);
+
+2) CHECK: Es una regla que determinara que rango de valores puedo colocar en esa columna.
+
+2.1) Create Table persona(
+    edad int not NULL,
+    CONSTRAINT CK_edad CHECK (edad>=0)
+)
+
+3) DEFAULT: Es una regla para establecer un valor por defecto en una columna a la cual no le ingresemos datos. Para ingresar el valor 
+DEFAULT deberemos colocar como valor la palabra default en el values.
+
+3.1) Create table Autos(
+     Nombre varchar(100) DEFAULT 'No Name'
+     Hp int DEFAULT 1
+)
+
+3.2) alter table Pilotos
+    add CONSTRAINT DF_Descripcion DEFAULT '-' for Descripcion;
+   
+
+4) Index: Son estructuras utilizadas  para mejorar el rendimiento en las consultas de nuestras BD. Se crean en columnas o en conjunto 
+de columnas para que sea mas rapido el acceso y recuperacion de datos. Existen 2 Tipos de indices: 1) Clustered y 2) Nonclustered.
+1.1) Los Indices Clustered definen el orden de los datos. 2.1) Los Non_Clustered crean una estructura de datos separada que 
+contiene las claves de los indices. Los Non_Clustered son utiles para Acelerar la consulta cuando queremos buscar por 
+columnas especificas.
+
+1.2) CREATE CLUSTERED INDEX I_Autos 
+     ON Autos (Auto_id)
+
+Cuando Vayamos a utilizar una Condicion en WHERE es conveniente agregarle un indice a esta ya que las consultas las realizara mas rapido,
+tambien mejora el rendimiento en JOINS, ORDER BY y GROUP BY debido a que la tabla no manejara valores para filtrar, agrupar o unir sino
+que utilizara los indices que genero.
+
+3) INDICES ORDINARIOS: Estos indices aceptan NULL y pueden repetirse ya que permite campos duplicados. Son para cuando 
+queremos mejorar el rendimiento de una columna sin que nos importe que clase de datos entran.
+
+3.1) Indices UNIQUE: Son Indices que mejoran la velocidad y que ademas restrigen valores NULL o Repetidos, es  decir que 
+                     Ese campo tendra valores Unicos.
+                     ALTER TABLE Autos
+                     ADD CONSTRAINT nombre_unique UNIQUE (nombre); 
+
+3.2) CREAR INDICE UNIQUE COMPUESTO: Create Table Motores(
+                                    Id int PRIMARY KEY IDENTITY(1,1),
+                                    Codigo VarChar(8),
+                                    Nombre Varchar(25),
+                                    Hp int,
+                                    Kg int,
+                                    CONSTRAINT U_Motor UNIQUE (Codigo, Nombre);
+
+3.3) Create PK Compuesta: CREATE Table Motores(
+                          Codigo VarChar(8),
+                          Nombre Varchar(25),
+                          Hp int,
+                          Kg int,
+                          CONSTRAINT PK_Motor PRIMARY KEY (Codigo, Nombre)
+)
+
+4) COMO SE QUE COLUMNAS DEBEN TENER INDEX: Se los debe colocar a campos que usamos normalmente para busqueda o filtrado.
+Tambien a Todos los Foreign KEY deberian tener indices, independientemente de que estos este en una PK compuesta.
+
+
+5) ISNULL() VS COALESCE: 1) ISNULL() es nativo de MS SQL. 2) ISNULL devolvera el tipo de Dato del primer valor, aunque el 
+segundo valor se de otro tipo de dato. Es decir si yo paso: ISNULL(int, float); si el primer valor es NULL entonces se 
+retornara el valor FLOAT pero casteado a INT, si ese float era 10,5 se retornara 10.  COALESCE en cambio evaluara cual de 
+los 2 datos esta por encima del otro jerarquicamente y lo devolvera casteado segun el de mayor jerarquia.
+
+6) LAG y LEAD: Se utiliza en el Select y nos permite traer un registro anterior o posterior. Dentro de LAG/LEAD() pondre que registro
+quiero traer y SI O SI debo agregar la clausula OVER y ahi indicar cual es el criterio con el cual se ordenaran los registros. 
+
+Select Nombre, LAG(Nombre) OVER (order by id) from Autos
+
+LAG tendra a que registro anterior quiero capturar, el campo que va en LAG puede o no estar en la consulta. El Campo de la clausula OVER
+tambien puede estar o no en la QUERY.
+
+7) ROW_NUMBER: Esta funcion lo que hace es enumerar las ROW que tienen un mismo valor en una de sus columnas, esta no cuenta, sino que 
+enumera a cada columna. ROW_NUMBER tambien si o si debe tener la clausula OVER, para definir sobre que campo queremos que realice la 
+enumeracion. Con el siguiente codigo la funcion se limitara a contar los registros uno por uno y no de forma agrupada
+
+Select id_Repes, ROW_NUMBER() OVER(order by id_Repes)
+
+Para que cuente enumeradamente debo Agregar el PARTITION BY *columna sobre la cual quiero hacer la enumeracion*
+
+Select id_Repes, ROW_NUMBER() OVER(PARTITION BY id_Repes order by id_Repes)
+
+8) PARTITION BY: Sirve para agrupar/Particionar, es similar en algunas cosas al GROUP BY. Se lo puede usar cada vez que el GROUP BY
+es restrictivo con agregar alguna fila a la agrupacion. con PARTITION BY Puedo particionar cada funcion de ventana que tenga. A diferencia
+de GROUP BY este particiona indidualmente por columna (aunque solo funciones de ventana.). Ademas esta particion me permite registrar el 
+dato total de la funcion de ventana en cada columna. (Por ejemplo si yo Sumo todos los tanques PARTITION BY tanques se sumaran los tanques
+que tengan la misma capacidad y cada uno de estos tanques le aparecera la cantidad total de su suma). Al igual que el GROUP BY puedo 
+poner una doble condicion de agrupacion. El PARTITION BY cambia la particion cuando cambia el valor que se esta particionando, igual
+que cuando la particion es de un valor compuesto.
+
+En Sintesis, al momento de hacer una suma por ejemplo este no sumara Agrupado por un Campo como el GROUP BY sino que Sumara particionado
+Segun la condicion que le demos. Esto me permite que por ejemplo si tengo varias columnas en el Select no debe colocar todas estas 
+en el GROUP BY y me desvirtue el resultado. Ademas la suma total de las particiones me las traera en cada registro de la particion
+
+En SQL, la cláusula PARTITION BY se utiliza específicamente en conjunción con funciones de ventana.
+
+8.1) ROW_NUMBER(): Asigna un número secuencial único a cada fila dentro de una partición del conjunto de resultados ordenado. Obligatorio
+la clausula ORDER BY. Puedo Implementar PARTITION BY Esta me contara las filas pero respetando la particion (Por cada particion el 
+conteo se reinicia)
+
+8.2) RANK(): Basicamente Rank Asigna un numero en forma de Ranking segun el valor con el que trabaja dado en el OVER. En este caso
+a caso de empate le pone el mismo numero  los registros y el siguiente no sera el posterior sino el que le sigue. Obligatorio
+la clausula ORDER BY.
+
+8.3) DENSE_RANK(): Es igual que el RANK solo que el numero siguiente a un empate si sera el posterior. Obligatorio la clausula ORDER BY.
+Tambien se puede usar PARTITION BY, hara un RANKING para cada particion exisitente.
+
+8.4) NTILE(n): Fraccione N cantidad de veces mi registro.
+
+8.5) SUM(), AVG(), MIN(), MAX(): Estas funciones agregadas se pueden usar como funciones de ventana para calcular agregaciones 
+sobre particiones del conjunto de resultados.
+
+8.6) LEAD() y LAG(): Permiten acceder a valores de columnas de filas anteriores (LAG) o siguientes (LEAD) dentro de la partición.
+
+8.7) FIRST_VALUE() y LAST_VALUE(): Devuelven el primer y último valor dentro de una partición, respectivamente.
+
+8.8)CUME_DIST(): Calcula la distribución acumulativa de valores en una partición.
+
+
+9) PIVOT - UNPIVOT: El PIVOT Basicamente es Pasar registros a Columnas. UNPIVOT es la accion opuesta. Lo que si es 
+Obligatorio el Usar una funcion de Agregacion en el PIVOT, por ello se suele usar con datos numericos.
+
+SELECT *
+FROM (
+    SELECT ID_Producto, Fecha_Venta, Cantidad
+    FROM Ventas
+) AS SourceTable
+PIVOT (
+    SUM(*Algun valor que quiera sumar*)
+    FOR Fecha_Venta IN ([2024-01-01], [2024-01-02])------------> Aca iran los Valores que quiero que se vuelvan columnas.
+) AS PivotTable;
+
+10) WITH: Es una COMMON TABLE EXPRESSION. Con ella Puede crear una Especie de Tabla Virtual para poder usar y cruzar. Despues de que 
+se Formule este CTE lo debo usar inmediantamente, en el siguiente Select que haga. Tambien puedo Crear varios CTE a la Ves en el 
+caso de que los necesite usar todos en el Proximo SELECT.
+
+WITH CTE_Nombre as (
+    *Consulta SELECT
+)
+Select * From CTE_Nombre
+
+Sirven para hacer una consulta mas legible al no tener que cruzar varios JOINS. Tambien le puedo colocar Nombres a las Columnas para 
+despues llamarlas.
+
+WITH CTE_Nombre(Nombre) as (
+    *Consulta SELECT 'Pichi' as Nombre*
+)
+Select Nombre From CTE_Nombre
+
+
+
+
+
+
+
+
+
+
+
+X)Dato: Aveces tengo que unir tablas debido a que al filtrar datos de la primera tabla discrimino datos que 
+Necesito sacar de la tabla, por eso mismo traigo la misma tabla otra vez.

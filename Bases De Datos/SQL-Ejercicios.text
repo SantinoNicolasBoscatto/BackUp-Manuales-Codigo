@@ -1,0 +1,89 @@
+1731. The Number of Employees Which Report to Each Employee:  https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/description/?envType=study-plan-v2&envId=top-sql-50
+
+Select E1.employee_id, E1.name, Count(E2.reports_to) as reports_count, 
+ROUND((Select SUM(E3.age) / COUNT(reports_to) 
+from Employees E3 
+Where E3.reports_to = E1.employee_id
+Group by reports_to) ,0)
+as average_age 
+from Employees E1
+INNER JOIN Employees E2
+ON E2.reports_to = E1.employee_id 
+Group By employee_id
+Order By employee_id 
+
+
+
+1070. Product Sales Analysis III https://leetcode.com/problems/product-sales-analysis-iii/description/?envType=study-plan-v2&envId=top-sql-50
+
+X) TUPLAS
+Cuando se usan tuplas en SQL, se pueden comparar con otras tuplas para realizar operaciones de filtrado o combinación de datos.
+Por ejemplo, la comparación de tuplas (product_id, year) en la cláusula WHERE (product_id, year) IN se utiliza para filtrar
+las filas donde la combinación de product_id y year coincide con al menos una de las combinaciones de valores especificadas 
+en una subconsulta o lista de valores.
+
+SELECT product_id, year AS first_year, quantity, price 
+FROM Sales
+where 
+(product_id, year) IN (Select product_id, MIN(year) from Sales GROUP BY product_id)
+
+1174. Immediate Food Delivery II - Truco: Igualar la fecha minima con el customer_pref_delivery_date Minimo
+
+SELECT ROUND((COUNT(Sub.customer_id) *100
+/(select COUNT(Distinct D2.customer_id) from Delivery D2)),2)
+as immediate_percentage 
+        FROM (
+            SELECT customer_id, MIN(customer_pref_delivery_date) as minimo
+            FROM Delivery D
+            GROUP BY customer_id
+            HAVING MIN(order_date) = minimo -> TRUCO
+        ) as Sub
+
+
+1907. Count Salary Categories
+
+Select category, accounts_count
+from (SELECT 
+    CASE 
+        WHEN income < 20000 THEN 'Low Salary' 
+        WHEN income > 50000 THEN 'High Salary'
+        ELSE 'Average Salary'
+    END AS category, 
+    COUNT(*) AS accounts_count 
+FROM Accounts
+Group By category
+UNION ALL
+Select 'Low Salary' as category, 0 as accounts_count 
+from Accounts 
+UNION ALL
+Select 'High Salary' as category, 0 as accounts_count 
+from Accounts 
+UNION ALL
+Select 'Average Salary' as category, 0 as accounts_count 
+from Accounts ) AS subconsulta
+GROUP BY category;
+
+626. Exchange Seats
+Select Case WHEN id = (SELECT MAX(id) from Seat) and id%2!=0 then id
+            WHEN id%2=0 then id-1
+            Else id+1 END as id, student
+from Seat
+Group by id, student
+Order by id
+
+
+1251. Average Selling Price 
+
+Select P.product_id ,ROUND(IFNULL(SUM(units*price) / SUM(units) ,0),2) as average_price  from Prices P
+LEFT JOIN UnitsSold U
+ON U.product_id = P.product_id
+AND U.purchase_date between P.start_date  and P.end_date
+group by P.product_id 
+
+
+197. Rising Temperature 
+
+SELECT w1.id
+FROM Weather w1, Weather w2
+WHERE DATEDIFF(w1.recordDate, w2.recordDate) = 1 
+and w1.temperature > w2.temperature;
