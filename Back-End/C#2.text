@@ -119,3 +119,845 @@ https://getbootstrap.com/docs/5.1/components/toasts/
 
 Temario: Introduccion a MVC, Layouts, vistas parciales, Introduccion a Razor, Intercambio de Datos entre controlador y vista y viceversa,
 Inyeccion de dependencias.
+
+                                                     2.1) - Archivos del Proyecto
+
+1) .csproj: Este archivo tendra la configuracion central de mi app.
+
+2) Dependencias: Aca encontraremos las dependencias del proyecto. Ahi iran por ejemplo los Nuget Packages, estos nos permitiran importar
+codigo para que nosotros podamos utilizarlo. En este caso utilizaremos la libreria twilio para mandar mails.
+
+3) Propierties-launchSettings: Son las configuraciones de ejecuciion de nuestra app.
+
+4) wwwroot: Aca colocamos los archivos estaticos a los cuales queremos que el usuario pueda acceder. Basicamente Archivos CSS, JS y 
+librerias que me permitan darle mayor funcionamiento a la pagina como BootStrap o JQUERY. Tambien se encuentra el FavIcon. Aca Tambien
+Puedo crear las carpetas de imagenes.
+
+5) Controllers: Dentro de esta carpeta iran los Scripts de los controladores. Los controladores son las clases que reciben las peticiones 
+HTTP generadas por el usuario, los controladores la procesan y devuelven un resultado. Normalmente en MVC la respuesta que devuelve el 
+controlador es una vista, aunque tambien podria ser un JSON.
+
+6) Models: Los Modelos son las clases que representan la data/informacion que queremos mostrarle al usuario (similar al modelo de Dominio).
+No es necesario tener modelos en todas las vistas aunque es lo comun.
+
+7) Views: Aqui colocamos las partes visuales de nuestras aplicaciones (botones, texto).
+
+8) AppSettings: Aqui podemos guardar datos de configuracion de nuestro proyecto. El AppSettings comun se lo usa en ambiente de produccion,
+el .Development se lo usa en ambiente de desarrollo.
+
+A modo de recapitulacion los modelos se rellenan de informacion luego de una peticion HTTP la cual es manejada por los controladores, y
+luego esa informacion que tienen cargada los modelos la vuelcan sobre la vista.
+
+                                                        2.2) - Controladores
+
+Dato: a modo de estadar los controladores siempre llevan la palabra "Controller" en su nombre.
+
+1) IActionResult: Los metodos que devuelven esta interfaz la llamamos acciones. Estas acciones son los metodos que se ejecutan al hacer
+una peticion HTTP (del cliente) a una Ruta Especifica de la APP. Los Controladores pueden tener 1 o mas acciones para ejecutar.
+
+La idea de los controladores es poder agrupar distintas acciones al rededor de un tema o concepto. Por ejemplo el concepto del 
+HomeController es devolver una respuesta (vista en este caso) ante el cambio de direccion URL. Otro ejemplo tener un controlador de 
+facturas, que se encargara de acciones que tengan que ver con las facturas y no con otras cosas.
+
+                                                        2.3) - Vistas
+
+1) Dentro de Views para mejorar la organizacion separaremos en carpetas las vistas relacionadas con los controladores. Por ejemplo con 
+HomeController crearemos una carpeta en Views llamada Home para colocar todas las vistas a las que HomeController pueda disparar.
+
+2) Dentro de Views Tenemos un Carpeta llamada Shared, que son vistas que las quiero usar en varios Controladores y que no pertenecen a 
+un lugar en especifico, como lo podria ser un NavBar, un View de Error.
+
+3.1) IMPORTANTE: Para Conectar la Vista con un controlador es tan Simple como crear una Vista de nombre "Ejemplo" y luego en Controller
+crear un Metodo/Accion de tipo IActionResult y colocar el nombre de nuestra vista a esa Accion/Metodo.
+
+3.2) En el caso de que yo no quiera tener el mismo nombre de mi metodo  y de mi vista en el return View(); puedo indicar con "" cual es 
+el nombre de la vista que debe buscar.
+
+4) Shared: En esta carpeta iran los elementos que son comunes en las distintas vistas.
+
+5) @RenderBody: En el RenderBody iran o se dibujaran las distintas vistas que tengamos y accedamos mediante los Controllers. Es Basicamente
+un contenido dinamico que cambiara segun la vista que retorne el controlador.
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+6) Layout: Es mi Esqueleto HTML de mi app, es similar al MasterPage. Aqui adentro estaran las configuraciones generales de la Pagina.
+
+7) _ViewStart: En este archivo configuraremos el Layout-Start por Default. Nos permite tener una configuracion default para mis vistas.
+
+                                                          2.4) - Ruteo
+
+1) Ruteo: El ruteo es el que define que ruta se relaciona con que accion. Este por defecto se configura en la clase program. En ASP hay 
+ruteo Convencional y ruteo por Atributo. Este es un ejemplo del ruteo Convencional: 
+
+app.MapControllerRoute(
+name: "default",
+pattern: "{controller=Home}/{action=Index}/{id?}");
+
+Estos Son las Valores por defecto que trae el Route de program. 1) En la primera seccion vemos que el controlador predeterminado que 
+determina el Ruteo es el Controller Home, aunque podria usar otro. 2) En La segunda seccion la accion que vamos a tener por defecto es
+Index. Las Action son basicamente las acciones que tenemos en nuestro controlador. En el caso de que en el ruteo no haya una Action definida
+el navegador ira a la por defecto, index en este caso. 3) Un Id que es opcional.
+
+
+                                                        2.5) - Tag Helper
+
+1.1) Tag Helper: Es una propiedad que nos permite añadir propiedades utiles a nuestras etiquetas HTML.
+
+1) Asp-append-version: Este Tag Helper es una Propiedad de las etiquetas. Esta permite que el archivo CSS se mantenga actualizado siempre
+y no entre en conflicto con el Cache del navegador. Esto debido a que la cache del navegador lo que hace es guardar los archivos de 
+las paginas (Css y JS) para optimizar su carga. Debido a esto aveces puede dar lugar a que actualicemos el CSS y el navegador use una 
+version anterior de ese archivo
+
+2) Asp-Controller: Con este tag le digo sobre controlador quiero realizar la redireccion, segun la vista que quiera mostrar debo usar
+un controlador. 
+
+3) Asp-Action: La Action es basicamente a que Accion/Metodo del cotrolador seleccionado hago referencia.
+
+4) ASP-Validation-Summary: es basicamente  un resumen de los errores de validacion. Tenemos 2 Modos a elegir con esta etiqueta: 
+                            1) All: Muestra todos los errores. 2)ModelOnly: muestra todos los errores con relacion al modelo.
+
+5) Asp-Anchor:
+
+5) Asp-For: Esto ayuda a corregir a que los campos que cargo el usuario no se borren ante un error de POST. Este nos permitira sincronizar
+del @model que enviamos a la vista con los valores del FORMS HTML. 
+En sintensis esta se la coloca en el input y dentro de ella colocaremos el atributo de la propiedad la cual estemos cargando en ese input,
+en el caso de que validemos y sea negativa la validacion enviaremos por la vista la misma vista en la que estamos pero volviendole a pasar
+el modelo que venia cargando el usuario, con esto saltara el error pero el usuario mantendra cargados sus campos.
+
+Basicamente lo que hace ASP-FOR es sincronizar el valor-text del Input con el valor que tenga el atributo que le pase.
+
+6) Asp-Validation-For: Este lo que hace es validar un atributo de mi clase, a diferencia del for este no enlaza valores, solo valida 
+si el valor es correcto. A diferencia del ASP-Validation-Summary esta devuelve el error de una sola prop y no un listado de errores.
+
+                                                      2.6) - View Bag
+
+1) View Bag: Es un objeto que me va a permitir transmitir informacion desde el controlador hacia la vista. Es de tipo dynamic por lo cual 
+puedo utilizar cualquier propiedad. En este caso con View Bag yo creo Atributos usando su prop y un nombre y ahi le cargare los datos
+que luego puedo recuperar en la vista. La configuracion de los ViewBag se correspondera cada uno a su ACCION, un viewbag de una vista no
+existira en otra vista.
+
+El Problema de ViewBag es que no es Fuertemente Tipado, por lo que al ocurrir un error en la escritura el compilador no nos hara saber
+esto.
+
+DATO: Para escribir codigo C# en html uso @, que viene a ser los <%%> de webforms.
+
+                                              2.7) - Modelos Fuertemente Tipados
+
+1) Es otra manera de mandar informacion del controlador a la vista. Para esto en mi Vista creo el objeto @model y le coloco que tipo 
+de dato va a manejar y en la vista lo coloco donde quieras pero usando la M Mayuscula @Model. Luego desde el controlador le pasare 
+por parametro a la funcion View primero la pagina de la vista a la que va dirigida esa accion y el valor de @model. El unico inconveniente
+es que solo puedo colocar un dato en model.
+
+Dato: @model declara el tipo de dato y @Model Accede al valor del dato.
+
+2) Recibir mas datos del Controlador a la Vista: Para esto usaremos una clase, es decir le pasaremos a @model una clase con los Atributos
+que despues quiera reutilizar. Despues haremos lo mismo, en la ACCION del controlador cargaremos el objeto de la clase con X datos y 
+luego los enviaremos como parametros por la funcion VIEW.
+
+                                                        2.8) - Razor
+
+En los archivos .cshtml (los de la vista) puedo colocar tanto codigo HTML como C#. Para escribir el codigo C# en este archivo debere
+usar la sintaxis de RAZOR, es decir usando el @. Basicamente lo que hace el @ es cambiar el modo HTML a codigo C#. Es similar al <%%> 
+pero mucho mas avanzado. Tambien Puedo Crear Bloques de codigo con RAZOR al colocar el @{ }. Ahi puedo colocar codigo de varias lineas.
+Tambien Puedo Colocar condicionales que segun algunos valores del Modelo se muestre una u otra cosa en la vista, es decir puedo tener 
+una vista dinamica.
+Tambien desde los bloques de codigo de Razor puedo crear funciones o datos que los pueda utilizar desde mi vista sin recurrir al modelo
+de dominio. Tambien Puedo Crear bucles dentro de el.
+
+                                                    2.9) - Vistas Parciales
+
+1) Vistas Parciales: Con estas vistas parciales podemos tener vistas dentro de vistas. Ahora debo crear un archivo nuevo 
+de razor en la vista, por convencion los elementos compartidos de razor los nombramos con guion bajo. En mi vista parcial
+llevare el codigo que quiera tener en esa vista parcial, luego para llamarlo desde la vista principal debo usar la etiqueta
+Partial, en la etiqueta name pondremos el nombre de la sub-vista.
+
+2) Pasar Datos a una Vista Parcial: Los datos se pueden trasladar automaticamente, pero ante un error de tipeo de una clase esto no nos 
+lo hara saber hasta la ejecucion de la pagina, ya que funciona igual que el ViewBag en ese sentido. Una Solucion seria agregar el 
+@model que uso en la Vista Padre en la Vista Hija. Pero esto no seria del todo correcto ya que termino quitandole flexibilidad a la 
+clase hija, o accediendo a cosas que no me interesan mostrar. En nuestro ejemplo en vez de pasarle  la clase que contiene al IEnum 
+directamente le pasamos el IEnum como @model a recibir ya es lo unico con lo que nos interesa trabajar. Eso si, en la etiqueta Partial
+le tenemos que agregar model="" y el Model con el que trabajara: <partial name="_Proyectos" model="Model.Proyectos"/>
+
+
+
+                                                2.10) - Clases DTO y ViewModel
+
+1) DTO: Data Transfer Object, es una forma de llamar a las clases que solo van a transportar datos. Son las tipicas clases
+que uso para cargar informacion y reutilizarla sin hacer ningun otro uso o funcion de la clase. Estas clases no se muestran al 
+usuario, son clases para el traspaso de datos entre capas de la aplicacion.
+
+2) ViewModel: Son Clases del Modelo que utilizare en la vista para mostrar su contenido.
+
+
+                                            2.11) - Principio de Responsabilidad Unica
+
+En nuestro controlador Home solo deberia ir la logica que permite servir las vistas y no otro tipo de logica como la de la carga 
+de datos.
+
+1) Principio de Responsabilidad Unica: Cada clase debe tener un solo motivo para cambiar. Es decir que cada clase debe cumplir una 
+funcion en especifico y no varias. hay que tener en cuenta que esto es una guia y no algo que siguir a raja tabla.
+
+2) Clases Repositorios: Son clases que solo se utilizan para depositar datos y mantenerlos ahi, ideal para traer datos de una BD. En 
+ellas se suelen realizar las operaciones de CRUD y estos datos suelen mostrarse al usuario.
+
+                                            2.12) - Inyenccion de Dependencias
+
+1) Inyenccion de Dependencias: Con esto delegamos la Instanciacion de las dependencias de nuestras clases. Basicamente la Inyeccion de 
+dependencias es colocar clases a nuestros constructores de las clases que necesitaremos en nuestra clase. De esa forma nos 
+ahorramos el tener las depencias de nuestras clases por cada funcion y tenerlo centralizado en un solo lugar como lo es el constructor
+de la clase. 
+Tambien puedo hacer una escalera de depencias, es decir que al instanciar una clase esta vez depende de otras clase y asi.
+
+2) Dependencias: Son Basicamente clases que necesitan de otras clases para funcionar de forma correcta, que sin ella no se podria llevar 
+a cabo su funcion.
+
+3) Inyectar Dependencias ASP: En program debo escribir el siguiente codigo: "builder.Services.addTransient<Class>(); con eso cada 
+vez que coloque esta clase en un constructor me va a generar la dependencia
+
+4) Principio de Inversion de Dependencias: Esto se da cuando usamos Interfaces en vez de clases para Inyectar dependencias. Usar una 
+interfaz resulta mucho mas flexible que usar una clase a la hora de Inyectar una dependencia, Por ejemplo: Si tengo 2 Clases, Una 
+que recibe datos Genericos y otra de la BD, cada vez que quiera reemplazar una dependencia por otra debere cambiar sus clases en la 
+inyeccion. En cambio si a estas las utilizo mediante una interfaz lo unico que voy a tener que cambiar es de quien se debe servir la 
+interfaz, es decir la clase que se instanciara al llamar a la interfaz.
+
+En sintensis el Principio de Inversion de Dependencias es cuando nuestra clase le inyectamos dependencias mediante interfaces o 
+clases abstractas.
+
+5) Interfaz: Las Interfaces son basicamente contratos en los cuales defino firmas de metodos, los cuales debo implementar en mi clase 
+si implemento esto interfaz.
+
+6) builder.Services.AddTransient<IRepositorioProyectos, RepositorioProyectos>(); con esta linea declaro que cuando una clase llame a esa 
+interfaz le devuelva la instancia de ese objeto.
+
+7) Servicios: Cuando defino un servicio en ASP.NET Core estoy registrando objetos que se podran usar en las clases de mi aplicacion.
+Dentro de estos Servicios tengo 3 tipos: Transient, Scope y Singleton. Los registras una vez en la configuración de tu aplicación y luego
+los usas en cualquier parte donde los necesites. Son útiles porque te ayudan a construir tu aplicación de manera ordenada y modular, 
+facilitando la actualización y el mantenimiento.
+
+Transient son los servicios que viven menos, cada vez que realizamos una inyeccion de este servicio transitorio se nos sirve una 
+nueva instancia de este servicio. ni se destruye automáticamente la instancia anterior. 
+
+Scope: Son los servicios que viven delimitados por una peticion HTTP, cada vez que se realiza una peticionn HTTP se genera una nueva 
+instancia de estos servicios. Por Cada nueva peticion HTTP se crearaa un nuevo servicio Scope. Si tengo 2 servicios Scope estos 
+se cargaran con la misma informacion
+
+Singleton: Es el servicio que vive todo el tiempo que este activa la aplicacion, solo va a existir una instancia de este en mi APP.
+Si tengo 2 servicios de instancia Singleton estos tendran la misma informacion. 
+
+
+                                                    2.13) ILogger
+
+1) ILogger: Es un servicio preconfigurado que nos permite escribir mensajes en LOGS. Estos se pueden mostrar por consola, por archivo o
+por BD. Con Los metodos de Log puedo mandar mensajes a la consola y me mostrara de que clase viene este mensaje. Existen los Log: Trace, .
+Debug, Information, Warning, Error y Critical.
+
+2) Para configurar a cada clase el nivel de mensajes que quiero que se muestren debo ir a AppSettings colocar el nombre de la solucion,
+la carpeta y el nombre del Script y decirle a partir de que nivel quiero que se muestre.
+
+                                            2.14) - Provedores de Configuracion
+
+1) Extraer Datos de Configuracion desde APP: Para esto utilizaremos un servicio llamado IConfiguration. Para esto Inyecto la dependencia
+del IConfiguration, luego asigno esta variable mediante el GetValue, el tipo de Dato de el valor a extraer y la llave del archivo a 
+extraer.                 
+var ex = configuration.GetValue<string>("AA");           
+
+                                             2.15) - Enviar Datos de la Vista al Controlador
+
+1) Ya sabemos pasar datos del controlador mediante el ViewBag o el @model pasandole un objeto por parametro a la vista, ahora haremos El
+proceso inverso. Para esto podemos POSTear la informacion.
+
+2) HTTP GET: Estas peticiones son las mas comunes, son cuando realizamos peticiones al servidor para que este nos devuelva un resultado
+Por ejemplo cuando desde el contrador mandamos data a la vista. En cualquier retorno de vistas estamos haciendo un GET.
+
+3) Post: Es basicamente cuando el usuario le manda al servidor informacion, es al reves de GET.
+
+4) HTTP POST: Para llamar una Accion ante un HTTP POST debemos colocarle un atributo entre corchetes [HttpPost]. Cuando una Accion no 
+tiene un atributo por encima se sobre entiende que es un HttpGet. 
+
+5) Carga del los atributos Post: En mis elementos HTML yo debo colocarles names, debido a que si estos realizaran un POST y deseo guardar
+los datos de ese post en una clase si los nombres de las etiquetas y de los atributos son iguales se guardaran los resultados de la etiqueta
+en los atributos de la clase.
+
+Ejemplo: public string Email { get; set; } // <input type="email" class="form-control" id="Email" name="Email">. Si en la Accion de 
+HttpPost le paso la clase email el atributo "Email" se cargara directamente con lo que tenga la etiqueta  <input> debido a que tanto 
+ese input como el atributo tienen el mismo nombre.
+
+                                              2.16) - Evitar un Doble-Post
+
+1) Si llegamos a recargar la pagina en una situacion de POST podriamos dar lugar a la duplicacion de Acciones o datos. Para solucionar 
+esto deberemos usar el Patron POST redireccion GET.
+
+2) Patron POST redireccion GET: Este basicamente consta en que luego de un POST exitoso deberemos redireccionar al usuario hacia otra 
+pagina. Es decir Luego del POST le hacemos un GET a otra pagina para que no tenga la posibilidad de duplicar su POST.
+Paro esto en el Action del HttpPost no retornaremos una vista sino que haremos un return RedirectToAction("NombreAccion");
+
+                                                  2.17) - Crear Mail
+
+1) apiKey: Es la cadena de conexion que me proporciona el servidor de email.
+
+1.1) nombre: El nombre de quien envia el Mail, en realidad al enviarnoslo a nosotros mismos los mejor seria poner un nombre Clave
+
+1.2) email: La direccion de la cual saldra nuestro mail y a que direccion la recibiremos, en este caso tanto enviaremos como recibiremos
+nuestros mail.
+
+public async Task Enviar(EmailDTO mail)
+{
+    var apiKey = Configuration.GetValue<string>("KeyApi");
+    var nombre = Configuration.GetValue<string>("Send");
+    var email = Configuration.GetValue<string>("Destinatario");
+
+    var client = new SendGridClient(apiKey);      //Me Conecto con el servidor de mails.
+    var from = new EmailAddress(email, nombre);   // El Destinatario que seremos nosotros al reenviarnos lo que ponga el usuario
+    var to = new EmailAddress(email, nombre);     // hacia quien, nuestro mail
+    var subject = "Contacto PortFolio";           // El Tema
+    var plainTextContent = mail.Mensaje;          
+    var htmlContent = @$"Email: {mail.Email} <br/>Contactante: {mail.Nombre} <br/> Mensaje: {mail.Mensaje}"; // El mensaje en formato HTML
+    var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent); // El Armado del mail
+    var response = await client.SendEmailAsync(msg); // el envio
+}
+
+
+                                                    2.18) - IEnumerable
+
+1) IEnumerable:  Esta interfaz funciona de cierto modo como una lista de objects pero solo de lectura, no puedo modificar o eliminar
+nada en ella, a lo sumo recorrerla con un foreach.
+
+                                                    3) App De Finanzas
+
+Temario: Formulario, Validaciones, Conexion a BD con DAPPER, CRUD y Fetch API.
+
+1) Si tengo una vista dentro de una carpeta que tiene el mismo nombre que su controlador no hace falta referenciarle el tag asp-controller,
+ya que del nombre de la carpeta deduce cual es su controlador. Lo que si le debo implicitar su accion.
+
+
+                                                    3.1) - Validaciones
+
+1) Validar: Significa ver si los datos que el usuario ingreso cumplen con las condiciones esperadas.
+
+2) Validaciones en ASP CORE: Podemos Realizar validaciones de varias maneras, una de ellas es utilizando anotaciones de datos. 
+
+3) Anotaciones de Datos: Estas Anotaciones de Datos se colocan entre corchetes encima de los atributos de nuestras clases DTO. por 
+ejemplo existe: 
+1)[Required] esta validacion valida que el valor del atributo no sea null. Con esto no es suficiente sino que luego tenemos
+que llamar en la accion al Model.Isvalid para comprobar si es valido lo que cargo el usuario. A estas les puedo pasar un parametro que 
+es el mensaje a mostrar si no se cumple su validacion. [Required(ErrorMessage = "")]
+2) [StringLength] es otro validacion por defecto que trae ASP CORE, esta me permite validar un maximo y un minimo de caracteres de mi string. 
+[StringLength(maximunLength = 50, MinimunLength = 5, ErrorMessage ="")]
+3) [EmailAddress] Esta validacion Revisa si se ingreso un correo. [EmailAddress(ErrorMessage = "")] 
+4) [Range] Esta validacion Sirver para colocar rangos numericos [Range(minimun: 18, maximun: 100, ErrorMessage = "")]
+5) [Url] Esta validacion verifica si es una URL valida. [Url(ErrorMessage="")]
+6) [CreditCard(ErrorMessage="")]
+
+DATO: Al retornarle la vista al usuario es importante que le volvamos a mandar el mismo objeto que cargo, asi no pierde la informacion
+que venia cargando.
+
+4) Visualizacion de Errores de Validacion: Para esto podemos utilizar un Tag Helper llamado ASP-Validation-Summary, que es basicamente 
+un resumen de los errores de validacion. Tenemos 2 Modos a elegir con esta etiqueta: 1) All: Muestra todos los errores. 
+2)ModelOnly: muestra el error con relacion al modelo, son errores a nivel general, no de un atributo en especifico.
+
+5) Asp-For: Esto ayuda a corregir a que los campos que cargo el usuario no se borren ante un error de POST. Este nos permitira sincronizar
+el @model que enviamos a la vista con los valores del FORMS HTML. 
+En sintensis esta se la coloca en el input y dentro de ella colocaremos el atributo de la propiedad la cual estemos cargando en ese input,
+en el caso de que validemos y sea negativa la validacion enviaremos la misma vista en la que estamos pero volviendole a pasar
+el @model que venia cargando el usuario, con esto saltara el error pero el usuario mantendra cargados sus campos.
+
+Basicamente lo que hace ASP-FOR es sincronizar el valor-text del Input con el valor que tenga el atributo que le pase, no valida sino que
+enlaza el valor del HTML con un atributo de un objeto.
+
+Con esto podemos ver que podemos controlar tambien los valores que salen a la vista con el modelo mediante las anotaciones de datos.
+
+
+                                                    3.2) Validar Front-End 
+
+1) La ventaja basicamente de validar con el Front es que el usuario no tiene que mandar un mensaje para comunicarse con el Back y que este
+valide las acciones, para ello se suele usar JS ya que es mucho mas rapido ya que directamente ejecuta codigo en el navegador.
+
+2) Para validar entonces deberemos agregar las librerias de JQUERY Validate dentro de nuestra vista, pero esta debe ir en la Seccion 
+de Scripts. Esto debido a que se van a ordernar de tal forma los Scripts que no den errores.
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+Una vez agregados la libreria de JQUERY la validacion se hara automaticamente, pero debemos agregar un <span/> con el tag Helper 
+asp-validator-for y el nombre de nuestro atributo a validar, y agregar alguno de las validaciones de ASP, esto para que valide.
+
+
+                                                3.3) Validaciones Personalizadas
+
+1) Validaciones Por Atributo: Para crear mis validaciones crearemos la carpeta validaciones y luego una clase que llevara "attribute" en
+el nombre. Esta clase heredara de "ValidationAttribute" y OVERRAIDEAREMOS su metodo y ahi crearemos la logica, en caso de que este OK
+devolveremos return ValidationResult.Success sino New ValidationResult("Mensaje de error").
+
+Todas las clases que creemos para validar deberan terminar con la palabra attribute. 
+
+2) Validaciones Por Modelo: Nos sirven para validar dentro de la clase, nos permiten validar sus atributos. Tiene como ventaja tener
+las validaciones ahi mismo en la clase pero como desventaja el No poder reutilizar codigo. Para hacer estas validaciones debo importar
+en mi clase DTO la Interaz IValidatableObject, Implementar su metodo y en este hacer las validaciones. En este caso para devolver 
+la validacion erronea haremos yield return new ValidationResult("",new[]  {nameoff Atributo}).
+
+El Yield return es porque Yield se utiliza para devolver IEnums, lo que esta despues de la coma es para señalar que atributo validamos.
+
+3) Sintesis: Usamos Validaciones Por Atributo cuando queremos validar distintas clases a la vez y usamos Validaciones por Modelo cuando 
+queremos validar varios atributos en una misma clase.
+
+                                                3.4) Validaciones a Nivel Controlador
+                                                
+1) Evitar insertar 2 veces el mismo registro: Para validar lo que haremos sera  consultar a la base de datos si existe ese 
+registro, crearemos la conexion y guardaremos un INT, ya que nuestra consulta devolvera un 1 si existe tanto el nombre de 
+la cuenta como el id del usuario y sino devolvera 0, de ahi devolveremos TRUE o FALSE.
+
+var aux = await conexion.QueryFirstOrDefaultAsync<int>(@"Select 1 from TiposCuentas where 
+                                                           Nombre = @nombre and UsuarioId = @usuarioId",
+                                                           new {nombre, usuarioId});
+if (aux == 1)
+    return true;
+else
+    return false;
+
+2) ModelState: Al validar con mi controlador que hay algo incorrecto puedo agregarle a la propopiedad ModelState un Error
+con el Metodo AddModelError Asi salta que la validacion fue negativa. Deberemos pasarle por parametro a este metodo el 
+nameoff del atributo que tiene el error y un mensaje.
+
+                                                    3.5) Validacion Remote
+
+1) Es una validacion realizada con JS, la cual llamamos con la Anotacion de Datos Remote de ASP CORE. Remote es un atributo que nos permite
+realizar validaciones de forma remota, es decir valida desde JS pero realizando una llamada a la servidor. Este necesita de la libreria de 
+JQUERY Validation, sin ella no se puede aplicar. En Remote le pasaremos como parametro que accion le pertenece y a que controlador, tambien
+configuraremos el mensaje de error. Lo bueno de esta validacion es que es instantanea y se realiza en el navegador, lo malo es que no es 
+segura del todo.
+
+private async Task<JsonResult> ValidarRepetido(TiposCuentasDTO TiposCuentas)
+{
+    if(await ConexionBD.Existe(tipoCuentaDTO.NombreCuenta, tipoCuentaDTO.UsuarioId)){
+        return Json("Esta Cuenta ya existe");
+    }
+    return Json(true);
+}
+
+[Remote(action: ValidarRepetido, controller: TiposCuentas)]
+
+2) JSON: Es un formato para representar datos como una cadena de texto, esto nos sirve para transportar datos de el front al back y viceversa
+
+
+
+                                                    3.6) Connection String
+
+1) Connection String: Es un cojunto de valores relacionados a una base de datos y como acceder a ella. SERVER(Como se llama el motor y
+en que direccion IP esta), DATABASE(A que base de datos estoy apuntando), integrated security (Tipo de acceso), Usuario y Password SQL, 
+PORT(Puerto del servidor).
+"ConnectionStrings": { "DefaultConnection": "Server:.\\; Database: ManejoDePresupuesto; User:SA; Password: Admin123; 
+TrustServerCertificate=True;"}
+
+2) DAPPER: Sera el encargado de conectarse con la base de datos. Dapper tiene una gran ventaja que es su mapeo de datos, es decir puede 
+relacionar los parametros con los nombres de los atributos de nuestros objetos, ahorrandonos el metodo addWithValues. Para esto los 
+parametros deben llamarse igual que el atributo de nuestra clase. Para esto luego del QUERY tengo que enviarle el objeto sobre el cual 
+debe mapear los parametros o los parametros de datos primitivos mediante un new {parametro1, parametro2}
+
+3) Es de mala practica hacer la conexion de la base de datos directamente en el controlador, para usaremos un servicio. La logica de 
+conexion la realizaremos en una Clase Repositorio. para esto haremos lo mismo que para el Connection String y usaremos el 
+SqlConnection con la cadena para conectarnos.
+
+using var conexion = new SqlConnection(CadenaConexion);
+var id = conexion.QuerySingle<int>("Insert into TiposCuentas (UsuarioId,Nombre,Orden) " +
+                                    "OutPut inserted.Id values (@UsuarioId,@Nombre,0)", tipoCuentaDTO);
+
+
+                                                        3.7) PROGRAMACION ASINCRONA
+
+5) PROGRAMACION ASINCRONA: En C# un metodo puede ser Sincrono o Asincrono (sync or async). 1) El Metodo Sincronico es basicamente aquel 
+metodo el cual ejecuto y no puedo hacer nada mas durante su ejecucion mas que esperar que termine su ejecucion, estas retornan al terminar
+su ejecucion. 2) La programacion asincrona es lo opuesta estas se ejecutan y al momento retornan aun sin terminar de ejecutarse. La 
+Asincronia la debemos utilizar cuando realizamos operaciones I/O (Input-OutPut), es decir operaciones en las cuales nuestro sistema se 
+comunica con otros sistemas (Base de Datos, Apis, Web Services). Las funcion Asincronicas suelen devolver tipos de datos TASK o TASK<>. Si
+yo creo una funcion Asincrona cuando la llamo siempre tengo que colocar el Await, debido a que si llamo a la funcion sin Await el hilo 
+se terminara de ejecutar sin esperar. TASK representa una tarea que se completara en un futuro.
+
+5.1) La Razon por la que usanmos programacion asincrona es para que al comunicarnos con servicios externos a nuestra app ese tiempo de 
+espera en el cual el otro servicio nos esta devolviendo la informacion que solicitemos liberemos el hilo de ejecucion de ese proceso, y
+poder ejecutar ese hilo en otro proceso hasta que termine la accion de devolvernos la info el otro servicio.
+Esto nos sirve ya que aprovechamos el tiempo muerto durante la peticion a otro servicio ya que en la sincronia el hilo quedaria bloqueado
+haciendo nada, en cambio con la asincronia mientras la peticion al otro servicio se esta resolviendo nuestro hilo esta liberado haciendo
+otras tareas. Como dato si mi metodo llama a un metodo ASYNC AWAIT debere convertir mi metodo tambien en ASYNC AWAIT.
+
+5.2) Task es un Void Asincrono, si quiero devolver debo usar <>.
+
+                                                 3.9) POST con Fetch API y AJAX
+
+1) AJAX: Asyncrono JavaScript and Xml. Esto nos permite comunicarnos con el servidor web sin tener que refrescar la pagina al ser Asincrono.
+Lo que hacemos con esto es mandar un JSON serializado a C# para que este se transforme en un objeto y lo podamos manipular.
+
+2) [FromBody] int[] ids: Con eso me comunico que quiero recibir X cosas del cuerpo.
+
+3) SP con DAPPER: No le puedo pasar el objeto completo porque le pasara todos los parametros y saltara error para ello dedo crear un objeto
+anonimo y especificarle que el comando es un SP. 
+
+conexion.ExecuteAsync("MySP", new [nombre = TipoCuenta.Nombre, usuarioId = TipoCuenta.UsuarioId], CommandType.StoreProcedure);
+
+4) Fetch API: Declaro la funcion, le digo que accion ejecuta, defino el JSON, y le paso el method, body (JSON) y headers. 
+
+    async function enviarIdsAlBackend(ids) {
+    var data = JSON.stringify(ids);
+    await fetch(urlOrdenar, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+                                                        3.10) LINQ, DDL y ASP-ITEMS
+
+1) METODO SELECT: Este Metodo me permite seleccionar un Objeto y empaquetarlo en un IEnumerable, es un metodo de LINQ. En este basicamente 
+lo que hago es agarrar un List o Enum, hago un Select y creo un nuevo objeto llamado SelectListItem, esto ya que crearemos nuevos objetos 
+de especie Llave-valor y los empaquetaremos en un ENUM. Por constructor a este objeto le pasaremos el parametro de display y el Key, 
+estos valores deben ser string. Esto me devolvera un ENUM de llaves valores.
+
+var aux  = tiposCuentas.Select(x => new SelectListItem  (x.NombreCuenta, x.Id.ToString()));
+
+2) SelectListItem: Me permite definir la llave-valor de un DDL, el primer atributo es el Display, el segundo el Key-value.
+
+3) ASP-ITEMS: Este tag-helper me permite pasarle los elementos que va a contener mi DropDownList. Le Puedo Pasar tanto un ENUM configurado
+con SELECT() o tambien con HTML.GetEnumSelectList<>()
+
+4) HTML.GetEnumSelectList<>(): A este metodo en las <> debo pasarle el ENUM. ASP-Item: "HTML.GetEnumSelectList<>()". Esta se usa cuando
+estoy trabajando con ENUMS, si le paso un ENUM Configurados esta creara solo los Values y tomara el nombre de tus enums como display.
+Tambien le puedo cofigurar los values poniendole valores al a los elementos del ENUM.
+
+
+                                                    4) Aislamiento de CSS
+
+1) Aislar CSS es basicamente no querer que un archivo de estilos se use en otra vista , solo la quiero usar en vistas determinadas.
+para esto ire a la carpeta de mi vista, creare el css ahi con el mismo nombre que tiene mis vista agregando el .css. Luego cuando agregue
+mi Link debo poner en href="NombreProyecto.styles.css"
+
+                                                        4.1) FECHAS
+
+1) Para agregar un input de tipo DateTime es tan facil como solo asociarlo co asp-for con un atributo DateTime.
+    <input asp-for="Tiempo" class="form-control mb-3"/>.
+
+2) Formatear-Fecha Corta: DateTime.Parse(DateTime.Now.ToString("g"));
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                    4.2) AutoMapper
+
+1) Mapeador: Un Mapeador busca centralizar la logica de copiado o asignado de datos entre objetos, esto nos evita repetir codigo 
+de mapeo, y tambien nos evitamos hacerlo manual. El mapeador mas famoso en C# en AutoMapper. 
+
+2) Configurar AutoMapper: En principio deberiamos declarar el servicio de auto mapper en program. Luego debemos configurar los mapeos en
+un clase Profile(Es aquella que hereda de Profile), basicamente indicar que clases vamos a querer Mapear. Para ello crearemos una clase 
+que herede de profile y en el constructor mapearemos las clases que necesitemos.
+
+3) Funcionamento: a este le pasare 2 clases, una de esas es la clase que quiero cargar y la otra la clase con la que la quiero
+cargar. Cuando Lo quiera llamar lo debo asignar a una variable, llamar a la interface de mapper y al metodo Map, por <> le pasaremos
+el objeto que estamos mapeando (el destino) y por parametros le pasaremos el objeto que lo esta mapeando, es decir quien lo carga.
+
+4) Configuracion manual: En el caso de que los campos que quiero matchear no tengan nombres coincidentes debere configurar a mano que campos
+quiero que Matchee el AutoMapper. Para ello llamare a la funcion ForMembers de AutoMapper. Tendre que hacer 3 LambDas para esto. 
+1) EN esta indicare el destino, es decir el objeto y su atributo que quiero mapear. 2) El origen del cual quiero mapear, para indicar de
+donde viene el mapeo debo llamar a MapFrom() 3) En MapFrom haremos la tercera lambda y colocaremos el atributo del cual viene el mapeo.
+
+1.1) Program
+builder.Services.AddAutoMapper(typeof(Program));
+
+2.1) Profile
+CreateMap<CuentaDTO, CuentaViewModel>();
+
+3.1) Mapeo
+var modelo = mapper.Map<CuentaViewModel>(Cuenta);
+
+4.1) Manual Mappeo
+CreateMap<ClaseMapeadora, ClaseAMapear>().ForMembers(d=> d.Atributo, o=> o.MapFrom(s=> s.atributo));
+
+                                                4.2) Capturar valor de mi URL
+
+1) TempData["UrlActual"]: Esto me permitira capturar el valor de mi y mantenerlo por las paginas a diferencia del ViewBag.
+Para acceder a el debo colocarle un as string.
+
+2) Capturar URL Simple: HttpContext.Request.GetEncodedPathAndQuery()
+
+3) Capturar toda la URL: HttpContext.Request.GetDisplayUrl();
+`
+                                                4.3) Datos Varios del CURSO
+
+1) Exportar a Excel: Primero usaremos la libreria ClosedXML. Luego Crearemos una Action que Devolvera un excel, esta sera un HTTP GET, 
+pero no sera un action result, sino sera un FileResult, ya que esperamos devolver un archivo excel.
+
+2) Funcion Generar Excel: Esta sera de Tipo File Result, le pasaremos por parametro el nombre del archivo y una lista. Para esto lo que
+haremos sera crear una tabla en memoria que replica  una tabla en memoria de SQL. Una vez creado el DataTable le agregaremos las columnas
+con AddRange(), ahi le pasaremos un new DataColumn[], y dentro de este arreglo le colocaremos los DataColumn. 
+
+    DataTable dt = new DataTable("nombreTabla")
+    dt.addRange(new DataColumn[]{ 
+        new DataColumn ("Col1"),
+        new DataColumn ("Col2"),
+        new DataColumn ("Col3")
+    })
+
+3) Cargar Data: Luego lo que haremos sera cargar los datos, para esto crearemos un FOREACH para recorrer la lista que cargamos por parametro.
+Luego agregaremos los datos a cargar por las Filas de la tablas, es decir cargaremos la data en cada registro. El orden de los valores
+a agregar debe ser el mismo orden con el cual creamos las DataColumn.
+
+    dt.Rows.Add(lista.MiCol, lista.MiCol2, lista.MiCol3);
+
+4) Exportar a Excel: Luego de cargar la tabla usaremos el objeto  XLWorkbook, en este agregaremos nuestra tabla ya configurada. Luego 
+crearemos un MemoryStream, donde guardaremos nuestro archivo y finalmente lo devolvemos con return File.
+
+    XLWorkbook wb = new XLWorkbook();
+    MemoryStream stream = new MemoryStream();
+    wb.SaveAs(stream); 
+    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo)
+
+    *PREGUNTAR QUE ES STREAM y STRINGBUILDER
+
+                                                            4.4) Usuarios
+
+1) Auntenticacion: La Auntenticacion es cuando los usuarios proveen una clave o medio para indicar quienes son. Cuando este usuario se 
+auntentica correctamente le damos un valor secreto con el cual lo podemos dejar identificados. En Nuestro caso le devolveremos al usuario
+autenticado una Cookie.
+
+2) Cookie: Es un valor que se almacena en el navegador y es enviada en cada peticion HTTP hacia nuestro sitio siempre que el usuario quiera
+realizar alguna accion.
+
+3) Configurar Usuarios con IDENTITY: Para manejar la logica de Usuarios debemos crear una clase STORE. En esta clase deberemos implementar
+las siguientes Interfaces: 1) IUserStore<ClaseUsuario>. 2) IUserEmailStore<ClaseUsuario>. 3) IUserPasswordStore<ClaseUsuario>. Estas
+me generaran los metodos para poder manejar los usuarios.
+
+4) Configurar IDENTITY: builder.services.AddIdentityCore<ClaseUsuario>();
+
+5) Task.FromResult: Este metodo se emplea cuando en metodos ASYNC yo tengo la tarea completada al instante y debo devolver el resultado.
+Normalmente no lo podria hacer, ya que el ASYNC siempre espera el cumplimiento de un TASK y luego devolver un resultado. Por lo que para 
+cumplir con esta tarea retornamos un valor simulando un TASK COMPLETO.
+
+        public Task<string> GetImmediateResult()
+        {
+            string result = "Resultado inmediato";
+            return Task.FromResult(result);
+        }
+
+6) Clase IdentityUser: Es una API que proporciona funcionalidades para gestionar usuarios, roles, contraseñas, etc. Basicamente se 
+encarga de agregar funcionalidades de inicio de sesion a apps web de ASP.
+
+7) IdentityErrorDescriber: Con esta clase voy a heredar los metodos de Identity con sus mensajes de Error, ahi los puedo cambiar.
+
+8) Validacion Identity: Los metodos de Las interfaces IUser Devolveran IdentityResult.Success. Con Esto podremos evaluar en mi controlador
+si el usuario es o no valido, Si SUCCESS es true entonces seguira el flujo sino devolvera los Errores y regresara a la pagina. Los errores
+Los muestro con ModelState.AddModelError(string.empty, errores) dentro de un Foreach que recorra la lista de errores de Identity.
+
+Foreach(var errores in identity.Errors)
+{
+    ModelState.AddModelError(string.empty, errores);
+}
+8.1)namespace ManejoPresupuesto.Servicios
+{
+    public class MensajesDeErrorIdentity: IdentityErrorDescriber
+    {
+        public override IdentityError DefaultError() { return new IdentityError { Code = nameof(DefaultError), Description = $"Ha ocurrido un error." }; }
+        public override IdentityError ConcurrencyFailure() { return new IdentityError { Code = nameof(ConcurrencyFailure), Description = "Ha ocurrido un error, el objeto ya ha sido modificado (Optimistic concurrency failure)." }; }
+        public override IdentityError PasswordMismatch() { return new IdentityError { Code = nameof(PasswordMismatch), Description = "Password Incorrecto." }; }
+        public override IdentityError InvalidToken() { return new IdentityError { Code = nameof(InvalidToken), Description = "Ha ingresado un código Inválido." }; }
+        public override IdentityError LoginAlreadyAssociated() { return new IdentityError { Code = nameof(LoginAlreadyAssociated), Description = "Un usuario con ese nombre ya existe." }; }
+        public override IdentityError InvalidUserName(string userName) { return new IdentityError { Code = nameof(InvalidUserName), Description = $"El nombre de usuario '{userName}' es inválido. Solo puede contener letras y números." }; }
+        public override IdentityError InvalidEmail(string email) { return new IdentityError { Code = nameof(InvalidEmail), Description = $"La dirección de email '{email}' es incorrecta." }; }
+        public override IdentityError DuplicateUserName(string userName) { return new IdentityError { Code = nameof(DuplicateUserName), Description = $"El usuario '{userName}' ya existe, por favor ingrese un nombre diferente." }; }
+        public override IdentityError DuplicateEmail(string email) { return new IdentityError { Code = nameof(DuplicateEmail), Description = $"La direccion de email '{email}' ya se encuentra registrada. Puede recupar su contraseña para ingresar nuevamente al sistema." }; }
+        public override IdentityError InvalidRoleName(string role) { return new IdentityError { Code = nameof(InvalidRoleName), Description = $"El nombre de rol '{role}' es inválido." }; }
+        public override IdentityError DuplicateRoleName(string role) { return new IdentityError { Code = nameof(DuplicateRoleName), Description = $"El nombre de rol '{role}' ya existe." }; }
+        public override IdentityError UserAlreadyHasPassword() { return new IdentityError { Code = nameof(UserAlreadyHasPassword), Description = "El usuario ya tiene contraseña." }; }
+        public override IdentityError UserLockoutNotEnabled() { return new IdentityError { Code = nameof(UserLockoutNotEnabled), Description = "El bloqueo no esta habilitado para este usuario." }; }
+        public override IdentityError UserAlreadyInRole(string role) { return new IdentityError { Code = nameof(UserAlreadyInRole), Description = $"El usuario ya es parte del rol '{role}'." }; }
+        public override IdentityError UserNotInRole(string role) { return new IdentityError { Code = nameof(UserNotInRole), Description = $"El usuario no es parte del rol '{role}'." }; }
+        public override IdentityError PasswordTooShort(int length) { return new IdentityError { Code = nameof(PasswordTooShort), Description = $"La contraseña deben tener un largo mínimo de {length} caracteres." }; }
+        public override IdentityError PasswordRequiresNonAlphanumeric() { return new IdentityError { Code = nameof(PasswordRequiresNonAlphanumeric), Description = "La contraseña debe contener al menos un caracter alfanumérico." }; }
+        public override IdentityError PasswordRequiresDigit() { return new IdentityError { Code = nameof(PasswordRequiresDigit), Description = "La contraseña debe incluir al menos un dígito ('0'-'9')." }; }
+        public override IdentityError PasswordRequiresLower() { return new IdentityError { Code = nameof(PasswordRequiresLower), Description = "La contraseña debe incluir al menos una letra minúscula ('a'-'z')." }; }
+        public override IdentityError PasswordRequiresUpper() { return new IdentityError { Code = nameof(PasswordRequiresUpper), Description = "La contraseña debe incluir al menos una letra MAYÚSCULA ('A'-'Z')." }; }
+        public override IdentityError PasswordRequiresUniqueChars(int uniqueChars) { return new IdentityError { Code = nameof(PasswordRequiresUniqueChars), Description = $"El password requiere {uniqueChars} caracteres únicos" }; }
+        public override IdentityError RecoveryCodeRedemptionFailed() { return new IdentityError { Code = nameof(RecoveryCodeRedemptionFailed), Description = $"Hubo un error al recuperar el código de redención." }; }
+
+    }
+}
+
+9) En el protocolo HTTP es sin estado, es decir que el  servidor no lleva un registro de a quien le pertenece cada peticion, por ende 
+cada Peticion HTTP deberemos Loguearnos una y otra vez para verificar que somos nosotros. Una Opcion es mandar una COOKIE al navegador 
+del usuario para validar su estado de LOGIN
+
+10)Generar COOKIES: Para esto deberemos implementar (Inyectar) la clase SignInManager<Usuario>. De ahi si el LOGIN es correcto entonces
+usaremos El metodo ASYNC de  SignInManager SingInAsync, le pasaremos el usuario y que quede logueado.
+
+await.signInManager.SingInAsync(usuario, Persistent: true);
+
+
+11) Configurar COOKIES:
+builder.Services.AddAuthentication(options=> options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                                             options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                                             options.DefaultSingOutScheme = IdentityConstants.ApplicationScheme;).AddCookie(IdentityConstants.ApplicationScheme)
+App.UseAuthentication();
+
+12) LOG-OUT: Tiene que ser una Action HttpPost. Ahi colocaremos: await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+13) Verificar Logueado: signInManager.IsSignedIn(Usuario). Esto devuelve un true or false.
+
+14) CLAIMS: Un Claim Es una info acerca del usuario (Email, pass, nombre, Id). Para Guardar los CLAIMS del usuario debo hacer:
+    var claims = User.Claims.ToList(); (User es una Prop de Controller)
+    var idUser = claims.Where(x=> x.Type == ClaimTypes.NameIdentifier).FirsOrDefault();
+
+15) [Authorize]: Al colocarle este atributo a una accion o al Controlador entero esta me llevara a la ruta de login por defecto. Para 
+configurarla deberemos ir al AddCookie(IdentityConstants.ApplicationScheme, opciones => {opciones.LoginPath = "/usuarios/Login";}).
+
+Otra forma de aplicar esto es construyendo una politica. Con eso Hare que todas mis paginas requieran autorizacion. Para elegir paginas 
+las cuales no me interesa que el usuario este LOG les pondre la etiqueta [AllowAnonymous]
+
+var politica = new AuthorizationPolicyBuilder().RequiereAuthenticaUser().Build();
+builder.Services.AdControllerWithViews( Opciones=>{opciones.Filters.Add(new AuthorizeFilter(politica))};)
+
+                                                        4.5) Paginacion
+
+1)
+
+
+                                                        5) [FromBody]
+
+1) [FromBody]: es un atributo que se utiliza para un método de controlador de API. Al Crear una API WEB debere llevar datos del cliente
+al servidor, con FromBody le indicare que los datos que le envie vendran directamente del HTML.
+
+                                                    2.5.2) Tags Helpers
+
+1) asp-append-version: Es un atributo para manejar la Cache del navegador. El navegador suele guardar los archivos CSS y JS para no volver
+a descargarlos, con esto le diremos basicamente que si el archivo tiene algun cambio entonces que si lo descargue al archivo.
+
+    1.1) <script src="~/mi-script.js" asp-append-version="true"></script>
+
+2) asp-area: En un proyecto grande seguramente  dividire mis MVC  en subcarpetas, es decir en areas, ahora cuando quiera interactuar entre
+areas debere usar esta etiqueta. Esta configurara la ruta dinamica para el traslado.
+
+    2.1) <a asp-area="Productos" asp-controller="Home" asp-action="Index">Ir a Productos</a>
+
+3) asp-controller: Es similar a ASP AREA solo que este genera la URL hacia el controlador, basicamente es para apuntar a que controllador
+me estoy queriendo conectar. Podemos evitarlo si a nuestros models los ponemos en carpetas con el mismo nombre de nuestro controller.
+
+    3.1) <a asp-controller="Home" asp-action="Index">Inicio</a>
+    
+4) asp-action: En este caso es similar a los anteriores, esta sera parte del formado de la URL, ademas segun el action que indiquemos
+se ejecutara esa accion en vez de otra. Es decir si mi boton tiene Action Index al hacer click se ejecutara la Action Index. En el Post
+no suele hacer falta indicarlo al hacer el post sobre la misma pagina en la que estoy (Si estoy en editar y hago un POST y tengo una action
+de editar de tipo POST solo se va a redireccionar). En general este es el unico que utilizaremos.
+
+    4.1) <a asp-action="Index">Inicio</a>
+    
+5) asp-route: este TAG sigue al son de los anteriores, sirve como un enrutador dinamico, segun el valor que tenga este ASP route sera el
+valor que tenga la ruta dinamica, al igual que los hacen area, controller y action.
+
+    5.1) <a asp-controller="Productos" asp-action="Detalles" asp-route-id="@item.ID">Ver Detalles</a>
+         <a href="/Productos/Detalles/5">Ver Detalles</a>
+    
+6) asp-route-{nombre}: al tag route le puedo agregar un nombre, ese nombre que le agreguemos nos permitira sicronizar su valor con el 
+de un parametro en controller, si el nombre del route coincide con el nombre del parametro se sincronizara su valor (el parametro debe
+ser string).
+
+    6.1) <a asp-controller="Home" asp-action="Detalles" asp-route-id="@item.ID">Ver Detalles</a>
+
+7) asp-all-route-data: es similar a route, solo que puedo pasar mas de un parametro y generar la URL. Entre barras pasaremos el nombre del
+atributo luego "," y luego el valor, cada nombre-valor ira entre llaves y todo el conjunto tambien. Los nombres de las variables tambien se
+podra sincronizar con parametros.
+    
+    7.1) <a asp-action="Detalles" asp-all-route-data="@(new Dictionary<string, string> { { \"id\", \"5\" }, { \"nombre\", \"MiNombre\" } })">
+Ver Detalles</a>
+
+8) asp-fragment: Este tambien es parte de mi enrutador, paro a direncia de otros este no apunta hacia otras direcciones, sino que apunta, 
+a lugares de la misma pagina. Es el equivalete a #. Con el puedo poner los ID de mis secciones y mediante el navbar trasladarme.
+
+    8.1) <a asp-controller="Speaker" asp-action="Evaluations" asp-fragment="SpeakerEvaluations">Evaluaciones del Orador</a>
+
+9) asp-host: basicamente aqui colocaremos el nombre de nuestro host/dominio como google.com, facebook.com, etc. 
+
+    9.1) <a asp-host="mi-sitio.com" asp-controller="Home" asp-action="Index">Inicio</a>
+
+10) asp-protocol: Permite definir el protocolo web (cojunto de reglas que se usan para transmitir datos mediante la web). Ahi mismo le 
+pasare si es HTTP o HTTPS. Aunque por predeterminado viene HTTPS.
+
+11) asp-antiforgery: Es un atributo para prevenir ataques de falsificacion de solicitudes (CSRF o XSRF). Para incluir tokens Antifalsificacion
+automaticamente en todos nuestros forms debemos generar el servicio antiforgery.
+
+    11.1) builder.Services.AddAntiforgery();
+    11.2) app.UseAntiforgery();
+
+12) asp-page: es un enrutador manual, ahi puedo otorgar manualmente la direccion de la pagina con una solo etiqueta. En proyectos completos
+es mejor la otras varibles.
+
+13) asp-items: se usa para especificar los elementos que se mostraran en un DDL. Este debera recibir un objeto SelectListItem o SelectList.
+Normalmente tendremos un LIST o ENUM, a este le haremos un SELECT(x=> ne SelectListItem(x.Display, x.Value)). Tambien puede ser que armemos
+un SelectList y directamente le pasamos eso. Sirve para todo tipo de listas
+
+    13.1) var lista = MyList.Select(x => New SelectListItem(x.D, x.V)); 
+    13.2) <select asp-for="TuPropiedad" asp-items="@lista"></select>
+    13.3) <select asp-for="TuPropiedad" asp-items="@(new SelectList(items))"></select>
+
+14) asp-for: Basicamente lo que hace es sicronizar el valor de la propiedad del @model de la pagina, segun su valor ese sera el valor del
+campo con ASP-FOR. En caso de que la propiedad de asp-for sea null entonces el campo quedara vacio.
+
+15) Asp-Validation-For: Es una forma de validar un atributo en ASP, esta se utiliza junto JQUERY validations y a la anotaciones de datos
+de ASP.NET . JQUERY es para que se vaya al back a validar sin tener que recargar la vista ni ingresar a la accion, y las anotaciones para
+definir cual es el tipo de validacion (Required, StringLength, EmailAddress, Range, Display, URL). Este asp-Validation-for se suele colocar
+en un span para que salte el error debajo del input.
+
+    15.1)   <span asp-validation-for="Email" class="text-danger"></span>
+
+16) Asp-Validation-Summary: este lo que hace es devolver el error de todos los campos en un solo lugar, similar que validation-for pero
+muestra todos los errores del modelo. El ModelOnly Mostrara los errores asociados a los valores de los atributos de las propiedades (los
+tipicos errores). All muestra ademas los errores no asociados al modelo.
+
+    16.1) <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+Orden Enrutadores: host/area/Controller/Action/Route#fragment
+
+                                                    6) DAPPER METODOS QUERYS
+
+1) QueryAsync<>: Esta funcion de Dapper me permite hacer una consulta a la base de datos, especificamente un Query de Select y me permite 
+decir que tipo de dato Ienum quiero que me devuelva. Basicamente devuelve el enumerable de x datos segun el tipo de dato que le hayamos 
+cargado en <>.
+
+1.1) await conexion.QueryAsync<TipoCuentaDTO>(@"Select Id, NombreCuenta, usuarioId, Orden from TiposCuentas where  usuarioId = @usuarioId 
+order by Orden", new {usuarioId});
+En este caso le mapeamos los valores de las variables con un objeto anonimo, le puedo pasar eso o un objeto completo, pero el nombre 
+de los atributos del objeto debe coincidir con el nombre de las variables SQL.
+
+2) QueryFirstOrDefaultAsync<>: Esto lo que hace es devolver el primer valor que encuentre, si no encuentra nada devuelve una valor 
+default del tipo de dato que le pasemos por las <>.
+2.1)await conexion.QueryFirstOrDefaultAsync<int>(@"Select 1 from TiposCuentas where NombreCuenta = @nombre and UsuarioId = @usuarioId",
+new {nombre, usuarioId});
+
+3) ExecuteAsync:  Me permite ejecutar un Query que no devuelve nada, es para insertar, update y delete.
+3.1) await conexion.ExecuteAsync(@"Update TiposCuentas set NombreCuenta = @NombreCuenta where Id = @Id",tipoCuentaDTO);
+
+4) QuerySingleOrDefaultAsync: Ejecuta la consulta y mapea el objeto con un solo resultado, si el query tiene mas de un resultado da 
+un error.
+4.1) await conexion.QueryFirstOrDefaultAsync<int>(@"Select Top 1 Id from TiposCuentas where NombreCuenta = @nombre and UsuarioId = @usuarioId",
+new {nombre, usuarioId});
+
+5) QueryMultipleAsync: Sirve Cuando quiero realizar 2 Select y agarrar esos resultados y luego mapearlos en objetos. Para mapear y guardar
+los objetos debo realizar el QueryMultipleAsync y luego del objeto donde guarde eso ejecutarle ReadAsync y decirle en base que objeto
+quiero realizar un mapeo.
+
+5.1) var lector = await QueryMultipleAsync(Consulta, new {parametroSQL = 1})
+     var usuarios = lector.ReadAsync<Usuarios>();
+     var roles = lector.ReadAsync<Roles>();
+
+
+DATO _ ASP-ROUTE-ID: Esta Tag Helper lo que hace es sincronizar una varible o parametro con el valor que le pasemos (seguramente
+del modelo) para ello debo poner asp-route-nombreparametro  en este caso ID. Lo que hara este es ademas de sincronizar su 
+valor con un valor del model sera crear URL dinamicas para acceder a los elementos.
+
+MOVER FILAS DE TABLAS: @section Scripts{
+                        <script>
+                        $(function () {
+                             $("#reordenable").sortable();
+                                      })
+                        </script>}
+
+                        

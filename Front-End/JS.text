@@ -1,0 +1,536 @@
+                                                    1) Caracteristicas y Gramatica
+
+1) Js Es un lenguaje de alto nivel, Es Interpretado y dinamico (Es un lenguaje Compilado en Tiempo de Ejecucion), Debilmente Tipado (los
+valores de las varibles pueden ir variando), MultiParadigma, Sensible a Mayusculas y Minusculas.
+
+2) Los nombres de las varibles deben empezar con una Letra o un $ o un guion bajo.
+
+3) CONST: Una buena practica con las constantes es ponerle un nombre en Mayusculas.
+
+4) UpperCamelCase: Se usa para declarar las clases. EJ: MiClase
+
+5) lowerCamelCase: se usa para declarar variables primitivas o funciones o Objetos o Instancias. EJ: miVariable.
+
+6) Ordenamiento del Codigo: Importacion de modulos, Declaracion de variables, Declaracion de Funciones y Ejecucion de Codigo.
+
+
+
+                                                      2) Variables
+
+1) Variable: Un lugar en la memoria donde se guardan datos.
+
+2) var: Con var se declaraban las variables. El Problema es que al usar VAR en estructuras de control o bucles estas no tenian un SCOPE, 
+es decir que estas no nacian y morian ahi mismo en esa estructura, sino que existian en un ambito global, un alcance total.
+
+3) let: viene a solucionar el problema del SCOPE de var, esta si posee SCOPE y empieza y termina con las llaves{}
+
+4) const: const basicamente se lo utiliza para declarar varibles constantes, que sabemos que su valor sera estatico en toda la ejecucion.
+Tiene la peculiaridad que en Tipos de Datos compuestos no funciona igual, si declaro en un Array una series de valores yo despues le puedo
+agregar mas elementos con push(), a pesar de que mi array sea const.
+En sintesis, en Tipos de datos primitivos uso const en vez de LET cuando mi variable no va a cambiar su valor nunca, en tipos de datos 
+compuestos usare const en vez de let cuando mi variable no mute hacia otra cosa(que pase de ser un arreglo a un objeto, un numbre etc).
+
+5) Sintesis: no usar var porque es mala practica, no sirve para definir funciones en bloque ya que no se definen en el bloque sino antes
+y pisa el valor que pueda tener en el ambito global. let viene a resolver estos problemas de var.
+
+6) Objectos: Similar a C# un objeto son atributos con valores. let Persona = {nombre: "Pepe", edad: 35, sexo:"masculino};
+
+7) Array: Es basicamente un conjunto de valores. let array = [1,2,3]
+
+8) Window: Aqui es donde se almacenan todas las variables globales de JS.
+
+
+                                                    3) Tipos de Datos
+
+1) Primitivos: Apenas los creamos a estos objetos estamos accediendo a su valor. Tenemos: string, Number, boolean, null, undefined, NaN.
+
+2) Compuestos: No accedemos directamente al valor sino a una referencia de donde esta el valor: 1) Object{}. 2) array[]. 3) function(){}.
+               4) Class{}.
+                                                    3.1) Primitivos
+
+1) string: Es similar a los string de otros lenguajes, los puedo usar con "" o ''.
+
+1.1) Atributos: 1) Length=>Me permite saber la cantidad de caracteres de la cadena, 
+
+1.2) Metodos: 1) ToUpperCase&ToLowerCase()=> Me permiten setear todos las letras a Mayusculas o Minusculas. 2) Include()=> devuelve un 
+              T/F si la cadena que le pase por parametro existe en la varible string que ejecuta la funcion. 3) trim()=> elimina los 
+              espacios en blanco de los margenes. 4) split()=> esta funcion me permite generar un arreglo, por parametro le tengo que 
+              pasar cual sera el caracter que separara cada elemento del array (si es por comas, puntos, espacios). 5) Slice(num)=> este
+              metodo me permite seleccionar desde que posicion de la cadena de caracteres quiero seleccionar. 6) CharAt()=> a este 
+              metodo le tengo que pasar la posicion del caracter que quiero extraer. 7) CharCodeAt()=> similar al anterior pero en vez
+              de devolver el caracter devolvera su codigo. 8) concat() al igual que en SQL es para concatenar texto, tiene la particularidad,
+              que si se lo asigno a un ARRAY concatenara sus valores. 9) endsWith()=> este metodo devuelve un T/F si la cadena termina con el
+              parametro que le pase. Tambien le puedo pasar un parametro numerico que es la cantidad de caracteres a evaluar, en caso de que 
+              quiera evaluar solo una parte y no toda la cadena.
+              5.1) Slice(num1,num2): tiene una segunda funcion que es cuantos quiero caracteres quiero agarrar segun la posicion en la que 
+              estoy.
+
+1.3) Interpolacion-Strings: Interpolar es basicamente meter dentro de una cadena una variable. Para ello en JS deberemos usar Template-Strings
+                            Para hacer la interpolacion deberemos usar ``, ya dentro de la cadena cuando queramos llamar a la variable para
+                            colocarla dentro de la cadena lo haremos asi: ${variable}. Tambien esto me permite tener las cadenas con saltos
+                            de linea.
+EJ: let nombre = "Pepe Mujica"
+    Console.Log(`Hola Soy ${nombre}`) // print: Hola soy Pepe Mujica
+
+2) numbers: Son numeros, de todo tipo, no se diferencian ni por tamaño ni por decimales
+
+2.1) Atributos:
+
+2.2) Metodos: 1) ToFixed(1) => a este le tengo que pasar cuantos numeros decimales quiero que tenga mi numero. 
+              2) Number.parseint(num) => me devulve solo el numero entero. Puede recibir un string, por lo cual puedo formatear un numero en 
+              cadena de texto a entero numerico.  3) Number.parseFloat()=> lo mismo pero para valores flotantes. 4) Number.IsInteger()=>
+              define si un numero es o no entero. 5) valueOf()=> me devuelve el valor de un number.
+
+parseint o float no salen de la variable number debido a que estos pertenecen a la clase number, a diferencia de los otros metodos. Es 
+decir que estos metodos dependen de un Constructor.
+
+3) Booleans: es lo mismo de siempre
+
+4) null: es un valor que solo el programador le puede asignar a la variable, a diferencia de otros lenguajes. Representa la ausencia de 
+valor
+
+5) undefined: Es una variable la cual no fue inicializada nunca. Representa la ausencia de valor.
+
+6) NaN: Puede aparecer cuando queremos realizar operaciones aritmeticas con elementos que no son numeros.
+
+
+                                                        3.2) Compuestos
+
+1) ARRAYS: Un ARRAY basicamente es una coleccion de elementos, a diferencia de C# puedo coleccionar elementos de diferente tipo, incluyendo
+objetos y otros ARRAY. Para acceder a la posicion del elemento de un ARRAY tengo que poner [numero].
+
+const a = ["StringPicante", ["Elo", "Xd"]]
+console.log(a[1][1] //Imprime Xd).
+
+1.1) Propiedades Array: 1) Length.
+
+1.2) Funciones Array: 1) ArrayOf()=> me permite declarar un array. 2) Array(lugares).fill(valores)=> me permite rellenar automaticamente 
+todas los valores de un array. 3) push()=> me permite agregar elementos al array. 4) pop()=> Elimina el ultimo elemento.  
+5) ForEach()=> Esta funcion me permitira pasarle un metodo el cual se ejecutara tantas veces como elementos haya en el array. Con el primer
+valor recorreremos el valor del elemento y con el segundo parametro su posicion.
+
+    arrayColores.forEach(function(item, posicion){
+        Console.Log(item, "  ", "posicion");
+    })
+
+
+2) Objetos: Combiene declarar los objetos como CONST debido a que con esto nos evitamos de que este objeto cambie su referencia. Un objeto
+es un conjunto de atributos y/o Metodos. Sus atributos pueden ser de cualquier tipo de dato ya sea complejo o simple. Tambien puede tener
+metodos.
+
+    const Persona = {
+        nombre: "MaxiPijama",
+        apellido: "Sar Fernandez",
+        edad: 33,
+        Habilidades: ["C#", "TS", "SQL"]
+        Contacto:{Email:"Pijama@gmail", Numero: 353456, Pagina:"ElPentagono"}
+        Saludar(){return "Holanda de 74"}
+    }
+
+3) THIS: Hace referencia a las variables o funciones que estan dentro de ese SCOPE. Si yo pongo dentro de mi objeto THIS voy a poder 
+referenciar a todos los elementos que esten dentro de mi SCOPE.
+
+DATO: Acceder al Valor por referencia: Lo que quiere decir esto es que para tener el valor de un elemento compuesto debo colocar el espacio
+de la memoria al cual quiero acceder para rescatar cierto valor.
+
+                                                        4) Funciones
+
+1) Es un bloque de codigo independiente al bloque de codigo global. Las funciones tienen como tarea realizar una accion especifica. Pueden
+tener parametros, pueden o no devolver un resultado. A diferencia de otros lenguajes en JS las funciones se consideran objetos. Las funciones
+son de primera clase como en C# (Se pueden pasar como argumentos, retornar su valor a una asignacion). Estas se llaman funciones declaradas
+
+        1.1) function FuncionDeclarada(){
+
+        }
+
+2) A diferencia de otros lenguajes no debo especificarle si es VOID o no ni el tipo de dato que va a retornar, si quiero devolver algo 
+pongo un return y le adjunto el valor a devolver.
+
+3) Parametros: En JS la funciones tambien permiten parametros, pero estos no tendra la declaracion de el tipo, solo pondremos el nombre
+de las variables en la declaracion. Si llamo a la funcion sin los parametros no dara error pero los valores seran undefined. Tambien le 
+puedo dar valores por defecto a mis parametros.
+
+4) Funciones anonimas: Basicamente es crear una variable a la cual le voy a asignar el valor de una function. Esta variable normalmente
+sera una CONST. Se lo llama funcion anonima debido a que la funcion no tiene nombre. A diferencia de las otras funciones yo a esta 
+no la puedo llamar antes de declararla sino nos dara error. Estas Funciones Anonimas Expresadas son mejor practica que las clasicas 
+funciones.
+
+const FuncionExpresada = function(){return "Hola"} //
+
+let variable= FuncionExpresada(); 
+console.Log(variable); //"Hola"
+
+                                                     5) Operadores Relacionales
+
+1) >: Mayor a 
+2) <: Menor a 
+3) >=: Mayor o Igual a 
+4) <=: Menor o Igual a 
+5) ==: Son comparacion de valores, compara si los valores 2 elementos son iguales (Ignora su tipo de dato), mala practica.
+6) ===: Compara tanto el valor como el tipo de dato, esta se usa al considerarse la buena practica.
+7) !=:
+8) !==:
+
+
+                                                    6) Estructuras de Control 
+                                                    
+1) Estructuras de Control: Es el Mecanismo que permite controlar el flujo de ejecucion de la aplicacion. Segun resultados,acciones o 
+X estimulos la programacion se ejecutara por distintos flujos. 1) Las Estructuras secuenciales son las estructuras con un solo flujo de 
+ejecucion, una linea tras otra. 2) Las Estructuras condicionales Bifurcan el flujo, segun la condicion se cumpla o no se ejecutara un 
+flujo u otro. (if, else if y else), (operador ternario) y (Switch) 3) Las Estructuras Repetitivas (For, While, Do While)
+
+2) Ternario: let variable = (condicion que devuelve T/F) ? "Caso True" : "Caso False".`
+
+3) ForIN: Esta me va a permitir recorrer/iterar las propiedades de un objeto, recorre el interiror de un objeto, su sintaxis en muy 
+similar a un ForEach. Para acceder a los valores de la propiedad las debo colocar entre [""]. Se lo utiliza para objetos primitivos 
+(No iterables)
+
+    For(const prop in Persona)
+    {
+        Console.Log('Propiedad ${prop} Valor ${Persona[prop]}')
+    }
+
+4) ForOf: Es Basicamente un ForEach, me permite recorrer un ARRAY o cadenas, basicamente listas. Se lo utiliza para objetos Iterables.
+
+                                                        7) Manejo de Errores
+
+1) Funciona con el Clasico Try-Catch-Finally.
+
+2) throw: Sirve para lanzar la excepcion, el por defecto es ERROR.
+
+                                                        8) Break y Continue
+
+1) Break lo que hace basicamente es terminar con la ejecucion de un Ciclo o de un Switch.
+
+2) Continue: Se salta la vuelta del ciclo en la que se ejecute.
+
+                                                        9) Destructuring
+
+1) Destructuring: Es una nueva forma de asignar valor a arreglos y objetos en JS. Esto es para ahorrar lineas de codigo en la asignacion
+                  En el caso de los objetos para que la destructuracion funcione necesito que el nombre de la variable sea igual al nombre 
+                  del atributo del cual quiero extraer el valor, sino cumplo esto mi variable sera undefined.
+
+                  const array = [1,2,3]
+                  let [PrimerElemento, Segundo, Tercero] = array 
+
+                  const Persona = {nombre: "Hernan", apellido: "Pastrami", edad: 33}
+                  let {nombre, apellido,edad} = Persona
+
+                                                        10) Objetos Literales
+
+1) Los objetos literales son basicamente una nueva forma de escribir atributos y Metodos. En el caso de los atributos si ya tengo atributos
+con el mismo nombre de mi propiedad JS entendera que quiero tomar esos valores asi que los asignara automaticamente.
+
+       let nombre = "Pipo",
+       let Apellido = "Argenti";
+
+        const JugadorRacing = {
+        nombre,
+        Apellido
+        }   
+
+                                                11) Parametros REST y Operador SPREAD
+
+1) Parametros REST: Se utiliza en los casos de que no se cuantos valores o parametros voy a recibir o tener en un arreglo. A este
+parametro se lo Representa con "...". Por Ejemplo en el caso de sumar numeros cuando no se cuantos numeros sumar puedo usar parametros
+REST. Para esto al parametro REST lo vamos a tratar como un ARRAY, ya al no saber cuantos valores son lo vamos a usar como un ARRAY. El
+Parametro REST solo se ejecuta en los parametros de una funcion.
+
+    function Sumar(a,b, ...c){
+        let resultado = a+b;
+
+        c.forEach(function(numero){
+            resultado+=numero;
+        })
+    }
+
+2) Operador SPREAD (operador de propagacion): Con el SPREAD puedo concatenar ARRAYS/OBJETOS y puedo crear copias exactas de los objetos, 
+una copia con su propia referencia.
+
+        const array3 = [...array1, ...array2]
+        const objeto3 ={
+            ...objeto1,
+            ...objeto2
+        }
+
+
+                                                        12) ARROWS FUNCTIONS
+
+1) Son una nueva forma de definir funciones anonimas Expresadas (const FuncionExp = function (){}). La sintaxis es la siguiente:
+    const ArrowFunction = ()=>{}
+
+2) En el caso de que no tenga parametros la ARROW_FUNCTION deberemos colocar parentesis, si tiene un parametro no hara falta.
+   const FuncionExp = nombre => {}
+   FuncionExp("Generico");
+
+3) Tambien en su escritura si solo tiene una sola linea de codigo esta realizara un return implicito.
+
+4) Declarar Metodos dentro de objetos literales con ARROW_FUNCTION puede ser un problema debido que al declarlo si yo uso THIS no apuntare
+dentro del objeto sino que apuntare hacia el ambito global. Esto es porque las ARROW_FUNCTION apuntan hacia el contexto en el cual se 
+encuentra su objeto padre. En sintesis es de mala practica crear ARROW_FUNCTION dentro de objetos literales.
+
+
+                                                        13) Prototipos
+
+1) Prototype: Es una propiedad que tienen todos los elementos de JS. El Prototipo es un objeto que funciona como una plantilla que proporciona
+metodos y propiedades que el objeto puede usar.
+
+1.1) La razon de la existencia de prototype es que los objetos puedan heredar caracteristicas entre si, lo cual es util cuando quiero
+que varios objetos compartan metodos y/o propiedades.
+
+2) Las clases de JS en momento de compilacion transforman las CLASES a Funciones Prototipales, porque la POO de JS se encarga mas del Manejo
+de prototipos que el manejo de CLASES. Este solo simula un manejo de clases en su sintaxis, pero realmente  maneja prototipos.
+
+3) Para Construir un prototipo yo puedo hacer uso de una funcion constructura. Para que la funcion constructura funcione debo colocarle
+tanto a sus metodos como propiedades la palabra THIS.
+
+    function Constructora(nombre, edad){
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+
+4) Para llamar a la funcion constructora deberemos llamarla con NEW: const persona = new Constructora("Jose", 33);
+
+5) Por temas de rendimiento en los prototipos no se suelen colocar metodos, sino solo los atributos. Para agregar metodos a un prototipo lo
+que hago es llamar a la funcion constructora, a la propiedad prototype  y agregar la declaracion de la funcion. Basicamente los metodos
+no se lo agregamos a las instancias de los objetos sino al prototipo de este. Esto es la herencia Prototipica.
+
+    Constructora.prototype.Hablar = function (){};
+
+6) A partir de las clases a nosotros ya no nos hace falta construir estos prototipos, solo necesitamos crear las Clases y JS al compilar
+creara estos constructores de prototipo por nosotros.
+
+                                                        14) Herencia Prototipica
+
+1) function Perro(nombre, edad, tamanio){
+    this.super = Animal;        //IGUALO SUPER AL PROTOTIPO ANIMAL
+    this.super(nombre, edad);   // PASO PROPS DEL Constructor ANIMAL.
+    this.tamanio = tamanio;
+}
+Perro.prototype = new Animal();
+Perro.prototype.constructor = Perro;
+
+En el bloque de la funcion estoy definiendo de donde va a sacar sus atributos perro, en este caso le creamos una clase super que heredara
+de un objeto Animal, esta clase determinara su nombre y edad, y luego ponemos su prop de tamanio como hacemos normalmente, ahora para 
+completar la herencia le debo pasar a perro ese objeto Animal, esto para que el prototipo de perro herede todas las caracteristicas del
+prototipo animal, por eso es que sin ello no se completa la herencia.
+
+2) Polimorfismo Prototipo: Perro.prototype.Sonido = function () {}
+
+Sintesis: Super se convierte en la funcion constructora de animal la cual le pasa tanto nombre como edad, luego termina de colocar tamanio.
+Con esto ya se heredo los atributos, pero no los metodos, para esto decimos que el prototype de Perro es el de Animal, con esto heredamos
+las propiedades.
+
+
+SINTESIS PROTOTIPO: Es una especie de auxiliar, en el puede tener atributos y/o propiedades que las puede reutilizar una clase, solo 
+llamando a su prototipo. Para heredar el prototipo de una clase es tan sencillo con hacer un new CLASE();
+
+                                                    15) Clases y Herencia
+
+1) Las clases lo que hacen basicamente es simplificarnos la escritura, al final por detras todo funciona con prototipos y no clases,
+pero las clases nos simplifican la forma en que declaramos objetos, heredamos y construimos prototipos. 
+
+class Animal{
+    constructor(nombre, edad)
+    {
+        this.nombre = nombre,
+        this.edad = edad
+    }
+
+    Sonido(){
+        Console.Log("Hola Papu")
+    }
+}
+
+2) Para realizar la herencia es tan simple como utilizar la palabra reservada extends. Luego en el constructor le tengo que pasar todos 
+los parametros que reciba su constructor. Los parametros que sean configurados de su padre los pondremos en super(), en los otros seguiremos
+el modelo this.
+
+class Perro extends Animal{
+    constructor(nombre, edad, raza)
+    {
+        super(nombre, edad);
+        this.raza = raza;
+    }
+
+    Sonido(){
+        Console.Log("Viva Peron")
+    }
+}
+                                         16) Metodos Estaticos, Getters y Setters
+
+1) En JS no existen las clases privadas, por ende todas las clases son public.
+
+2) Si existen los metodos Static, pero funcionan un poco distinto, puedo volver a un Metodo Static sin la necesidad de volver a mis clase
+Static. Luego el llamado es igual. Como Dato las clases Static no aparecen en los prototipos.
+
+class Prueba{
+    static Saludo(){
+        Console.Log("Hola")
+    }
+}
+
+Prueba.Saludo();
+
+3) A diferencia de C# yo debo crear Metodos GETERS y SETERS. El Metodo Get lo unico que suele hacer es un Return a la propiedad que quiero
+recuperar. En los Seters se recibira un parametro que sera el valor de mi propiedad. Para indicar que no son metodos comunes le antepondremos
+las palabras get y set respectivamente.
+
+class Persona
+{
+    constructor(nombre, apellido)
+    {
+        this.apellido = apellido;
+        this.nombre = nombre;
+        this.edad = null;
+
+        get GetEdad()
+        {
+            return this.edad;
+        }
+
+        set SetEdad(edad)
+        {
+            this.edad = edad;
+        }
+    }
+}
+
+3.1) Para tener en cuenta que estas funciones GET y SET en tiempo de ejecucion las transforma en propiedades/atributos y no metodos, por
+ende la debo tratar como tal.
+
+let edad = persona.GetEdad;
+persona.SetEdad = 33;
+
+
+                                                        17) Objeto Console
+
+1) .Log: Me permite enviar mensajes a la consola. 2) .Error: Me permite enviar errores a la consola. 3) .warn: Me permite enviar warnings.
+4) .Info: Para un mensaje informativo. 5) .Clear: Limpia la consola. 6) .dir: Me permite mostrar por consola un elemento en formato objeto.
+7) .Group: Me permitira crear grupos de mensajes por consola, todos los consoles log por debajo perteneceran al grupo hasta que lo 
+corte un .GroupEnd. 8) .table: Me permite leer un elemento en forma de tabla. 9) .time: Me permite saber el tiempo que tarda en realizarse
+una peticion, este para al llamar al console.timeEnd(). 10) .count: Cuanta cuantas veces se ejecuto un bloque de codigo.
+11) .Assert: Me permite hacer prueba unitarias, pasandole una condicion y los valores a evaluar por array.
+
+console.Assert(x<y,[x,y,"Error, X debe ser menor a Y"])
+
+
+                                                        18) Objeto Date
+
+1) Es el objeto base de las fechas, es el equivalente a DateTime. Si creo un objeto de DATE puedo acceder a sus Metodos.
+
+2) Metodos: 1) GetDate(): Me permite extraer el dia del mes en formato number. 2) GetDay(): Me permite extraer el dia de la semana en formato 
+number (D-0, L-1, M-2, M-3, J-4, V-5, S-6). 3) GetMonth(): Me permite obtener el mes en formato number, esto cuenta del 0 al 11.
+4) GetFullYear(): Me permite obtner el año en formato number. 5) GetHours(): Obtengo la hora en formato number. 
+6) getMinutes(): Obtengo los minutos en formato number. 7) getSeconds: obtengo los segundo en formato number. 8) getMilisegundos(). 
+9) toDateString(): Me permite obtener la fecha (dia de la semana, Mes, dia numerico de mes y año) en forma de cadena de texto.
+10) toLocaleString(): la forma mas clasica de representar la fecha. D/M/Y h:m:s. 11) toLocaleDateString: d/m/y. 
+12) toLocaleTimeString: h/m/s. 13) Date.now(): Muestra numericamente cuantos segundos pasaron desde 1970, se lo conoce como timeStamp.
+
+Moment.JS => Libreria para manejar el tiempo.
+
+                                                      19) Objeto Math
+
+1) .ABS(): Me devuelve el valor absoluto de un numero. 2) .CEIL(num): Redondea para arriba. 3) .FLOOR(num): Redondea Hacia abajo. 
+4) .ROUND(num): Redondea al mas cercano. 5) Sqrt(num): Me permite sacar la raiz cuadrada de un numero. 6) POW(num1,num2) Me permite elevar
+el numero a alguna potencia, num1 sera la base y num2 la potencia. 7) .Sign():Evalua si un numero es positivo, negativo o cero. 
+8) .Random(): Me devolvera un Numero Random entre 0 y 1 console.log((Math.random()*1000).toFixed(0));
+
+                                                    20) Operador CortoCircuito
+
+1) CortoCircuito OR: Cuand el valor de la izquierda en la expresion siempre pueda validar true, es el  valor que se cargara por defecto.
+es decir que si el valor de la izquierda no es undefined se cargara ese valor.
+
+function Saludar(nombre){
+    nombre = nombre || "Desconocido";
+    console.log(`Hola ${nombre}`)
+}
+En este caso si nombre no tiene un valor definido nombre se cargara con el valor de Desconocido, si tiene un valor lo mantendra. Los 
+valores false, null, undefined, "" y 0 seran los que haran que se elija la opcion de la derecha.
+
+2) CortoCircuito AND: Cuando el valor de la izquierda en la expresion siempre valide false, es el valor que se cargara por defecto, es el
+opuesto al CortoCircuito de OR.
+
+SINTESIS: Cuando la opcion de la izquierda tienda a TRUE devolvera la opcion de la izquierda en el Operador OR. Cuando la opcion de la 
+izquieda tienda a false esta devolvera la de la izquierda cuando usemos el operador AND.
+
+                                                  21) Alert, Confirm y Prompt
+
+1) Estos metodos vienen del objeto padre Window. Estos 3 metodos me permitiran interactuar con el usuarios.
+
+2) Alert: me permite mandar un mensaje de alerta al usuario, solo tiene la opcion de aceptar. No es necesario guardar esta en una variable,
+ya que su resultado siempre sera undefined.
+
+3) Confirm: Manda un mensaje al usuario con las opciones de aceptar o cancelar. Si la guardo en una Variable depende cual boton toque 
+esta devolvera un T/F.
+
+4) Prompt: Manda un mensaje al usuario y le permite ingresar un valor. Al guardarla en una variable guardara el valor que le coloquemos
+en el input, en el caso de que apretemos aceptar. Si presionamos cancelar devolvera null.
+
+                                                    22) Expresiones Regulares
+
+1) Expresion Regular: No es mas que una secuencia de caracteres que forman un patron de busqueda de cadena de texto. Tambien se las conoce
+como Regex. Me sirve para validar formatos de texto, por Ejemplo mails, contraseñas con X reglas o exclusiones de caracteres.
+
+2) Declaracion: 1) let regex = new RegExp("","flags"); 2) let regex = /regex/
+
+3) Metodos: 1) test(): Verifica si la cadena que le pase cumple con el regex, devuelve T/F. 2) exec: Este devuelve un arreglo con la palabra
+buscada, la posicion en la que se encontro y la cadena completa.
+
+4) Comodines: Son determinadas reglas que le agregaremos al patron REGEX. 1) i: ignora mayusculas y minusculas. 2) g: busca todos los 
+elementos que matcheen no se queda con el primero. 3) \d: valores Numericos. 4) \D: Valores NO numericos. 5)
+
+                                            23) Funciones Anonimas AutoEjecutables
+
+1) Estas son un patron de diseño, luego de ser declaradas estas funciones procederan a ejecutarse. Estas pueden ejecutar funciones 
+asincronicas o limpiar el entorno global. Estas obligatoriamente necesitan de un punto y Coma.
+
+2) Sintaxis: (function (d,w,c) {//Codigo})(document, window, console);
+
+                                                        24) Modulos
+
+1) Los modulos vienen a reemplazar las Funciones Anonimas AutoEjecutables. Lo que hacen los modulos es llamar un archivo de JS dentro 
+de un archivo JS.
+
+2) Para poder realizar importaciones de modulos en JS debo declarar mi script de JS  en HTML y agregarle el atributo type="module"
+   <script src="js/modulos.js" type="module"></script>
+
+3) Exportar Variables: export const Pi = Math.PI;__Sin la palabra reservada export la variable no se podra exportar hacia el modulo de JS
+   Exportar funciones: export function restar(a,b) { return a-b}
+   Exportar Objetos: export const aritmetica = {Sumar(a,b){return a+b}, Restar(a,b){return a-b}}
+
+3.1) Exportar Default: export Default Sumar(a,b){return a+b}; Solo puedo tener un elemento exportado por Default.
+
+4) Importar: Import {Pi} from "./miarchivo.js"; Import {restar,sumar, aritmetica} from "./aritmetica.js";
+
+4.1) Importar Default: Import Sumar,{restar} from "./aritmetica.js"
+
+5) Export Default variables: Para hacer un export default de una variable deberemos hacerlo luego de su declaracion. 
+                   EJ: const nombre = "Pepe";
+                       export default nombre;
+
+6) Alias: Import {Pi as numeroPi} from "./miarchivo.js";
+
+
+
+
+                                              25) Datos Practicos de los ejercicios
+
+1) typeof: me permite evaluar el tipo de una variable. If(typeof cadena == 'string') 
+
+1.1) Otra forma es hacer:  if(cadena.constructor === String)
+
+2) Slice: Tiene 2 funciones, la que recibe un parametro me permite decir en que posicion de la cadena quiero comenzar. La que recibe 2
+paramtros me permite decidir tanto desde que posicion empezar y cuantos caracteres quiero agarrar desde esa posicion.
+
+3) Operador ternario dentro de operador ternario: const aux = (x>y)? "Es Imposible": (x!=33)? "Enserio?": "Sabe Cosas"
+
+4) Join(): Metodo de ARRAY que me permite juntar todos los elementos de ARRAY con separadores personalizados.
+
+5) Split(): Si no le paso ningun caracter esta separara todos los caracteres en elementos de un arreglo.
+
+6) "": tiende a falso
+
+7) IndexOf(palabra, Comienzo): Este metodo se usa para cadenas de texto, si encuentra la palabra que le pasamos por parametro devolvera el
+index de la primera letra de la palabra, si no encuntra la palabra devuelve -1. Tambien le puedo pasar un segundo parametro, este definira
+desde que parte de la cadena quiero evaluar.
