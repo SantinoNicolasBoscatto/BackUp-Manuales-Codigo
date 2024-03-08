@@ -1,4 +1,6 @@
-                                                    1) Caracteristicas y Gramatica
+                                                  I) Sintaxis y Gramatica                  
+                                                
+                                                1) Caracteristicas y Gramatica
 
 1) Js Es un lenguaje de alto nivel, Es Interpretado y dinamico (Es un lenguaje Compilado en Tiempo de Ejecucion), Debilmente Tipado (los
 valores de las varibles pueden ir variando), MultiParadigma, Sensible a Mayusculas y Minusculas.
@@ -426,6 +428,7 @@ number (D-0, L-1, M-2, M-3, J-4, V-5, S-6). 3) GetMonth(): Me permite obtener el
 9) toDateString(): Me permite obtener la fecha (dia de la semana, Mes, dia numerico de mes y año) en forma de cadena de texto.
 10) toLocaleString(): la forma mas clasica de representar la fecha. D/M/Y h:m:s. 11) toLocaleDateString: d/m/y. 
 12) toLocaleTimeString: h/m/s. 13) Date.now(): Muestra numericamente cuantos segundos pasaron desde 1970, se lo conoce como timeStamp.
+14) getTime(): Me permite obtener el timeStamp de una fecha.
 
 Moment.JS => Libreria para manejar el tiempo.
 
@@ -512,8 +515,6 @@ de un archivo JS.
 6) Alias: Import {Pi as numeroPi} from "./miarchivo.js";
 
 
-
-
                                               25) Datos Practicos de los ejercicios
 
 1) typeof: me permite evaluar el tipo de una variable. If(typeof cadena == 'string') 
@@ -534,3 +535,74 @@ paramtros me permite decidir tanto desde que posicion empezar y cuantos caracter
 7) IndexOf(palabra, Comienzo): Este metodo se usa para cadenas de texto, si encuentra la palabra que le pasamos por parametro devolvera el
 index de la primera letra de la palabra, si no encuntra la palabra devuelve -1. Tambien le puedo pasar un segundo parametro, este definira
 desde que parte de la cadena quiero evaluar.
+
+8) 1) Con esto construyo una fecha. 2) Declaro un objeto tipo Date. 3) Calculo la fecha, debo convertirlos a timeStamp con getTime(). 
+   4) Construyo una nueva fecha con el resultado timeStamp. 5) Imprimo pero restando 1970 ya que es el año base donde comienza el 
+   timeStamp.
+
+    1) const fecha = new Date(y,m-1,d);
+    2) let fa = new Date();   
+    3) fa = (fa.GetTime() - fecha.GetTime());
+    4) const resultado = new Date(fa);
+    5) console.log(resultado.getFullYear()-1970)
+
+9) InstanceOf: Es igual que el typeof pero para variables compuestas.
+               if(!fecha instanceof Date) return console.warn("Coloque una fecha valida");
+
+10) RegExp Mail: /[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})/i
+
+11) map(): Me permite acceder a todos los elementos del array y manipularlos, y de paso esto se lo puedo asignar a un array nuevo
+const newArray = array.Map(el=>el*el);
+
+12) Ordenar Array Numerico: array.sort((a,b)=>b-a)
+
+13) SET: Set es un elemento que me permite construir un array nuevo en el cual no se permitiran elementos duplidos. La Naturaleza del
+set es generar elementos sin duplicaciones.
+         [...new Set(array)]
+
+14) const prom = array.reduce((acu, item)=>{return acu = acu + item},0);
+
+15) Cuando JavaScript intenta convertir un objeto a una cadena, obtienes [object Object]. Para solucionar esto, puedes convertir el 
+objeto a una cadena JSON utilizando JSON.stringify().
+
+16) Filter(): Con filter puedo hacer varias funciones, una de ellas es comparar elementos con todo el array:
+                Filter((value, index,self)=>self.IndexOf(value)===index)
+
+Lo que hago aca basicamente es con filter construir un nuevo arreglo, value extrae los valores del array, index las posiciones y self el
+array original. Luego lo que hago es construir el array con los indices del array viejo. Aca esta la clave lo que hago es que voy a buscar
+el index de todos los valores del array original y lo voy a comparar con el index para ver si existe. El truco para evitar repetidos es
+el IndexOf, ya que este buscara siempre el indice del primer elemento que encuentre, si esta repetido se quedara con el  array del que 
+este mas cerca, de esta forma cuando venga un dato repetido solo pisara el anterior pero nunca se colocaran 2 elementos repetidos gracias 
+al IndexOf().
+
+17) Array.Includes(): me permite ver si los elementos de un array existen en otro Array. Devuelve un T/F.
+
+ for(let item of array)
+ {
+    array2.incluedes(item);
+ }
+
+                                             II) Programacion Asincrona
+
+
+                                                26) Temporizadores
+
+1) SetTimeOut: Este recibe una CallBack (una funcion como argumento) y una declaracion en MiliSegundos de del tiempo que es
+en cuanto tiempo se debera ejecutar la CallBack.
+setTimeout(()=>{
+ console.log("Hola")
+}, 5000)
+
+1.1) El cancelador del SetTimeOut es el ClearTimeOut(setTimeout), para esto debo guardar mi setTimeOut en una variable y pasarle esa
+variable al ClearTimeOut.  
+
+2) SetInterval: Es un igual que el SetTimeOut solo que este se ejecuta segun el intervalo de tiempo que le establezcamos.
+setInterval(() => {
+    console.log("Copy")
+}, 1500);
+
+2.1) El cancelador del SetInterval es el clearInterval(), funciona igual al ClearTimeOut.
+
+3) CallBack: Es una Funcion que se pasa como argumento a otra funcion y luego se va a ejecutar.
+
+                                                27) Asincronia y EVENT LOOP
