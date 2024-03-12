@@ -521,7 +521,7 @@ de un archivo JS.
 
 1.1) Otra forma es hacer:  if(cadena.constructor === String)
 
-2) Slice: Tiene 2 funciones, la que recibe un parametro me permite decir en que posicion de la cadena quiero comenzar. La que recibe 2
+2).: Tiene 2 funciones, la que recibe un parametro me permite decir en que posicion de la cadena quiero comenzar. La que recibe 2
 paramtros me permite decidir tanto desde que posicion empezar y cuantos caracteres quiero agarrar desde esa posicion.
 
 3) Operador ternario dentro de operador ternario: const aux = (x>y)? "Es Imposible": (x!=33)? "Enserio?": "Sabe Cosas"
@@ -603,6 +603,162 @@ setInterval(() => {
 
 2.1) El cancelador del SetInterval es el clearInterval(), funciona igual al ClearTimeOut.
 
-3) CallBack: Es una Funcion que se pasa como argumento a otra funcion y luego se va a ejecutar.
-
                                                 27) Asincronia y EVENT LOOP
+
+1) La Asincronia es uno de los pilares principales de JS, ya que JS es un lenguaje que solo trabaja con un hilo, por ende solo puede 
+ejecutar una cosa a la vez.
+
+2) EVENT-LOOP: El EVENT LOOP basicamente es la forma en la que tiene JS de ejecutar sus tareas. Aquellas funciones o metodos que dependan
+de APIS externas seran las ultimas en ser llamadas ya que el EVENT LOOP primero se encarga de ejecutar todo lo que tenga el SCRIPT principal
+y luego lo provenientes por APIS externas, es decir el EVENT LOOP ejecuta el script principal y almacena las peticiones de APIS externas, 
+(TASKS) cuando termina el flujo principal procesa las TASK/APIS.
+
+3) Macro-Task: Son las tareas que tienen su propia pila de ejecucion y un elevado consumo de memoria. Esta es el SCRIPT principal o alguna
+api que generemos con SetTimeOut(). 3.1) Micro-Task: Las promesas son pequeñas tareas que se ejecutaran luego terminado la Macro-Task 
+principal.
+
+5) Operaciones I/O: Son operaciones de entrada y salida, ante la entrada de datos se devolvera una respuesta. El proceso es el ABC de la 
+programacion, el usuario introduce datos, el programa lo procesa  y segun lo que procese devuelve datos. Estas son las que mas se ejecutan 
+en JS.
+
+6) Operaciones Concurrentes: Es cuando 2 o mas tareas progresan simultaneamente. La diferencia con la paralela es que puede ser que una 
+de estas tareas que progresan a la vez no necesariamente comenzaron a vez a diferencia. 7) Operaciones Paralelas: Es cuando 2 tareas se 
+inician al mismo tiempo y se ejecutan a la par.
+
+8) Operacion Bloqueante: Son aquellas que bloquean el hilo de ejecucion en la espera de termino de un proceso (sincrono).8.1) Lo opuesto 
+son las no Bloqueantes que durante la espera deja que el Hilo de Ejecucion se libere y realice otras tareas (Asincrono).
+
+9) Operacion SYNC/ASYNC: Se diferencia por cuando tendra la respuesta, si es en el inmediato es sincrono, si no se sabe cuando se tendra
+la respuesta es Asincrono, la ASYNC no espera el resultado y suelta el hilo hasta que el resultado sea devuelto.
+
+10) Codigo en JS: El codigo de JS sera Single-Thread, de operaciones I/O y: 1) Codigo Sincrono Bloqueante. 2) Codigo Asincrono 
+No-Bloqueante.
+
+11) SINTESIS EVENT LOOP: JS funciona con un solo hilo de ejecucion y con operaciones de I/O. La ejecucion de las tareas asyncrona es la 
+siguiente: 1) En mi stack principal voy llamando las tareas, aquellas de indole asincrona de Espera se van hacia el modulo de Web APIS
+y se realiza su espera pero liberando el hilo, una vez estas terminan de ejecutarse van a la cola de espera de las CALLBACKS. Cuando 
+termina de ejecutarse el hilo principal de la aplicacion el EVENT LOOP busca aquellas funciones que hayan quedado en la cola de las 
+callback y las ejecuta.
+
+
+                                                        28) CallBacks
+
+1) CallBack: Una CallBack basicamente es una funcion que se pasa como argumento a una funcion y luego se le utiliza o se la re-llama dentro
+de la ejecucion del codigo. Cuando declaro la funcion como argumento no se ejecuta, sino que solo la declaro, luego en el codigo de la 
+funcion la llamare.
+
+// DECLARO CALLBACKS
+const CallBack = (array,rellamda) =>{
+    array.push("El Papu");
+    rellamda(array);
+}
+//LLAMO LA FUNCION Y DECLARO EL CALLBACK
+CallBack(names, (array)=>{
+    console.log(`Se agrego un elemento: ${array.reverse()[0]}`)
+})
+
+2) Los CALLBACKS tambien son uno de los mecanismos que nos da JS para trabajar con asyncrona, el problema que presenta esta es el callback
+Hell que es la llamada de muchos callback lo que genere un codigo poco legible.
+
+3) Control Async: Estos Callback me permiten ejecutar los procesos de forma ordenada al anidar CALLBACKS dentro de callbacks, lo ejecucion
+sera en el orden de anidamiento. El motivo de esto es debido a que al anidar callbacks estoy pidiendo que se complete la primera operacion
+asincrona antes de que se ejecute la anidada. Estás creando una dependencia entre las operaciones asíncronas, donde la segunda operación no 
+puede comenzar hasta que se complete la primera.
+
+CallBack(names, (names)=> {
+    console.log(names[0])
+    CallBack(names, (names)=> {
+        console.log(names[1])
+        CallBack(names, (names)=> {
+            console.log(names[2])
+            CallBack(names, (names)=> {
+                console.log(names[3])
+            })
+        })
+    })
+})
+
+                                                          29) Promesas
+
+1) Una Promesa es una especie de IF-ELSE, donde si la promesa se cumple se ejecutaria el Bloque RESOLVE, sino el REJECT. Las promesas 
+reciben 2 funciones que son el RESOLVE y el REJECT. Estas Vienen a reemplazar a las CALLBACKS ASYNC.
+
+2) Dentro de la PROMISE ira todo nuestro codigo, en este colocaremos el RESOLVE en el lugar donde veamos que se cumplen correctamente la 
+accion. En los parentesis del resolve ira lo que queramos devolver de nuestra promesa
+
+const Promesa = (array) =>{
+    return new Promise((resolve, reject)=>{
+        setTimeout(() => {
+            resolve(array);
+        }, Math.random()* 1000);
+    }) 
+}
+
+3) Metodos para Trabajar la ASYNC con PROMISE: 1) THEN():  Este recibira el resultado del Bloque RESOLVE(). Dentro de sus parametros le 
+pasaremos un CALLBACK con el cual podremos manipular el resultado del RESOLVE. Tambien en esta callback de THEN puedo retornar el elemento
+y pasarselo a un THEN() para que lo manipule. Con Esto tambien tengo la ventaja de que cada then() se ejecutara al termino del anterior.
+2) CATCH(): Este se encargara de capturar el error que devuelva el bloque REJECT, la ventaja de esto es tener una sola validacion para 
+todas las promesas.
+
+3.1) Promesa(names)
+     .then((array) => {console.log(array[0])}
+            return array;)
+     .then((array)=> {console.log(array[1])}
+          console.log("END"));
+
+3.2) Promesa(names)
+     .then((array) => {console.log(array[0])}
+            return array;)
+     .Catch(err => console.error())
+
+4) SINTESIS: Las promesas son ASYNC debido a que la ejecucion de estas puede que tenga periodos de espera, es por ello que ante algun evento
+que genere una espera la PROMISE permite la liberacion del HILO de ejecucion para otras tareas, cuando la promesa se termine con el bloque
+RESOLVE o REJECT esto va hacia la cola de CALLBACKS y ahi lo recoje el EVENT LOOP. Con el THEN() Manipulo el objeto que devolvio la promesa
+y puedo manipularlo en varios THEN(), el CATCH() en para el error.
+
+                                                     30) Async - Await
+
+1) Esto tambien me permite trabajar con Asincronia, aunque no viene a reemplazar las promesas sino las complementa. Para manejar los errores
+de funciones ASYNC usamos TRY-CATCH.
+
+async function funcion(){}
+
+2) Al igual que en C# para aquellas acciones asincronas yo debo colocar AWAIT, debido a que esta ademas de liberar el hilo de ejecucion
+parara la ejecucion de esa funcion, porque sino la funcion Asincrona esperara resultados de la API pero mi funcion principal nunca
+paro a esperar los resultados y siguio de largo.
+
+async function funcion(){
+    Try{
+    let nombres = Await NombresBD(); => NombresBD() Maneja Promises.
+    return console.log(nombres);
+    }
+    Catch(error)
+    {
+        console.error(error) 
+    }
+}
+
+const funcion = async () =>{}
+
+3) Esto me permite ahorrarme la concatenacion de THEN(), basicamente las funciones ASYNC me permiten Emprolijar la sintaxis de las 
+promesas, pero no las reemplazan.
+
+DATO ASYNC: Async no es solo liberar el HILO de ejecucion sino que tambien es la capacidad de parar la ejecucion lineal de la funcion, 
+la pausas hasta que tu proceso ASYNC se complete.
+
+
+4) SINTESIS ASYNC : 1) Los Callbacks ya no se usan por tema de legibilidad. Cuando estos utilizan un setTimeOut() el stack de compilacion 
+de JS lo envia a la pila de WEB API (maneja las tareas ASYNC, las de larga duracion) una vez terminada va a la cola de Callbacks y ahi
+la rescata el EVENTLOOP. Al concatenar Callbacks me permite ejecutar ordendamente y asincronamente tareas. 2) Las Promesas al igual que 
+los Callbacks al utilizar alguna operacion asincrona (solicitudes de red, lectura de archivos, APIS, setTimeOut) pasara a la cola de las
+WEB API y esperara el cumplimiento de las promesas para pasar a la cola de CALLBACKS. En THEN() generaremos un CALLBACK donde
+manipularemos el resultado del RESOLVE(). 3) Las funciones ASYNC son una forma de mejorar la escritura de las promesas, la declaracion
+del RESOLVE y el CATCH es igual, solo que al llamar la funcion con la promesa le colocaremos la palabra AWAIT para que aguarde la ejecucion
+y libere el HILO, puedo guardar el resultado en una varible si necesito conservar y manipular el objeto.
+
+LAMBDAS: Parece que las ARROW_FUNCTION y las LAMBDAS de C# son casi iguales. Las LAMBDAS me permiten declarar funciones anonimas de un 
+parametro con un Return implicito.
+
+                                                        31) Symbols
+
+1) Es un nuevo tipo de dato de JS

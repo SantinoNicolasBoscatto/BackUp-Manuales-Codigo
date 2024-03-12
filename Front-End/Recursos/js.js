@@ -480,8 +480,7 @@ Pelicula.GenerosValidos
 console.clear();
 //---------------------------------------------------------------------------------------------------------------------------
 
-let intervalor = setInterval(() => {
-    console.log(new Date().toLocaleTimeString())
-}, 1000);
-
-clearInterval(intervalor)
+const time = setInterval(()=>{
+    const date = new Date()
+    console.log(date.toLocaleTimeString())
+},1000)
