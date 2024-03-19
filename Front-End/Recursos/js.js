@@ -480,7 +480,83 @@ Pelicula.GenerosValidos
 console.clear();
 //---------------------------------------------------------------------------------------------------------------------------
 
-const time = setInterval(()=>{
-    const date = new Date()
-    console.log(date.toLocaleTimeString())
-},1000)
+function Promesa(array){
+    return new Promise((resolve, reject)=>{
+        setTimeout(() => {
+            resolve(array);
+        }, 1000);
+    })
+}
+
+async function Prueba(){
+    console.log("Hola");
+    const nombre = await Promesa(["Pepe"]);
+    console.log(nombre);
+    console.log("Chau");
+}
+
+
+async function Prueba(){
+    console.log("Hola");
+    const nombre = await Promesa(["Pepe"]);
+    console.log(nombre);
+    console.log("Chau");
+}
+
+// Prueba()
+// const objeto = {
+//     nombre: "Jose",
+//     edad: 33
+// }
+
+// let {nombre, edad} = objeto;
+
+// console.log(nombre)
+// const ID = Symbol("Pepe");
+// const map = new Map([
+//     ["nombre", "Fer"],
+//     ["Edad", 33],
+//     ["Amigo", ["Antonio", "Pedro"]],
+//     ["Saludar", function Hola(){console.log("Hola")}],
+//     ["Secret", ID]
+// ])
+
+// const map = new Map()
+
+// map.set("Name", "Santino")
+// map.set("Age", 19)
+// console.log(map.size)
+
+// const persona = {
+//     name: "Adel",
+//     age: 35
+// }
+
+// function* fibo(persona){
+//     yield persona.name
+//     yield persona.age
+// }
+
+// const it = fibo(persona);
+// console.log(it.next())
+// console.log(it.next())
+// console.log(it.next())
+
+// function fibo(array, vueltas){
+//     for (let i = 0; i < vueltas; i++) {
+//         console.log(array[0]+array[1]); 
+//         if(i%2===0) array[0] = array[0]+array[1]
+//         else array[1] = array[0]+array[1]
+//     }   
+// }
+// fibo([0,1], 10)
+
+
+const Persona ={
+    nombre: "Pepe",
+    apellido: "Gonzalez"
+}
+
+console.log(JSON.parse('"Holanda"'))
+
+console.clear()

@@ -716,7 +716,7 @@ que genere una espera la PROMISE permite la liberacion del HILO de ejecucion par
 RESOLVE o REJECT esto va hacia la cola de CALLBACKS y ahi lo recoje el EVENT LOOP. Con el THEN() Manipulo el objeto que devolvio la promesa
 y puedo manipularlo en varios THEN(), el CATCH() en para el error.
 
-                                                     30) Async - Await
+                                                     30) Async - Await 
 
 1) Esto tambien me permite trabajar con Asincronia, aunque no viene a reemplazar las promesas sino las complementa. Para manejar los errores
 de funciones ASYNC usamos TRY-CATCH.
@@ -754,11 +754,591 @@ los Callbacks al utilizar alguna operacion asincrona (solicitudes de red, lectur
 WEB API y esperara el cumplimiento de las promesas para pasar a la cola de CALLBACKS. En THEN() generaremos un CALLBACK donde
 manipularemos el resultado del RESOLVE(). 3) Las funciones ASYNC son una forma de mejorar la escritura de las promesas, la declaracion
 del RESOLVE y el CATCH es igual, solo que al llamar la funcion con la promesa le colocaremos la palabra AWAIT para que aguarde la ejecucion
-y libere el HILO, puedo guardar el resultado en una varible si necesito conservar y manipular el objeto.
+y libere el HILO, puedo guardar el resultado en una varible si necesito conservar y manipular el objeto. 
+
+4.1) Las Promesas con THEN() liberan el hilo pero no paran la ejecucion del flujo, AWAIT si.
 
 LAMBDAS: Parece que las ARROW_FUNCTION y las LAMBDAS de C# son casi iguales. Las LAMBDAS me permiten declarar funciones anonimas de un 
 parametro con un Return implicito.
 
                                                         31) Symbols
 
-1) Es un nuevo tipo de dato de JS
+1) Es un nuevo tipo de dato de JS, este es un tipo de dato primitivo (string, number, bool). Una vez que definimos Symbol su valor se va
+a mantener privado para uso interno, generalmente son propiedades que se les otorga a los objetos.
+
+2) Symbol nos permite crear identificadores unicos y de referencia (ids). Yo le puedo asignar un nombre a estos symbols para identificarlos
+pero cada uno de estos sera unico, aunque tengan el mismo estado(la misma informacion) seran elementos diferentes ya que seran objetos distintos
+con el mismo estado.
+
+3) Para declarar una propiedad de un objeto privada con symbol le colocamos [] al nombre de la prop. Si yo creo una PROP del mismo nombre 
+del SYMBOL no habra problemas.
+
+
+4) Para llamar a una PROP symbol debo llamarla mediante corchetes, esto me devolvera el valor de la etiqueta del SYMBOL.
+Console.log(persona[ID]);
+
+5) SINTESIS: Es un tipo de dato primitivo que me sirve para colocarle especie de propiedades privadas a objetos, decimos que es privada 
+porque no es accesible por ningun metodo que no conozca el valor del nombre de la propiedad symbol ([sym]), por ende ninguna iteracion 
+podra acceder a el, solo nosotros si lo especificamos manualmente. Tambien puedo crear funciones. Eso si antes de asignar un Symbol a 
+un Objeto debo crearlo con el mismo nombre. Cada Symbol sera un objeto unico aunque tenga el mismo estado.
+
+const ID = Symbol();
+const Saludar = Symbol();
+const obj = {
+    [ID]:"Secreto",
+    [Saludar](){
+        console.log("Hola")
+    }
+}
+obj[Saludar]();
+
+                                                            32) Sets
+
+1) Es una estructura similar a un array pero, no permite Datos repetidos, es decir un elemento que simula ser un array que almacena datos 
+unicos.
+Const Array = new Set([1,2,3,5,3]) // console.log(Array); //Imprime [1,2,3,5]
+
+1.2) Metodos: 1).Add(): Con Este metodo le puedo agregar nuevos elementos al SET. 2) .forEach(). 3) .Delete(): Tengo que pasarle el 
+valor exacto del elemento que quiero borrar. 4) .has(): va a comprobar si el valor que le pase existe o no en el set, devolviendo un 
+T/F. 5) Clear(): Elimina todos los elementos del SET
+
+2) El tamaño de este SET lo puedo ver mediante su propiedad size (es lo mismo que Length)
+
+3) SET no es un arreglo como tal sino que simula ser uno, cuando quiera acceder a sus valores no lo puedo hacer con set[0] porque 
+devolvera un undefined. Para poder utilizarlo como Array utilizo el metodo Array.from(set[0])
+
+                                                            33) Maps
+
+1) Maps son objetos que almacenan valores asociados a manera de objeto, es como un objeto primitivo. Tienen la caracteristica de trabajan
+mucho con GETERS y SETERS. Me permite crear propiedades y manipularlas atraves de sus funciones nativas de GET y SET.
+
+const obj = new Map();
+obj.set("Name", "Pepe");
+console.log(obj.get("Name"))
+const map = new Map([
+    ["nombre", "Fer"],
+    ["Edad", 33],
+    ["Amigo", ["Antonio", "Pedro"]]
+])
+
+2) Tiene la caracteristica de que puede ser recorrido como un objeto iterable por un forEach(), a diferencia de los objetos clasicos.
+
+3) Los nombre de las propiedades de los Maps(llamadas Keys) pueden ser cualquier cosa (numeros, objetos, arrays), mientras que los 
+objetos comunes solo se puede poner de nombre de props string o symbols.
+
+4) Se recomienda usar maps en el caso de que deba añadir y borrar propiedades de manera intensiva ya que tienen un mejor rendimiento que 
+los objetos.
+
+5) Sintensis: Los MAPS basicamente son una evolucion del objeto primitivo comun, en el cual se implementan pequeñas funciones (get, set,
+delete, forEach, size, clear, has) y flexibilidades a la hora de declarar las props, pudiendo colocar el nombre de la prop (keys el valor 
+que quiera), ademas se vuelve un objeto iterable.
+
+                                                       34) WeakSets y WeakMaps
+
+1) WeakSet: Deriva de los Set, solo acepta objetos, no podemos iterar en ellos, se pierden varias funciones propias de los SETS, solo 
+se conserva add(), delete() y has(). Tambien no puedo asignarle los valores en su funcion constructora, sino con add() uno a uno.
+
+2) WeakMaps: Deriva de maps y solo acepta objetos como valores. No es iterable y solo conserva las funciones get(), set(), has() 
+y delete()
+
+3) La ventaja que tienen estos Weak es que cuando a alguno de sus elementos que la componen se vuelven nulls o undefined se eliminan 
+directamente estos objetos sin la necesidad de esperar al Garbage Collector.
+
+                                                      35) Iterables & Iteradores
+
+1) Cuando decimos que una variable o elementos es iterable significa que es una estructura de datos lineal que hace que sus elementos sean
+publicos, es decir que se puedan recorrer sus elementos mediante ciclos. Ejemplo de Elementos Iterables son: 1) Nodos del DOM, 2) cadenas
+de texto. 3) Arrays. 4) Maps. 5) Set.
+
+2) Un iterador es un apuntador que va recorriendo los elementos "items" de esa estructura de datos iterable.
+
+1.1) Iterable: Elemento el cual puede ser recorrido mediante un iterador(ciclo).
+
+2.1) Iterador: Un apuntador que va a recorrer la estrutura de datos de un elemento iterable, se los conoce como ciclos. 
+
+3) Iteradores: 1) FOR. 2) FOR OF. 3) ForEach. 4) Destructuracion. 5) Array.From(). 6) Map(). 7) Filter(). 8) Reduce(). 9) SpreadOperator.
+
+
+
+                                                        36) Generators
+
+1) Los Generators son una forma mas sencilla sintacticamente de generar iteradores. Para definir que va a ser un generador lo debo 
+hacer de la siguiente forma. Con el "*" accedo al Symbol.iterator
+
+2) Generador: Un Generador es basicamente convertir el codigo de una funcion en un Iterador mediante los YIELD. Para ejecutarlo la 
+guardaremos en una variable y lo recorreremos con un FOR OF o con NEXT()
+
+3) YIELD: Es un Return que una vez que salta la proxima vez que se ejecute la funcion se ejecutara justo en la linea que este por debajo
+del YIELD que hizo saltar a la funcion, ya que YIELD detiene la ejecucion de la funcion.
+
+4) Lo interesante de las funciones generadoras es que por cada  yield me va a devolver diferentes datos, ya que siempre va a ir 
+a un YIELD diferente.
+
+function* Iterador(){
+    console.log("Inicio")
+    yield 1;
+    yield 2;
+    yield 3;
+    console.log("Fin")
+}
+const iterador = Iterador();
+for (let yield of iterador) {
+    console.log(yield)
+}
+
+                                                      37) PROXIES
+
+1) Es un nuevo mecanismo de JS que te permite crear un objeto basado en un objeto literal inicial, en donde el objeto original puede 
+ser accedido solo mediante el proxy, por eso decimos que el proxy es un intermediario de objetos, ya que para acceder al objeto original
+lo haremos mediante el proxy. Es util ya que con este podremos validar datos, ocultar propiedades e interceptar llamadas de funciones.
+
+1.1) Si quiero realizar una modificacion sobre el objeto debere interactuar con el Proxy y este me debera validar si la modificacion
+es o no OK, si yo quiero modificar el objeto debo configurarle el SET con sus validaciones, sino el proxy no me dejara configurar el 
+objeto.
+
+1.2) El objeto Proxy recibira 2 elementos en su funcion Constructora: 1) El objeto literal al cual va a intermediar. 2) Handler: Este 
+tambien debera ser un objeto, dentro de este deberemos crear la funcion SET(), esta se encargara de realizar las validaciones que le 
+definamos. Es decir que Handler se encargara de realizar las validaciones a los datos que le cargue al objeto.
+
+1.3) El Set() de Handler recibira 3 parametros: 1) El Objeto literal. 2) La Propiedad de ese objeto a verificar (pueden ser mas de una).
+3) El Valor de cada una de las propiedades. Set() sera el encargado de verificar si modificar el objeto en el caso de que se cumpla y 
+pasen las validaciones.
+
+const Persona = {nombre: "", age: 0} //Creo un objeto literal
+const Handler ={
+    set(obj,prop,valor){
+        obj[prop] = valor
+    }
+}
+const Pepe = new Proxy(Persona, handler)
+
+1.4) Como dato el objeto sobre el cual se crea el proxy tambien se modifica al modificar su instancia del proxy
+
+                                             38) Propiedades dinamicas de los objetos
+
+1) Basicamente es la creacion de propiedades de forma dinamica. Por Ejemplo si quiero cargar usuarios_ID de forma dinamica en un objeto
+lo podre hacer con esto.
+
+const ListaDinamicaUsuarios = {}
+const array = ["Pepe", "jose", "Pichi"]
+array.forEach((item, index)=> ListaDinamicaUsuarios[`ID_${index+1}`] = item)
+
+2) Otra forma es generarlo dentro del mismo objeto al Encerrarlo entre []. [`id_${numAletorio}`]
+
+                                                        39) THIS
+
+1) THIS: This hace referencia la OBJETO/CLASE sobre la cual estamos trabajando. En el caso de JS cuando hagamos un this hara referencia
+al objeto global, es decir a WINDOW.
+
+2) Contexto: El Apuntador obedecera al contexto, es decir que segun el ambito en el que lo use apuntara hacia un u otro lado. Este apuntara
+siempre sobre su objeto padre inmediato, si su padre es WINDOW apuntara a el, si esta dentro de otro objeto que esta dentro de WINDOW 
+apuntara al objeto y no a window.
+
+2.1) Es decir si THIS: 1) Esta dentro de la funcion de un objeto apuntara al objeto al que le pertenece esa funcion. 2) Si esta dentro
+de un constructor de clase apuntara hacia la clase. 3) En una ARROW_FUNCTION apuntara normalmente al ambito global, debido a que no crea
+un SCOPE propio como las funciones normales, al no crear un SCOPE su apuntador ira al padre de donde se creo el objeto. 
+4) En el Caso de que yo haga un THIS a una propiedad que no existe dentro de mi contexto (SCOPE) saldra a buscarla al contexto global.
+
+3) Si tengo duda de donde apunta lo puedo ver desde el VS CODE y me dice hacia que SCOPE apunta.
+
+
+                                                      40) Call, Apply y Bind
+
+1) CALL: Me permite definir cual va a ser el contexto que voy a llamar, le tengo que pasar por parametros el contexto (objeto o funcion).
+Le puedo pasar parametros secundarios que necesite la funcion a la que estoy llamando o en la construccion de un objeto. En resumen 
+CALL define cual va a ser el contexto del apuntador.
+
+function saludar(nombre, saludo){
+    console.log(saludo +" "+ nombre+"desde "+ this.lugar)
+}
+const obj = {lugar: "Local"}
+saludar.call(obj, "Pepe", "Hola") //Imprimira "Hola Pepe desde Local"
+
+2) APPLY: Es igual a CALL solo que el pasaje de parametros secundarios es por un array. -- saludar.call(obj,[ "Pepe", "Hola"]) 
+
+3) BIND: Me permite hacer algo similar a CALL al enlazar contextos, me permite decirle al apuntador cual es el contexto al que tiene que 
+apuntar. Esto sirve cuando quiero asignar una funcion a otra pero antes definiendole a la funcion a que contexto va a ser asignada.
+
+3.1) La diferencia entre BIND y CALL es que BIND al asignarse no utiliza de inmediato la funcion, sino que deja creado el enlace para 
+futuros usos, en cambio CALL se lo utiliza cuando se quiera llamar a la funcion y cambiarle el contexto de inmediato.
+
+                                                            41) JSON
+ 
+1) JSON: Java Script Object Notation. Es un formato ligero de notacion de datos. El Traslado de datos entre Front-End y Back-End se lo 
+hace mediante JSONS. Los elementos de un JSON son muy practicamente un calco de como se escriben los objetos de JS. Lo unico que las
+KEYS y los values deben estar entre comillas.
+{
+    "nombre": "Pepe",
+    "edad": 35
+}
+2) Metodos: 1) Parse(): Analiza un valor y la va a convertir a un tipo de dato conocido para JS (excepto undefined).  
+            2)stringify(): Convierte un codigo de JS a un formato JSON.
+
+2.1) console.log(JSON.parse('{"name": "Pepe","age": 33,"edad": null,"masculino": true}')) // Devuelve un Objeto en JS
+
+2.2) JSON.stringify(person) //Imprime {"name":"Pepe","age":33,"edad":null,"masculino":true} en formato JSON
+
+                                                         42) WEB API
+
+1) APIS: 1) Eventos. 2) Forms. 3) AJAX - fetch. 4) History. 5) Web Storage. 6) Drag & Drop. 7) Indexed DB. 8) Canvas. 9) DOM.
+
+2) SINTESIS: Las APIS de la web son las formas en las que podemos manipular distintos elementos web mediante JS.
+
+                                                          43) DOM
+
+1) DOM: Document Object Model. Es como los navegadores representan el codigo HTML.
+
+2) El  DOM es lo que nos permite Manipular el HTML con JS atraves de los navegadores.
+
+3) El elemento con el cual accedo a mi HTML mediante JS es document (window.document), es el tendre toda mi estructura HTML.
+
+3.1) 1) GetElementByID(): Me permite capturar un elementos con su ID, al que puedo guardarlo en una variable y manipularlo. 
+     2) CreateElement(): Me permite crear un elemento, le tengo que pasar solo el nombre del elemento.
+     3) AddEventListener(): 
+     4) document.body: devuelve todo el HTML del body, tambien puedo acceder a funciones que me permitan manipular el body dinamicamente 
+     5) document.head: devuelve todo el HTML del HEAD. 
+
+4) Las Listas que devuelve HTML no son arrays, sino un nodo los cuales puedo transformar en arrays.
+
+                                             44) Nodos, Elementos y Selectores
+
+1) NODO: Cada elemento del DOM es un nodo, es decir cada etiqueta del documento es un nodo. Pero dentro de JS todas las etiquetas no son
+nodos iguales, existen distintos tipos de nodos, los cuales cada uno tendra diferentes metodos.
+
+2) Con los que mas trabajaremos seran los nodos de tipo texto y los nodos de tipo elemento. 1) Nodo-Texto: Es el texto que tiene adentro
+una etiqueta. Cada bloque de texto en el documento es un nodo de texto. 2) Nodo-Elemento: Es una Etiqueta HTML como <div>, <body>, <p>
+
+3) Selectores: 1) GetElementByID(): Me permite capturar un elemento por su ID, al que puedo guardarlo en una variable y manipularlo.
+               2) querySelector(): Me permite seleccionar elementos con los selectores de HTML (id, clases, elementos), pero es mas 
+               lento que GetElementByID(). Solo trae un elemento, si quiero traer una lista lo hago con querySelectorAll() que me 
+               devolvera un NodeList.
+
+3.1) document.GetElementByID("MyId"); /// document.querySelector(".MiClase") /// document.querySelectorAll("h1") ///
+     document.querySelectorAll("#nav li") -> me traera solo los elementos li que esten dentro de nav.
+
+                                            45) Atributos y Data-Attributes
+
+1) Los atributos son los elementos que tienen las etiquetas HTML.
+
+2) Data-Attribute: Son atributos que yo puedo generar para las etiquetas HTML. <a data-ejemplo=""></a>.
+
+3) GET-VALOR: Para acceder debo colocar document.querySelector("p").getAttribute("NombreAtributo") o 
+document.etiquetaAcceder.NombreAtributo (Depende el contexto uso una u otra porque no suele dar los mismos valores)
+
+3.1) Con Document accedo al HTML, con querySelector(o GetElementByID) me poso sobre una etiqueta y con getAttribute()
+le indico que atributo
+
+4) SET-VALOR: Para setear el valor de un atributos es: document.etiquetaHtml.atributo = ""; o 
+document.querySelector("p").setAttribute("data-peron","Puta peron")
+
+4.1) Con Document accedo al HTML, con querySelector(o GetElementByID) me poso sobre una etiqueta y con setAttribute()
+le indico que atributo quiero modificar y luego el valor.
+
+5) Se suele usar const para guardar los elementos del DOM, ya que tienen un funcionamiento similar a los array y
+objetos, es decir puede cambiar su contenido pero no lo que son.
+
+5.1) Tambien como convencion se suele llamar las variables que guardan elementos del DOM con el signo $.
+     const $miEtiqueta = document.querySelector("img).getAttribute("src");
+
+6) REMOVE-ATRIBUTO: $ElementoDom.removeAttribute("nombre")
+
+7) Data-Attribute: Para acceder a estos lo puedo hacer de la misma forma que un atributo normal o mediante un 
+dataset. Esta me devolvera todos los dataAtribute del elemento.
+Console.log($element.dataset);
+
+                                                        46) CSS y JS
+
+1) Para agregar estilos de CSS en el DOM mediante JS debo utilizar la propiedad style, el nombre de la propiedad y luego le asigno 
+el valor como una variable normal. Tambien para agregar atributos puedo llamar a la funcion setPropierty()
+
+1.1) $element.style.display = "none";
+1.1) $element.style.backgroundColor = "#222";
+1.2) $element.style.setPropierty("background-color","blue")
+1.2) $element.style.removePropierty("background-color")
+
+2) Otra forma para acceder al valor de la propiedad es mediante getComputedStyle y getPropiertyValue, Nos permite leer todos los atributos
+CSS de nuestro elemento pero no editarlo, solo leer.
+
+2.1) getComputedStyle($element).getPropiertyValue("color");
+2.2) let variable = getComputedStyle($html).getPropiertyValue("--MiColor")
+
+3) ClassList: con esta propiedad podremos llamar a add() y remove(), para agregar o eliminar clases de CSS de nuestra hojas de estilo,
+tambien Toggle(), esta si la clase existe la borrara, sino la añadira. ClassList Emula un arreglo el cual tendra todas las clases del 
+elemento HTML.
+
+3.1) $element.ClassList.add("MiClase");
+3.1) $element.ClassList.remove("MiClase");
+3.1) $element.ClassList.Toggle("MiClase");
+3.2) $element.ClassList.contains("MiClase"); //devuelve un true o false.
+3.3) $element.className+= ' NuevaClase'
+3.4) $element.ClassList.replace("ClaseActual", "ClaseNueva")
+
+4) Para definir variables CSS que esten disponibles en todo el codigo debo declararlas en :root{}. Para acceder a ellas debo acceder 
+a la etiqueta HTML (document.documentElement) y el uso de getComputedStyle($Html).getPropiertyValue("--MiVar");
+
+4.1) :root{
+    --gris-color: #222;
+    --tamanio-fuente: 1.25rem;
+}
+4.2) $Html.style.setPropierty("--MiColor", "#111")
+
+5) SINTESIS: La diferencia entre el acceso a los estilos mediante el PUNTO o mediante getComputedStyle() (en la lectura) es que con 
+el punto solo accedemos a la informacion que este en el atributo STYLE, mientras que con getComputedStyle() tambien accedemos a los 
+estilos de la Hoja CSS.
+GetComputedStyle() se debe usar al querer leer elementos y la Notacion del PUNTO cuando quiero asignar (usando 
+setPropierty/removePropierty o el nombre de la propiedad)
+
+                                            47) Manipulacion de contenido HTML
+
+1) TextContent: Este sirve para agregar contenido textual a un elemento, si quiero agregar texto en estructura HTML no me sirve ya que 
+no la reconocera.
+
+$element.TextContent = "Mi texto";
+
+2) innerHTML: Me permite agregar texto utilizando etiquetas HTML, dentro del elemento que estoy referenciando
+
+$element.innerHTML = `<p>mi Texto en Parrafo</p>`;
+<div id="element"><p>mi Texto en Parrafo</p></div>
+
+3) outerHTML: Es parecido a innerHTML solo que en vez de agregar el contenido dentro del elemento reemplazara el elemento con lo que 
+le pasemos.
+
+4) Sintensis: Depende que necesite insertar dentro de un elemento: 1) Solo texto sin uso de etiquetas HTML usare TextContent. 2) Si 
+a ese texto quiero agregarle contenio HTML usare innerHTML. 3) Cuando no quiera colocar HTML dentro de una etiqueta sino reemplazarla
+usare outerHTML.
+
+
+                                                    48) DOM Traversing
+
+1) Me permite capturar las etiquetas HTML (Nodos). Para capturar los Nodos de etiquetas tengo que usar las propiedades que tengan la 
+palabra ELEMENT, sino capturare nodos que no son etiquetas.
+
+2) $element.children[]: Me permite acceder a los hijos del elemento segun el numero que le pasemos.
+
+2.1) $element.firstElementChild: El primer elemento HTML hijo
+2.2) $element.lastElementChild: El ultimo elemento HTML hijo
+
+3) $element.parentElement: Devuelve la etiqueta padre del elemento HTML.
+
+4) $element.previousElementSibling: Me permite acceder a la etiqueta anterior de igual jerarquia
+4.1) $element.nextElementSibling: Me permite acceder a la etiqueta posterior de igual jerarquia
+
+5) closest("etiqueta"): Me devuelve la etiqueta que le pase mas cercana. Si no encuentra devuelve null. 
+
+                                            49) Creando Elementos y Fragmentos
+
+1) Para crear elementos(etiquetas HTML) usaremos el metodo de document CreateElement("etiqueta").
+
+1.1) $element = document.CreateElement("div");
+
+2) Para crear bloques de texto debo generar nodos de texto mediante JS usando document.CreateTextNode("Texto")
+
+2.1) let $text = document.CreateTextNode("Texto Ejemplo)
+
+3) Una vez creado los elementos deberemos agregarlos al arbol HTML del DOM, para ello usaremos la funcion appendChild()
+
+3.1) $elementContainer.appendChild($miDiv); $miDiv.appendChild($text);
+
+const $grid = document.getElementById("grid");
+const $div = document.createElement("div"), 
+$grid.appendChild($div)
+
+4) El problema de este metodo es que por cada elemento estamos realizando una insercion al DOM lo cual es una accion muy pesada. Para
+solucionar esto lo que podemos hacer es crear Fragmentos dinamicos en el DOM (una variable que se crea dinamicamente) y a este 
+Fragmento del DOM le podemos estar iterando los elementos, una vez terminado realizamos la insercion de esos elementos mediante el 
+fragmento.
+
+const $fragment = document.createDocumentFragment();
+array.forEach(item=>{
+    const $div = document.createElement("div"); 
+    $div.className += "col-12 col-lg-4 col-sm-6 d-flex justify-content-center align-items-center";
+    $div.style.flexDirection = "column";
+    $fragment.appendChild($div)
+    const $img = document.createElement("img");
+    $img.className = "imag mb-3";
+    $img.style.maxWidth = "250px"
+    $img.src = item;
+    $div.appendChild($img)
+    const ancor = document.createElement("a");
+    ancor.style.textDecoration = "none";
+    ancor.href = item;
+    ancor.textContent = "Ir a Imagen"
+    ancor.setAttribute("target", "_blank")
+    $div.appendChild(ancor)
+})
+$grid.appendChild($fragment)
+
+Ahi guardare mis iteraciones, al termino realizare un appendChild($fragmento)
+
+                                                    50) Templates HTML
+
+1) Es una etiqueta HTML que no se renderiza en el DOM, sino que es una especie de plantilla en la que puedo colocar elementos HTML que 
+despues puedo utilizar ya construido. <template></template>
+
+2) Para manipularla desde JS accederemos a la etiqueta template con algun metodo pero como template no nos interesa como tal usaremos
+   content, que nos traera todo el contenido que tenga la etiqueta template.
+
+2.1) const $template = document.getElementById("templateMyId").content;
+
+3) Cabe destacar que cada vez que queramos iterar los elementos del template deberemos realizar un clon del mismo, ya que por cada 
+iteracion utilizaremos el elemento del template string.
+
+      3.1) $temp = document.getElementById("template-card").content;
+            array.forEach(el => {
+                $temp.querySelector("img").setAttribute("src", el);
+                let $clone = document.importNode($temp, true); => ImportNode me permite clonar elementos
+                $fragment.appendChild($clone);
+            });
+            $grid.appendChild($fragment);
+
+3.2) Lo que hacemos aca es que por cada elemento de la template le asignamos valores y creamos una copia de la misma que guardaremos 
+en $fragment, ya que en cada vuelta pisaremos los valores de la template HTML.
+
+4) SINTESIS: Template es una plantilla de etiquetas HTML que no se renderiza pero puedo recuperar con JS para modificar y utilizarlas 
+para crear mas facilmente elementos HTML(ahorra crear las etiquetas a mano).
+
+                                                51) Modificar Elementos OLD => DEPRECADO
+
+1) $elementContainer.replace($newElement, $oldElement.children[3])
+2) $elementContainer.insertBefore($newElement, $cards.firstElementChild)
+3) $elementContainer.removeChild(cards.lastElementChild)
+
+                                                 52) Modificar Elementos NEW
+
+1) insertAdjacent: este tiene 3 variantes que me permitira posicionar distintos elementos. 1) insertAdjacentElement(position,element): 
+Este me permitira posicionar elementos en una determinada posicion 2) insertAdjacentHTML(position,HTML): Este me permitira posicionar 
+Texto con formato de etiquetas HTML. 3) insertAdjacentText(position,text): Este me permitira posicionar etiquetas Texto en una 
+determinada posicion
+
+1.1) La posicion de referencia vendra del objeto que estemos utilizando para posicionar. 
+
+1.2) $elementReferencia.insertAdjacentElement("BeforeBegin", $elementNew)
+1.2) $elementReferencia.insertAdjacentHTML("BeforeEnd", "<p>Hola</p>")
+1.2) $elementReferencia.insertAdjacentText("AfterBegin", "Texto Plano de Ejemplo")
+
+2) Posiciones:  1) BeforeBegin(antes de la etiqueta referencia). 2) AfterBegin(primer hijo de la etiqueta) 3) BeforEnd (ultima etiqueta
+de la referencia) 4) AfterEnd (despues de la etiqueta).
+
+                                                53) Manejador de Eventos
+
+1) EVENTOS: Es aquel mecanismo que tenemos en JS para controlar las acciones (del usuario) o responder ante ellas desde JS, definiendo
+ciertos comportamientos del documento. Las funciones que se ejecutan/disparan durante un evento se las conoce como EVENT-HANDLER, es 
+decir manejadoras de eventos.
+
+2) EVENT-HANDLER: cuando una funcion se convierte en un manejador de eventos puedo acceder a un objeto especial llamado EVENT. Este 
+tiene varios atributos con informacion. Los mas destacados son: 1) Type: el tipo de evento que se desencadeno. 2) Target: que etiqueta 
+lo ejecuto.
+Los manejadores de eventos no pueden obtener parametros como tal, solo a lo sumo el objeto EVENT.
+
+3) Generar-Eventos: 1) La primera forma es generando el evento desde la misma etiqueta HTML: <button onClick="FuncionJs()">
+                    2) La segunda es ejecutarlo directamente desde JS, para esto recuperaremos la etiqueta HTML con JS:
+                       $elemento.onclick = MiFuncion. No ese deben usar parentesis, tambien puedo usar una funcion anonima o ArrowFunction
+                       para declarar. La limitante de esta forma semantica es que solo podre definir un evento del mismo tipo para el 
+                       elemento, es decir no puedo definir 2 onClick porque sino se superpondran. 
+                       3) En el caso de que necesite colocar mas de un evento usaremos los manejadores multiples. Para hacer uso de 
+                       este usaremos AddEventListener(), seria una especie de escuchador de eventos. AddEventListener() recibira 2 
+                       parametros: 3.1) El tipo de evento. 3.2) Una funcion ya creada o creamos una ahi mismo
+
+3.2) $but.onclick = MiFuncion;
+3.3) $but.addEventListener("click", e => alert("GOLAZO"))
+
+4) Aunque realmente no se puede pasar parametros a un evento mediante un pequeño truco podemos sortear este problema. Para ello 
+usaremos una ARROW_FUNCTION, esta me permitira utilizar una funcion ya definida (o definir una) con parametros. Es decir debemos 
+envolver la funcion que necesito parametrizar en una ARROW_FUNCTION, o directamente cargar parametros en la ARROW_FUNCTION y 
+definir ahi mismo la funcion.
+
+$element.addEventListener("Click", (e)=> funcionSaludo("Santino"))
+$element.addEventListener("click", (e, nombre="Pep")=> {console.log(nombre)})
+
+5) Remover Eventos: Para esto usaremos la funcion removeEventListener(), esta la colocaremos al termino de la ejecucion de mi funcion.
+El problema de esto es que si uso una funcion anonima o ARROW_FUNCTION es que a la hora de remover eventos yo debere pasarle el type del
+evento y el nombre y al tener una funcion anonima no tendra nombre.
+
+const Funcion = (e, nombre="Pep") => {
+    alert(nombre);
+    $element.removeEventListener(e.type, Funcion);
+}
+$element.addEventListener("click", Funcion)
+
+                                                54) Flujo de Eventos y Propagacion => DEPRECADO
+
+1) Cuando Hablamos de flujo de eventos hablamos de como este se propaga a los largo del DOM. Esa propogacion se genera desde el elemento
+mas interno hacia los elementos mas externos. Esto se llama fase de burbuja, esto ya viene configurado por defecto en los manejadores 
+multiples.
+2) Un Ejemplo de propagacion de eventos es que si 2 elementos tienen el mismo tipo de evento (un tipo es click, enter, drag) 
+y el elemento hijo dispara el evento tambien se disparara el evento padre y el resto de elementos que esten por encima. Esto es la fase 
+de burbuja el Flujo se dispara de arriba hacia abajo.
+
+2.1) Target indica quien disparo el evento, y este no se propaga.
+
+3) Tambien podemos agregar de tercer parametro que es un objeto, ahi podemos llamar a ONCE: al cual le pondremos un T/F si queremos
+que nuestro evento se ejecute mas de una vez.
+
+                                                55) stopPropagation & preventDefault
+
+1) Para detener la propagacion lo que debo hacer es en mi Funcion EVENT-HANDLER al final del codigo llamar al metodo del objeto 
+event stopPropagation()
+
+$but.addEventListener("click", (e)=>{
+  console.log("boton")
+  e.stopPropagation()
+})
+
+2) Para cambiar el comportamiento por defecto de los elementos en HTML (como por ejemplo button o un ancor) lo unico que debo hacer 
+es sobrescribir el evento por default del elemento y usar event.preventDefault(), este cancela el evento por default.
+
+$ancor.addEventListener("click", (e)=>{
+    alert("Falso Link");
+    e.preventDefault();
+});
+
+                                                     56) Delegacion de Eventos => forma mas optima de trabajar con eventos
+
+1) Viene a solucionar el problema de la asignacion de eventos (el tener que usar un ciclo para agregar los eventos, lo cual consume 
+mucho rendimiento). En este caso tendre mi evento en un elemento  superior y luego buscando mediante el EVENT.TARGET quien disparo
+el evento. Normalmente se asigna estos eventos a la etiquet raiz (HTML).
+
+2) Tambien con esto metodo detenemos la propagacion directamente de raiz. // document.addEventListener("click", (e) => {})
+
+3) Con esta definicion a todo elemento que le hagamos click disparara el evento, para configurar los elementos que queremos que actuen
+deberemos validar con condicionales que elemento entro al evento.
+
+3.1) document.addEventListener("click", (e)=> {
+    if(e.target.matches(".Clase")){
+        e.Alert(Hola)
+    }
+
+    if(e.target.matches(".otros div")){
+        e.Alert(chau)
+    }
+})
+
+3.2) Matches() me permite saber si una etiqueta contiene una una clase, id o etiqueta en particular. Devolvera T/F, las formas en las 
+que accedera a los elemetos es mediante selectores de CSS. 
+
+4) Eventos JS: 1) Click. 2) dblClick. 3) auxClick. 4) Resize(cuanto se cambia el tamaño de la pantalla). 5) Scroll. 6) Load(cuando se 
+                produce la carga de la pagina) => DOMContentLoaded es mas eficiente.
+
+4.1) En vez de usar el evento LOAD de window es mejor usar DOMContentLoaded de document ya que es mas rapido. Esto debido a que DOMContentLoaded
+solo espera que se carguen las etiquetas HTML para ejecutarse, encambio LOAD debe esperar que se carguen los SCRIPTS y las StyleSheets
+para ejecutarse, lo cual lo hace mucho mas lento.
+
+document.addEventListener("DOMContentLoaded", (e)=>{})
+
+                                                    57) BOM: Propiedades y Eventos
+
+1) BOM: Son una serie de propiedades y eventos que se encuentran en Window: 1) innerWidth: nos devolvera el ancho de nuestra ventana.
+        2) innerHeigth: Devolvera el largo de la ventana. 3) OuterWidth-Heigth: Es el tamaño de la ventana del navegador.
+        4) scrollX-Y: Esto nos devuelve (en px) cuanto se aleja la barra de scroll de su comienzo(left o top)
+
+2) Funciones-Window(BOM): 1) Open("https//youtube.com"): Me permite abrir una ventana emergente. 2) Close(): Igual funcionamiento que 
+Open solo que para cerrar, debere guardar la referencia de OPEN. 3) Print(): Me permite que se despligue el menu de impresion del 
+navegador.
+
+3) Objetos-Window(BOM): 1) location: 1.1) location.origin: Me devuelve la ruta HTTP de origen de la pagina, sin enrutamientos. 
+                        1.2) location.Protocol: Me devuelve el protocolo que estamos utilizando (si HTTP o HTTPS). 
+                        1.3) location.host:
+                        1.4) location.hostname: 1.5) location.port: 1.6) location.href: 1.7) location.hash: 
+                        1.8) location.pathname:
+
+DATO: la aclaracion de (BOM) es porque son elementos Window pero que pertenecen a la Api Web de BOM y no de DOM.
