@@ -1,0 +1,61 @@
+.reloj-container{
+    display: flex;
+    justify-content: center;
+}
+
+.reloj-container button{
+    height: 1.8rem;
+    padding: 20px;
+    margin: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.verde {
+    background-color: chartreuse;
+}
+
+.verde:hover {
+    background-color: rgb(99, 196, 3);
+}
+
+.verde:disabled{
+    background-color: rgba(60, 187, 6, 0.524);
+    color: rgb(0, 0, 0);
+}
+
+.rojo{
+    background-color: red;
+    color: white;
+}
+
+.rojo:hover{
+    background-color: rgb(187, 6, 6);
+}
+
+.rojo:disabled{
+    background-color: rgba(206, 0, 0, 0.524);
+    color: rgb(0, 0, 0);
+}
+
+button span{
+    text-align: center;
+    padding: 10px; 
+}
+
+h2{
+    font-size: 2rem;
+    color: #706d6d;
+}
+
+#Timer{
+    font-family: 'DS-Digital', sans-serif;
+    font-weight: bolder;
+    font-size: 5rem;   
+    margin: 1rem; 
+    color: #FF9500;                                           
+}
+

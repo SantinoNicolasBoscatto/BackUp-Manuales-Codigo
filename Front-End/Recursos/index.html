@@ -3,29 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>DOM</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="stylesheet" href="./CSS/menu.css">
+    <link rel="stylesheet" href="./CSS/side.css">
+    <link rel="stylesheet" href="./CSS/reloj.css">
+    <link rel="stylesheet" href="./CSS/pelota.css">
+    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
-<body id="b" style="margin: 0;">
-  <!-- <nav id="nav" class="Move" style="background-color: red;  width: 100%;">
-    <li style="flex-direction: row; display: flex; justify-content: space-evenly;">
-      <ul>PAP</ul>
-      <ul>PAP</ul>
-      <ul>PAP</ul>
-      <ul>PAP</ul>
-      <ul>PAP</ul>
-    </li>
-  </nav>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> -->
+<body style="margin: 0;">
 
-  <p id="reloj" style="margin-right: 100px; float: right;"></p>
-  <button type="submit" id="prueba">Sex Button</button>
-  <script src="dom.js"></script>  
+  <aside class="side" id="Sider" style="transform: translateX(-100%);">
+    <nav>
+      <ul class="navbar">
+        <li><a href="#first">Reloj Digital y Alarma Sonara</a></li>
+        <li><a href="#second">Pelota Fantastica</a></li>
+        <li><a href="#third">Seccion 3</a></li>
+        <li><a href="#four">Seccion 4</a></li>
+        <li><a href="#five">Seccion 5</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="borde">
+    <input type="checkbox" role="button" aria-label="Display the menu" class="menu">
+  </div>
+  <main>
+    <section id="first">
+      <h1>Reloj Digital y Alarma Sonara</h1> 
+      <p style="display: block;" id="Timer">Timer</p> 
+      <div class="reloj-container">
+        <button type="submit" class="reloj-start verde"><span>Empezar Reloj</span></button>
+        <button type="submit" class="reloj-stop rojo"><span>Detener Reloj</span></button>
+        <button type="submit" class="alarma-start verde"><span>Empezar Alarma</span></button>
+        <button type="submit" class="alarma-stop rojo"><span>Detener Alarma</span></button>
+        <audio id="mi-audio" loop>
+          <source type="audio/mpeg" src="Y2meta.app - The Fragrance of Dark Coffee (Phoenix Wright Ace Attorney_ Trials and Tribulations) Jazz Cover (320 kbps).mp3">
+        </audio>
+      </div>
+    </section>
+    <section id="second">
+      <h1>Pelota Fantastica</h1>
+      <div>
+        <div class="pelota-container">
+          <div class="Pelota"></div>
+        </div>
+      </div>
+    </section>
+    <section id="third">
+      <h1>Seccion 3</h1>
+    </section>
+    <section id="four">
+      <h1>Seccion 4</h1>
+    </section>
+    <section id="five">
+      <h1>Seccion 5</h1>
+    </section>
+  </main>
+  <script src="./JS/dom.js" type="module"></script> 
+  <!-- <script>
+    addEventListener("mouseover", (e)=>{
+      if(e.target.matches(".prueba")){
+        const $nav = e.target;
+        $nav.style.opacity = "1"
+      }
+    })
+
+    addEventListener("mouseout", (e)=>{
+      if(e.target.matches(".prueba")){
+        const $nav = e.target;
+        $nav.style.opacity = "0"
+      }
+    })
+  </script>  -->
 </body>
 </html>
