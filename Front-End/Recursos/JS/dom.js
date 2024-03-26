@@ -122,9 +122,13 @@
 
 import Alarma from "./Alarma.js";
 import Atajos from "./Atajos.js";
+import CountDown from "./Count.js";
+import DarkMode, { modos } from "./Dark-Mode.js";
 import MenuBurger from "./Menu.js";
 import Reloj from "./Reloj.js";
+import ScrollUp from "./Scroll.js";
 import MoverPelota from "./pelota.js";
+
 const d = document
 const checkMenu = d.querySelector(".menu");
 checkMenu.checked= false;
@@ -133,17 +137,28 @@ const $startReloj = d.querySelector(".reloj-start")
 const $stopReloj = d.querySelector(".reloj-stop")
 $stopReloj.setAttribute("disabled", "");
 const $reloj = d.getElementById("Timer")
-console.log($reloj)
 // ALARMA
 const $startAlarma = d.querySelector(".alarma-start")
 const $stopAlarma = d.querySelector(".alarma-stop")
 $stopAlarma.setAttribute("disabled", "");
 const $audio = d.getElementById("mi-audio");
+
+window.onload = function() {
+    let modoGuardado = localStorage.getItem('Mode');
+    if (modoGuardado === 'oscuro') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
 addEventListener("DOMContentLoaded", (e)=>{
-    MenuBurger(".borde",".side", checkMenu);
+    MenuBurger(".borde",".side", checkMenu,".scroll-container");
     Reloj(".reloj-start", $startReloj, $reloj, $stopReloj, ".reloj-stop");
-    Alarma(".alarma-start", ".alarma-stop", $startAlarma, $stopAlarma, $audio)
-    // MoverPelota( ,".pelota-container")
+    Alarma(".alarma-start", ".alarma-stop", $startAlarma, $stopAlarma, $audio);
+    CountDown("Septiembre 30, 2024 17:50:33", ".cuenta");
+    ScrollUp(".scroll-container");
+    // DarkMode(".dark-button", "h1", ".pelota-container",".scroll-container","body","p",".menu")
+    DarkMode(".dark-button", "data-dark", "dark-mode");
+    
 })
  
 
@@ -151,6 +166,12 @@ addEventListener("keydown", (e)=>{
     Atajos(e);
     MoverPelota(e,".pelota-container");
 })
+
+window.onload = () =>{
+    console.log("E")
+    if(localStorage.getItem('Mode')!=="D") modos("data-dark", "dark-mode", document.querySelector(".dark-button"),
+    document.querySelector(`.dark-button i`));
+}
 
 
 

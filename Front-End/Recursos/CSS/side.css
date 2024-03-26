@@ -26,7 +26,7 @@ li {
     width: 100%;
     transition: background-color .7s ease-in-out;
 }
-a{
+li a{
     text-decoration: none;
     font-size: 1.8rem;
     letter-spacing: 2px;
@@ -38,7 +38,7 @@ a{
     padding: 15px 0;
     background-color: "";
 }
-a:hover{
+li a:hover{
     color: #222;
     background-color: rgba(255,255,0, .9);
 }

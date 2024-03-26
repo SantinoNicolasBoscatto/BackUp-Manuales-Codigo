@@ -1371,3 +1371,30 @@ let limitBall = $pelota.getBoundingClientRect();
 let limitContainer = document.querySelector(claseContainer).getBoundingClientRect();
 
 if(e.key === "ArrowRight" && limitBall.right+15<limitContainer.right)move(e.key)
+
+4) Sacar tiempos de Cuenta atras
+h = Math.floor((date.getTime()/cantidadMSxhora)%24),
+m = Math.floor((date.getTime()/cantidadMSxMinuto)%60),
+s = Math.floor((date.getTime()/1000)%60)
+
+5) Con slice() si le pasamos numeros negativos empezara a agarrar numeros desde los ultimos caracteres
+("0"+Math.floor((tiempo.getTime()/1000)%60)).slice(-2)
+
+6) scrollTop: Representa la distancia del scroll con respecto al Top, puedo setearle valores.
+
+6.1) Como Scrollear con click de Button: document.documentElement.scrollTop = 0;
+
+6.2) variante: w.scrollTo({behavior: "smooth",top: 0})
+
+7) Seleccionar elementos que tengan ambas 2 clases: .pelota-container.dark-mode{background-color: #222;}
+
+7.1) Seleccionar elementos que tengan ambas 1 clase: h1.dark-mode{background-color: #222;}
+
+8) Seleccionar por Data-Atribute con querySelector(): document.querySelector(`[${variable}]`)
+
+9) Los Data-Atribute Suelen ser utiles para desencadenar eventos de los componentes.
+
+                                                         59) API LOCAL STORAGE
+
+1) Local Storage: Es una forma de almacenamiento web que permite a las aplicaciones web almacenar datos de forma persistente en los 
+navegadores del usuario. Es una mejora a las COOKIES.

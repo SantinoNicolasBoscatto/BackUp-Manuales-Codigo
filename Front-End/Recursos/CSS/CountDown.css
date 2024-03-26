@@ -1,0 +1,44 @@
+.cuenta{
+    color: white;
+}
+
+.scroll-container{ 
+    display: flex;
+    position: fixed;
+    float: inline-end;
+    justify-content: center;
+    align-items: center;
+    width: 58px;
+    height: 58px;
+    right: calc(2vw + 3.33rem);
+    bottom: 2.5vh;
+    border-radius: 50%;
+    background-color: rgb(255, 238, 0);
+    border: rgba(0, 0, 0, 1) solid 3px;
+    cursor: pointer;  
+    transition: opacity .5s ease-out, background-color .5s ease, color .5s ease, border-color .5s ease,
+    visibility .5s ease-out;
+    z-index: 9000;
+}
+
+.scroll-hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.scroll-container:hover{
+    background-color: rgb(0, 0, 0);
+    color: aqua;
+    border-color: aqua;
+}
+
+i{
+    width: 32px;
+    height: 32px;
+    margin-top: .2rem;
+    margin-left: 1px;
+}
+button{
+    padding: 0;
+}
+

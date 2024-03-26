@@ -1,0 +1,53 @@
+.dark-button{
+    color: rgb(255, 255, 255);
+    background-color: midnightblue;
+    height: 58px;
+    width: 58px;
+    position: fixed;
+    float: left;
+    left: 1vw;
+    bottom: 2.5vh;
+    border-radius: 50%;
+    border-color: #222;
+    border-width: 3px;
+    border-style: solid;
+    transition: all .7s ease; 
+    z-index: 9999;
+}
+
+.dark-button:hover{
+    background-color: rgb(2, 2, 46);
+}
+
+.light{
+    background-color: rgb(120, 3, 179);
+    color: rgb(255, 255, 0);
+    border-color: rgb(255, 251, 0);
+}
+
+.light:hover{
+    background-color: rgb(158, 10, 203);
+}
+
+h1.dark-mode, p.dark-mode{
+    color: #000;
+}
+
+body.dark-mode{
+    background-color: #fff;
+}
+
+.pelota-container.dark-mode{
+    background-color: #222;
+}
+
+.scroll-container.dark-mode{
+    color: white;
+    background-color: black;
+}
+
+.menu.dark-mode{
+    --c: black;
+}
+
+

@@ -41,8 +41,6 @@ let distanciaX = $pelota.offsetLeft,
 export default function MoverPelota(e, claseContainer=".pelota-container"){
         let limitBall = $pelota.getBoundingClientRect();
         let limitContainer = document.querySelector(claseContainer).getBoundingClientRect();
-        console.log(limitBall)
-        console.log(limitContainer)
         let $w = getComputedStyle(document.querySelector(claseContainer)).getPropertyValue("width");
         let $h = getComputedStyle(document.querySelector(claseContainer)).getPropertyValue("height"); 
         const move = (direction)=>{

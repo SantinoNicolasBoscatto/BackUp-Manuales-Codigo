@@ -9,27 +9,39 @@
     <link rel="stylesheet" href="./CSS/side.css">
     <link rel="stylesheet" href="./CSS/reloj.css">
     <link rel="stylesheet" href="./CSS/pelota.css">
+    <link rel="stylesheet" href="./CSS/CountDown.css">
+    <link rel="stylesheet" href="./CSS/DarkMode.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
-<body style="margin: 0;">
-
+<body style="margin: 0;" data-dark="data-dark">
   <aside class="side" id="Sider" style="transform: translateX(-100%);">
     <nav>
       <ul class="navbar">
         <li><a href="#first">Reloj Digital y Alarma Sonara</a></li>
         <li><a href="#second">Pelota Fantastica</a></li>
-        <li><a href="#third">Seccion 3</a></li>
+        <li><a href="#third">CountDown</a></li>
         <li><a href="#four">Seccion 4</a></li>
         <li><a href="#five">Seccion 5</a></li>
       </ul>
     </nav>
   </aside>
   <div class="borde">
-    <input type="checkbox" role="button" aria-label="Display the menu" class="menu">
+    <input type="checkbox" role="button" aria-label="Display the menu" class="menu"  data-dark="data-dark">
   </div>
+
+  <button class="dark-button light">
+    <!-- <i class="fa-solid fa-moon fa-2x"></i> -->
+    <i class="fa-solid fa-sun fa-2x"></i>
+  </button>
+  
+
+  <button class="scroll-container scroll-hidden"  data-dark="data-dark"> 
+    <i class="fa-sharp fa-solid fa-house fa-2x"></i>
+  </button>
+  
   <main>
     <section id="first">
-      <h1>Reloj Digital y Alarma Sonara</h1> 
+      <h1 data-dark="data-dark">Reloj Digital y Alarma Sonara</h1> 
       <p style="display: block;" id="Timer">Timer</p> 
       <div class="reloj-container">
         <button type="submit" class="reloj-start verde"><span>Empezar Reloj</span></button>
@@ -42,23 +54,25 @@
       </div>
     </section>
     <section id="second">
-      <h1>Pelota Fantastica</h1>
+      <h1 data-dark="data-dark">Pelota Fantastica</h1>
       <div>
-        <div class="pelota-container">
+        <div class="pelota-container" data-dark="data-dark">
           <div class="Pelota"></div>
         </div>
       </div>
     </section>
     <section id="third">
-      <h1>Seccion 3</h1>
+      <h1 data-dark="data-dark">CountDown</h1>
+      <p data-dark="data-dark" class="cuenta"></p>
     </section>
     <section id="four">
-      <h1>Seccion 4</h1>
+      <h1 data-dark="data-dark">Seccion 4</h1>
     </section>
     <section id="five">
-      <h1>Seccion 5</h1>
+      <h1 data-dark="data-dark">Seccion 5</h1>
     </section>
   </main>
+  <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>
   <script src="./JS/dom.js" type="module"></script> 
   <!-- <script>
     addEventListener("mouseover", (e)=>{
