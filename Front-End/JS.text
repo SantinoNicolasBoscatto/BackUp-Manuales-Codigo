@@ -1340,6 +1340,7 @@ navegador.
                         1.3) location.host: devuelve la direccion sin protocolos, el nombre del dominio.  1.4) location.port: devuelve el
                         puerto 1.5) location.hostname: igual que host sin puertos.         
                         1.6) location.href: Me devuelve toda la cadena de la URL, incluyendo los enrutamientos y los parametros URL.
+                        usando window.location.href puedo redireccionar al usuario a otra pagina web.
                         1.7) location.hash: devuelve las rutas que utilizan #. 1.8) location.pathname: Me devuelve el enrutamiento    
                         1.9) location.search: me devuelve todos los parametros URL. 1.10) reaload(): me permite recargar la pagina.
 
@@ -1392,9 +1393,116 @@ s = Math.floor((date.getTime()/1000)%60)
 
 8) Seleccionar por Data-Atribute con querySelector(): document.querySelector(`[${variable}]`)
 
-9) Los Data-Atribute Suelen ser utiles para desencadenar eventos de los componentes.
+9) Una buena forma de pasar muchos atributos a una funcion colocando un solo parametro es colocandosle data-Attributes segun los quiera
+agrupar, esto me ahorra tener que pasar varios elementos por parametro a una funcion, solo necesito colocarle el dataAtribute al 
+crearlos en el HTML.
+
+10) Una funcion que tenga eventos que sean del mismo tipo del evento padre no se ejecutaran debido a que los eventos hijos se cancelan.
+es decir si dentro de un DOMContentLoaded disparo una funcion que dispara un DOMContentLoaded este ultimo se cancelara y no se 
+ejecutara nunca, para eso debemos sacar esa funcion del evento y ponerla en el ambito global.
+
+11) ABRIR PopUp: let newWindow = open(`${url}`, "_blank", `height=600,width=800,left=50%,top=50%`);
+
+12) Para detectar los KeyDowns con un evento pero que solo ocurran en un input especifico debo llamar al addEventListener() con el input.
+
+    12.1) miInput.addEventListener("keydown", e=>{})
+
+13) Para Recorrer un elemento con etiquetas hijas puedo usar un FOR-OF poniendo como elemento iterable al $element.childrens
 
                                                          59) API LOCAL STORAGE
 
 1) Local Storage: Es una forma de almacenamiento web que permite a las aplicaciones web almacenar datos de forma persistente en los 
-navegadores del usuario. Es una mejora a las COOKIES.
+navegadores del usuario. Es una mejora a las COOKIES. Esta es un objeto que puede almacenar varias variables que mantendran guardada 
+la info una vez cerrada la pagina.
+
+2) Metodos: 1) getItem("variable"): con esta accedo al valor de una variable guardada. 2) setItem("nombre", "valor"): crea una variable 
+y le otorga un valor, si la variable ya existe sobrescribe su valor.
+
+
+RESIZE(), LOAD() y WINDOWS_MATCH_MEDIA
+
+
+                                                     60) Responsive Desing con JS
+
+1) La forma mas sencilla de realizar RD con JS es crear el codigo HTML que queremos mostrar en DESKTOP y en MOBILE en TEMPLATES, luego 
+verifico con window.matchmedia(mq).matches la resolucion en PX, segun sea esta extraere el contenido de uno de los template y los 
+pegare en el contenedor con afterbegin o BeforeEnd.
+
+2) Otra forma es con eventos de resize y DOMContentLoaded cada vez que se ejecuten preguntar que mediaQuery esta cumpliendose, si es 
+un le agregaremos a un contenedor con innerHTML el elemento.
+
+addEventListener("resize", (e)=>{
+        if(window.matchMedia(mq).matches) d.getElementById(position).innerHTML = desktop;
+        else d.getElementById(position).innerHTML = mobile;
+    })
+
+                                                    61) Manejar Forms desde JS
+
+1) Para utilizar el evento sumbit debo pasarle el form donde se produjo el submit y no el boton que lo realizo.
+
+2) La etiqueta NAME de los elementos del FORMS nos sirven para acceder a ellas desde JS atraves de la notacion del punto.
+
+2.1) const $form = document.getElementById(form);
+2.1) $form.url.value //=> aca rescato el valor del elemento del forms que tenia nombre url.
+
+
+                                                        62) User Agent
+
+1) Este (aunque no muy buena practica en la mayoria de casos) me permite saber desde que navegador y dispositivo me estoy conectando.
+
+2) UserAgent.match(RegExp OR string): Este metodo de userAgent me permite una cadena o una RegExp que si la encuentra devuelve un null
+y sino un array con la informacion del dispositivo encontrado. Se lo suele usar para palabras claves de los dispositivos y saber desde 
+que dispotivo accedemos.
+
+android: ()=> userAgent.match(/android/i),
+ios: () => userAgent.match(/iphone|ipad|ipod/i)
+
+3) SINTESIS: Aunque no es algo muy recomendable de usar actualmente si necesitamos mostrar contenido exclusivo segun el dispositivo lo
+podemos hacer con userAgent, este nos permitira saber desde que navegador o dispositivo nos encontramos, por ejemplo si queremos redireccionar
+de una pagina a la store de nuestro dispositivo mobil lo podemos hacer detectando si es android (mostrara el redirect a la play store) o 
+apple (redireccionara hacia la apple store).  Antes detectara que sea un dispositivo mobil.
+
+const d = document;
+const n = navigator;
+const ua = n.userAgent;
+export default function userDeviceInfo(id){
+    const $id = d.getElementById(id);
+    const isMobile = {
+        android: ()=> ua.match(/android/i),
+        ios: () => ua.match(/iphone|ipad|ipod/i),
+        any(){
+            return this.android() || this.ios()
+        }
+    }
+    const isDesktop= {
+        linux: () => ua.match(/linux/i),
+        mac: () => ua.match(/mac os/i),
+        windows: () => ua.match(/windows nt/i),
+        any(){
+            return this.linux() || this.mac() || this.windows()
+        }
+    }
+    console.log(isMobile.any())
+    $id.innerHTML = 
+    `<ul> 
+        <li>User Agent: ${ua}</li>
+        <li>Dispositivo: ${isMobile.any()? "Mobile": "Desktop"} </li>
+    </ul>`
+}
+
+                                                    63) MediaDevices.getUserMedia()
+
+1) Con este metodo de MediaDevices puedo administrar los permisos de la camara y el microfono, para esto debo pasarle un objeto que 
+pregunte por los permisos a acceder, este objeto por convencion lo llamaremos constraint, ahi tambien setearemos el tamaño del 
+video. El getUserMedia() al retornar una promesa deberemos llamar a then() para utilizar su retorno. En el THEN() configuraremos
+el srcObject del video y el autoplay en true.
+
+1.1) const constraint = {audio: true, video:{width: 800, height:600}}
+     navigator.MediaDevices.getUserMedia(constraint)
+     .then(function(stream){
+        const $video = document.createElement("video");
+        $video.srcObject = stream;
+        $video.autoplay = true;
+        $padre.appendChild($video);
+     })
+     .catch(()=>console.log("Error"))

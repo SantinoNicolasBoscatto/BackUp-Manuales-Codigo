@@ -1,0 +1,16 @@
+.conn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ff0000; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    padding: 10px; /* Espaciado interno */
+    text-align: center;
+    font-size: 33px;
+    opacity: 0;
+    z-index: 8500;
+    transition: all .9s ease;
+    visibility: hidden;
+}
+

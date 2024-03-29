@@ -122,12 +122,20 @@
 
 import Alarma from "./Alarma.js";
 import Atajos from "./Atajos.js";
+import connection from "./Connection.js";
 import CountDown from "./Count.js";
 import DarkMode, { modos } from "./Dark-Mode.js";
 import MenuBurger from "./Menu.js";
 import Reloj from "./Reloj.js";
+import formu from "./Screen.js";
 import ScrollUp from "./Scroll.js";
+import Sortear from "./Sorteo.js";
+import WebCam from "./WebCam.js";
+import userDeviceInfo from "./device.js";
+import filtrar from "./filtro.js";
+import getGeolocalizacion from "./geo.js";
 import MoverPelota from "./pelota.js";
+import responsiveDesign from "./responsive.js";
 
 const d = document
 const checkMenu = d.querySelector(".menu");
@@ -142,36 +150,52 @@ const $startAlarma = d.querySelector(".alarma-start")
 const $stopAlarma = d.querySelector(".alarma-stop")
 $stopAlarma.setAttribute("disabled", "");
 const $audio = d.getElementById("mi-audio");
+const inputFiltrado = document.getElementById("filtrado")
 
-window.onload = function() {
-    let modoGuardado = localStorage.getItem('Mode');
-    if (modoGuardado === 'oscuro') {
-        document.body.classList.add('dark-mode');
-    }
+
+const autoScrollTop = ()=>{
+    scrollTo({
+        behavior: "smooth",
+        top: 0
+    })
 }
 
+// responsiveDesign("data-responsive", "four","(min-width: 900px)","Waskan Midnight", "ServiSex");
+responsiveDesign(`<iframe data-responsive width="480" height="270" src="https://www.youtube.com/embed/5V31a36oknA?si=sBhizdNQ35oAgPtq" title="YouTube video player" 
+frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`, `<a href="https://www.youtube.com/embed/5V31a36oknA?si=sBhizdNQ35oAgPtq" target="_blank">Wangan Midnight</a>`,
+"fc", "(min-width: 900px)")
 addEventListener("DOMContentLoaded", (e)=>{
     MenuBurger(".borde",".side", checkMenu,".scroll-container");
     Reloj(".reloj-start", $startReloj, $reloj, $stopReloj, ".reloj-stop");
     Alarma(".alarma-start", ".alarma-stop", $startAlarma, $stopAlarma, $audio);
     CountDown("Septiembre 30, 2024 17:50:33", ".cuenta");
     ScrollUp(".scroll-container");
-    // DarkMode(".dark-button", "h1", ".pelota-container",".scroll-container","body","p",".menu")
-    DarkMode(".dark-button", "data-dark", "dark-mode");
-    
-})
- 
+    formu("formulario");
+    userDeviceInfo("device");
+    WebCam(500,300,"wc");
+    Sortear(".sorteador", ".sorteo")
+    inputFiltrado.value = "";
 
+})
+DarkMode(".dark-button", "data-dark", "dark-mode");
+connection();
+getGeolocalizacion(".geo");
 addEventListener("keydown", (e)=>{
     Atajos(e);
     MoverPelota(e,".pelota-container");
 })
 
-window.onload = () =>{
-    console.log("E")
-    if(localStorage.getItem('Mode')!=="D") modos("data-dark", "dark-mode", document.querySelector(".dark-button"),
-    document.querySelector(`.dark-button i`));
-}
+
+inputFiltrado.addEventListener("input", (e)=>{
+    filtrar(e.target.value,".Card")
+})
+
+
+// addEventListener("click", e=>{
+//     PopUp(d.getElementById("url").value,".nw",".cw", d.getElementById("ancho").value, d.getElementById("alto").value,e)
+// })
+
 
 
 

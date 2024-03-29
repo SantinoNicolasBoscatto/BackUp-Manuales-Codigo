@@ -11,17 +11,24 @@
     <link rel="stylesheet" href="./CSS/pelota.css">
     <link rel="stylesheet" href="./CSS/CountDown.css">
     <link rel="stylesheet" href="./CSS/DarkMode.css">
+    <link rel="stylesheet" href="./CSS/connection.css">
+    <link rel="stylesheet" href="./CSS/card.css">
+    <link rel="stylesheet" href="./CSS/Sorteo.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
-<body style="margin: 0;" data-dark="data-dark">
+<body style="margin: 0; " data-dark="data-dark">
   <aside class="side" id="Sider" style="transform: translateX(-100%);">
     <nav>
       <ul class="navbar">
-        <li><a href="#first">Reloj Digital y Alarma Sonara</a></li>
-        <li><a href="#second">Pelota Fantastica</a></li>
-        <li><a href="#third">CountDown</a></li>
-        <li><a href="#four">Seccion 4</a></li>
-        <li><a href="#five">Seccion 5</a></li>
+        <li class="asideMenu"><a href="#first">Reloj Digital y Alarma Sonara</a></li>
+        <li class="asideMenu"><a href="#second">Pelota Fantastica</a></li>
+        <li class="asideMenu"><a href="#third">CountDown</a></li>
+        <li class="asideMenu"><a href="#four">Responsive Design</a></li>
+        <li class="asideMenu"><a href="#five">Responsive Tester</a></li>
+        <li class="asideMenu"><a href="#six">Device</a></li>
+        <li class="asideMenu"><a href="#seven">WebCam</a></li>
+        <li class="asideMenu"><a href="#eight">Geo</a></li>
+        <li class="asideMenu"><a href="#nine">Filtros</a></li>
       </ul>
     </nav>
   </aside>
@@ -66,28 +73,118 @@
       <p data-dark="data-dark" class="cuenta"></p>
     </section>
     <section id="four">
-      <h1 data-dark="data-dark">Seccion 4</h1>
+      <h1 data-dark="data-dark">Responsive Design</h1>
+      <div id="fc">
+
+      </div>        
     </section>
     <section id="five">
-      <h1 data-dark="data-dark">Seccion 5</h1>
+      <h1 data-dark="data-dark">Responsive Tester</h1>
+      
+      <form id="formulario">
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+          <div style="text-align: left; width: 25%; margin: 0; padding: 0;">
+            <label for="url" style="font-size: 16px; color: aliceblue; ">URL</label>
+            <input name="url" required id="url" type="url" value="" placeholder="url" style="padding: .5rem; width: 100%; margin-bottom: 1.75rem;display: block;">
+          </div>
+          <div style="text-align: left; width: 25%; margin: 0; padding: 0;">
+            <label for="ancho" style="font-size: 16px; color: aliceblue; ">Ancho</label>
+            <input name="ancho" id="ancho" type="text" value="" placeholder="Ancho" style="padding: .5rem; width: 100%; margin-bottom: 1.75rem;display: block;">
+          </div>
+          <div style="text-align: left; width: 25%; margin: 0; padding: 0;">
+            <label for="alto" style="font-size: 16px; color: aliceblue; ">Alto</label>
+            <input name="alto" id="alto" type="text" value="" placeholder="Alto" style="padding: .5rem; width: 100%; margin-bottom: 1.75rem;display: block;">
+          </div>
+      </div>
+      
+        <div style="display: flex; justify-content: center;">
+          <button name="op" type="submit" class="nw" style="margin-right: 1rem; padding: .5rem; width: 60px;">OPEN</button>
+          <button disabled name="close" type="button" class="cw" style="margin-left: 1rem; padding: .5rem; width: 60px;">CLOSE</button>
+        </div>
+      </form>
+    </section>
+    <section id="six">
+      <h1 data-dark="data-dark">User Agent</h1>
+      <div id="device">
+      </div>
+    </section>
+    <section id="seven">
+      <h1 data-dark="data-dark">Web Cam</h1>
+      <div id="wc">
+        
+      </div>
+    </section>
+    <section id="eight">
+      <h1 data-dark="data-dark">Geolocalizacion</h1>
+      <ul class="geo">
+            
+      </ul>
+    </section>
+    <section id="nine">
+      <h1 data-dark="data-dark" style="margin-bottom: 1rem;">Filtros</h1>
+      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="text-align: left; margin: 0; padding: 0;">
+          <label for="filtrado" style="font-size: 1rem; color: white; display: block;">filtro</label>
+          <input type="search" name="filtro" id="filtrado" style="display: block; width: 20rem; margin-top: .3rem;
+          margin-bottom: 1rem; font-size: 1rem;" placeholder="search player">
+        </div>
+      </div>
+      <div id="cartas" class="c-container">
+        <div class="Card">
+          <img src="https://preview.redd.it/w25pnfnwtxk41.png?width=640&crop=smart&auto=webp&s=431221c8936da646146417391ef9078faf13ddc7" alt="" class="ic">
+          <h5 class="sph5">Pepe Argento Prime 95</h5>
+        </div>
+        <div class="Card">
+          <img src="https://cdn.resfu.com/media/img_news/posible-carta-fut-heroes-de-peter-crouch-en-fifa-23--twitter-fifa-romania.jpg" alt="" class="ic">
+          <h5 class="sph5">Peter "Crazy" Crouchy</h5>
+        </div>
+        <div class="Card">
+          <img src="https://i.ytimg.com/vi/j43RpJ0xFro/hqdefault.jpg" alt="" class="ic">
+          <h5 class="sph5">CR7 Toty</h5>
+        </div>
+        <div class="Card">
+          <img src="./img/ettjgvbs.bmp" alt="" class="ic">
+          <h5 class="sph5">Messi</h5>
+        </div>
+        <div class="Card">
+          <img src="https://fifadataba.com/images/cards/31554.png" alt="" class="ic">
+          <h5 class="sph5">Guido Sexo</h5>
+        </div>
+        <div class="Card">
+          <img src="https://i.ytimg.com/vi/ZmbsxOrAXv0/hqdefault.jpg" alt="" class="ic">
+          <h5 class="sph5">Ibargol</h5>
+        </div>
+        <div class="Card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOz9d1pvlZjPSM4SR2CYlT8TYuycuWZ7AE_XslIkhhyH6opF61GYFlmoNSx16hbQWbeys&usqp=CAU" alt="" class="ic">
+          <h5 class="sph5">Dayro Tots</h5>
+        </div>
+        <div class="Card">
+          <img src="https://pbs.twimg.com/media/FkXhqHzWIAIOp85.jpg:large" alt="" class="ic">
+          <h5 class="sph5">THE GOAT</h5>
+        </div>
+      </div>
+    </section>
+    <section id="ten">
+      <h1 data-dark="data-dark">Sorteo</h1>
+      <ul class="sorteo">
+        <li>Java</li>
+        <li>C</li>
+        <li>C++</li>
+        <li>C#</li>
+        <li>JavaScript</li>
+        <li>Rust</li>
+        <li>Go</li>
+        <li>Python</li>
+        <li>PHP</li>
+        <li>Ruby</li>
+        <button class="sorteador">Sortear</button>
+      </ul>     
     </section>
   </main>
   <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>
   <script src="./JS/dom.js" type="module"></script> 
-  <!-- <script>
-    addEventListener("mouseover", (e)=>{
-      if(e.target.matches(".prueba")){
-        const $nav = e.target;
-        $nav.style.opacity = "1"
-      }
-    })
-
-    addEventListener("mouseout", (e)=>{
-      if(e.target.matches(".prueba")){
-        const $nav = e.target;
-        $nav.style.opacity = "0"
-      }
-    })
-  </script>  -->
+  <script>
+    
+</script>
 </body>
 </html>
