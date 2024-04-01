@@ -1,0 +1,131 @@
+#Eleven{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+#Carousel{
+    margin: 0 8vw;
+    margin-bottom: 2rem;
+    padding: .5rem 10vw;
+    background-color: rgb(214, 11, 136);
+    border-radius: 15px;
+    position: relative;
+    max-width: 900px;
+    
+}
+
+
+.pes{
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    min-width: 420px;
+    max-width: 420px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 3px white solid ;
+}
+
+.slide{
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .5s ease, visibility .3s ease, transform .7s ease;
+    position: relative;
+    left: 40%;
+    justify-content: center;
+    overflow: hidden;
+    transform: rotateZ(25deg);
+}
+
+.slide:first-child{
+    visibility: visible;
+    opacity: 1;
+    display: flex;
+    left: 0%;
+    transform: rotateZ(0deg);
+}
+
+.back{
+    position: absolute;
+    top: 45%;
+    left: .33rem;
+    z-index: 8000;
+    border-radius: 50%;
+    background-color: white;
+    padding: .8rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.next{
+    position: absolute;
+    top: 45%;
+    right: .3rem;
+    z-index: 8000;
+    border-radius: 50%;
+    background-color: white;
+    padding: .8rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.back i{
+    margin-right: .2rem;
+}
+.next i{
+    margin-left: .2rem;
+}
+
+.next:hover, .back:hover{
+    background-color: gainsboro; 
+}
+
+@media (min-width: 577px) and (max-width: 767px) {
+    .back, .next{
+        width: 1.25rem;
+        height:  1.25rem;
+
+    }
+
+    .fa-forward, .fa-backward{
+        width: 20px;
+        height: 20px;
+        font-size: 60%;
+    }
+}
+
+@media (min-width: 290px) and (max-width: 576px){
+    #Carousel{
+        margin: 0 3vw;
+        padding: .5rem 15vw;
+    }
+    
+    .back, .next{
+        width: .75rem;
+        height:  .75rem;
+
+    }
+
+    .back{
+        left: .1rem;
+    }
+
+    .next{
+        right: .1rem;
+    }
+
+    .fa-forward, .fa-backward{
+        width: 16px;
+        height: 16px;
+        font-size: 50%;
+    }
+}
+  

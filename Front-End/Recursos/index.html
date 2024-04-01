@@ -14,10 +14,11 @@
     <link rel="stylesheet" href="./CSS/connection.css">
     <link rel="stylesheet" href="./CSS/card.css">
     <link rel="stylesheet" href="./CSS/Sorteo.css">
+    <link rel="stylesheet" href="./CSS/Carousel.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
 <body style="margin: 0; " data-dark="data-dark">
-  <aside class="side" id="Sider" style="transform: translateX(-100%);">
+  <aside class="side" id="Sider">
     <nav>
       <ul class="navbar">
         <li class="asideMenu"><a href="#first">Reloj Digital y Alarma Sonara</a></li>
@@ -50,7 +51,7 @@
     <section id="first">
       <h1 data-dark="data-dark">Reloj Digital y Alarma Sonara</h1> 
       <p style="display: block;" id="Timer">Timer</p> 
-      <div class="reloj-container">
+      <div class="reloj-container" data-spy>
         <button type="submit" class="reloj-start verde"><span>Empezar Reloj</span></button>
         <button type="submit" class="reloj-stop rojo"><span>Detener Reloj</span></button>
         <button type="submit" class="alarma-start verde"><span>Empezar Alarma</span></button>
@@ -63,25 +64,25 @@
     <section id="second">
       <h1 data-dark="data-dark">Pelota Fantastica</h1>
       <div>
-        <div class="pelota-container" data-dark="data-dark">
+        <div class="pelota-container" data-dark="data-dark" data-spy>
           <div class="Pelota"></div>
         </div>
       </div>
     </section>
     <section id="third">
       <h1 data-dark="data-dark">CountDown</h1>
-      <p data-dark="data-dark" class="cuenta"></p>
+      <p data-dark="data-dark" class="cuenta" data-spy></p>
     </section>
     <section id="four">
       <h1 data-dark="data-dark">Responsive Design</h1>
-      <div id="fc">
+      <div id="fc" data-spy>
 
       </div>        
     </section>
     <section id="five">
       <h1 data-dark="data-dark">Responsive Tester</h1>
       
-      <form id="formulario">
+      <form id="formulario" data-spy>
         <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
           <div style="text-align: left; width: 25%; margin: 0; padding: 0;">
             <label for="url" style="font-size: 16px; color: aliceblue; ">URL</label>
@@ -105,18 +106,18 @@
     </section>
     <section id="six">
       <h1 data-dark="data-dark">User Agent</h1>
-      <div id="device">
+      <div id="device" data-spy>
       </div>
     </section>
     <section id="seven">
       <h1 data-dark="data-dark">Web Cam</h1>
-      <div id="wc">
+      <div id="wc" data-spy>
         
       </div>
     </section>
     <section id="eight">
       <h1 data-dark="data-dark">Geolocalizacion</h1>
-      <ul class="geo">
+      <ul class="geo" data-spy>
             
       </ul>
     </section>
@@ -125,7 +126,7 @@
       <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <div style="text-align: left; margin: 0; padding: 0;">
           <label for="filtrado" style="font-size: 1rem; color: white; display: block;">filtro</label>
-          <input type="search" name="filtro" id="filtrado" style="display: block; width: 20rem; margin-top: .3rem;
+          <input data-spy type="search" name="filtro" id="filtrado" style="display: block; width: 20rem; margin-top: .3rem;
           margin-bottom: 1rem; font-size: 1rem;" placeholder="search player">
         </div>
       </div>
@@ -166,7 +167,7 @@
     </section>
     <section id="ten">
       <h1 data-dark="data-dark">Sorteo</h1>
-      <ul class="sorteo">
+      <ul class="sorteo" data-spy>
         <li>Java</li>
         <li>C</li>
         <li>C++</li>
@@ -179,6 +180,34 @@
         <li>Ruby</li>
         <button class="sorteador">Sortear</button>
       </ul>     
+    </section>
+    <section id="Eleven">
+      <h1 data-dark="data-dark">Carousel Responsive</h1>
+      <div id="Carousel" data-spy>
+        <div class="slide">
+          <img src="img/L. MESSI.png" alt="" class="pes fc">
+        </div>
+        <div class="slide">
+          <img src="img/D. MARADONA.png" alt="" class="pes">
+        </div>
+        <div class="slide">
+          <img src="img/P. KLUIVERT.png" alt="" class="pes">
+        </div>
+        <div class="slide">
+          <img src="img/G. BATISTUTA.png" alt="" class="pes">
+        </div>
+        <div class="slide">
+          <img src="img/S. GERRARD.png" alt="" class="pes">
+        </div>
+        <div class="slide">
+          <img src="img/P. ČECH.png" alt="" class="pes">
+        </div>
+        <div class="slide">
+          <img src="img/Goat.jpg" alt="" class="pes">
+        </div>
+        <div class="back"><i class="fa-solid fa-backward"></i></div>
+        <div class="next"><i class="fa-solid fa-forward"></i></div>
+      </div>
     </section>
   </main>
   <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>

@@ -10,7 +10,7 @@
     align-items: center;
     width: 58px;
     height: 58px;
-    right: calc(2vw + 3.33rem);
+    left: calc(2vw + 3.50rem);
     bottom: 2.5vh;
     border-radius: 50%;
     background-color: rgb(255, 238, 0);
@@ -41,4 +41,3 @@ i{
 button{
     padding: 0;
 }
-

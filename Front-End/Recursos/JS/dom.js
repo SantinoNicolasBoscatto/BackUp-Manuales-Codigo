@@ -136,6 +136,7 @@ import filtrar from "./filtro.js";
 import getGeolocalizacion from "./geo.js";
 import MoverPelota from "./pelota.js";
 import responsiveDesign from "./responsive.js";
+import ResponsiveSlider from "./ResponsiveSlider.js";
 
 const d = document
 const checkMenu = d.querySelector(".menu");
@@ -159,6 +160,13 @@ const autoScrollTop = ()=>{
         top: 0
     })
 }
+function sideAjuste(menuSide){
+    if(window.innerWidth<1024)
+        menuSide.style.transform = "translateX(-100%)"
+    else
+        menuSide.removeAttribute("style")
+}
+
 
 // responsiveDesign("data-responsive", "four","(min-width: 900px)","Waskan Midnight", "ServiSex");
 responsiveDesign(`<iframe data-responsive width="480" height="270" src="https://www.youtube.com/embed/5V31a36oknA?si=sBhizdNQ35oAgPtq" title="YouTube video player" 
@@ -166,6 +174,7 @@ frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media
 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`, `<a href="https://www.youtube.com/embed/5V31a36oknA?si=sBhizdNQ35oAgPtq" target="_blank">Wangan Midnight</a>`,
 "fc", "(min-width: 900px)")
 addEventListener("DOMContentLoaded", (e)=>{
+    sideAjuste($menuSide);
     MenuBurger(".borde",".side", checkMenu,".scroll-container");
     Reloj(".reloj-start", $startReloj, $reloj, $stopReloj, ".reloj-stop");
     Alarma(".alarma-start", ".alarma-stop", $startAlarma, $stopAlarma, $audio);
@@ -175,6 +184,7 @@ addEventListener("DOMContentLoaded", (e)=>{
     userDeviceInfo("device");
     WebCam(500,300,"wc");
     Sortear(".sorteador", ".sorteo")
+    ResponsiveSlider(".slide",".next",".back")
     inputFiltrado.value = "";
 
 })
@@ -185,17 +195,29 @@ addEventListener("keydown", (e)=>{
     Atajos(e);
     MoverPelota(e,".pelota-container");
 })
-
-
 inputFiltrado.addEventListener("input", (e)=>{
     filtrar(e.target.value,".Card")
 })
 
+const $menuSide = document.querySelector(".side");
+window.addEventListener("resize", e=>{
+    sideAjuste($menuSide);
+})
 
-// addEventListener("click", e=>{
-//     PopUp(d.getElementById("url").value,".nw",".cw", d.getElementById("ancho").value, d.getElementById("alto").value,e)
-// })
 
+
+let observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log(entry.target);
+          console.log(entry.target.closest('section'))
+        } 
+      });
+});
+let elementoObjetivo = document.querySelectorAll('[data-spy]');
+elementoObjetivo.forEach(el =>{
+    observer.observe(el);
+})
 
 
 

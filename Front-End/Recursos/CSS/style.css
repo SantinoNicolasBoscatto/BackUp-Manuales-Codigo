@@ -25,6 +25,8 @@ section{
 
 h1{
     color: gainsboro;
+    margin-top: 0;
+    padding-top: 1.5rem;
 }
 
 iframe{
