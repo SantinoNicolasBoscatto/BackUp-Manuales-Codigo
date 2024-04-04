@@ -9,17 +9,17 @@
 } */
 .c-container{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(275px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(175px,1fr));
     justify-items: center; /* Alinea horizontalmente al centro */
     align-items: center; 
 }
 
 .Card{
-    width: 200px;
-    height: 275px;
+    width: 150px;
+    height: 175px;
     background-color: blue;
     margin: 1rem;
-    padding: 1.5rem 0;
+    padding: 1rem 0;
     border-radius: 10px;
     transition: all .5s ease-in;
 }
@@ -34,10 +34,11 @@
 }
 
 .sph5{
-    margin: 0 1rem;
+    margin: 0 .8rem;
     color: white;
     text-wrap: wrap;
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    font-size: 1rem;
 }
 
 .ocultar{

@@ -6,7 +6,8 @@
     position: fixed;
     top: 0;
     overflow-y: scroll;
-    transform: translateX(85.5vw);
+    justify-self: end;
+    transform: translateX(2vw);
 }
 
 .navbar{
@@ -32,28 +33,34 @@ li.asideMenu {
 }
 li a{
     text-decoration: none;
-    font-size: 1rem;
+    font-size: .9rem;
     letter-spacing: 0;
     color: yellow;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: bold;
     transition: color .3s;
     display: block;
-    padding: 15px 0;
+    padding: 15px 10px;
     background-color: "";
 }
-li a:hover{
+li a:hover,
+.ancorActive{
     color: #222;
     background-color: rgba(255,255,0, .9);
 }
 aside{
-    opacity: 0;
+    opacity: 1;
     transition: opacity .3s;
 }
 
 aside:hover {
     opacity: 1;
 }
+
+/* .ancorActive{
+    color: #222;
+    background-color: rgba(255,255,0, .9);
+} */
 
 @media screen and (max-width: 1023px) {
     aside {
@@ -62,7 +69,7 @@ aside:hover {
     .side{
         z-index: 9000;
         background-color: rgba(34, 34, 34, .9);
-        width: 100%;
+        width: 100vw;
         height: 100vh;
         position: fixed;
         top: 0;

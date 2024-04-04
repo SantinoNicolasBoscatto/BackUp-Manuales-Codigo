@@ -1,6 +1,5 @@
 export default function MenuBurger(borde = ".borde", side =".side", checkMenu, scrollbtn=".scroll-container"){
     addEventListener("click", (e) =>{
-      console.log(window.innerWidth)
         if(window.innerWidth<1024){
           if(e.target.matches(borde) || e.target.matches(`${borde} *`) ){
             const $side = document.querySelector(".side");

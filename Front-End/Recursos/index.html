@@ -15,43 +15,36 @@
     <link rel="stylesheet" href="./CSS/card.css">
     <link rel="stylesheet" href="./CSS/Sorteo.css">
     <link rel="stylesheet" href="./CSS/Carousel.css">
+    <link rel="stylesheet" href="./CSS/video.css">
+    <link rel="stylesheet" href="./CSS/form.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
 <body style="margin: 0; " data-dark="data-dark">
+
   <aside class="side" id="Sider">
     <nav>
       <ul class="navbar">
-        <li class="asideMenu"><a href="#first">Reloj Digital y Alarma Sonara</a></li>
-        <li class="asideMenu"><a href="#second">Pelota Fantastica</a></li>
-        <li class="asideMenu"><a href="#third">CountDown</a></li>
-        <li class="asideMenu"><a href="#four">Responsive Design</a></li>
-        <li class="asideMenu"><a href="#five">Responsive Tester</a></li>
-        <li class="asideMenu"><a href="#six">Device</a></li>
-        <li class="asideMenu"><a href="#seven">WebCam</a></li>
-        <li class="asideMenu"><a href="#eight">Geo</a></li>
-        <li class="asideMenu"><a href="#nine">Filtros</a></li>
+        <li class="asideMenu"><a href="#first" data-anchor>Reloj Digital y Alarma Sonara</a></li>
+        <li class="asideMenu"><a href="#second" data-anchor>Pelota Fantastica</a></li>
+        <li class="asideMenu"><a href="#third" data-anchor>CountDown</a></li>
+        <li class="asideMenu"><a href="#four" data-anchor>Responsive Design</a></li>
+        <li class="asideMenu"><a href="#five" data-anchor>Responsive Tester</a></li>
+        <li class="asideMenu"><a href="#six" data-anchor>Device</a></li>
+        <li class="asideMenu"><a href="#seven" data-anchor>WebCam</a></li>
+        <li class="asideMenu"><a href="#eight" data-anchor>Geo</a></li>
+        <li class="asideMenu"><a href="#nine" data-anchor>Filtros</a></li>
+        <li class="asideMenu"><a href="#ten" data-anchor>Sorteo</a></li>
+        <li class="asideMenu"><a href="#Eleven" data-anchor>Carousel Responsive</a></li>
+        <li class="asideMenu"><a href="#twelve" data-anchor>Video Inteligente</a></li>
+        <li class="asideMenu"><a href="#trece" data-anchor>Formulario de Contacto</a></li>
       </ul>
     </nav>
   </aside>
-  <div class="borde">
-    <input type="checkbox" role="button" aria-label="Display the menu" class="menu"  data-dark="data-dark">
-  </div>
-
-  <button class="dark-button light">
-    <!-- <i class="fa-solid fa-moon fa-2x"></i> -->
-    <i class="fa-solid fa-sun fa-2x"></i>
-  </button>
-  
-
-  <button class="scroll-container scroll-hidden"  data-dark="data-dark"> 
-    <i class="fa-sharp fa-solid fa-house fa-2x"></i>
-  </button>
-  
   <main>
-    <section id="first">
+    <section id="first" data-spy="0">
       <h1 data-dark="data-dark">Reloj Digital y Alarma Sonara</h1> 
       <p style="display: block;" id="Timer">Timer</p> 
-      <div class="reloj-container" data-spy>
+      <div class="reloj-container" >
         <button type="submit" class="reloj-start verde"><span>Empezar Reloj</span></button>
         <button type="submit" class="reloj-stop rojo"><span>Detener Reloj</span></button>
         <button type="submit" class="alarma-start verde"><span>Empezar Alarma</span></button>
@@ -61,28 +54,28 @@
         </audio>
       </div>
     </section>
-    <section id="second">
+    <section id="second" data-spy="1">
       <h1 data-dark="data-dark">Pelota Fantastica</h1>
       <div>
-        <div class="pelota-container" data-dark="data-dark" data-spy>
+        <div class="pelota-container" data-dark="data-dark" >
           <div class="Pelota"></div>
         </div>
       </div>
     </section>
-    <section id="third">
+    <section id="third" data-spy="2">
       <h1 data-dark="data-dark">CountDown</h1>
-      <p data-dark="data-dark" class="cuenta" data-spy></p>
+      <p data-dark="data-dark" class="cuenta" ></p>
     </section>
-    <section id="four">
+    <section id="four" data-spy="3">
       <h1 data-dark="data-dark">Responsive Design</h1>
-      <div id="fc" data-spy>
+      <div id="fc" >
 
       </div>        
     </section>
-    <section id="five">
+    <section id="five" data-spy="4">
       <h1 data-dark="data-dark">Responsive Tester</h1>
       
-      <form id="formulario" data-spy>
+      <form id="formulario" >
         <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
           <div style="text-align: left; width: 25%; margin: 0; padding: 0;">
             <label for="url" style="font-size: 16px; color: aliceblue; ">URL</label>
@@ -104,29 +97,29 @@
         </div>
       </form>
     </section>
-    <section id="six">
+    <section id="six" data-spy="5">
       <h1 data-dark="data-dark">User Agent</h1>
-      <div id="device" data-spy>
+      <div id="device" >
       </div>
     </section>
-    <section id="seven">
+    <section id="seven" data-spy="6"> 
       <h1 data-dark="data-dark">Web Cam</h1>
-      <div id="wc" data-spy>
+      <div id="wc" >
         
       </div>
     </section>
-    <section id="eight">
+    <section id="eight" data-spy="7">
       <h1 data-dark="data-dark">Geolocalizacion</h1>
-      <ul class="geo" data-spy>
+      <ul class="geo" >
             
       </ul>
     </section>
-    <section id="nine">
-      <h1 data-dark="data-dark" style="margin-bottom: 1rem;">Filtros</h1>
-      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <section id="nine" data-spy="8">
+      <h1 data-dark="data-dark" style="margin-bottom: 1rem;" >Filtros</h1>
+      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;"  >
         <div style="text-align: left; margin: 0; padding: 0;">
           <label for="filtrado" style="font-size: 1rem; color: white; display: block;">filtro</label>
-          <input data-spy type="search" name="filtro" id="filtrado" style="display: block; width: 20rem; margin-top: .3rem;
+          <input  type="search" name="filtro" id="filtrado" style="display: block; width: 20rem; margin-top: .3rem;
           margin-bottom: 1rem; font-size: 1rem;" placeholder="search player">
         </div>
       </div>
@@ -165,9 +158,9 @@
         </div>
       </div>
     </section>
-    <section id="ten">
+    <section id="ten" data-spy="9">
       <h1 data-dark="data-dark">Sorteo</h1>
-      <ul class="sorteo" data-spy>
+      <ul class="sorteo" >
         <li>Java</li>
         <li>C</li>
         <li>C++</li>
@@ -181,9 +174,9 @@
         <button class="sorteador">Sortear</button>
       </ul>     
     </section>
-    <section id="Eleven">
+    <section id="Eleven" data-spy="10">
       <h1 data-dark="data-dark">Carousel Responsive</h1>
-      <div id="Carousel" data-spy>
+      <div id="Carousel" >
         <div class="slide">
           <img src="img/L. MESSI.png" alt="" class="pes fc">
         </div>
@@ -209,11 +202,50 @@
         <div class="next"><i class="fa-solid fa-forward"></i></div>
       </div>
     </section>
+    <section id="twelve" data-spy="11">
+      <h1 data-dark="data-dark">Video Inteligente</h1>
+      <video src="img/SB.mp4" controls class="myVideo" data-video style="margin-bottom: 3em;"
+      muted></video>
+      <video src="img/zava.mp4" controls class="myVideo" data-video style="margin-bottom: 3em;"
+      muted></video>
+    </section>
+    <section id="trece" data-spy="12">
+      <h1 data-dark="data-dark">Formulario de Contacto</h1>
+      <form action="" id="contacto" data-contacto>
+        <input type="text" class="miFormulario incorrecto" name="nombre" id="nombre" required placeholder="Nombre">
+        <span class="sform" name="sn">Escribe tu Nombre</span>
+        <input type="email" class="miFormulario incorrecto" name="email" id="email" required placeholder="Email">
+        <span  class="sform" name="se">Escribe tu Email</span>
+        <input type="text" class="miFormulario incorrecto" name="asunto" id="asunto" required placeholder="Asunto">
+        <span  class="sform" name="sa">Escribe El Asunto</span>
+        <textarea cols="20" rows="5" name="coment" id="coment" class="miFormulario"></textarea>
+        <span  class="sform" name="sc">Maximo 33 Caracteres</span>
+        <button type="submit" class="formButt">Enviar</button>
+        <div class="none">
+          <img class="loader" src="./img/circles.svg" alt="">
+        </div>
+        <div class="contacto none">
+          <p>Los Datos han sido enviados</p>
+        </div>
+      </form>
+    </section>
   </main>
+  <div class="borde">
+    <input type="checkbox" role="button" aria-label="Display the menu" class="menu"  data-dark="data-dark">
+  </div>
+
+    <button class="dark-button light">
+      <i class="fa-solid fa-sun fa-2x"></i>
+    </button>
+    <button class="scroll-container scroll-hidden"  data-dark="data-dark"> 
+      <i class="fa-sharp fa-solid fa-house fa-2x"></i>
+    </button>  
+  
+  
+
   <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>
   <script src="./JS/dom.js" type="module"></script> 
-  <script>
-    
+  <script> 
 </script>
 </body>
 </html>

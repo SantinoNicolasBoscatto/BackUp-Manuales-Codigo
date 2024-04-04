@@ -62,7 +62,7 @@ const Intervalo = (clase)=>{
     if(!bdInterval) bdInterval = true;
     myInterval = setInterval(() => {
         Next(clase)
-    }, 50000);
+    }, 3000);
 }
 
 export default function ResponsiveSlider(clase=".slide",next=".next",back=".back"){

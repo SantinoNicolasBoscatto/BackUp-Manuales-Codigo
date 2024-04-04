@@ -137,6 +137,9 @@ import getGeolocalizacion from "./geo.js";
 import MoverPelota from "./pelota.js";
 import responsiveDesign from "./responsive.js";
 import ResponsiveSlider from "./ResponsiveSlider.js";
+import ScrollSpy from "./Spy.js";
+import ReproducirVideo from "./video.js";
+import validarFormulario from "./myForm.js";
 
 const d = document
 const checkMenu = d.querySelector(".menu");
@@ -161,10 +164,15 @@ const autoScrollTop = ()=>{
     })
 }
 function sideAjuste(menuSide){
-    if(window.innerWidth<1024)
+    if(menuSide.getAttribute("style")===null){
+        console.log(menuSide.getAttribute("style"))
+        if(window.innerWidth<1024)
         menuSide.style.transform = "translateX(-100%)"
-    else
+    
+    }
+    else if(window.innerWidth>1024)
         menuSide.removeAttribute("style")
+    
 }
 
 
@@ -185,12 +193,18 @@ addEventListener("DOMContentLoaded", (e)=>{
     WebCam(500,300,"wc");
     Sortear(".sorteador", ".sorteo")
     ResponsiveSlider(".slide",".next",".back")
+    ScrollSpy();
+    ReproducirVideo();
+
     inputFiltrado.value = "";
 
 })
 DarkMode(".dark-button", "data-dark", "dark-mode");
 connection();
 getGeolocalizacion(".geo");
+validarFormulario();
+
+
 addEventListener("keydown", (e)=>{
     Atajos(e);
     MoverPelota(e,".pelota-container");
@@ -206,18 +220,8 @@ window.addEventListener("resize", e=>{
 
 
 
-let observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          console.log(entry.target);
-          console.log(entry.target.closest('section'))
-        } 
-      });
-});
-let elementoObjetivo = document.querySelectorAll('[data-spy]');
-elementoObjetivo.forEach(el =>{
-    observer.observe(el);
-})
+
+
 
 
 

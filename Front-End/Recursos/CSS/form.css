@@ -1,0 +1,71 @@
+.miFormulario{
+    display: block;
+    margin: auto;
+    width: 50%;
+    margin-bottom: 0;
+    font-size: 1rem;
+    padding: .5rem;
+    outline: 1px solid rgb(0, 255, 0);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.formButt{
+    padding: 7px 1rem;
+    font-size: 1rem;
+    margin-top: 0;
+    margin-bottom: .5rem;
+    display: block;
+    margin: auto;
+    width: 30%;
+    background-color: blue;
+    color: wheat;
+    transition: all .3s;
+}
+
+.formButt:hover{
+    background-color: rgb(9, 9, 158);
+    color: white;
+}
+
+.sform{    
+    display: block;
+    width: 50%;
+    padding: .2rem .55rem;
+    outline: 2px gainsboro solid;
+    background-color: red;
+    margin: auto;
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 1rem;
+    color: white;
+    visibility: hidden;
+    opacity: 0;
+    transition: all .8s;
+}
+
+.visibleF{
+    visibility: visible;
+    opacity: 1;
+    margin-bottom: 1.5rem;
+}
+
+.incorrecto{
+    outline: 2px solid red;
+}
+
+textarea{
+    resize: none;
+}
+
+.loader{
+    width: 30px;
+    display: block;
+    margin: 1rem auto;  
+}
+
+.none{
+    visibility: hidden;
+    opacity: 0;
+    display: none;
+}
+

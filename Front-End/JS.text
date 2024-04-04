@@ -1436,6 +1436,11 @@ addEventListener("resize", (e)=>{
         else d.getElementById(position).innerHTML = mobile;
     })
 
+3) atributo title HTML: Este atributo me permite poner un mensaje personalizado si salta la validacion del pattern.
+
+4) atributo pattern HTML: Este atributo me permite colocarle una RegExp para validar si el campo esta rellenado correctamente con una 
+RegExp.
+
                                                     61) Manejar Forms desde JS
 
 1) Para utilizar el evento sumbit debo pasarle el form donde se produjo el submit y no el boton que lo realizo.
@@ -1505,4 +1510,15 @@ el srcObject del video y el autoplay en true.
         $video.autoplay = true;
         $padre.appendChild($video);
      })
-     .catch(()=>console.log("Error"))
+.catch(()=>console.log("Error"));
+
+                                                    64) IntersectionObserver
+
+1) Este es un objeto de JS que me permite saber cuando se esta viendo un objeto en pantalla, este recibe una callback que evaluara que 
+hacer si los elementos son y no visibles y un objeto de opciones.
+
+2) options: este es el objeto opcional que podemos configurar al IntersectionObserver, este tiene 2 propiedades: 
+            2.1) rootMargin: USELESS 2.2) thresholds: me permite configurar al igual que rootMargin cuanta parte del elemento debe 
+            estar visible para considerar que esta intersecionando, la ventaja contra rootMargin es que lo hace en porcentaje Y
+            no px.
+

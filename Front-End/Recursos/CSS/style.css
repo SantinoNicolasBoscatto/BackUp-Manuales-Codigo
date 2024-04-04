@@ -19,14 +19,14 @@ img{
 
 section{
     min-height: 100vh;
+    max-height: 500vh;
     text-align: center;
     font-size: 2rem;
 }
 
 h1{
     color: gainsboro;
-    margin-top: 0;
-    padding-top: 1.5rem;
+    margin-top: 10px;
 }
 
 iframe{
@@ -36,5 +36,25 @@ iframe{
 }
 
 
-
+@media screen and (min-width: 1024px) {
+    body{
+        display: grid;
+        grid-template-columns: 86.5% 15%;
+        grid-template-rows: 4rem auto;
+        grid-template-areas: 
+        "main aside"
+    }
+    main{
+        grid-area: main;
+    }
+    aside{
+        grid-area: aside;
+    }
+    section{
+        min-height: 100vh;
+        max-height: 150vh;
+        text-align: center;
+        font-size: 2rem;
+    }
+}
   
