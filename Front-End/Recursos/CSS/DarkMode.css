@@ -33,6 +33,10 @@ h1.dark-mode, p.dark-mode{
     color: #000;
 }
 
+p{
+    color: white;
+}
+
 body.dark-mode{
     background-color: #fff;
 }
@@ -49,5 +53,7 @@ body.dark-mode{
 .menu.dark-mode{
     --c: black;
 }
+
+
 
 

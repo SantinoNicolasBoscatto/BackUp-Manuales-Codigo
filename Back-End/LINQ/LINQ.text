@@ -1,0 +1,253 @@
+
+1) LINQ: Lenguaje de Consulta Integrado.
+
+1.1) Este nos facilita el buscar elementos de una coleccion de elementos, en vez de hacer el filtrado de elementos de una lista con foreach
+lo puedo hacer con LINQ. Estas tienen una sintaxis similar a SQL, aunque con ligero cambios. Las operaciones de LINQ siempre van a devolver 
+un IEnumerable.
+
+                                                            1) FILTROS LINQ
+
+1) EJEMPLO CON WHERE: string[] array = new string[] {"perro", "gato, "canario"};
+              IEnumerable<string> lista = from arr in array
+                                           where arr.length > 4
+                                           select arr;
+
+1.1)  Como funciona El LINQ es poniendo un sobre nombre a cada item (from arr) y apuntando sobre que lista va a tomar los datos (in array)
+luego opcionalmente puedo colocar el where para realizar un filtrado usando de referencia el nombre de cada item y por ultimo luego del 
+filtrado haremos un SELECT.
+
+2) EJEMPLO CON JOIN: var enumH = from lh in listHabitante 
+                     join lc in listCasas 
+                     on lh.IdCasa equals lc.IdCasa
+                     where lc.Ciudad =="Madrid"
+                     select lh;
+
+3) CLAUSULAS first() o firstOrDefault(): Con esta clausula pido el primer elemento de una lista y con firstOrDefault el primero o un valor 
+por defecto si no encuentra nada. El inconveniete de FIRST es que el no encontrar el primer elemento genera una excepcion.
+
+3.1) EJEMPLO firstOrDefault(): var primeraCasa = listCasas.FirstOrDefault<Casa>(); 
+3.2) EJEMPLO First(): var primeraCasa = listCasas.first();
+
+4) CLAUSULAS last() o lastOrDefault(): Es practicamente identico a las clausulas first solo que seleccionan el ultimo elemento.
+
+5) CLAUSULAS ElementAt() y ElementAtOrDefault(): Estas Clausulas me permiten agarrar un elemento en una determinada posicion, por ejemplo
+puedo agarrar el quinto elemento de un array. La unica diferencia entre ambos es que si no encuentrar el primero tirar una excepcion y el 
+segundo devuelve null.
+
+5.1) EJEMPLO ElementAt(): var tercerHabitante = listHabitante.ElementAt(2);
+5.2) EJEMPLO ElementAtOrDefault(): var tercerHabitante = listHabitante.ElementAtOrDefault(2);
+
+6) CLAUSULAS Single() y SingleOrDefault(): Con esta clausula hay que tener cuidado ya que solo devuelve un resultado o null si no encuentra
+con SingleOrDefault(). Pero Si encuentra mas de un resultado dara lugar a una excepcion, por eso es bueno tenerla siempre en un try-catch.
+
+6.1) EJEMPLO Single(): var hab = listHabitante.Single(h=>h.IdHabitante==33);
+6.2) EJEMPLO SingleOrDefault(): var hab = listHabitante.SingleOrDefault(h=>h.IdHabitante==33);
+
+7) Clausula OfType(): Me permite traer objetos distintos que heredan del mismo padre.
+
+7.1) var listAnimal = new list<Animal>(){new Perro(){nombre="Pichi"}, new Gato(){nombre="Miki"}}
+     var animal = listAnimal.OfType<Perro>()
+
+
+                                                            2) Ordenacion
+
+1) Clausulas OrderBy() y OrderByDescending(): Estas clausulas me permiten ordenar una lista de forma ascendente y descendente segun un 
+parametro.
+
+1.1) EJEMPLO OrderBy(): var lh = listHabitante.Where(l=> l.Edad>25).OrderBy(l=>l.Edad)
+1.2) EJEMPLO OrderByDescending(): var lh = listHabitante.Where(l=> l.Edad>25).OrderByDescending(l=>l.Edad)
+1.3) var lh = from h in listHabitante where h.Edad>25 orderby h.Edad descending
+
+2) Clausula ThenBy() y ThenByDescending(): Estas se combinan con las clausulas OrderBy() y OrderByDescending() en los casos de que quiera
+poner un segundo metodo de ordenamiento. Puedo poner tantos OrderBy como quiera.
+
+1.1) var listaOrdenada = listHabitante.Where(h=>h.Edad>25).OrderByDescending(h=>h.Edad).ThenBy(h=>h.Nombre)
+1.2) var listaOrdenada = listHabitante.Where(h=>h.Edad>25).OrderByDescending(h=>h.Edad).ThenByDescending(h=>h.Nombre)
+
+                                                3) Escalares, Cuantificadores y Proyecciones
+
+1) Max() y MaxBy(): Ambos buscan el maximo valor de un atributo de un objeto y lo devulve, la diferencia es que MAX() solo devuelve el 
+valor del atributo el cual buscamos y MaxBy() devuelve el objeto entero.
+
+1.1) Console.WriteLine($"{listHabitante.Max(h=>h.Edad)}") // Imprime 78
+1.2) Console.WriteLine($"{listHabitante.MaxBy(h=>h.Edad)}") // Imprime un objeto
+
+2) Min() y MinBy(): Exactamente igual a los anteriores solo que buscando minimos.
+
+2.1) listHabitante.Min(h=>h.IdHabitante);
+2.2) listHabitante.MinBy(h=>h.IdHabitante).Nombre.
+
+
+3) Count() y LongCount(): Al igual que en SQL nos devuelve el numero de registros de una tabla, en este caso el numero de objetos de 
+una lista. La diferencia entre estos es que Count() devuelve un int y LongCount() un Long.
+
+3.1) var cuenta = listHabitante.Count(h=>h.Edad>35 && h.IdHabitante > 5)
+
+4) SUM(): Nos permite sumar valores numericos.
+
+4.1) listHabitante.Sum(h=>h.Edad) // Esto Sumara la edad de todos los habitantes.
+4.2) listaHabitante.GroupBy(h=> h.IdCasa).Select(x=> new {Edad = x.Sum(h=>h.Edad)})
+
+5) Average(): Me permite calcular el promedio de valores.
+
+5.1) listHabitante.Average(h=>h.Edad);
+
+6) Aggregate(): Me permite agregar un elemento a una lista/enum/array y dentro del mismo hacer comparaciones pero que nos devuelve X 
+valor
+
+6.1) string nombreMasLargo = frutas.Aggregate("Kiwi",(masLargo, next)=> next.length>masLargo.length? next : masLargo)
+
+7) All(): Devuelve un BOOL sobre una condicion que se aplica a todos los elementos de una lista, si esta condicion se aplica a todos
+los elementos de la lista devolvera TRUE, si alguno incumple la condicion devolvera FALSE.
+
+7.1) Console.WriteLine(listHabitante.All(h => h.Edad < 45));
+
+
+8) Any(): Es igual que  el ALL() pero a la inversa, es TRUE si algun elemento cumple la CONDICION, solo sera falso cuando ninguno la  
+cumpla.
+
+8.1) Console.WriteLine(listHabitante.Any(h => h.Edad < 45));
+
+
+                                                            4) Paginacion
+
+1) Take() y TakeLast(): Me permite seleccionar X cantidad de elementos de una Lista, por ejemplo los 10 primeros elementos. TakeLast() 
+es lo mismo pero con los ultimos elementos.
+
+1.1) arrayNumerico.Take(10); //Agarrara los 10 primeros elementos del array.
+1.2) arrayNumerico.TakeLast(5) //Agarrara los ultimos 5 Elementos del array.
+
+2) Skip() y SkipLast(): Me permite saltearme X elementos de una Lista, por ejemplo los 5 primeros. SkipLast() Se saltea/omite los ultimos
+elementos de las lista.
+
+2.1) arrayNumerico.Skip(5); //Omite los 5 primeros elementos del array.
+2.2) arrayNumerico.SkipLast(20) //Omite los ultimos 20 Elementos del array.
+
+3) TakeWhile() y SkipWhile(): Son funciones que se cumplen siempre y cuando la condicion que le especifiquemos sean TRUE, tienen el mismo
+uso que un Skip() y un Take().
+
+3.1) var ordenado = listHabitante.OrderBy(h=>h.IdCasa).TakeWhile(h=>h.IdCasa!=3) //Agarrara elementos hasta que encuentre un elemento con IdCasa = 3                                                                     
+3.2) var ordenado = listHabitante.SkipWhile(h=>h.IdCasa!=3) // Salteara elementos hasta que encuentre un IdCasa = 3.
+
+                                                            5) Agrupacion
+
+1) GroupBy(): Me permite agrupar elementos en grupos. Para tener en cuanta que esta funcion devuelve un IEnumerable con un IGroup en 
+su interior por lo que deberiamos recorrerlo 2 veces para acceder a su objeto. Tambien Puedo crear una funcion anonima (en cualquier
+funcion que implemente LAMBDA) en la cual cree un return.
+
+1.1) var grupos = listaHabitante.GroupBy(h=>h.IdCasa);
+1.2) var grupos = listaHabitante.GroupBy(h=>new (h.IdCasa, h.Edad));
+
+2) Otra forma de usar el GroupBy Es definirle un objeto Anonimo en el Cual le definiremos el valor de sus propiedades y luego recorrerlo.
+Aquellos elementos que son calculos se podran recorrer de forma simple pero aquellos que vengan de un Select() deberan ser recorridos por 
+un ForEach().
+
+2.1) var grupos = listHabitante.GroupBy(h => h.IdCasa).Select(g => new
+               {
+                    Key = g.Key,
+                    Nombre = g.Select(h=> h.Nombre),
+                    Edad = g.Average(h=> h.Edad),
+               });
+
+3) Tambien Puedo definir una funcion anonima dentro del GroupBy().
+
+
+                                                            6) JOINS
+
+1) JOINS: Me sirven para cruzar datos de 2 Listas.
+
+1.1) var listasCruzadas = listHabitante.Join(listCasas, h=>h.IdCasa, c=>c.IdCasa, (h,c) => new {
+     Nombre = h.Nombre,
+     Edad = h.Edad,
+     Direccion = c.Direccion,
+     Ciudad = c.Ciudad
+});
+
+                                                       7) Conjuntos
+
+1) Distinct() y DistinctBy(): Me permite traer elementos no repetidos de una lista. Distinct() es mas simple debido a que compara el estado
+de los objetos (o valor de variables), por lo que es mejor usarlo para varibles simple. DistinctBy() permite discriminar por que campo
+queremos hacer la comparacion de valores, lo cual es mas util.
+
+1.1) numerosLista.Distinct(); //Traera numeros en forma unica ignorando repeticiones
+1.2) listHabitante.DistinctBy(h=>h.Edad); //Traera todos los habitantes evitando edades repetidas
+
+2) Union() y UnionBy(): Union() Nos permite unir los elementos de 2 Listas, ignorando aquellos elementos repetidos. UnionBy() permite en 
+el caso de objetos complejos especificar que atributos del objeto deben ser unicos en la Union.
+
+2.1) var ListaNumTercero = listanumprimero.Union(listanumSegundo);
+2.2) var casasDistintasDireccion =  listCasas.UnionBy(listCasas2, c=> c.Direccion)
+
+2.3) Si necesito trabajar con Union() en objetos complejos debo saber que aunque tengan el mismo estado 2 objetos estas se cargaran
+igualmente al ser 2 entidades diferentes. Para esto debo implementar la interfaz IEquatable<MiClase> y Overraidear 2 metodos para 
+realizar validaciones https://learn.microsoft.com/es-es/dotnet/api/system.linq.enumerable.union?view=net-9.0
+
+
+3) Intersect() y InterserBy(): Estos Nos permiten juntar elementos repetidos en 2 conjuntos (similar a lo que hacen un INNER JOIN).
+InterserBy() Me permitira en objetos complejos la interseccion en X atributo especifico, aunque funciona de forma peculiar
+
+3.1) var interseccion = arr1.Intersect(arr2); //Devolvera los numeros que se encuentren en ambos Array.
+3.2) var intersectLista2 = listCasa2.Select(x=>x.numeroHabitaciones); // Tomo un array de numero de habitaciones de todas las casas2.
+     var intersect = listCasas.IntersectBy(intersectLista2, c=> c.numeroHabitaciones); 
+     //Devolvera las casas de la lista humano que tengan los mismos numeros de habitaciones que el la listaCasas2, pero sin devolver los
+     casas de la lista2, solo las casas de las lista Humano que hagan interseccion.
+                                                                                     
+
+3.3) En el Caso de que quiera usar Intersect() con objetos complejos debo seguir pasos similares que con Union()
+
+
+4) Except() ExceptBy(): Es casi el opuesto a Intersect() y IntersectBy() ya que me devuelve los elementos de la primera lista que no se 
+encuentran en la segundalista.
+
+4.1) var lista = nums1.Except(nums2); // Traera los numeros de la lista uno que no esten en la lista 2.
+
+4.2) var cId = listaCasas2.Select(c=>c.IdCasa);
+     var casas = listCasas.ExceptBy(cId, c=>c.IdCasa); // Traera los IdCasa de la lista 1 que no esten en la lista 2.
+
+4.3) Para comparar objetos complejos tambien debo heradar la interfaz IEquatable<> y overraidear sus metodos.
+
+                                                       8) Otros Metodos
+
+1) AsEnumerable(): Este metodo permite convertir una coleccion a un IEnumerable<T>. 
+
+2) ToArray(): Convertir un IEnumerable<> a Matriz.
+
+3) ToList(): Igual a Array solo que para listas.
+
+4) Range(): Genera una secuencia de numeros. EJ: var EnumNumeros = Enumerable.Range(0,100);
+
+5) Cast(): Intenta Castear una coleccion a un tipo. EJ: IEnumerable lista = arrayList.Cast<string>.ToArray();
+
+6) Concant(): Concatena 2 Listas del mismo tipo.
+
+7) Contains(): Devuelve un TRUE/FALSE si una lista contiene el elemento pasado por parametro.
+
+
+                                                            9) Trucos Practicos
+
+1) Multiples Join: var resultado = from elemento1 in lista1
+                   join elemento2 in lista2 on elemento1.Id equals elemento2.Id
+                   join elemento3 in lista3 on elemento2.Id equals elemento3.Id
+                   join elemento4 in lista4 on elemento3.Id equals elemento4.Id
+                   select new { elemento1, elemento2, elemento3, elemento4 };
+
+2) GroupBy en Consulta:
+
+2.1) group new { elemento1, elemento2, elemento3, elemento4 }: Esto lo que hace es agrupar el resultado de los 4 elementos joineados
+
+2.2) by new { elemento1.Id, elemento1.Edad } into grupo
+var resultado = from elemento1 in lista1
+                join elemento2 in lista2 on elemento1.Id equals elemento2.Id
+                join elemento3 in lista3 on elemento2.Id equals elemento3.Id
+                join elemento4 in lista4 on elemento3.Id equals elemento4.Id
+                group new { elemento1, elemento2, elemento3, elemento4 } by elemento1.Id into grupo
+                select grupo;
+
+
+3) SUM() y Average(): Tienen la particularidad que a diferencia de SQL no hace falta usar GroupBy para realizar operaciones por grupo, 
+ya que en LINQ estas operaciones se aplican individualmente a cada objeto.
+
+                                                            X) LAMBDA
+
+X) EJEMPLO CON LAMBDA: listHabitante.FirstOrDefault<Habitante>(h=>h.Edad>25)
+X.1) CONCATENAR CONDICIONES EN LAMBDA: var lh = listHabitante.Where(h=> h.Edad>25 && h.IdHabitante!=3 && h.IdCasa!=2);

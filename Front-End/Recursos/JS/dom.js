@@ -140,6 +140,7 @@ import ResponsiveSlider from "./ResponsiveSlider.js";
 import ScrollSpy from "./Spy.js";
 import ReproducirVideo from "./video.js";
 import validarFormulario from "./myForm.js";
+import Narrador from "./narrador.js";
 
 const d = document
 const checkMenu = d.querySelector(".menu");
@@ -165,7 +166,6 @@ const autoScrollTop = ()=>{
 }
 function sideAjuste(menuSide){
     if(menuSide.getAttribute("style")===null){
-        console.log(menuSide.getAttribute("style"))
         if(window.innerWidth<1024)
         menuSide.style.transform = "translateX(-100%)"
     
@@ -195,6 +195,7 @@ addEventListener("DOMContentLoaded", (e)=>{
     ResponsiveSlider(".slide",".next",".back")
     ScrollSpy();
     ReproducirVideo();
+    
 
     inputFiltrado.value = "";
 
@@ -203,7 +204,7 @@ DarkMode(".dark-button", "data-dark", "dark-mode");
 connection();
 getGeolocalizacion(".geo");
 validarFormulario();
-
+Narrador();
 
 addEventListener("keydown", (e)=>{
     Atajos(e);
@@ -217,6 +218,22 @@ const $menuSide = document.querySelector(".side");
 window.addEventListener("resize", e=>{
     sideAjuste($menuSide);
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

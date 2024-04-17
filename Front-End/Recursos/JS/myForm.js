@@ -1,9 +1,10 @@
+const d = document;
 export default function validarFormulario(){
     const $f = document.querySelector('[data-contacto]');
     const regName = /^[a-zA-ZÀ-ÿ\s]{5,}$/;
     const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const regAsunto = /^[a-zA-Z0-9!@#\$%\^&*\)\(+=._-\s:]{5,30}$/;
-    const regComentario =  /^[a-zA-Z0-9!@#\$%\^&*\)\(+=._-\s]{0,33}$/;
+    const regComentario =  /^[a-zA-Z0-9!@#\$%\^&*\)\(+=._-\s]{1,33}$/;
     function Validador(e){
         if(e.target===$f.nombre) {
             if(regName.test($f.nombre.value)) {
@@ -46,15 +47,22 @@ export default function validarFormulario(){
             }
         }
     }
+    d.addEventListener("DOMContentLoaded", e=>$f.reset())
+    d.addEventListener("input",e=>Validador(e))
 
-    addEventListener("DOMContentLoaded", e=>{
-        if(regName.test($f.nombre.value)) $f.nombre.classList.remove("incorrecto");
-        if(regEmail.test($f.email.value)) $f.email.classList.remove("incorrecto");
-        if(regAsunto.test($f.asunto.value)) $f.asunto.classList.remove("incorrecto");
-        if(regComentario.test($f.coment.value)) $f.coment.classList.remove("incorrecto");
+    d.addEventListener("submit",e=>{
+        // e.preventDefault();
+        const $logo = d.querySelector(".logo");
+        const $response = d.querySelector(".contact")
+        $logo.classList.remove("none")
+        setTimeout(() => {
+            $logo.classList.add("none")
+            $response.classList.remove("none")
+            $f.reset();
+            d.querySelectorAll("#contacto [required]").forEach(item=>item.classList.add("incorrecto"))
+            setTimeout(() => $response.classList.add("none"),3000);
+        }, 3000);
+       
     })
 
-    addEventListener("input",e=>{
-        Validador(e);
-    })
 }

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="./CSS/Carousel.css">
     <link rel="stylesheet" href="./CSS/video.css">
     <link rel="stylesheet" href="./CSS/form.css">
+    <link rel="stylesheet" href="./CSS/narrador.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 </head>
 <body style="margin: 0; " data-dark="data-dark">
@@ -37,6 +38,7 @@
         <li class="asideMenu"><a href="#Eleven" data-anchor>Carousel Responsive</a></li>
         <li class="asideMenu"><a href="#twelve" data-anchor>Video Inteligente</a></li>
         <li class="asideMenu"><a href="#trece" data-anchor>Formulario de Contacto</a></li>
+        <li class="asideMenu"><a href="#catorce" data-anchor>Narrador</a></li>
       </ul>
     </nav>
   </aside>
@@ -211,23 +213,35 @@
     </section>
     <section id="trece" data-spy="12">
       <h1 data-dark="data-dark">Formulario de Contacto</h1>
-      <form action="" id="contacto" data-contacto>
+      <form  id="contacto" data-contacto action="https://formsubmit.co/c67844a6e217e86c1b9411bb734d8150" 
+      method="post" target="_blank">
         <input type="text" class="miFormulario incorrecto" name="nombre" id="nombre" required placeholder="Nombre">
         <span class="sform" name="sn">Escribe tu Nombre</span>
         <input type="email" class="miFormulario incorrecto" name="email" id="email" required placeholder="Email">
         <span  class="sform" name="se">Escribe tu Email</span>
         <input type="text" class="miFormulario incorrecto" name="asunto" id="asunto" required placeholder="Asunto">
         <span  class="sform" name="sa">Escribe El Asunto</span>
-        <textarea cols="20" rows="5" name="coment" id="coment" class="miFormulario"></textarea>
+        <textarea cols="20" rows="5" name="coment" id="coment" class="miFormulario incorrecto" required></textarea>
         <span  class="sform" name="sc">Maximo 33 Caracteres</span>
         <button type="submit" class="formButt">Enviar</button>
-        <div class="none">
+        <div class="logo none">
           <img class="loader" src="./img/circles.svg" alt="">
         </div>
-        <div class="contacto none">
-          <p>Los Datos han sido enviados</p>
+        <div class="contact none">
+          <p style="font-size: 1rem;" data-dark="">Los Datos han sido enviados</p>
         </div>
       </form>
+    </section>
+    <section id="catorce" data-spy="13">
+      <h1 data-dark="data-dark">Narrador</h1>
+      <div id="narrador-container">
+        <select name="voces" id="voces" data-narrador>
+          <option value="999">Elije Una voz-----------------------------</option>
+        </select>
+        <textarea name="speecher" id="speecher" cols="20" rows="5" data-texto 
+        placeholder="Ingresa Texto a Leer"></textarea>
+        <button type="button" id="lector" data-lector>Leer</button>
+      </div>
     </section>
   </main>
   <div class="borde">
@@ -240,9 +254,6 @@
     <button class="scroll-container scroll-hidden"  data-dark="data-dark"> 
       <i class="fa-sharp fa-solid fa-house fa-2x"></i>
     </button>  
-  
-  
-
   <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>
   <script src="./JS/dom.js" type="module"></script> 
   <script> 

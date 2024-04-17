@@ -1104,7 +1104,7 @@ $element.innerHTML = `<p>mi Texto en Parrafo</p>`;
 le pasemos.
 
 4) Sintensis: Depende que necesite insertar dentro de un elemento: 1) Solo texto sin uso de etiquetas HTML usare TextContent. 2) Si 
-a ese texto quiero agregarle contenio HTML usare innerHTML. 3) Cuando no quiera colocar HTML dentro de una etiqueta sino reemplazarla
+a ese texto quiero agregarle contenido HTML usare innerHTML. 3) Cuando no quiera colocar HTML dentro de una etiqueta sino reemplazarla
 usare outerHTML.
 
 
@@ -1522,3 +1522,89 @@ hacer si los elementos son y no visibles y un objeto de opciones.
             estar visible para considerar que esta intersecionando, la ventaja contra rootMargin es que lo hace en porcentaje Y
             no px.
 
+
+                                                    65) Introduccion a AJAX
+
+1) AJAX: Este me permite hacer llamadas al servidor sin la necesidad de tener que recargar toda la pagina. Basicamente permite recargar 
+la interfaz del usuario con datos del servidor sin recargar la pagina. AJAX no es una tecnologia como tal sino la junta de varias 
+tecnologias (HTML, CSS, DOM, JSON, FETCH y JS). El Estandar actualmente de transferencia de datos con AJAX es JSON.
+
+2) FETCH Api: forma moderna de hacer AJAX.
+
+3) AXIOS: Es una libreria externa que nos permite manejar AJAX
+
+4) Estados de la Peticion: 1) UNINITIALIZED. 2) LOADING (Se envian datos al servidor). 3) LOADED (El servidor carga su respuesta). 
+                            4) INTERACTIVE (Traslado de la respuesta del servidor al cliente) 5) COMPLETE.
+
+5) Codigos De Estado de Respuesta HTTP: Estos indican si se han completado correctamente una solicitud HTTP 
+    1) Respuestas Informativas (100-199). 2) Respuestas Satisfactorias (200-299) 3) Redirecciones (300-399). 4) Errores del Cliente (400-499)
+    5) Errores del Servidor (500-599) https://developer.mozilla.org/es/docs/Web/HTTP/Status
+
+
+                                                    66) XMLHttpRequest
+
+1) Es la forma original en la cual manejamos AJAX. Se lo suele declarar con xhr. Para que funcion el objeto XMLHttpRequest necesitamos
+4 cosas. 1) La Instancia en la variable xhr. 2) Asignar un evento con AddEventListener(), preferiblemente el readyStateChange, ya que 
+este se ejecutara cuando se produzca un cambio de estado. 3) Abrir la peticion con el metodo Open() y pasaremoos por parametro 
+el METHOD con el cual nos vamos a comunicar (get, post), y el segundo parametro es la URL a la cual le vamos a hacer la peticion.
+4) Ejecutar el Metodo Send(). De esta Forma podemos consumir una API en AJAX. 
+
+1.1) El readyStateChange reacciona segun los estados de la peticion.
+
+1.2) const xhr = new XMLHttpRequest();
+     xhr.AddEventListener("readyStateChange", e=>{
+        if(xhr.readyState!==4)return;
+        if(xhr.status >=200 && xhr.status<300){
+            let json = json.parse(xhr.responseText);
+            json.forEach(el=>{
+               const $li = document.createElement("li");
+               $li.innerHTML = `${el.name}`
+            })
+        }
+        else{
+
+        }
+     });
+     xhr.Open("GET", "url");
+     xhr.send();
+
+2) Las validaciones con el objeto XMLHttpRequest son: 1) Verficar que el readyState llegue a 4. 2) Verificar que el Codigo de Estado 
+de respuesta HTTP se del rango 200.
+
+3) La respuesta de la api se encuentra dentro de xhr.responseText.
+
+
+4) API EXTERNAS: Ademas de las APIS internas (DOM, BOM, ETC) tenemos APIS EXTERNAS (A servicios, plataformas, redes sociales)
+
+
+                                                         67) FETCH API
+
+1) API FETCH: Es un mecanismo mas efectivo para realizar peticiones asincronas que el clasico XMLHttpRequest.
+
+2) fetch(): con este metodo llamare a fetch() a ejecutarse, esta recibira 2 parametros. 1) La URL. 2) Un Options configurable.
+Luego a esta le hare las llamadas de then(), catch() y Finally() si es necesario (Finally() para una callback que independientemente del 
+resultado se ejecute)
+
+3) then(): Una vez que el resultado sea positivo recibiremos la respuesta en ReadableStream, para poder utilizarla deberemos convertirla
+en este caso la convertiremos en un JSON(), aunque podria ser text() u otros formatos. Luego de que Convirtamos el valor en el primer 
+then llamaremos un segundo donde desarrollaremos toda la logica.
+
+4) Catch(): Para hacer saltar el Catch() debo lanzar algun error desde mi THEN() de forma manual. Por defecto el Catch() no salta.
+            return res.ok? res.json() : Promise.reject();
+
+5) EJ:  fetch("https://pokeapi.co/api/v2/pokemon")
+        .then(res=>{
+            return res.ok? res.json() : Promise.reject();
+        })
+        .then(res=>{
+            res.results.forEach(el=>{
+                const $li = document.createElement("li");
+                $li.innerHTML = `${el.name}`
+                $frag.appendChild($li);
+            })
+            $fetch.appendChild($frag)
+        })
+        .catch(err=>{
+            console.log("ERROR")
+        })
+        .finally(()=>{});
