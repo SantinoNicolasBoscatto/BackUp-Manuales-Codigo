@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    main{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+</style>
+<body>
+    <main>
+        <input type="file" name="files" id="files" multiple>
+    </main>
+    <script>
+        const d = document;
+        const $main = d.querySelector("main");
+        const $files = d.getElementById("files");
+
+        const uploader = async (file) => {
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
+                let res = await fetch("assets/uploader.php", {
+                    method: "POST",
+                    body: formData
+                });
+                console.log(res)
+                if (!res.ok) throw new Error();
+                console.log("OK")
+            }
+            catch (err) {
+                alert("ERROR")
+            }
+        }
+        
+
+        d.addEventListener("change", async e=>{
+            if(e.target === $files){
+               try{
+                    let files =  Array.from(e.target.files);
+                    await Promise.all(files.map(el=>uploader(el)));
+               }
+               catch(err){
+                    alert(err);
+               }
+            }
+        })
+    </script>
+</body>
+</html>

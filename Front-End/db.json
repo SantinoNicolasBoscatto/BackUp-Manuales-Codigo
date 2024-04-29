@@ -1,0 +1,28 @@
+{
+  "Gwent": [
+    {
+      "id": "1",
+      "nombre": "Cirilla Fiona Elen Rianon",
+      "Descripcion": "¿Sabes Cuando Los cuentos de hadas dejan de ser cuentos? Cuando la gente empieza a creer en ellos",
+      "img": "./Recursos/img/Neutrales/Cirilla Fiona Elen Rianon.png"
+    },
+    {
+      "id": "2",
+      "nombre": "Jaskier",
+      "Descripcion": "Jaskier era un cinico, vicioso, putañero, embustero... y mi mejor amigo",
+      "img": "./Recursos/img/Neutrales/Jaskier.png"
+    },
+    {
+      "id": "3",
+      "nombre": "Geralt de Rivia",
+      "Descripcion": "Vamos River Plate",
+      "img": "./Recursos/img/Neutrales/Geralt de Rivia.png"
+    },
+    {
+      "id": "4",
+      "nombre": "Vesimir",
+      "Descripcion": "El Tio",
+      "img": "./Recursos/img/Neutrales/Vesemir.png"
+    }
+  ]
+}

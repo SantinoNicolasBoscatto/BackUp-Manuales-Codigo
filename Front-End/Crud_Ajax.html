@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD API-REST AJAX</title>
+    <link rel="stylesheet" href="/Recursos/CSS/table.css">
+</head>
+<body>
+    <h1>CRUD API-REST AJAX</h1>
+    <section class="crud">
+        <article style="margin-top: 2rem;">
+            <h2 class="crud-title" style="margin-bottom: 3rem; text-align: center;">Agregar Carta Gwent</h2>
+            <form class="crud-form" method="post">
+                <div class="bloque">
+                    <input type="text" class="nombre" placeholder="Nombre" name="nombre" required>
+                    <br>
+                    <input type="text" class="faccion" placeholder="Faccion" name="faccion" required>
+                    <br>
+                    <input type="text" class="poder" placeholder="Poder" name="poder" required>
+                    <br>
+                    <input type="text" class="habilidad" placeholder="Habilidad" name="habilidad" required>
+                    <br>
+                    <input type="text" class="tipo" placeholder="Tipo" name="tipo" required>
+                    <br>
+                    <input type="text" class="img" placeholder="Img" name="img" required>
+                    <br>
+                    <button type="submit" class="double" name="but">Agregar</button>
+                    <input type="hidden" name="id">
+                </div>
+                
+            </form>
+        </article>
+        <article>
+            <h2 style="text-align: center; margin-top: 5rem; margin-bottom: 2.5rem;">Ver Cartas</h2>
+            <table class="crud-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Faccion</th>
+                        <th>Poder</th>
+                        <th>Habilidad</th>
+                        <th>Tipo</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </article>
+    </section>
+
+<template id="temp">
+    <tr>
+        <td class="name"></td>
+        <td class="fac"></td>
+        <td class="power"></td>
+        <td class="habilities"></td>
+        <td class="Type"></td>
+        <td>
+            <button class="edit" data-edit>Editar</button>
+            <button class="delete">Eliminar</button>
+        </td>
+    </tr>
+</template>
+<script>
+    const d= document;
+    const $table = d.querySelector(".crud-table");
+    const $form = d.querySelector(".crud-form");
+    const $title = d.querySelector(".crud-title");
+    const $template = d.getElementById("temp").content;
+    const $frag = document.createDocumentFragment();  
+    let count = 1;
+
+    const ajax = options=>{
+        let {url, method, success, error, data} = options;
+        const xhr = new XMLHttpRequest(); 
+        xhr.open(method||"GET", url);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.send(JSON.stringify(data));
+
+        xhr.addEventListener("readystatechange", e=>{
+            if(xhr.readyState!==4) return;
+            if(xhr.status >=200 &&xhr.status <=299){
+                let json = JSON.parse(xhr.responseText);
+                success(json);
+            }
+            else error("Error Papu");
+        });
+    };
+
+    const getAll = ()=>{
+        ajax({
+            url: "http://localhost:3000/Gwent",
+            success(res){
+                res.forEach(el=>{
+                    count++;
+                    $template.querySelector(".name").textContent = el.nombre; 
+                    $template.querySelector(".fac").textContent = el.faccion; 
+                    $template.querySelector(".power").textContent = el.poder;  
+                    $template.querySelector(".habilities").textContent = el.habilidad;  
+                    $template.querySelector(".Type").textContent = el.tipo; 
+                    $template.querySelector("tr").setAttribute("data-id", el.id)
+                    $template.querySelector(".edit").setAttribute("data-id", el.id)
+                    $template.querySelector(".edit").setAttribute("data-nombre", el.nombre)
+                    $template.querySelector(".edit").setAttribute("data-faccion", el.faccion)
+                    $template.querySelector(".edit").setAttribute("data-poder", el.poder)
+                    $template.querySelector(".edit").setAttribute("data-habilidad", el.habilidad)
+                    $template.querySelector(".edit").setAttribute("data-tipo", el.tipo)
+                    $template.querySelector(".edit").setAttribute("data-img", el.img)
+                    let $clone = document.importNode($template, true);
+                    $frag.appendChild($clone)
+                });
+                d.querySelector("tbody").appendChild($frag)
+            },
+            error(err){
+                $table.insertAdjacentHTML("afterend", "<p><b>ERROR</b></p>")
+            }
+        })
+        $form.nombre.value = ""
+        $form.faccion.value = ""
+        $form.poder.value = ""
+        $form.habilidad.value = ""
+        $form.tipo.value = ""
+        $form.img.value = ""
+    }
+    const agregar = ()=>{
+        ajax({
+            method: "POST",
+            url: "http://localhost:3000/Gwent",
+            error(err){
+                $table.insertAdjacentHTML("afterend", "<p><b>ERROR</b></p>")
+            },
+            success: (res)=>location.reload(),
+            data: {
+                id: count.toString(),
+                nombre: $form.nombre.value,
+                faccion: $form.faccion.value,
+                poder: $form.poder.value,
+                habilidad: $form.habilidad.value,
+                tipo: $form.tipo.value,
+                img: $form.img.value,
+            }
+        })
+    }
+    const borrar = (id)=>{
+        ajax({
+            method: "DELETE",
+            url: `http://localhost:3000/Gwent/${id}`,
+            error(err){
+                $table.insertAdjacentHTML("afterend", "<p><b>ERROR</b></p>")
+            },
+            success: (res)=>location.reload()
+        })
+    }
+    const mod = (e) => {
+        $form.nombre.value = e.target.getAttribute("data-nombre");
+        $form.faccion.value = e.target.getAttribute("data-faccion");
+        $form.poder.value = e.target.getAttribute("data-poder");
+        $form.habilidad.value = e.target.getAttribute("data-habilidad");
+        $form.tipo.value = e.target.getAttribute("data-tipo");
+        $form.img.value = e.target.getAttribute("data-img");
+        $form.id.value = e.target.getAttribute("data-id");
+        d.querySelector(".double").textContent = "Modificar"
+        d.querySelector(".double").setAttribute("data-mod", "1");
+    }
+    const mod2 = ()=>{
+        ajax({
+            method: "PUT",
+            url: `http://localhost:3000/Gwent/${$form.id.value}`,
+            error(err){
+                $table.insertAdjacentHTML("afterend", "<p><b>ERROR</b></p>")
+            },
+            success: (res)=>location.reload(),
+            data: {
+                id: $form.id.value,
+                nombre: $form.nombre.value,
+                faccion: $form.faccion.value,
+                poder: $form.poder.value,
+                habilidad: $form.habilidad.value,
+                tipo: $form.tipo.value,
+                img: $form.img.value,
+            }
+        })
+    }
+
+    d.addEventListener("DOMContentLoaded", getAll())
+    d.addEventListener("submit", e=>{
+        if(e.target.but.getAttribute("data-mod")==="1") mod2();
+        else agregar();
+        e.preventDefault();
+    } )
+    d.addEventListener("click", e=>{
+        if(e.target.matches(".delete")){
+            const id = e.target.closest("tr").getAttribute("data-id");
+            borrar(id);
+        }
+        if(e.target.matches(".edit")){     
+            mod(e);
+        }
+    })
+</script>
+
+</body>
+</html>

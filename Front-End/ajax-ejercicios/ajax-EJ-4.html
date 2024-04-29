@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Recursos/CSS/form.css">
+    <title>PokeApi</title>
+</head>
+<style>
+    .square{
+       width: 250px;
+       height: 250px;
+       border: 3px solid black;
+       background-color: #222;
+       border-radius: 10px;      
+       display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center; 
+      flex-direction: column;
+    }
+
+    main{
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        250px
+        );
+      gap: 15px;
+      justify-content: space-evenly;
+    }
+
+    .name{
+      color: aliceblue;
+      text-align: center;
+      text-wrap: wrap;
+      margin-top: 1rem;
+      font-size: 24px;
+      margin-bottom: 0;
+    }
+
+    .poke{
+        min-height: 150px;
+        min-width: 150px;
+        display: block;
+        margin: auto;
+        object-fit: contain;
+    }
+    
+    header{
+      margin: 0 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    button{
+      margin: 0 .5rem;
+    }
+
+    .bloque{
+      height: 30px;
+      width: 30px;
+      display: block;
+      margin: auto;
+      
+    }
+
+    .not{
+      display: none;
+    }
+
+</style>
+<body>
+  <header>
+        <button id="back" style="display: none;"><<</button>
+        <button id="next">>></button>
+  </header>
+  <br>
+  <div style="width: 100%; margin-bottom: 2.5rem;">
+    <img src="../Recursos/img/circles.svg" class="loader not"></div>
+    <main>
+        
+    </main>
+</body>
+<template id="temp">
+  <div class="square">
+    <h3 class="name"></h3>
+    <img src="" alt="" class="poke">
+  </div>
+</template>
+<script>
+    const d = document;
+    let offset = 0;
+    let lim = 20;
+    const $frag = d.createDocumentFragment();
+    const $temp = d.getElementById("temp").content;
+    const $loader = d.querySelector(".loader");
+    let max;
+
+    const getImg = async (url)=>{
+      try{
+        let res = await fetch(url)
+        if(!res.ok) throw new Error();
+        let json = await res.json();
+        return json.sprites.versions['generation-v']['black-white'].animated.front_default
+       }
+       catch(err){
+        alert(err);
+       }
+    }
+    const getApi = async (off, lim) =>{
+      try{
+       $loader.classList.add("bloque")
+       $loader.classList.remove("not")
+       let res = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${off}&limit=${lim}`)
+       if(!res.ok) throw new Error();
+       let json = await res.json();
+       max = json.count;
+        for (let el of json.results) {
+          let img =  await getImg(el.url);
+          $temp.querySelector(".name").textContent = el.name;
+          $temp.querySelector(".poke").setAttribute("src", img);
+          let $clone = d.importNode($temp,true);
+          $frag.appendChild($clone); 
+       };
+        d.querySelector("main").appendChild($frag);
+        $loader.classList.remove("bloque")
+        $loader.classList.add("not")
+      }
+      catch(err){
+       console.log(err);
+      }
+   };
+    const change = async (off,lim) => {
+        $loader.classList.add("bloque")
+        $loader.classList.remove("not")
+        let res = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${off}&limit=${lim}`)
+        if(!res.ok) throw new Error();
+        let json = await res.json();
+        const $squares = Array.from(d.querySelectorAll(".square"))
+        let count = 0;
+        for (let el of json.results) {
+        let img =  await getImg(el.url);
+        $squares[count].querySelector(".name").textContent = el.name;
+        $squares[count].querySelector(".poke").setAttribute("src", img);
+        count++; 
+      }
+        $loader.classList.remove("bloque")
+        $loader.classList.add("not")
+    };
+
+    d.addEventListener("DOMContentLoaded", getApi(offset, lim));
+    d.addEventListener("click", async e=>{
+      d.getElementById("next").style.display = "inline"
+      if(e.target.matches("#back")) {
+        if(offset-lim>0){
+          offset -= lim; 
+          await change(offset,lim)
+        }
+        else if(offset!==0){
+          offset = 0;
+          await change(offset,lim)
+        }
+        if(offset===0) d.getElementById("back").style.display = "none";
+      }
+      if(e.target.matches("#next")) {
+        d.getElementById("back").style.display = "inline"
+          if(offset+lim<max){
+            offset += lim; 
+            await change(offset,lim)
+          }
+          else if(offset!==max){
+            offset = max - lim;
+            await change(offset,lim)
+          }
+          if(offset===max-lim) d.getElementById("next").style.display = "none";
+      }
+    });
+</script>
+</html>

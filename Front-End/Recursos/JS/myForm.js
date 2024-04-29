@@ -55,13 +55,28 @@ export default function validarFormulario(){
         const $logo = d.querySelector(".logo");
         const $response = d.querySelector(".contact")
         $logo.classList.remove("none")
-        setTimeout(() => {
+
+        fetch("https://formsubmit.co/c67844a6e217e86c1b9411bb734d8150", {
+            method: "POST",
+            body: new FormData(e.target)
+        })
+        .then(res=> res.ok? res.json():Promise.reject(res))
+        .then(json=>{console.log(json)
             $logo.classList.add("none")
             $response.classList.remove("none")
             $f.reset();
             d.querySelectorAll("#contacto [required]").forEach(item=>item.classList.add("incorrecto"))
             setTimeout(() => $response.classList.add("none"),3000);
-        }, 3000);
+        })
+        .catch(err => {
+        console.log(err)
+        $logo.classList.add("none")
+        $response.textContent = "OCURRIO UN ERROR";
+        $response.classList.remove("none")
+        $f.reset();
+        d.querySelectorAll("#contacto [required]").forEach(item=>item.classList.add("incorrecto"))
+        setTimeout(() => $response.classList.add("none"),5000);
+        })
        
     })
 

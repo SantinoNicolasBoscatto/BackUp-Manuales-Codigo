@@ -1574,9 +1574,6 @@ de respuesta HTTP se del rango 200.
 3) La respuesta de la api se encuentra dentro de xhr.responseText.
 
 
-4) API EXTERNAS: Ademas de las APIS internas (DOM, BOM, ETC) tenemos APIS EXTERNAS (A servicios, plataformas, redes sociales)
-
-
                                                          67) FETCH API
 
 1) API FETCH: Es un mecanismo mas efectivo para realizar peticiones asincronas que el clasico XMLHttpRequest.
@@ -1608,3 +1605,162 @@ then llamaremos un segundo donde desarrollaremos toda la logica.
             console.log("ERROR")
         })
         .finally(()=>{});
+.
+
+                                                    68) FETCH API con ASYNC AWAIT
+
+1)  const $fetchAsync = document.getElementById("fetch-async");
+    const $frag = document.createDocumentFragment();
+    async function getData(){
+        try {
+           let res = await fetch("https://pokeapi.co/api/v2/pokemon");
+           if(!res.ok) throw new Error;
+           let json = await res.json();
+            json.results.forEach(el=>{
+            const $li = document.createElement("li");
+            $li.innerHTML = `${el.name}`
+            $frag.appendChild($li);
+            })
+        $fetchAsync.appendChild($frag)
+        } 
+        catch (err) {
+            console.error("ERROR")
+        }
+    }
+    getData();
+.
+                                                 69) AJAX con AXIOS con then() y Async
+
+1) const $axios = document.getElementById("axios");
+    const $frag = document.createDocumentFragment();
+    axios.get("https://pokeapi.co/api/v2/poon")
+    .then(res=>{
+        res.data.results.forEach(el=>{
+            const $li = document.createElement("li");
+            $li.innerHTML = `${el.name}`
+            $frag.appendChild($li);
+        })
+        $axios.appendChild($frag)
+    })
+    .catch(err=>{console.error("ERROR: ", err.response.status)})
+
+
+2) const $axios = document.getElementById("axios-async");
+    const $frag = document.createDocumentFragment();
+    async function getData(){
+        try {
+            let res = await axios.get("https://jsonplaceholder.typicode.com/users");
+            res.data.forEach(el=>{
+            const $li = document.createElement("li");
+            $li.innerHTML = `${el.name}`
+            $frag.appendChild($li);
+        })
+        $axios.appendChild($frag)
+        } catch (error) {
+            console.error("ERROR")
+        }
+    }
+    getData();
+.
+
+3) Como dato con AXIOS no me hace falta hacer una validacion de statusText ni .ok, si en una funcion ASYNC detecta un error dentro 
+del bloque TRY hara saltar solo al catch.
+                                                        70) APIS REST
+
+0) Interfaz: Capa de Abstraccion para que 2 sistemas se comuniquen.
+
+1.1) API: Aplication Programming Interface. Basicamente una Interfaz para comunicar y conectar 2 programas.
+
+1.2) REST: Es una serie de reglas y recomendaciones para construir una API, basicamente una arquitectura para construir APIS. Esta 
+significa Representational State Transfer. Las reglas de REST son: 1) Guardar datos en cache. 2) El Estado no se envia en las peticiones
+3) Que datos permito que una aplicacion externa modifique o revise, es decir definir los permisos de que APPS pueden consumir mi api.
+
+1.3) Api REST: Una API construida bajo una arquitectura REST. Estas apis Rest funcionan bajo una estructura de cliente/servidor, utilizando
+HTTP como protocoloco de comunicacion. Cuando el cliente realiza un pedido el servidor debe tener 3 cosas en cuenta: 1) El verbo HTTP 
+(GET,POST,PUT,DELETE). 2) una direccion URL sobre la cual se hace la consulta de la API. 3) Datos en forma de JSON/XML. 
+Los beneficios de estas APIS REST es que ignoran en que lenguajes esta programados los elementos del cliente y servidor, lo unico que 
+les preocupa es el intercambio de informacion entre las partes.
+
+1.4) Sintesis: Una API REST es una interfaz creada para la comunicacion entre programas para que puedan intercambiar datos (sin importar 
+la arquitectura en como esta construida cada app) creada bajo las reglas de la arquitectura REST. La Consulta la realizamos a una URL 
+la cual llamaremos ENDPOINT
+
+2) API EXTERNAS: Ademas de las APIS internas de JS (DOM, BOM, ETC) tenemos APIS EXTERNAS (A servicios, plataformas, redes sociales) que 
+son producidas por terceros.
+
+3) APIS PUBLICAS y PRIVADAS: Las publicas son apis de libre acceso/consumo, las privadas por otro lado deberan contar con un token de 
+acceso para su autenticacion.
+
+4) CRUD vs REST: Las peticiones REST vienen a ser las nuevas operaciones CRUD. 1) INSERT - POST. 2) SELECT - GET. 3) UPDATE - PUT.
+                 4) DELETE - DELETE.
+
+                                                    71) Cabeceras con xhr (AJAX)
+
+1) EJ: xhr.setRequestHeader("content-type","application/json;")
+
+2) readyState: El estado en el que se encuentra una peticion AJAX de un CLIENTE. 0) UNSET  1) OPENED: se llamo al metodo open().
+    2) HEADERS_RECEIVED: El metodo send() ya fue enviado. 3) LOADING:  Se está recibiendo el cuerpo de la respuesta en responseText.
+    4) DONE.
+
+                                                        72) Funcion AJAX BASE 
+
+1) const ajax = options=>{
+        let {url, method, success, error, data} = options;
+        const xhr = new XMLHttpRequest(); 
+        xhr.open(method||"GET", url);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.send(JSON.stringify(data));
+
+        xhr.addEventListener("readystatechange", e=>{
+            if(xhr.readyState!==4) return;
+            if(xhr.status >=200 &&xhr.status <=299){
+                let json = JSON.parse(xhr.responseText);
+                success(json);
+            }
+            else error("Error Papu");
+        });
+    };
+
+2) Sintesis: Para hacer una funcion CRUD con AJAX Primero vamos a crear una funcion ajax(options) nosotros con un parametros el cual 
+sera un objeto con las siguientes variable: METHOD, URL, success(), error(), data. Dentro de la funcion crearemos el objeto XMLHttpRequest,
+guardaremos en variables los valores de Options, abriremos la peticion xhr y haremos un send(JSON.stringify(data)). Luego agregamos 
+el  xhr.addEventListener("readystatechange" e=>{}) con las validaciones del readyState y el statusCode, si el statusCode esta entre 
+200 y 299 Parsearemos el result de la consulta xhr.responseText a un objeto de JS con JSON.parse(xhr.responseText) y ejecutaremos 
+la funcion success(). Si el codigo no esta entre 200 y 299 ejecutaremos el error de Options.
+
+Una vez creado AJAX debo crear la funcion para cada funcion CRUD:  1) GET(){ajax({method: "get", url:"", error:() => throw new Error(), 
+success:()CARGA DE DATOS EN ELEMENTOS DEL DOM})}. 2) POST(){ajax({method: "post", url:"", error:() => throw new Error(), 
+success: (res)=>location.reload(), data: {LA CARGA DE DATOS DEL NUEVO ELEMENTO EN FORMA DE JSON}})}. 3) UPDATE(){ajax({method:"put",
+url:""+id, error:() => throw new Error(), success: (res)=>location.reload(),data: {LA CARGA DE DATOS DEL NUEVO ELEMENTO EN FORMA 
+DE JSON}})} 4) DELETE(id){ajax(method: "DELETE", url:""+id,error:() => throw new Error(), success: (res)=>location.reload())}
+Por ultimo crearemos los eventos para disparar estas acciones.
+
+
+                                                         73) Datos Practicos
+
+1) Array.From(): Se usa para convertir un objeto iterable como un NodeList en un array y poderle aplicar metodos como .map().
+
+2) Promise.all(): Permite manejar un array de promesas, devuelve un Array() con los valores de las promesas en caso de exito.
+
+3) ForEach(): No se debe manejar operaciones Asincronas con ForEach() debido a que este no respeta los AWAIT y no puede completar 
+correctamente las operaciones, para ello mejor usar un ForOf() o un Promise.all().
+
+VIDEOS PENDIENTES: 124, 125, 126, 128, 129, 130, 131, 132.
+
+3.1) await Promise.all(json.results.map(async el=>{
+            let img =  await getImg(el.name);
+            $temp.querySelector(".name").textContent = el.name;
+            $temp.querySelector(".poke").setAttribute("src", img);
+            let $clone = d.importNode($temp,true);
+            $frag.appendChild($clone);
+       }));
+
+3.2) for (let el of json.results) {
+            let img =  await getImg(el.name);
+            $temp.querySelector(".name").textContent = el.name;
+            $temp.querySelector(".poke").setAttribute("src", img);
+            let $clone = d.importNode($temp,true);
+            $frag.appendChild($clone); 
+        };
+
+3.3) Si algun elemento del JSON tiene "-" debere escribirlo de la siguiente forma: json.sprites.versions['generation-v']['black-white'].animated;
