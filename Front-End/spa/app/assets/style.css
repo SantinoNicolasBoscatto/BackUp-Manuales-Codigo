@@ -1,0 +1,99 @@
+html, body{
+    margin: 0;
+}
+
+h1{
+    text-align: center;
+}
+
+.loader{
+    display: block;
+    margin: 1rem auto;
+    width: 40px;
+
+}
+
+.form-search{
+    margin: auto;
+    text-align: center;
+}
+
+.form-search input{
+    display: block;
+    margin: auto;
+    padding: .25rem;
+    border-radius: .25rem;
+    font-size: 1rem;
+}
+
+.header{
+    padding: .5rem;
+    position: sticky;
+    top: 0;
+    text-align: center;
+    background-color: #fff;
+}
+
+.header > *{
+    margin: 1rem auto;
+}
+
+.post-card{
+    margin: 1rem auto;
+    padding: 1rem;
+    width: 80%;
+    background-color: #eceff1;
+}
+
+.post-card p{
+    display: flex;
+    justify-content: space-between;
+}
+
+.grid-fluid{
+    margin: 1rem auto;
+    max-width: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.MyImg{
+    display: block;
+    margin: auto;
+    max-width: 100%;
+}
+
+.post-pages{
+    width: 85%;
+    margin:  1rem auto;
+    padding: 1rem 2rem;
+    background-color: #eceff1;
+    border-radius: 10px;
+}
+
+.post-pages > aside{
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+.post-pages > hr{
+    border: thin solid #111;
+    margin: 2rem auto;
+    width: 75%;
+}
+
+.post-pages img, 
+.post-pages figure,
+.post-pages audio,
+.post-pages video,
+.post-pages iframe{
+    margin: 2rem auto;
+    display: block;
+    max-width: 90%;
+
+}
+
+article{
+    border-radius: 10px;
+}

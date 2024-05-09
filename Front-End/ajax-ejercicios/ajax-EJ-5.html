@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #696262;
+        }
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-gap: 20px;
+            padding: 20px;
+            margin-top: 2rem;
+          }
+          
+          div {
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+          }
+
+          h5{
+            margin-bottom: 0;
+            margin-top: 0;
+          }
+
+          h2{
+            margin-bottom: .25rem;
+          }
+
+          p{
+            margin-top: 1rem;
+          }
+
+          .MyImg{
+            object-fit: contain;
+            max-width: 195px;
+            display: block;
+            margin: auto;
+          }
+
+          .rat{
+            margin-top: 0rem;
+          }
+
+          .loader{
+            height: 30px;
+            width: 30px;
+            display: block;
+            margin: auto;
+            margin-top: .5rem;
+          }
+
+          .not{
+            display: none;
+          }
+          
+    </style>
+</head>
+<body>
+    <header>
+        <input type="search" name="search" id="search" style="display: block; margin: 2rem auto; margin-bottom: 5px;">
+        <img src="../Recursos/img/circles.svg" alt="" class="loader not">
+    </header>
+
+    <main>
+
+    </main>
+    <script>
+        const d = document;
+        const $main = d.querySelector("main");
+        const $load = d.querySelector(".loader");
+        const $input = d.querySelector("header input");
+        const url = "https://api.tvmaze.com/search/shows?q="
+        const noimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIOvFztQxD_Vd2uOkDmABP0Cpl7TgpLP1CPdwcrvmPNw&s"
+        const buscarShow = async (url) =>{
+            try{
+                $load.classList.toggle("not")
+                $main.innerHTML = "";
+                let res = await fetch(url+$input.value)
+                if(!res.ok) throw new Error("ERROR PAPU");
+                let json = await res.json(); 
+                let $tempHMTL;
+                if(json.length === 0) $main.innerHTML = `<h3>Show Inexistente: <mark>${$input.value}</mark></h3>` 
+                for (el of json){
+                  $tempHMTL   += `<div> 
+                                  <h2>${el.show.name}</h2> 
+                                  <h5>Rating</h5>
+                                  <p class="rat">${el.show.rating.average!==null? el.show.rating.average : "*"}</p>
+                                  <img src="${el.show.image !== null? el.show.image.original : `${noimg}`}" alt="" class="MyImg"/>
+                                  ${el.show.summary !== null? el.show.summary : `${"<p>No Desc</p>"}`}
+                                   <a href="${el.show.url}" target="_blank">Ver mas</a>
+                                  </div>`
+                };
+                $main.innerHTML = $tempHMTL
+            }
+            catch(err){
+                alert(err)
+            }
+            $load.classList.toggle("not")
+        }
+
+        d.addEventListener("keypress", async e=>{
+            if(e.target === $input && e.key === 'Enter') await buscarShow(url);
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    html body{
+        margin: 0;
+    }
+    main {
+        display: flex;
+      }
+      
+      main .columna {
+        flex: 50%;
+      }
+    
+      input, img{
+        display: block;
+        margin: auto;
+      }
+
+      .borde{
+        border: 2px solid red;
+      }
+
+      h2{
+        margin-bottom: 0;
+      }
+
+      .not{
+        display: none;
+      }
+
+</style>
+<body>
+    <header>
+        <input type="text" placeholder="Artista" style="margin-top: 1rem;" class="art">
+        <br>
+        <input type="text" placeholder="Cancion" style="margin-bottom: .5rem;" class="song">
+        <input type="button" value="Buscar" class="buscar">
+        <br>
+        <img src="../Recursos/img/circles.svg" alt="" style="width: 30px;" class="not">
+    </header>
+    <main>
+        <div class="columna artista" style="margin-left: 7.5%;">
+            
+          </div>
+          <div class="columna lirica" style="margin-left: 7.5%;">
+            
+          </div>
+          <br>
+    </main>
+    <template class="t">
+        <h2></h2>
+        <br>
+        <img src="" alt="" style="max-width: 100%; object-fit: cover; height: auto;">
+        <br>
+        <p></p>
+    </template>
+    <script>
+        const d = document;
+        const $main = d.querySelector("main");
+        const $artista = d.querySelector(".art");
+        const $cancion = d.querySelector(".song");
+        const urlArt = "https://api.lyrics.ovh/v1/";
+        const urlBanda = "https://www.theaudiodb.com/api/v1/json/2/search.php?s=";
+        const colArt = d.querySelector(".artista");
+        const colLyric = d.querySelector(".lirica");
+        const $loader = d.querySelector(".not");
+        const $temp = d.querySelector(".t").content;
+        const Liricas = async () =>{
+            try{
+                let art = $artista.value.replace(/ /gi, "-");
+                let res = await fetch(urlArt+art+"/"+$cancion.value);
+                if(!res.ok) throw {status: res.status, message: "Cancion no encontrada, revise la cancion o el artista"};
+                let json = await res.json();
+                let word = `Paroles de la chanson ${$cancion.value} par ${$artista.value}`
+                let regExp = new RegExp(word, 'gi');
+                let l =  json.lyrics.replace(regExp, "")
+                l =  l.replace(/\n/gi, "<br>")
+                colLyric.innerHTML = `<h2>${$cancion.value}</h2>${l} <br>`; 
+            }
+            catch (err){
+                colLyric.innerHTML = "<p><mark> Error: "+ err.message+ " </mark></p>"
+            }
+        };
+
+        const Artista = async () =>{
+            try{
+                colArt.innerHTML = "";
+                let res = await fetch(urlBanda+$artista.value.toLowerCase());
+                if(!res.ok) throw new Error();
+                let json = await res.json();
+                $temp.querySelector("h2").textContent = json.artists[0].strArtist;
+                $temp.querySelector("p").textContent = json.artists[0].strBiographyES;
+                $temp.querySelector("img").setAttribute("src", json.artists[0].strArtistFanart); 
+                let $clone = d.importNode($temp,true);
+                colArt.appendChild($clone);
+            }
+            catch (err){
+                colArt.innerHTML = "<p><mark> Artista no encontrado, revise el nombre </mark></p>"
+            }
+        };
+
+        d.addEventListener("click", async e=>{
+            if(e.target.matches(".buscar")){
+                if($artista.value==="") return $artista.classList.add("borde")
+                else $artista.classList.remove("borde")
+                if($cancion.value==="") return $cancion.classList.add("borde")
+                else $cancion.classList.remove("borde")
+                $loader.classList.remove("not");
+                await Liricas(); 
+                await Artista(); 
+                $loader.classList.add("not");
+            }
+        });
+    </script>
+</body>
+</html>

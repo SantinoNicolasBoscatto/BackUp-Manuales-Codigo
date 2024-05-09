@@ -1745,7 +1745,7 @@ Por ultimo crearemos los eventos para disparar estas acciones.
 3) ForEach(): No se debe manejar operaciones Asincronas con ForEach() debido a que este no respeta los AWAIT y no puede completar 
 correctamente las operaciones, para ello mejor usar un ForOf() o un Promise.all().
 
-VIDEOS PENDIENTES: 124, 125, 126, 128, 129, 130, 131, 132.
+VIDEOS PENDIENTES:  129, 130, 131, 132.
 
 3.1) await Promise.all(json.results.map(async el=>{
             let img =  await getImg(el.name);
@@ -1764,3 +1764,119 @@ VIDEOS PENDIENTES: 124, 125, 126, 128, 129, 130, 131, 132.
         };
 
 3.3) Si algun elemento del JSON tiene "-" debere escribirlo de la siguiente forma: json.sprites.versions['generation-v']['black-white'].animated;
+
+4) API WORDPRESS:https://ole.com/wp-json/wp/v2/posts?_embed
+
+5) SCROLL INFINITE: 1) scrollTop: Distancia en pixeles del TOPE. 2) clientHeight: Alto del navegador del usuario. 
+                    3) scrollHeight: Cantidad de pixeles que disponemos para scrolear.
+
+                    4) window.addEventListener("scroll", e=>{
+                        const {scrollTop, clientHeight, scrollHeight} = d.documentElement;
+                        if(scrollTop+clientHeight>=scrollHeight-10){
+                            count++;
+                            d.querySelector(".loader-last").style.display = "block";
+                            getPost(`&page=${count}`)
+                        }
+                    });
+
+                                                        74) Single Page Application    
+
+1) SPA: Es una Aplicacion de una sola pagina, es decir que todas las dependencias de mi aplicacion van a cargar apenas pida la carga 
+al servidor de mi index.html (tipografias, styles, scripts). Esto nos permita ahorrarnos el tener que recurrir al servidor nuevamente 
+para traernos paginas nuevas, al ser una aplicacion de una sola pagina. Dependiendo de la complejidad de la SPA la primera vez 
+probablemente tarde en cargar, aunque lo que se suele hacer es cargar los necesario de la pagina y lo secundario (como scripts) se lo 
+carga con la pagina ya cargada.
+
+2) Por esto mismo es que para la recarga de elementos o la carga de otros la SPA utilizan AJAX, ya que este permite la carga y recarga 
+de nuevo contenido sin la necesidad de ir al servidor mediante JS. Es decir que con AJAX en las SPA mostramos u ocultamos el contenido 
+segun las acciones del usuario, pero este contenido no es consultado al servidor (no se producen PostBacks).
+
+3) URL: Al ser una SPA no seria necesario que tu pagina cambie de URL, pero por terminos de usabilidad seria practico y util. Debido 
+a que de esa forma relacionamos una vista a una URL, aunque solo existe una pagina realmente.
+
+3.1) Cambio de URL en SPA: Lo podemos hacer gracias al objeto Location, utilizando el # o atraves del paso de parametros/varibles.
+
+4) Las SPA son 100% codigo Front-End. Estas SPA no necesitan de un BackEnd para rescatar informacion, estas se encuentran desacopladas 
+de un BackEnd. Lo unico que necesita una SPA del backend es el ENDPOINT de la api, sin importar en que tecnologia se haya desarrollado
+esa API. En sintesis las SPA son paginas desacopladas del BackEnd, el acceso de los Datos los hace mediante un EndPoint de una API.
+
+5) Las SPA vienen a ser un nuevo paradigma o modelo para programar, donde el Front-End esta separado del backend, a diferencia de un 
+modelo MVC donde la vista es muy dependiente del Back-End. Para poder realizar una SPA debo dominar: 1) el lenguaje(su gramatica), 
+2) La Manipulacion del DOM. 3) Asincronia. 4) AJAX y el consumo de APIS.
+
+                                                        75) Estructura de Archivos SPA
+
+1) Dentro de la carpeta del Proyecto Crear: 1) Index.html. 2) Carpeta App. 2.1) Carpeta Assets, dentro de esto iran mis imagenes, 
+mis archivos CSS y JS. 2.2) Carpeta Components. 2.3) Carpeta Helpers, aqui iran archivos JS que contienen pequeñas funciones 
+secuendarias complementarias, similar a las funciones de clases static. 3) index.js, el archivo que hara la carga primaria de la pagina 
+Y se encargara de la delegacion de eventos. Este trabajara con modulos, para llamar funciones de otros codigos JS.
+4) App.js el componente padre, el encargado de llamar a los otros componentes.
+
+2) EJ Helpers: 1) Las cadenas de conexion para una API. 2) Funcion FETCH centralizada en una funcion HELPER, en esta lo que haremos 
+sera tomar las options por parametro y desestructurarla, luego con esos parametros ejecutaremos FETCH(), el primer THEN() verificara 
+si esta OK y tambien configuraremos el CATCH() para mostrar nuestro mensaje de ERROR. El segundo THEN() ejecutara una callback que 
+pasemos en nuestro objeto options.
+
+2.1) DECLARACION FUNCION
+export function ajax(props){
+    let {url, cbSuccess} = props;
+    fetch(url)
+    .then(res => res.ok? res.json() : Promise.reject(res))
+    .then(json => {cbSuccess(json)})
+    .catch(err=>{
+        alert("ERROR ", err.statusText || "INDETERMINADO")
+        console.log(err)
+    })
+};
+
+2.2) EJECUCION FUNCION
+ajax({
+        url: api.POSTS,
+        cbSuccess(posts){
+            posts.forEach(el => {
+                console.log(el.title.rendered)
+            });
+        }
+});
+
+3) Componentes: Son Modulos que renderizan una salida visual (HTML). Normalmente los componentes son funciones que toman una 
+propiedad/parametro y retornan un elemento html con el valor de la propiedad inyectado, aunque esto no es 100% obligatorio.
+
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+export function Loader(){
+    const $loader = document.createElement("img");
+    $loader.src = "app/assets/circles.svg";
+    $loader.classList.add("loader");
+    return $loader;
+}
+
+4) Enrutamiento: Para manejar el enrutamiento los haremos cuando se accione el evento del cambio del location.hash, dentro de este 
+evento controlaremos las acciones segun el hash que se cargue. Para crear HASH en nuestra barra de busqueda deberemos colocarle la 
+ruta HASH a un href de un <a>. Si quiero hacerlo con un elemento que no sea un <a> debere asignarle un evento al elemento que pulse
+(onclick) y que manualmente cambie el valor del location.hash.
+
+window.addEventListener("hashchange", route);
+
+function async route(){
+    let {hash} = location;
+    if(!hash || hash === "#/") {
+        await ajax(options);
+        d.getElementById("posts").innerHTML = "<h2>Home</h2>"
+    } else if (hash.includes("#/search")){
+        d.getElementById("posts").innerHTML = "<h2>Search</h2>"
+    } else if( hash === "#/contact"){
+        d.getElementById("posts").innerHTML = "<h2>Forms</h2>"
+    }
+    else{
+        d.getElementById("posts").innerHTML = "<h2>Post</h2>"
+    }
+}
+
+5) DATO: El Router como los Helpers suelen ser ASYNC.
+
+5.1) SLUG_WP: https://malvestida.com/wp-json/wp/v2/posts?slug=value
+
+6) High Order Component - HOC: Una varible que segun una ruta cargara uno u otra funcion que devolvera un componente.

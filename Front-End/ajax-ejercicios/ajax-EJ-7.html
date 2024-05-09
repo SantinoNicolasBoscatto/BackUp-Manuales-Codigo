@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main style="margin-left: 3rem;">
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 2rem; margin-top: 2rem;">
+            <label for="Estado" style="margin-right: 1.75rem;">Estados</label>
+            <select name="Estado" id="Estado">
+                
+            </select>
+        </div>
+        <div>
+            <label for="Municipio">Municipios</label>
+            <select name="Municipio" id="Municipio">
+                <option value="0">Elija Municipio</option>
+            </select>
+        </div>
+    </main>
+    <script>
+        const d = document;
+        const token = "pruebas";
+        const $estados = d.getElementById("Estado");
+        const $municipio = d.getElementById("Municipio");
+
+        const getEstados = async () =>{
+            try{
+                let url = "https://api.copomex.com/query/get_estados?token="+token;
+                let res = await fetch(url);
+                if(!res.ok) throw new Error("Error Get Estados");
+                let json = await res.json();
+                let $fragHMTL = `<option value="0">Elija Estado</option>`;
+                json.response.estado.forEach(el=> $fragHMTL += `<option value="${el}">${el}</option>`);
+                $estados.innerHTML = $fragHMTL;
+            }
+            catch(err){
+                alert(err);
+            }
+        }
+        const getMuni = async (estado) =>{
+            try{
+                let url = `https://api.copomex.com/query/get_municipio_por_estado/${estado}?token=${token}`
+                let res = await fetch(url);
+                if(!res.ok) throw new Error("ERROR GET MUNI");
+                let json = await res.json();
+                let $fragHMTL = `<option value="0">Elija Municipio</option>`;
+                json.response.municipios.forEach(el=>{
+                    $fragHMTL += `<option value="${el}">${el}</option>`;
+                })
+                $municipio.innerHTML = $fragHMTL;
+            }
+            catch(err){
+                alert(err)
+            }
+        }
+
+        d.addEventListener("DOMContentLoaded",  async e=>{await getEstados()})
+        d.addEventListener("change", async e=>{
+            if(e.target === $estados){
+                if(e.target.value!=="0"){
+                   await getMuni(e.target.value);
+                }
+                else $municipio.innerHTML = `<option value="0">Elija Municipio</option>`;
+            }
+        })
+
+    </script>
+</body>
+</html>
