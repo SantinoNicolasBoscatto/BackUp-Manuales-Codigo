@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    <h1>MANIPULACION MANUAL DEL DOM</h1>
+    <form id="to-do-form">
+        <input type="text" id="to-do-item" placeholder="Tarea">
+        <input type="submit" value="Agregar">
+    </form>
+    <h2>Lista de Tareas</h2>
+    <ul id="to-do-list"></ul>
+    <script>
+        const d = document;
+        const $item = d.getElementById("to-do-item")
+        const $list = d.getElementById("to-do-list")
+
+        d.addEventListener("submit", e=>{
+            if(!e.target.matches("#to-do-form")) return false;
+
+            e.preventDefault();
+            let $li = d.createElement("li");
+            $li.textContent = $item.value;
+            $list.appendChild($li)
+
+            $item.value = "";
+            $item.focus();
+        });
+    </script>
+</body>
+</html>

@@ -1880,3 +1880,190 @@ function async route(){
 5.1) SLUG_WP: https://malvestida.com/wp-json/wp/v2/posts?slug=value
 
 6) High Order Component - HOC: Una varible que segun una ruta cargara uno u otra funcion que devolvera un componente.
+
+7) Dinamyc Style: Para esto creare una etiqueta style vacia con un ID, y por cada vista de HTML cargare unos u otros estilos mediante 
+innerHTML. Esto me permite ir cargando CSS de forma dinamica y no todo en archivos.
+
+    7.1) d.getElementById("MyStyles").innerHTML = `.MyImg{object-fit: contain}`;
+
+8) Carga de elementos dinamicos: Aveces cuando cargamos elementos de forma dinamica algunas funciones puedan dar error debido a que 
+quieren seleccionar un elemento que todavia no llego a cargarse en el HTML, para estos casos deberemos usar un pequeño setTimeOut() 
+para controlar la asincronia de carga y la ejecucion de la funcion.
+
+                                                            76) Reactividad
+
+1) Programacion Reactiva: Es un paradigma de programacion orientada a los componentes.
+
+2) Reactividad: La Reactividad la podemos ver en los datos de nuestra aplicacion, es decir cuando una interfaz se modifica a partir de 
+los cambios que tengan de los datos de programcion de la aplicacion. Es decir que la Reactividad es el cambio o modificacion de 
+elementos mediante eventos disparados por el usuario. Los cambios visuales lo realizan los COMPONENTES
+
+3) Estado: El estado son los valores de las varibles de la aplicacion, pero se los denomina estado porque estos valores tienen una 
+duracion determinada. Por eso el estado es el valor de una varible en un momento especifico de la aplicacion.
+
+4) Interfaces UI en base al estado: Esto basicamente son los cambios en la Interfaz del usuario segun el estado de alguna varible.
+
+5) COMPONENTES: Las Interfaces visuables se suelen dividir en varios componentes independientes. Basicamente son funciones que se 
+encargan de servir un fragmento de codigo HTML (pudiendo incluir codigo CSS y JS), los componentes devuelven elementos visuales. 
+Segun la necesidad estas funciones pueden o no aceptar parametros.
+
+5.1) Una de las reglas para que estas funciones se consideren componentes es que estas cumplan una funcion unica (la de servir un 
+Fragmento HTML), si requiere de otras funciones para la carga de datos la logica de esa funcion no se desarrollara en el componente
+sino en una clase helper y se la llamara en el componente o se le pasara por parametro (preferiblemente lo segundo para no depender
+de otros componentes o clases helpers).
+
+5.2) Son reutilizables, se los puede usar varias veces en la programacion para evitar la repeticion de Codigo. Tambien Son exportables a 
+otros proyectos. Tambien estos deben ser independientes de su contexto y de otros componentes/helpers, deberias poder sacarlos de un 
+proyecto y ponerlo en otro y que funcionen.
+
+6) SINTESIS: Los componentes son funciones que tienen una funcion especifica de servir un fragmento de HTML a la vista, estas deben 
+tener una funcionalidad unica, no deben implementar clases Helpers u otros componentes debido a que estos deben de ser independientes
+de por si, esto nos permitira poder exportarlos a otros proyectos sin problema alguno. En el caso de necesitar servirse de informacion
+se la proveeremos por parametro, NO se desarrollara una funcion que traiga los datos y NO se llamara a otro componente ni clase helper.
+
+                                                    77) Manipulacion NO Reactiva del DOM
+
+1) const d = document;
+        const $item = d.getElementById("to-do-item")
+        const $list = d.getElementById("to-do-list")
+
+        d.addEventListener("submit", e=>{
+            if(!e.target.matches("#to-do-form")) return false;
+
+            e.preventDefault();
+            let $li = d.createElement("li");
+            $li.textContent = $item.value;
+            $list.appendChild($li)
+
+            $item.value = "";
+            $item.focus();
+});
+
+
+                                                    78) Interfaz de usuario basada en el DOM
+
+1) Estado: Generalmente el estado lo manejan como un Objeto al estado. Por Cada atributo del objeto state seran los diversos estados 
+de cada componente que queramos controlar, por cada estado de componente una Propiedad.
+
+2) Luego crearemos un Componente que evaluando una propiedad de nuestro objeto Estado servira un fragmento HTML u otro.
+
+3)  // EL ESTADO
+        const state = {
+            to_do_list: []
+        }
+
+        // TEMPLATE UI
+        const template = () =>{
+            if(state.to_do_list < 1) return `<p>No hay Tareas en la lista</p>`
+
+            let to_do = state.to_do_list.map(el=>`<li>${el}</li>`).join("");
+            return to_do;
+        }
+
+        // RENDER
+        const render = () =>{
+            console.log(state)
+            const $list = d.getElementById("to-do-list")
+            $list.innerHTML = template()
+        };
+
+4) El Template me permitira segun el valor de alguna propiedad del estado dibujar diferentes cosas en los fragmentos HTML que 
+retornaremos. Esta funcion es un componente.
+
+5) En render lo que haremos sera servir la vista, tomamos los datos que retorna template y con render lo dibujamos.
+
+                                                    79) Hacer al Estado Reactivo
+
+1) Para hacer reactivo a nuestro estado debemos evitar manipularlo directamente. Para ello crearemos una funcion que se encargue de 
+actualizarlo.
+
+2) const setState = (obj) =>{
+            for(let key in obj){
+                if(state.hasOwnProperty(key)){
+                    state[key] = obj[key];
+                    alert()
+                }
+            }
+            render();
+}
+
+                                                       80) Estado Inmutable
+
+1) Decir que el estado sea inmutable es que este no puede sufrir cambios o manipulaciones de forma directa accediendo a sus propiedades,
+solo se lo pueda modificar desde su funcion setState();
+
+2) Con el GetState() solo podremos acceder a una Copia de state, y gracias a esto state sera inmutable, solo puede ser seteado desde 
+su funcion setState.
+
+3) const getState = () => JSON.parse(JSON.stringify(state));
+
+4) Para actualizar el estado deberemos guardar la copia del estado pre-modificacion, accedo a la propiedad modificada y le actualizo 
+el valor y luego llamo a setState() para actualizar el estado original.
+
+4.1) d.addEventListener("submit", e=>{
+            if(!e.target.matches("#to-do-form")) return false;
+            e.preventDefault();
+            const $item = d.getElementById("to-do-item")
+
+            const lastState = getState();
+            lastState.to_do_list.push($item.value);
+            setState(lastState)) // setState({to_do_list: lastState.to_do_list}) => una es si quiero recargar todas las propiedades del 
+-                                                                                   estado y la otra solo una o algunas props.                                                                      
+});
+
+                                                            81) Componentes 
+
+1) Aunque podamos pensar que el estado es algo global unico en una aplicacion esto no es asi, sino que cada Componente puede manejar 
+su propio estado. Lo mas normal es la coexistencia de estados globales y estados por componente.
+
+        // TEMPLATE UI
+        const template = () =>{
+            if(template.data.to_do_list < 1) return `<p>No hay Tareas en la lista</p>`          
+            let to_do = template.data.to_do_list.map(el=>`<li>${el}</li>`).join("");
+            return to_do;
+        }
+
+        //CREAR ESTADO LOCAL
+        template.data = {
+            to_do_list: []
+        }
+
+                                                      82) Libreria de Componentes
+
+1) Aqui creamos una libreria en la cual puedo generar Componentes con las funciones basicas para manejarlos.
+
+export class Component{
+
+    constructor(options){
+        this.element = options.element, //Elemento al que se le insertara HTML
+        this.data = options.data,       // Un estado que definiremos en la invocacion del Componente
+        this.temp = options.template    // Una Funcion que creara fragmentos HTML segun el estado, la funcion se la define en la llamada 
+    }
+    
+    // Render UI
+    render(){
+        const $el = document.querySelector(this.element)
+        if(!$el) return false;
+        $el.innerHTML = this.ejecutarTemplate(this.data)
+    }
+
+    // Ejecutamos la CallBack que dibuja la UI segun el estado
+    ejecutarTemplate(state){
+        return this.temp(state)
+    }
+
+    // Actualiza State Reactivamente
+    setState(obj){
+        for(let key in obj){
+            if(this.data.hasOwnProperty(key)){
+                this.data[key] = obj[key];
+            }
+        }
+        this.render();
+    }
+
+    // Obtenemos copia inmutable del State
+    getState(){
+        return JSON.parse(JSON.stringify(this.data))
+    }
+};

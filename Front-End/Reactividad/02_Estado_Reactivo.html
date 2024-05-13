@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    <h1>Reactividad de Estado - Estado Inmutable</h1>
+    <form id="to-do-form">
+        <input type="text" id="to-do-item" placeholder="Tarea">
+        <input type="submit" value="Agregar">
+    </form>
+    <h2>Lista de Tareas</h2>
+    <ul id="to-do-list"></ul>
+    <script>
+        const d = document;
+        
+        // EL ESTADO
+        const state = {
+            to_do_list: []
+        }
+
+        // ESTADO REACTIVO
+        const setState = (obj) =>{
+            for(let key in obj){
+                if(state.hasOwnProperty(key)){
+                    state[key] = obj[key];
+                    console.log(state)
+                }
+            }
+            render();
+        }
+
+        // Copia de Estado Inmutable
+        const getState = () => JSON.parse(JSON.stringify(state))
+
+        // TEMPLATE UI
+        const template = () =>{
+            if(state.to_do_list < 1) return `<p>No hay Tareas en la lista</p>`          
+            let to_do = state.to_do_list.map(el=>`<li>${el}</li>`).join("");
+            return to_do;
+        }
+
+        // RENDER
+        const render = () =>{
+            const $list = d.getElementById("to-do-list")
+            $list.innerHTML = template()
+        };
+
+        d.addEventListener("DOMContentLoaded", render)
+
+        d.addEventListener("submit", e=>{
+            if(!e.target.matches("#to-do-form")) return false;
+            e.preventDefault();
+            const $item = d.getElementById("to-do-item")
+
+            const lastState = getState();
+            lastState.to_do_list.push($item.value);
+            setState(lastState)
+
+        });
+    </script>
+</body>
+</html>

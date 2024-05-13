@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    <h1>Componentes con Estado</h1>
+    <form id="to-do-form">
+        <input type="text" id="to-do-item" placeholder="Tarea">
+        <input type="submit" value="Agregar">
+    </form>
+    <h2>Lista de Tareas</h2>
+    <ul id="to-do-list"></ul>
+    <script>
+        const d = document;
+        
+        // EL ESTADO GLOBAL
+        //const state = {
+        //    to_do_list: []
+        //}
+
+        // ESTADO REACTIVO
+        const setState = (obj) =>{
+            for(let key in obj){
+                if(template.data.hasOwnProperty(key)){
+                    template.data[key] = obj[key];
+                }
+            }
+            render();
+        }
+
+        // Copia de Estado Inmutable
+        const getState = () => JSON.parse(JSON.stringify(template.data))
+
+        // TEMPLATE UI
+        const template = () =>{
+            if(template.data.to_do_list < 1) return `<p>No hay Tareas en la lista</p>`          
+            let to_do = template.data.to_do_list.map(el=>`<li>${el}</li>`).join("");
+            return to_do;
+        }
+
+        //CREAR ESTADO LOCAL
+        template.data = {
+            to_do_list: []
+        }
+
+        // RENDER
+        const render = () =>{
+            const $list = d.getElementById("to-do-list")
+            $list.innerHTML = template()
+            console.log(template.data)
+        };
+
+        d.addEventListener("DOMContentLoaded", render)
+
+        d.addEventListener("submit", e=>{
+            if(!e.target.matches("#to-do-form")) return false;
+            e.preventDefault();
+            const $item = d.getElementById("to-do-item")
+
+            const lastState = getState();
+            lastState.to_do_list.push($item.value);
+            setState(lastState)
+
+        });
+    </script>
+</body>
+</html>
