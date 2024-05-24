@@ -33,4 +33,110 @@ una cadena, pero si mi cadena va a permanecer igual durante toda mi aplicacion e
 
 2) nameoff: Devuelve el nombre de una variable.
 
-                                                        4) Generics
+                                                        4) Compilador
+
+1) Procesos de Compilacion de C#: 1) Compilador, esto convierte nuestro codigo en Intermediate Language (IL) 2) Entramos en la fase de 
+CLR donde con JIT (Just In Time) compilamos el IL en Lenguaje Binario.
+
+                                                       5) Tipos de Dato
+
+1) Build In Type: Tipos de datos ya definidos por el framework que solo debo llamar para utilizarlos (int, string, char, bool, object, 
+dynamic).
+
+2) User defined Type: Poder extender los tipos de datos existentes y crear mis propios tipos de datos (struct, enum, class, interface, 
+array, delegate).
+
+                                                        6) Parametros y Tuplas
+
+1) En el caso de que tenga un metodo con varios parametros para pasarle una forma facil de colocar los valores sin equivocarse en el 
+orden del paso de parametros es colocar el nombre del parametro original y ":" y luego el valor que ese parametro va a tomar.
+
+EJ: void MiFuncion(mensajeParametro: "Hola", numeroEJ: 33);
+
+2) Definir Parametro de Salida: void CalcularCosto(int costoUno, int Impuesto, out int total);
+                                     int saldo = 0;
+                                     CalcularCosto(100, 21, out saldo);
+
+
+3) Tuplas: Son estructuras de datos ligeras, me permiten almacenar conjunto de datos de formas sencillas y se las suele usar para que 
+las funciones puedan devolver mas de un tipo de dato.
+
+EJ: (int saldo, string cargo) informe = (0, "");
+
+EJ2: var miTupla = (20,"Tupla",false)
+
+3.1) Uso:   void CalcularCosto(int costoUno, int Impuesto, out (int,string) total)
+            {
+                total.Item1 = costoUno+Impuesto;
+                total.Item2 = "Gastos";
+            }
+            (int saldo, string cargo) informe;
+            informe.saldo = 0;
+            CalcularCosto(100, 21, out informe);
+            Console.WriteLine(informe);
+
+3.2) Segunda Forma de Retornar Tupla: (int,string) miFuncion(int costoUno, int Impuesto)
+
+
+                                                            7) Colecciones
+
+1) List: RemoveAt(4) => Elimina por indice // Remove("Value") => Elimina por valor. // Contains("Value") => Devuelve T/F segun el valor 
+que le pase. // Exists(x=>x.length > 10) => Esta funcion me permite filtrar por distintos atributos, devuelve un true si encuentra.
+ Find(x=>x.StartWith("A")) => Find basicamente busca y devuelve el elemento, FindAll() devolvera un Enum
+
+2) LinkedList: A diferencia de las listas estas no cuentan con un indice. Para Acceder a los elementos se los hace mediante un acceso
+secuencial. Es decir para acceder a un elemento nos debemos basar en el elemento anterior y/o posterior. 
+Metodos: AddFirst()/AddLast() // AddAfter(referencia, "Agregado")/AddBefore() // ElementAtOrDefault(0) Selecciona por indice // 
+RemoveFirst()/RemoveLast() // Remove() Elimina pasandole el valor del elemento
+
+Cada Elemento de Estas listas los podemos Conocer como un LinkedListNode, estos tendran los atributos de Next, Previous y Value con los 
+cuales podremos usar para acceder a otros elementos o mostrar su valor.
+
+3) Stack: Es una coleccion que tiene la peculiaridad de que el ultimo elemento que agregue siempre se posicionara arriba del resto.
+Metodo: Push() => Me permite insertar elementos // Peek() => Me trae el Primer Elemento // Pop() Me devolvera un elemento y lo eliminara
+de la coleccion // Contains("") => devuelve T/F // ElementAt(0)
+
+4) Queue: Es Opuesto al funcionamiento del Stack. Metodos: Enqueue() => Agrega un elemento //  Peek() // Dequeue() Me devolvera un 
+elemento y lo eliminara de la coleccion  // Contains("") // ElementAt(0)
+
+5) Dictionary: Es una coleccion similar al List, Pero en vez de funcionar con indices funciona con una especie de llave/valor. El Primer
+generic definira el tipo de mi KEY y el segundo el tipo de mi VALUE. No puede haber 2 elementos en el Dictionary con el mismo KEY.
+Para acceder a algun elemento lo debo hacer mediante su KEY: "miDiccionario["miKey"]"
+Metodos: Add("Key", "Value") // TryAdd("Key", "Value") => devuelve un bool de si es valido ingresar esa Key-Value al diccionario. //
+         ElementAt(0) // ContainsKey("Key") => esta funcion buscara el elemento con la Key que le pasamos y devuelve un T/F 
+         // ContainsValue("Value") // Remove("Key")
+
+Dictionary<string, string> miDiccionario = new Dictionary<string, string>();
+
+                                                                8) Delegados
+
+1) Delegados: Basicamente un delegate es una variable en la cual podemos guardar una funcion (no su retorno, sino su logica) y luego
+llamarla y ejecutarla. Los argumentos y tipo de dato que devuelva la funcion debe coincidir con la firma del delegate.
+
+public delegate string MyDelegate(int arg1, int arg2); //Declaracion de un delegado. => SIEMPRE VA AL ULTIMO
+MyDelegate delegado = func1;                           //Asignacion de una funcion a un delegado.
+delegado(33,77);                                       //Ejecucion
+delegado = func2;                                      //Sobrescribo la funcion del delegado.
+
+2) Delegates Anonimos: Es basicamente un delegate al cual le asigno una logica de funcion en el momento de su iniciacion 
+mediante un delegate sin nombre.
+
+MiDelegado delegado = delegate(int arg){
+    return arg *= 1,21;
+}
+public delegate int MiDelegado(int arg);
+
+3) Delegates Compuestos: Basicamente seria un delegate que concatene otros Delegates. Para poder concatenar 2 delegates estos deben 
+si o si tener la misma firma/cabecera.
+
+public delegate void MyDelegate(string msg);
+MyDelegate delegate1 = (msg) => Console.WriteLine("Delegado 1 dice: " + msg);
+MyDelegate delegate2 = (msg) => Console.WriteLine("Delegado 2 dice: " + msg);
+
+// Concatenación de los delegados
+MyDelegate delegate3 = delegate1 + delegate2;
+
+// Invocación del delegado concatenado
+delegate3("Hola, mundo!");
+
+3.1) Remover una Funcion del Delegate Compuesto: delegate3 -= delegate2; (queda solo la funcion del delegate1)

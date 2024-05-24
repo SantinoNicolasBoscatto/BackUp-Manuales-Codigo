@@ -1,0 +1,70 @@
+
+1) Terminales: Las 2 terminales recomendadas para trabajar con windows son: 1) WSL (Windows Subsystem for Linux) o 2)Git Bash.
+
+2) CLI: Command Line Interface
+
+3) Banderas: En las lineas de comando existen elementos llamados banderas que nos permiten modificar los datos que nos devuelvan o 
+pasemos segun que valor de bandera le pasemos. Por ejemplo las banderas del comando PWD son: -L, -P, -W. Segun la que usemos devolvera 
+una salida diferente.
+
+
+
+
+                                                                1) Comandos
+
+1) Comando PWD: (Print Work Directory) Devuelve la ruta en la cual se esta ejecutando la consola: "/c/Users/Santino" o  
+"/c/Users/Santino/Desktop/Repositorio GITHUB/Proyectos"
+ 
+2) Comando WhoAmI: Devuelve el nombre del usuario que esta ejecutando la terminal.
+
+3) Comando Help: Por si solo devuelve todos los comandos que se pueden utilizar en consola. Si quiero pedir la ayuda de un comando en 
+especial se lo puede hacer de 2 formas: 1) help pwd. 2) pwd --help. 
+
+4) Comando Clear: Me permite limpiar la terminal
+
+5) Comando LS: Me muestra los archivos que se encuntran en la carpeta en la que estoy parado
+
+6) Comando CD: (change directory) me permite cambiar entre directorios. Para cambiar entre directorios tengo que poner el nombre de una 
+carpeta existente en el directorio en el que estoy, de esa forma me traslado de ruta. Para volver a una carpeta anterior uso "..", si es 
+mas de un nivel sera "../.."
+
+    EJ: 1) cd Desktop => lleva a Desktop. 2) cd .. (vuelve un nivel)
+
+6.1) Atajos CD: 1) Esta cuenta con atajos, como un autocompletado presionando "tab" lo que me permite autocompletar nombre de carpetas
+y rutas. 2) Otra forma de cambiar de directorio es arrastrar la carpeta a la que quiero acceder a la consola. 3) Para volver al directorio
+raiz debo colocar cd ~. 4) Para ir a la raiz del sistema debo usar cd / y luego cd (nombre del disco). 5) cd - me permite volver a la 
+carpeta en la que estaba trabajando anteriormente. 6) Para acceder a una carpeta con espacios en blanco debo colocar su nombre entre 
+comillas.
+
+7) Comando Touch: Me permite crear un nuevo archivo. EJ: touch index.html // touch git.text
+
+8) Comando Echo: Me permite crear un archivo con contenido dentro. EJ: echo "Curso de Git" > git.text
+
+9) Comando Rm: Me permite eliminar un archivo o directorio con archivos. EJ: rm index.html // rm -r assets/ 1) (la bandera -R me permite 
+eliminar directorios con archivos dentro). 2) (la bandera -f me permite forzar el borrado de algun elemento)
+
+10) Comando Cat: Me permite ver el contenido de un archivo. EJ: cat index.html (me devolvera todo lo que contenga ese archivo)
+
+11) Comando MkDir: (Make Directory) Me permite crear una carpeta. EJ: mkdir Assets
+
+12) Comando RmDir: (Remove Directory) Me permite eliminar una carpeta que este vacia, si tiene archivos devolvera un error.
+EJ: rmdir Assets
+
+13) Comando Mv: (Move) Me permite mover un archivo o carpeta hacia otra carpeta. 1) EJ: mv git.txt /c/Users.
+                2) Renombrar con Mv: mv git.txt Curso-git.txt
+    
+14) Comando Cp: (Copy) me permite copiar archivos o carpetas, aunque para las carpetas debo usar la bandera -r. 
+                1) EJ: cp git.txt .. // el ultimo parametro es la ruta de copiado. 2) Renombrar el copiado: cp git.txt ../git-Curso.txt 
+                3) Renombrar y Copiar Carpeta: cp -r EJ ./EJ2
+
+15) Comando Find: Me permite buscar tanto carpetas como archivos, pero debo darle el nombre el nombre exacto o usar * 
+                  1) EJ: find index.html 2) EJ: find ind* (devolvera todos los archivos y carpetas que empicen con ind)
+
+16) Comando PS: Me lista algunos procesos activos en mi PC, con powerShell me mustra todos.
+
+17) Comando Kill: Me permite forzar la detencion de un proceso. EJ: Kill (ID del proceso)
+
+18) Comando Alias: Me permite encapsular una consulta con lineas de codigo en un Alias. EJ:  alias cdDesk="cd Desktop/"
+Es util para aquellos casos que tengo consultas muy largas y necesito reducirlas.
+
+19) Comando UnAlias: elimina un alias por el nombre. EJ: unalias cdDesk

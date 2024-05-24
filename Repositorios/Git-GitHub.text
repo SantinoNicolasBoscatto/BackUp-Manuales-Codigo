@@ -1,0 +1,275 @@
+
+                                                        1) Introduccion a Git y GitHub
+
+1) Git: Es una herramienta que permite manejar el versionado de codigo. Esta se maneja atraves de comandos, una CLI.
+
+2) GitHub: Plataforma que me permite tener Repositorios en la nube de versionado de codigo.
+
+                                                    2) Comandos Iniciales de Git 
+
+1) git config --global user.name "Santino Boscatto"
+   git config --global user.email santinoboscatto05@gmail.com
+   git config --global user.ui true
+
+Con Esto lo que haremos sera configurar aspectos basicos de git, es importante que el mail que usemos sea el mismo que con el que 
+nos registramos en GitHub para luego enlazarlos.
+
+2) git config --global core.editor "code --wait"
+   git config --global -e
+   git config --global core.autocrlf true # para estandarizar los saltos de línea en windows
+   
+Estas 2 Lineas me permiten hacer que la el menu de configuraciones de GIT se abra en VS CODE, y con la segunda linea ejecuto poder ver 
+las configuraciones mediante VS CODE.
+
+
+                                                    3) Inicializar un Repositorio de GIT
+
+1) Creamos una carpeta y en ella el archivo README.md y el .gitignore (sirve para especificar que archivos y o rutas debe ignorar en su 
+subida al Repositorio)
+
+2) Luego ejecutaremos sobre el Repositorio el comando: "git init". Esto creara una carpeta oculta .git
+
+3) git remote add origin https://github.com/usuario/repositorio.git 
+   // # Se agrega el origen remoto de tu repositorio de GitHub, a que repositorio de la nube estara conectado nuestro local
+   git push -u origin main    
+   // # Esto se lo la primera vez que vinculamos el repositorio remoto con el local, especificamos a que rama haremos el PUSH
+   git push
+
+                                                          4) Flujo Basico de Git
+
+1) El flujo de Git consta de 4 estados, con estados nos referimos a los pasos por los que va pasando nuestro codigo. 3 de estos estados
+suceden localmente en nuestra PC (estados locales) y el cuarto en el Repositorio de la nube. 1) Working Directory: Basicamente es el 
+Repositorio Git que tenemos en nuestra PC que contiene los archivos del Proyecto. 2) Staging: El estado de Staging se inicia al 
+ejecutar el comando "git add", aca es cuando git indexa y agrega los cambios realizados en mi Repositorio-Local (esto todavia no se 
+publica en la nube, sigue siendo local). 3) HEAD: Cuando tengo todo desarrollado y quiero subir estos cambios usaremos "git commit",
+este cambio quedara guardado en un historial. En esta fase los cambios del Repositorio quedan guardados. 4) Remote: Para esta fase 
+deberemos usar "git push" que Basicamente lo que hace es llevar todos nuestros cambios del Repositorio Local al Repositorio de la nube. 
+
+2) Para descargar los cambios que haya hecho otra persona en el Repositorio y trabajar sobre eso y no una version desactualizada del 
+Repositorio debo usar git pull, lo cual actualizara el Repositorio local con la ultima version del Repositorio en nube.
+
+                                             5) Sintesis de Creacion y conexion a repositorio
+
+1) git init (sobre alguna carpeta local, luego creamos un README.md y .gitignore)
+2) git add .
+3) git commit "first Commit" (para la primera subida deberemos realizar un commit)
+4) -- Creamos un Repositorio en la nube (GitHub) --
+5) git remote add origin https://github.com/usuario/repositorio.git  (con esto vinculamos el repo local con el repo de la nube)
+6) git push -u origin main (el primer push siempre lo haremos indicando a que rama lo haremos)
+
+                                                            6) .gitignore
+
+1)  Sirve para agregar archivos y/o carpetas las cual quiero que git ignore a la hora de actualizar contenido, puedo configurarlo para 
+ignorar carpetas, archivos de x extension entre otras formas. Elementos como depencias u otros archivos que son innecesarios para el 
+repositorio para necesarios para el desarrollo del codigo del proyecto no deben ser subidos al repositorio en la nube.
+
+2) archivo.ext
+   carpeta
+   /archivo_desde_raiz.ext
+   # Ignorar todos los archivos que terminen en .log
+   *.log
+   # Excepto production.log
+   !production.log
+   # ignorar los archivos terminados en .txt dentro de la carpeta doc, pero no en sus subcarpetas
+   doc/*.txt
+   # ignorar todos los archivos terminados en .txt dentro de la carpeta doc y también en sus subcarpetas
+   doc/**/*.txt   
+#
+
+                                                             7) BRANCHS
+
+1) Branch: Nos permitira aislar una funcionalidad de nuestro codigo, es decir crear temporalmente una version alterna del la rama del
+proyecto principal, esto es util ya que nos permite trabajar simultaneamente entre varias personas. En sintesis una BRANCH es una copia 
+aislada del proyecto (una copia de la BRANCH MAIN) que puedo editar y modificar sin alterar el proyecto.
+
+2) Una vez que creo una Branch con "git branch [nombre]" y cambiarme a ella con el checkout debo subir esa rama al repositorio remoto.
+Para subirla al repo remoto debo ejecutar:"git push -u origin [nombre]", con esto tendre la rama remota y localmente generadas. Esto 
+creara una version paralela del proyecto con los cambios que hayamos realizado, aunque no afectaran a la rama main de momento.
+
+3) A la hora de ir creando BRANCHS es importante de que antes de crear la branch este parado o vaya hacia mi BRANCH main, debido a que 
+de esta forma archivos que estan en la BRANCH secundarias y no los quiero en otra BRANCH secundaria se limpien al ir a la MAIN BRANCH.
+Esto debido a que la creacion de BRANCHS tomara los archivos de la ultima branch creada.
+
+                                                         8) Fusion De Branchs
+
+1) Hay 2 tipos de funsion de ramas:
+
+1.1) Fast-Forward: Esta se realiza cuando fusionamos ramas en las cuales se trabajaron diferentes archivos, por lo cual no genera conflicto
+en la fusion del contenido.
+1.2) Manual-Merge: Cuando 2 ramas trabajaron sobre un mismo archivo y por ende la fusion debemos hacerla manualmente para resolver los 
+conflictos de duplicacion de contenido. En este caso lo que deberemos hacer es ver que archivo genera el conflicto y decidir con que 
+contenido del archivo nos quedamos, una vez decidido desde la consola de comandos estaremos en la rama main/MERGE, para volver a la 
+main haremos un "git add" y un "git commit"
+
+2) Para realizar la Fusion de ramas deberemos estar situados sobre la Branch la cual va a seguir persistiendo luego de la funcion (MAIN).
+Luego ejecutaremos "git merge [rama-secundaria]"
+ 
+
+                                                 9) Editar el Ultimo Commit sin generar uno nuevo
+
+1) Con "git commit --amend --no-edit" podemos editar el ultimo commit existente y actualizarlo sin la necesidad de generar un nuevo commit.
+
+2) Este comando puede llegar a generar errores si a nuestro ultimo commit ya le hicimos un push ya que GIT al querer actualizar 
+este ultimo commit al hacer PUSH git puede detenerlo y sugerir realizar un pull ya que puede suponer que estamos queriendo editar un 
+archivo con una version desactualizada del mismo. Ahi para resolver esto haremos un PULL y nos dejara comparar ambas versiones del 
+contenido del archivo para resolver el tema del contenido de forma manual. Luego terminado esto si o si deberemos crear un nuevo commit.
+
+3) En sintesis, si quiero editar un commit existente debo obligatoriamente no haberle realizado un PUSH, por lo contrario este entrara 
+en conflicto y deberemos comparar las versiones. Para actualizar el commit no pusheado debo de volver a hacer el "git add ." y el 
+"git commit --amend --no-edit"
+
+                                                         10) Reseteo del Historial
+
+1) Para Poder resetear el historial usar "git reset" con alguna de sus banderas: 1) --soft 2)--mixed 3)--hard
+
+                                                      11) Resetear un Repositorio de 0
+
+1) cd carpeta-repositorio              // Me paro sobre el Repositorio
+   mv .git/config ~/saved_git_config   // Muevo el config de la carpeta .git a mi carpeta de usuario, le hago un BK
+   rm -rf .git                         // Borro el directorio .git
+   git init
+   git branch -M main
+   git add .
+   git commit -m "Commit inicial"
+   mv ~/saved_git_config .git/config   // Muevo el archivo BK de config.
+git push --force origin main  
+
+                                                               12) Tags
+
+1) Estas me sirven para crear versionados y empaquetados de mi proyecto del repositorio, ademas me permite seccionarlo. Lo que hara 
+sera tomar el ultimo commit que hayamos generado y empaquetarlo en una etiqueta. Desde GitHub podremos tener acceso a estos versionados 
+de forma empaquetada.
+
+2) git add .               // Guardo los ultimos cambios de mi proyecto
+git  tag v1.0.0            // Creo la tag
+git commit -m "v1.0.0"     // Creo el Commit para hacer un Push de los ultimos cambios del proyecto
+git push origin numero-version  // Ejecuto el push que me actualizara el repositorio y creara un empaquetado del proyecto con la version 
+                                    especificada
+
+                                                            13) GitHub Pages
+
+1) Es una BRANCH en especial que ofrece GitHub, que nos va a permitir tener una version WEB de nuestro proyecto alojado en el 
+repositorio. Dentro de esta podemos generar una pagina que contenga la documentacion de nuestro proyecto.
+
+2) git branch gh-pages
+   git checkout gh-pages
+   git remote add origin-web https://github.com/usuario/repositorio.git
+   git push origin-web gh-pages
+   URL: https://usuario.github.io/repositorio
+
+
+                                                        14) Colaboracion en GitHub
+
+1) Forkear: Cuando hablamos de Forkear un repositorio es Basicamente crear una copia personal/aislada de otro repositorio, normalmente 
+crear una copia del repositorio del proyecto en el que estemos. En GitHub podemos Forkear repositorios de otras personas.
+
+2) Pull-Request: Es una solicitud de modificacion/actualizacion de algun archivo del repositorio, esta solicitud es revisada por el 
+administrador del repositorio y puede actualizarla o no.
+
+3) Colaborar en GitHub: 1) Forkear el repositorio con el que quiera colaborar. 2) Una vez Forkeado en nuestra cuenta deberemos realizar 
+una copia del repositorio remoto en el local. 3) Vamos a cambiar el nombre del remote del Clon-Repositorio a "Fork" y vamos ademas 
+a configurar como segundo origen el repositorio original. 4) Luego crearemos una nueva BRANCH de nuestro FORK, para poder trabajar en 
+el y la subiremos a GitHub. 5) Realizo un Pull-Request. 6) Espera que el administrador del repositorio acepte los cambios. 
+7) Una vez aceptados los cambios borra las ramas que creaste local y remotamente, luego realiza los pull para actualizar tu repositorio
+local y un push al repositorio remoto fork.
+
+# forkear repositorio
+2) git clone https://github.com/usuario/repositorio.git
+3) git remote -v
+3) git remote rename origin fork
+3) git remote add origin https://github.com/usuario/repositorio.git
+4) git checkout -b rama-nueva
+4) git push fork rama-nueva
+5) solicitar el pull request
+6) aceptar el pull request
+7) git checkout main
+7) git pull origin main
+7) git push fork main
+7) git branch -d rama-nueva
+7) git push fork --delete rama-nueva
+                                                            15) Comandos Git
+
+0) git help [COMANDO]: Esto hara que el navegador se abra con instrucciones de ayuda sobre un comando.
+
+1) git init: me permite inicializar un Repositorio.
+
+2) git add: Este comando lo que hace Basicamente es definir que archivos deben rastrearse cuando vaya a hacer un commit, es decir le 
+estoy diciendo que archivos debe revisar para saber si sufrieron una actualizacion para asi actualizarlos en el repositorio de la nube.
+El Estado STAGED sera aquel en el que definiremos que archivos deben ser agregados al COMMIT, es como definir que archivos quiero 
+actualizar en el repositorio.
+
+3) git commit: Lo que hace es guardar todos los cambios realizados que se encuentren grabados en git add y los empaqueta bajo un 
+alias. Aquellos cambios que no hayan sidos agregados en git add seran ignorados por el commit. En esta Etapa se crea un versionado y 
+se graba en un historial los cambios que realice, es la fase previa a enviarlo a la nube.
+
+3.1) git commit --amend --no-edit: Este me permite editar codigo y mandarlo sobre un commit ya existente, una actualizacion del ultimo 
+commit.
+3.2)  git commit --amend -m "": Lo mismo que el anterior pero modificando el mensaje.
+
+4) git push: Este me permitira lanzar mi commit al Repositorio en la nube.
+4.1) git push -u origin [nombre-branch]: Me permite crear la branch en el Repositorio remoto.
+4.2) git push origin --delete [nombre-branch]: Me permite borrar una branch del Repositorio Remoto.
+
+5) git pull: Me permite descargar el ultimo versionado del Repositorio de la Nube a mi repositorio local.
+
+6) git clone: con este comando seguido del link del repositorio puedo clonar un repositorio de la nube a mi maquina local.
+
+7) git branch: Me Devuelve todas las branchs que tengo en el repositorio.
+
+7.1) git branch [nombre-rama]: Me permite crear una nueva branch.
+7.2) git checkout -b rama: Crea una rama y me cambia hacia esa rama automaticamente.
+7.3) git branch -d [nombre-rama]: Me permite eliminar una branch.
+7.4) git branch -D [nombre-rama]: Me permite eliminar forzadamente una branch.
+7.5) git branch --merged: Lista ramas fusionadas a la rama actual
+7.6) git branch --no-merged: Lista ramas no fusionadas a la rama actual
+
+8) git merge [rama-secundaria]: Me permite funcionar una rama.
+
+9) git restore --staged: Me permite eliminar las adiciones que haya hecho a la fase de STAGED.
+
+10) git log: Me da un historial de los ultimos commit. De Esta forma me da toda la infor detallada.
+10.1) git log --oneline: Me da la informacion mas reducida y en una sola linea.
+10.2) git log > archivo.txt: Esto me permite crear un archivo (de texto) que devuelva la informacion de todos los commits realizados.
+10.3) git log -n: Me permite elijir los ultimos "n" commit que quiero que me devuelva, util si es un proyecto muy antiguo y no quiero ver
+todos sus commit. 
+10.4) git log --after=""//--before="": Me permite filtrar commits por fechas, tambien puedo combinar ambos para traer commits de un 
+intervalo de fechas.
+10.5) git reflog: Me permite ver todo el registro del log, incluyendo inserciones, cambios, eliminaciones, fusiones.
+
+11) git checkout [id-commit]: esta linea me permite cambiar manualmente de version de commit.
+
+12) git diff: Me permite ver las diferencias entre el WORKING-DIRECTORY y la zona de STAGING. Basicamente los cambios en el WD que no 
+agregue con el add.
+
+13) git status: Basicamente me da el estado de los archivos del repositorio, me permite saber aquellos que fueron modificados pero no 
+agregados al STAGED, si tengo commits pendientes de PUSH.
+
+14.1) git reset --soft HEAD~1: Me permite borrar el ultimo commit de mi repositorio local, es decir el empaquetado que haya hecho se lo 
+borra, aunque no modifica en nada mi WORKING-DIRECTORY ni el STAGED, solo borra el empaquetado.
+
+14.2) git reset --mixed HEAD~1: Borra tanto el ultimo commit como lo que haya en el STAGED, no modifica lo que yo haya hecho en el 
+WORKING-DIRECTORY, pero me vuelve al primer estado del flujo de git, como si no hubiera ejecutado ni "git add" ni "git commit".
+El HEAD~1 no es necesario si no hice el commit.
+
+14.3) git reset --hard HEAD~1: Vuelve todo el estado de mi repositorio a un commit anterior, modificando tambien el WD.Segun el numero 
+que coloque me volvera a ese commit (el uno seria el penultimo commit). El HEAD~1 no es necesario si no hice el commit
+
+14.4) git reset [id-commit]: Me permite resetear hacia algun commit anterior.
+
+15) git remote -v: Me muestra una lista de todos los repositorios remotos a los que estoy conectado, ademas me dice en que repositorio
+toma la informacion y en cual actualiza.
+
+15.1) git remote add [nombre-origin] [URL]: Con este comando me puedo enlazar a un repositorio remoto, el nombre no necesariamente debe 
+ser origin
+15.2) git remote rename [old-name-origin] [new-name-origin]: Me permite reemplazar el nombre de un origen por otro.
+15.2) git remote remove [name-origin]: Me permite eliminar la conexion de un repositorio remoto.
+15.3) git checkout --track -b rama-remota origin/rama-remota: descarga una rama remota a local diferente a la principal
+
+16) git tag: devuelve una lista de todas las etiquetas.
+16.1) git tag [numero-version]: Me permite crear una etiqueta y colocarle el versionado.
+16.2) git tag -d [numero-version]: Me permite eliminar una etiqueta.
+16.3) git show [numero-version]: Muestra informacion de una etiqueta.
+16.4) git push origin [numero-version]: Me permite subir la etiqueta al remoto.
+
+                                                        16) Mas Contenido
+https://jonmircha.com/git                          
