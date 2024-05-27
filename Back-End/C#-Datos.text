@@ -75,8 +75,13 @@ EJ2: var miTupla = (20,"Tupla",false)
             CalcularCosto(100, 21, out informe);
             Console.WriteLine(informe);
 
-3.2) Segunda Forma de Retornar Tupla: (int,string) miFuncion(int costoUno, int Impuesto)
-
+3.2) Segunda Forma de Retornar Tupla: (int, string) Costo(int saldo, int impuesto,string causa)
+                                      {
+                                        saldo += impuesto;
+                                        return (saldo, causa);
+                                      }
+                                      var Tupla = Costo(100, 21, "FURRY ZONE 4");
+.
 
                                                             7) Colecciones
 
@@ -113,10 +118,10 @@ Dictionary<string, string> miDiccionario = new Dictionary<string, string>();
 1) Delegados: Basicamente un delegate es una variable en la cual podemos guardar una funcion (no su retorno, sino su logica) y luego
 llamarla y ejecutarla. Los argumentos y tipo de dato que devuelva la funcion debe coincidir con la firma del delegate.
 
-public delegate string MyDelegate(int arg1, int arg2); //Declaracion de un delegado. => SIEMPRE VA AL ULTIMO
 MyDelegate delegado = func1;                           //Asignacion de una funcion a un delegado.
 delegado(33,77);                                       //Ejecucion
 delegado = func2;                                      //Sobrescribo la funcion del delegado.
+public delegate string MyDelegate(int arg1, int arg2); //Declaracion de un delegado. => SIEMPRE VA AL ULTIMO
 
 2) Delegates Anonimos: Es basicamente un delegate al cual le asigno una logica de funcion en el momento de su iniciacion 
 mediante un delegate sin nombre.
@@ -124,6 +129,7 @@ mediante un delegate sin nombre.
 MiDelegado delegado = delegate(int arg){
     return arg *= 1,21;
 }
+delegado(100);
 public delegate int MiDelegado(int arg);
 
 3) Delegates Compuestos: Basicamente seria un delegate que concatene otros Delegates. Para poder concatenar 2 delegates estos deben 
@@ -140,3 +146,123 @@ MyDelegate delegate3 = delegate1 + delegate2;
 delegate3("Hola, mundo!");
 
 3.1) Remover una Funcion del Delegate Compuesto: delegate3 -= delegate2; (queda solo la funcion del delegate1)
+
+
+                                                      9) Creacion de Eventos   
+
+1) Events: Son funciones "Asincronas", las cuales se pueden ejecutar sin la necesidad de que otra accion haya terminado. Estan basadas
+en delegates. Para poder crear un evento debo usar la palabra reservada event.
+
+2) Crear Evento: Primero debo definir un delegate, luego para crear el evento debo usar la palabra reservada event y asignarle el
+delegate que cree anteriormente y colocarle un nombre. Con esto tengo creado el evento y puedo llamarlo como si fuera una 
+funcion. Los parametros y returns que haga dependeran de como este definido el delegado en el que se base. Tengo la opcion de en vez 
+de suscribir el evento a una funcion y definirla lo puedo hacer creando un delegate Anonimo.
+Tambien puedo utilizar otra clase que me ofrece C# para crear eventos, que es la plantilla base: EventHandler.
+    
+    private string? TheValue;                           //Class EventCreate
+    public string Value                                 //Class EventCreate
+    {
+        get { return TheValue!; }
+        set
+        {
+            this.TheValue = value;
+            this.valueChanged(TheValue);
+        }
+    }
+    public event MiEventoHandler valueChanged;          //Class EventCreate
+
+    public delegate void MiEventoHandler(string value); //Class Program
+    var obj = new EventCreate();                        //Class Program
+    obj.valueChanged += valueChanged;                   //Class Program
+    void valueChanged(string value){Action();}          //Class Program
+    obj.Value = "Changed";                              //Class Program
+
+3) Eventos Encadenados: Al igual que los delegates puedo acumular/concatenar funciones dentro de un evento.
+
+    obj.valueChanged += valueChanged;                   
+    void valueChanged(string value){Action(value);}
+    obj.valueChanged += delegate(string value){ActionSecundaria(value);}          
+
+4) Eventos Por Defecto: Este es la plantilla por defecto que nos ofrece .NET para crear eventos. En ella encontraremos 2 parametros:
+    1) object sender: este es la entidad que disparo el evento. 2) EventArgs e: Me proporciona data del evento. Para poder utilizar 
+Esta plantilla en mis clases debere heredar de la clase EventArgs.
+Pasos Para Crear Eventos en C#: 1) Creo una clase DTO que heredara de EventArgs, dentro de estas solo crearemos las propiedades que 
+queremos nuestro evento. 2) En la clase donde se realiza el disparo del evento debo crear el evento, utilizaremos EventHandler<> y dentro
+del generic colocaremos nuestra clase DTO. 3) En la llamada al Evento le pasaremos 2 parametro, estos son sender y e. 4) Al final 
+cuando llame a mi Evento le definire la logica para que actue, toda esto es similar a como funciona un delegado.
+
+La diferencia con la forma de crear eventos anterior es que La firma del evento en este caso la define EventHandler(que tiene 2 parametros
+sender y e) en cambio en la otra nosotros definimos un delegado manualmente sobre el cual se basara la firma. Esto debido a que 
+EventHandler Es en si un Delegado.
+
+1) public EventDTO : EventArgs {public string data;}
+2) public event EventHandler<EventDTO> MyEvent;
+3) MyEvent(this, new EventDTO{data = value})
+4) obj.MyEvent += MyEvent;
+   void MyEvent(object? sender, MiEvento e)
+   {
+      Console.WriteLine("Prueba");
+}
+
+
+                                                        10) Lambda Functions
+
+1) Lambda: Es una forma de escribir funciones anonimas y delegates anonimos. Se los utiliza cuando la logica a implementar es 
+pequeña y compacta. Se escribe similar a JS, si necesito mas de una linea de codigo en la logica abro llaves. En sintesis las 
+arrow-functions son funciones anonimas que me permiten simplificar la escritura de codigo.
+
+Multiplicacion f = (x,y) =>  x * y;
+Console.WriteLine(f(5,3)); // Devuelve 15
+public delegate int Multiplicacion(int x, int y);
+
+Calculo f = (x,y) => {
+     int r = x * y;
+     r = r/3+33;
+     return r;
+};
+
+Console.WriteLine(f(5,3)); // Devuelve 15
+public delegate int Calculo(int x, int y);
+
+                                                            11) Interface  
+                                                        
+1) Por temas de escalabilidad en el desarrollo de software implementamos relaciones blandas/flexibles entre los componentes de una app.
+Por eso es que no basamos nuestra logica y comunicacion en instancias de clases, sino que por ese mismo motivo utilizamos las interfaces
+o las clases abastractas.
+
+2) Interfaz Vs Clase Abstracta: 1) La Interfaz permite una multiple implmentacion (herencia) sobre una clase, en cambio una clase hija 
+solo puede heredar de una clase padre. 2) La CA permite implementar tanto metodos abstractos (metodos sin logica solo con la firma 
+definida) como metodos concretos (con firma y logica). En Cambio en la interfaz solo puedo definir metodos abstractos. 3) La CA 
+me permite manipular modificadores de visibilidad de sus elementos (public, private, protected), la interfaz hara todo sus 
+elemento publicos. 4) La Interfaz es mas rapida que la implementacion de una clase abstracta.
+
+3) Interfaz: Una interfaz es donde voy a declarar las firmas de las funciones, mas no su logica. La clase que implemente las interfaces
+debera si o si implementar todas las funciones que se declaren en la interfaz.
+
+
+                                                            12) Generics
+
+1) Generics:
+
+
+
+
+X) Operador IS: Me permite saber si un elemento ES un objecto determinado o una interface.
+X) Operador AS: Si quiero castear ciertos parametros un objeto (por ejemplo B hereda de A, y quiero que un Objeto A tome
+los valores de las propiedades de un objeto B, pero solo de las propiedades que existen en A) lo puedo hacer con el operador AS.
+
+
+
+
+
+
+
+
+
+
+
+
+B obj = new B();
+A obj2 = obj as A; // obj2 quedara cargado en sus propiedades con los valores del obj B.
+
+Dato: Una funcion, delegado u objeto Anonimo se refiere a un elemento que funciona como tal pero que no tiene nombre (no esta definido).
