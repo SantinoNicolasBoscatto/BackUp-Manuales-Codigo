@@ -7,9 +7,6 @@ En esta API vamos a crear distintos metodos que necesitemos utilizar, para cada 
 y cada una de esas rutas tendra un Metodo HTTPS diferente (Get, Head, Post, Put, Delete, Connect, Options, Path).
 Normalmente el ApiRest devuelve los datos en un JSON (Es mas organizada y liviana que un XML).
 
-En Sintesis: Un ApiRest es una App-Web que tenemos en el Back-End, en donde tenemos una serie de URL que nos devuelve o le 
-enviamos un resultado en un archivo JSON.
-
 Un API es como una página web, pero no para ser leída por personas sino para ser leídas por programas.
 
 Un API no lo consume/Utiliza una persona, la consume/Utiliza un programa. Al consumirla no lo hace a través de un navegador
@@ -197,11 +194,11 @@ EventHandler Es en si un Delegado.
 
 1) public EventDTO : EventArgs {public string data;}
 2) public event EventHandler<EventDTO> MyEvent;
-3) MyEvent(this, new EventDTO{data = value})
+3) MyEvent(this, new EventDTO{data = value});
 4) obj.MyEvent += MyEvent;
-   void MyEvent(object? sender, MiEvento e)
+   void MyEvent(object? sender, EventDTO e)
    {
-      Console.WriteLine("Prueba");
+      Console.WriteLine("Prueba"+e.data);
 }
 
 
@@ -242,26 +239,85 @@ debera si o si implementar todas las funciones que se declaren en la interfaz.
 
                                                             12) Generics
 
-1) Generics:
+1) Generics: Estos introducen el concepto de tipos de parametros para .NET, esto permite diseñar libremente clases y metodos. Es decir 
+que los generic son tipos de datos no definidos en las clases, son datos a definir por el usuario. Esto sirve por ejemplo para las listas,
+estas implementan un Generic para definir el tipo de la lista, no se encierran en que la lista debe de ser de un tipo de dato, sino crean
+la lista con un generic y basan la logica trabajando sobre ese Generic, luego el usuario definira que tipo de dato usara.
+
+public class Stack<T>
+{
+    public void Agregar(T objeto){}
+    public T Devolver() {}
+}
+
+2) Beneficios: 1) Reuso de Codigo, desarrollo una vez la logica y lo puedo utilizar con cualquier tipo de dato. 2) Evito usar object y 
+realizar los pesados casteos. 3) Performance al no realizar unboxing y Boxing.
+
+
+3) Boxing: Guardar una varible (un int por EJ) en una varible padre superior (object por ejemplo)
+3.1) Un-Boxing: Basicamente es Castear ese tipo de Dato. 
+3.2) El problema de estas tecnicas es que si abusamos de ellas el programa se hara lento, debido a que son tecnicas pesadas. Por esto 
+es que se recurre a los generics en la creacion de funciones antes de querer meter elementos objects y castearlos.
+
+4) En el momento de que un constructor me pida una Interfaz para su construccion lo que puedo hacer es pasarle  un objeto que implemente
+esa interfaz.
+
+5) Constraints Generics: Al definir una clase generica esto deriva en que cualquiera pueda implementar esta clase generica. En el caso 
+de que yo quiera restringir el acceso a mi clase generica puedo definirle Constraints Genericos. Esto me permitira evitar errores en las 
+implementaciones de Generics. Para aplicar una constraint a un generic lo aplico con la palabra Where y una condicion del Generic. En 
+el ejemplo defino que para poder usar esta interfaz generic el objeto generico debe implementar la interfaz IComparable
+
+EJ: public interface IEstudianteRepository<T> where T : IComparable<T>
+EJ: public class generic<T> where T : ClaseEJ, ISoyInterfaz // En este ejemplo estoy diciendo que el dato generico debe implentar una 
+interfaz y heredar o ser ClaseEJ.
+EJ: public interface IEstudianteRepository<T> where T : IComparable<T>, new()   //El new() obliga a la clase a tener un constructor sin 
+parametros
+
+6) En el Caso de tener un constructor vacio el cual queremos que cargue valores por defecto en base a otro constructor con parametros 
+lo haremos de la siguiente forma: 
+
+public MiClase () : this(arg1,arg2)
+{}
+
+                                                          13) Reflection
+
+1) Reflection: Esta herramienta me permite obtener/acceder la informacion de un tipo, sus campos, metodos, propiedades e Interfaces 
+que aplica. Basicamente permite analizar el contenido de un ensamblado durante la ejecucion.
+La reflexión en .NET te permite acceder y manipular elementos que ya han pasado la primera fase de compilación (donde se genera el 
+código IL) y se encuentran en ese formato intermedio. 
+
+2) Usos: 1) Obtener Informacion: Puedes explorar los tipos, sus miembros y atributos en tiempo de ejecución. 2) Crear instancias 
+dinámicas: Puedes crear objetos de tipos desconocidos previamente. 3) Obtener e Invocar métodos: Puedes llamar métodos en tiempo de 
+ejecución. 4) Acceder a campos y propiedades: Puedes leer o modificar valores de campos y propiedades.
+
+2.1) Para extraer el tipo de un generic en tiempo de ejecucion lo hago con typeof(), esto me devolvera toda la informacion sobre 
+el tipo de dato y acceso a propiedades y metodos utiles.
+
+var openInterface = typeof(IProcessor<>);
+Console.WriteLine($"Es Generic? {openInterface.IsGenericType}");
+Console.WriteLine($"Es Definicion Generic? {openInterface.IsGenericTypeDefinition}");
+
+La diferencuia entre IsGenericType y IsGenericTypeDefinition es que en la primera pregunto si es generica en su declaracion y la 
+otra si es generica en su implementacion (si en este caso al no pasarle ningun otro tipo de dato al IProcessor).
+
+2.2)
+
+2.3) Obtener metodos: var metodos = type.GetMethods(BindingFlags.Public);
 
 
 
 
+
+
+
+
+
+
+X) Array.Sort(): Es un metodo que me permite ordenar un array, pero antes debo utilizar la interfaz IComparable(), y desarrollar una 
+logica en esta para setear la comparacion.
 X) Operador IS: Me permite saber si un elemento ES un objecto determinado o una interface.
 X) Operador AS: Si quiero castear ciertos parametros un objeto (por ejemplo B hereda de A, y quiero que un Objeto A tome
 los valores de las propiedades de un objeto B, pero solo de las propiedades que existen en A) lo puedo hacer con el operador AS.
-
-
-
-
-
-
-
-
-
-
-
-
 B obj = new B();
 A obj2 = obj as A; // obj2 quedara cargado en sus propiedades con los valores del obj B.
 
