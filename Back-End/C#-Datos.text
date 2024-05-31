@@ -237,22 +237,21 @@ elemento publicos. 4) La Interfaz es mas rapida que la implementacion de una cla
 debera si o si implementar todas las funciones que se declaren en la interfaz.
 
 
-                                                            12) Generics
+                                                        12) Generics Types
 
-1) Generics: Estos introducen el concepto de tipos de parametros para .NET, esto permite diseñar libremente clases y metodos. Es decir 
-que los generic son tipos de datos no definidos en las clases, son datos a definir por el usuario. Esto sirve por ejemplo para las listas,
+1) Generics: Estos introducen el concepto de tipos en parametros para .NET, esto permite diseñar libremente clases y metodos. Es decir 
+que los generic son tipos de datos no definidos en las clases, son datos a definir por el dev. Esto sirve por ejemplo para las listas,
 estas implementan un Generic para definir el tipo de la lista, no se encierran en que la lista debe de ser de un tipo de dato, sino crean
 la lista con un generic y basan la logica trabajando sobre ese Generic, luego el usuario definira que tipo de dato usara.
 
-public class Stack<T>
+public class Stack
 {
-    public void Agregar(T objeto){}
-    public T Devolver() {}
+    public void Agregar<T>(T objeto){}
+    public T Devolver<T>() {}
 }
 
 2) Beneficios: 1) Reuso de Codigo, desarrollo una vez la logica y lo puedo utilizar con cualquier tipo de dato. 2) Evito usar object y 
 realizar los pesados casteos. 3) Performance al no realizar unboxing y Boxing.
-
 
 3) Boxing: Guardar una varible (un int por EJ) en una varible padre superior (object por ejemplo)
 3.1) Un-Boxing: Basicamente es Castear ese tipo de Dato. 
@@ -281,37 +280,118 @@ public MiClase () : this(arg1,arg2)
 
                                                           13) Reflection
 
-1) Reflection: Esta herramienta me permite obtener/acceder la informacion de un tipo, sus campos, metodos, propiedades e Interfaces 
+1) Reflection: Esta herramienta me permite obtener/acceder la informacion de un tipo: sus campos, metodos, propiedades e Interfaces 
 que aplica. Basicamente permite analizar el contenido de un ensamblado durante la ejecucion.
 La reflexión en .NET te permite acceder y manipular elementos que ya han pasado la primera fase de compilación (donde se genera el 
 código IL) y se encuentran en ese formato intermedio. 
 
-2) Usos: 1) Obtener Informacion: Puedes explorar los tipos, sus miembros y atributos en tiempo de ejecución. 2) Crear instancias 
-dinámicas: Puedes crear objetos de tipos desconocidos previamente. 3) Obtener e Invocar métodos: Puedes llamar métodos en tiempo de 
-ejecución. 4) Acceder a campos y propiedades: Puedes leer o modificar valores de campos y propiedades.
+2) Usos: 1) Obtener Informacion: Accedo a informacion del Type: sus miembros, atributos y metodos en tiempo de ejecución. 
+2) Crear instancias dinámicas: Puedes crear objetos de tipos desconocidos previamente. 3) Acceder a Metodos y Propiedades: Puedes leer o 
+modificar valores de propiedades y ejecutar Metodos. 4) Ver Los ensamblados
 
-2.1) Para extraer el tipo de un generic en tiempo de ejecucion lo hago con typeof(), esto me devolvera toda la informacion sobre 
-el tipo de dato y acceso a propiedades y metodos utiles.
+3) Ensamblados: Los Ensamblados son archivos .dll o .exe que ya pasaron la primera fase de compilacion (CIL), normalmente los conocemos 
+como las librerias de .NET (using System // using System.Linq). Los Ensamblados son basicamente codigo de programacion en CIL.
 
-var openInterface = typeof(IProcessor<>);
-Console.WriteLine($"Es Generic? {openInterface.IsGenericType}");
-Console.WriteLine($"Es Definicion Generic? {openInterface.IsGenericTypeDefinition}");
+4) Para extraer el tipo de un tipo-de-dato en tiempo de ejecucion lo hago con typeof(), esto me devolvera toda la informacion sobre 
+el tipo de dato y acceso a propiedades y metodos utiles. La diferencia entre IsGenericType y IsGenericTypeDefinition es que en 
+la primera pregunto si es generica en su declaracion y la otra si es generica en su implementacion (si en este caso al no pasarle 
+ningun otro tipo de dato al IProcessor).
 
-La diferencuia entre IsGenericType y IsGenericTypeDefinition es que en la primera pregunto si es generica en su declaracion y la 
-otra si es generica en su implementacion (si en este caso al no pasarle ningun otro tipo de dato al IProcessor).
+var type = typeof(Processor<>);
+Console.WriteLine(type.IsGenericType);
+Console.WriteLine(type.IsGenericTypeDefinition);
 
-2.2)
+                                                        13.1) Generic Methods
 
-2.3) Obtener metodos: var metodos = type.GetMethods(BindingFlags.Public);
+5) Obtener metodos: var metodos = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static); 
+//Obtengo metodos publicos y estaticos
+
+5.1) Obtener Parametros: var parametros = metodo.GetGenericArguments(); //Esa funcion devolvera parametros genericos de un metodo generico
+5.2) Obtener Posicion Parametro: var posicion = parametro.Position;
+
+5.3) Ejecutar metodos Generic: MethodInfo info = method.MakeGenericMethod(typeof(Trigger));
+                               info.Invoke(instancia, new[] {new Trigger(arg1,arg2)});
+En la primera linea guardamos el metodo, la funcion MakeGenericMethod() solo la uso si estoy guardando un metodo generico, ahi definimos
+el tipo del metodo generico. En segunda con Invoke() llamamos a la ejecucion, los parametros a pasarle seran la instancia del objeto del 
+que proviene la funcion (si es un metodo Static se le pasa null) y un array anonimo con los parametros del metodo.
+
+6) Instanciar Clases: object instancia = null;
+                      if(!method.IsStatic) instancia = Activator.CreateInstance(type); //Activator y su metodo me permite crear 
+                                                                                        instancias pasandole el type que quiero instanciar.
 
 
+6) Sintesis: La reflexion me permite acceder a la informacion de un tipo de dato (primitivo o complejo) donde puedo obtener sus 
+atributos (y leer/modificar sus valores), metodos (y Ejecutarlos), clases e interfaces que implementan. Ademas de propiedades y 
+funciones propias que puedo implementar con la reflexion. Todo Esto siendo posible durante el tiempo de ejecucion.
+
+6.1) Esta es util en los casos de que no conozca exactamente el Type de un objeto en tiempo de compilacion (por EJ cuando trabajo con 
+ensamblados dinamicos o interactuo con biblitecas externas). 2) Tambien es util cuando quiero adaptar una logica generica para diferentes
+objetos, es decir nos brinda flexibilidad para trabajar. 3) Tambien nos permite la instanciacion de objetos dinamicamente, inspeccion de 
+ensamblados y manipulacion de atributos.
+
+                                                14) Generics-Types Con Reflection
+
+1) Tomar la cantidad de Generic-Args que necesita un objeto Generic: "var Generic_Args = type.GetGenericArguments().Count();"
+1.1) Posicion Generic_Arg: "Generic_Arg.GenericParamiterPosition;"
+
+2) Tomar Constraints de un Generic_Args: "var constraints = Generic_Arg.GetGenericParameterConstraints();"
+2.1)"constraint.IsInterface; constraint.IsClass; constraint.IsEnum;" // Devuelven un T/F
+2.2) Cuando Quiera llevar un objeto/interfaz generic con Constraints a otra clase cuando la implemente debere volver a declarar sus 
+Constraints.
+
+3) Attribute-Mask: "parametro.GenericParameterAttributes"
+
+                                                14.1) Instanciar Generic Types Con Reflection
+
+1) Para poder crear una instancia en base a interfaces/clases genericas necesito saber que argumentos le debo pasar (y si estos cumplen
+su constraint). No le debo pasar la Clase ni la Interfaz sino su type.
+
+Type[] typeArguments = {typeof(Request), typeof(Response)} //Defino los types de mis parametros
+var genericInstance = typeof(IPipeLine<,>).MakeGenericType(typeArguments); //Guardo el Type pero con los argumentos cargados
+var obj = Activator.CreateInstance(genericInstance); //Paso el type ya que CreateInstance genera instancia pasandole un type.
 
 
+                                                           15) Variance
 
+1) Class More-Derived: Es aquella clase que es el resultado de extender funcionalidades (heredar) de clases padres/superiores.
+2) Class Less-Derived: Es aquella clase que no hereda o tiene menos herencias con respecto a otras.
+3) Se puede asignar un More-Derived a un Less-Derived (es decir al padre le puedo pasar el valor del hijo), pero no viceversa.
 
+4) Variance: A la Asignacion de valores entre objetos de un modelo de clases jerarquico se los llama Variance.
 
+5) Covariance: Si la reduccion de la Causa genera una reduccion en la consecuencia se le llama Covariance. Es decir cuando la Causa y 
+Consecuencia cambian en la misma direccion se llama Covariance.
+6) Contravariance: Es lo opuesto a Covariance, el cambio de la Causa provocara un Efecto contrario en la Consecuencia. Es decir cuando 
+la Causa cambia la Consecuencia lo hace de Forma Opuesta.
 
+7) Con la Asignacion Variance (asignar un More-Derived a un Less-Derived) "y" podra acceder solo a todos los metodos y propiedades que 
+Tiene originalmente su clase, no a los metodos y propiedades que implementa su clase Hija.
 
+Base x = new Base();
+Base y = new Derived();
+y.EjecutarDerived(); => Devolvera un Error
+
+8) Definir Covariance: interface IProducer<out T>{} => Esto genera que el Generic T solo pueda ser usado como parametro de salida.
+9) Definir Contravariance: interface IConsumer<in T>{} => Esto genera que el Generic T solo pueda ser usado como parametro.
+
+10) Sintesis: Cuando tenemos un Parametro-Generic que ingresa y este luego Se retorna en una funcion se llama Covariance, siempre debemos
+colocar en sus parametros genericos las Clases More-Derived, para que luego clases Less-Derived puedan almacenar la devolucion de la 
+funcion.
+Ahora cuando un Parametro-Generic ingresa y se utiliza como Argumento de una funcion lo llamamos Contravariance. Este funciona de forma 
+opuesta a la reglas Variance, y requiere que el parametro que le pasemos siempre sea el Less-Derived, de esta forma podremos pasar el 
+parametro Base/Padre y su respectivos Hijos.
+
+Covariance:
+interface IProducer<out T>{ T Produce(); }
+IProducer<Derived> prod = null!;
+Derived ds = prod.Produce();
+Base bs = prod.Produce();
+
+Contravariance:
+interface IConsumer<in T> {void Consume(T obj);}
+IConsumer<Base> consu = null!;
+consu.Consume(new Base());
+consu.Consume(new Derived());
 
 X) Array.Sort(): Es un metodo que me permite ordenar un array, pero antes debo utilizar la interfaz IComparable(), y desarrollar una 
 logica en esta para setear la comparacion.
@@ -322,3 +402,73 @@ B obj = new B();
 A obj2 = obj as A; // obj2 quedara cargado en sus propiedades con los valores del obj B.
 
 Dato: Una funcion, delegado u objeto Anonimo se refiere a un elemento que funciona como tal pero que no tiene nombre (no esta definido).
+
+                                                        15) Comandos DotNet
+
+1) Definir el SDK:  dotnet new globaljson --sdk-version "6.0" --force
+
+2) Crear Una Solucion : dotnet new sln
+
+3) Crear Project Consola: dotnet new console
+
+4) Enlazar SLN con Project: dotnet sln add "NombreProyecto.csproj"
+
+5) Correr Proyecto: dotnet run --project "NameProject.csproj"
+
+
+                                                        16) Entity Framework 
+
+1) Es una de las formas de transformar la data SQL a data en C#, este es un ORM (Object Relational Mapper). Es como un traductor de 
+codigo SQL a codigo C#.
+
+2) Usar EF: 1) Primero deberemos crear la clase "Entidad" en C# que representara a la tabla que esta en SQL. 2) Luego a Esta clase
+deberemos asignarla como argumento del objeto DbSet<>. 3) db.MyClass.AsNoTracking() 4) Luego deberemos convertir este Codigo C# a 
+codigo SQL, de esto se encarga LINQ. 5) Una vez convertida la consulta la pasamos a la BD SQL. 6) Esta retornara un resultado en el 
+cual LINQ se encargara de convertirla a codigo C#, devolvera un array de el tipo de datos que le pasamos inicialmente.
+
+3) Paso a Paso: 1) Creo una clase con sus Propiedades. 2) Creo una Clase de Negocio que herede de DbContext. Una instancia de DbContext
+representa una sesion con la BD, es decir representa la BD como tal. Un DbSet<> Representa una tabla dentro del DbContext.
+  3) Luego en la clase de negocio overaideo un Metodo OnConfiguring(DbContextOptionsBuilder optionsBuilder) y dentro de este llamo 
+al metodo UseSqlServer(connectionString) 4) En La misma clase negocio crearemos la propiedad DbSet<Entidad>. 5) Luego en la 
+la ejecucion llamaremos a nuestra clase de negocio, accederemos a la propiedad que queremos mapear y Ejecutaremos el Metodo 
+AsNoTracking(), este me permitira no guardar en cache esta operacion.
+
+
+// CLASE DE NEGOCIO
+public class AppVentaLibrosContext : DbContext
+{
+    private const string ConnectionString = @"Data Source=.\;Initial Catalog= LibrosWeb; User ID=sa;Password=Admin123;";
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(connectionString: ConnectionString);
+    }
+    public DbSet<Libro> Libro { get; set; }
+}
+
+// CLASE DTO
+public class Libro{
+        public int LibroId { get; set; }
+        public string Titulo { get; set; }
+        public string Descripcion { get; set; }
+        public DateTime Fecha { get; set; }
+}
+
+// CLASE DE EJECUCION
+using(AppVentaLibrosContext db = new AppVentaLibrosContext())
+{
+    var Libros = db.Libro.AsNoTracking();
+    foreach (var item in Libros)
+    {
+        Console.WriteLine($"ID: {item.LibroId} || Titulo: {item.Titulo} || Descripcion: {item.Descripcion}");
+    }
+}
+
+4) Si tengo 2 tablas relacionadas en SQL tambien las debere relacionar desde C#. Para hacerlo utilizaremos Anclas, es decir colocaremos
+dentro de los clases una propiedad de con el objeto correspondiente (es decir a Precio le pondremos la propiedad de clase Libro y 
+a Libro la propiedad de clase Precio). Esto tendra el fin de que ambas clases puedan consumir la informacion de la otra mediante 
+esa ancla.
+
+5) Ahora que tengo las tablas relacionadas por FOREIGN KEYS y las clases que representan las tablas en C# relacionadas por las Anclas
+puedo con EF realizar una consulta JOINEADA. Sin el Paso de las FK y las Anclas esto no seria posible.
+
+EJ: var Libros = db.Libro.Include(x=> x.PrecioPromocion).AsNoTracking(); 
