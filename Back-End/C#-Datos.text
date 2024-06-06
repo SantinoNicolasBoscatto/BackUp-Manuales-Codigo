@@ -407,7 +407,7 @@ Dato: Una funcion, delegado u objeto Anonimo se refiere a un elemento que funcio
 
 1) Definir el SDK:  dotnet new globaljson --sdk-version "6.0" --force
 
-2) Crear Una Solucion : dotnet new sln
+2) Crear Una Solucion : dotnet new sln --name NombreProyecto
 
 3) Crear Project Consola: dotnet new console
 
@@ -416,7 +416,7 @@ Dato: Una funcion, delegado u objeto Anonimo se refiere a un elemento que funcio
 5) Correr Proyecto: dotnet run --project "NameProject.csproj"
 
 
-                                                        16) Entity Framework 
+                                                        16) Entity Framework: Select
 
 1) Es una de las formas de transformar la data SQL a data en C#, este es un ORM (Object Relational Mapper). Es como un traductor de 
 codigo SQL a codigo C#.
@@ -472,3 +472,83 @@ esa ancla.
 puedo con EF realizar una consulta JOINEADA. Sin el Paso de las FK y las Anclas esto no seria posible.
 
 EJ: var Libros = db.Libro.Include(x=> x.PrecioPromocion).AsNoTracking(); 
+
+6) Cuando se da una relacion de Uno a Muchos el Ancla de uno de los objectos implicados debera definir el Ancla como ICollection<T>.
+Cuando es de muchos a Muchos ambos implementaran el ICollection<>.
+
+EJ: public ICollection<Comentario> Comentario { get; set; }
+
+7) Trabajar con PK Compuesta en EF: Sobrescribiendo este evento en la clase de negocio defino que X clase tiene 
+una PK compuesta y le paso que props vienen a representar esa clave primaria.
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<LibroAutor>().HasKey(xy=> new {xy.AutorId,xy.LibroId});
+}
+Este metodo me permite definir reglas de las entidades de EF, como por ejemplo las claves primarias compuestas o las relaciones entre 
+nuestras Entidades/Tablas.
+
+8) Include(): Sirve para cargar los datos de una Propiedad (perteneciente a la entidad principal) que es entidad, es decir
+que si Libro en sus Props tiene el Ancla de ICollection<Comentario> para poder cargar la informacion de comentarios (la entidad 
+secundaria) debe llamar a Include() para poder rellenar los datos de esa entidad secundaria, Include() realiza la instancia del objeto 
+de la entidad secundaria y luego se cargan los datos de esta identidad secundaria. ThenInclude() Se lo usa para entidades 
+que estan dentro de entidades secundarias.
+
+// CLASS DTO
+public class Libro
+{
+    public int LibroId { get; set; }
+    public Precio PrecioPromocion { get; set; } // Esta Propiedad tiene como Type una Entidad
+    public ICollection<Comentario> ComentarioLista { get; set; } // Esta Propiedad tiene como Generic-Type una Entidad
+}
+
+// CLASS PROGRAM
+var Libros = db.Libro.Include(x=>x.PrecioPromocion).AsNoTracking(); 
+foreach (var Libro in Libros)
+{
+    Console.WriteLine(Libro.Titulo+" "+Libro.PrecioPromocion.PrecioActual);       
+}
+//Para que la Propiedad PrecioPromocion tenga datos debo instanciar la clase, mediante el uso de Include() la instacio y cargo los 
+datos, de Otra forma la Propiedad PrecioPromocion seria null.
+
+                                                    16.1) Entity Framework: Insert
+
+1) Para poder realizar un insert deberemos: 1) Primero deberemos crear una sesion usando el objeto DbContext o instanciar alguna clase 
+que lo implemente. 2) Luego deberemos instanciar una entidad de EF. 3) A esta Entidad instanciada deberemos cargarle los valores y llamar 
+al metodo Add() y luego al SaveChanges(). 4) Esta Transaccion devolvera un indicativo de que la Transaccion fue exitosa o no. Si es
+exitosa devolvera la cantidad de registros/rows afectados.
+using(AppVentaLibrosContext db = new AppVentaLibrosContext())
+{
+    Autor aux = new Autor {Nombre = "Karen", Apellido = "Romano"};
+    db.Add(aux);
+    var stateT = db.SaveChanges();    
+}
+
+                                                    16.2) Entity Framework: Update
+
+1) Para realizar un Update Deberemos: 1) Crear una sesion instanciando al DbContext o a la clase negocio que lo implemente. 2) Buscar 
+el registro que quiero actualizar con LINQ en la entidad 3) Esto nos devolvera una instancia del objeto a Actualizar. 4) Le realizaremos
+los cambios y llamaremos al metodo SaveChanges().
+
+using(var db = new AppVentaLibrosContext())
+{
+    var autor = db.Autor.SingleOrDefault(x=>x.Nombre=="Karen");
+    if(autor!=null){
+        autor.Nombre = "Pep";
+        var state = db.SaveChanges();
+    }
+}
+
+                                                    16.3) Entity Framework: Delete
+
+1) Para realizar un Update Deberemos: 1) Abrir una sesion instanciando al DbContext o clase que lo implemente. 2) Buscar con LINQ el 
+registro que quiero borrar y guardarlo en una varible. 3) Luego para borrarlo llamare al metodo Remove() y le pasare el objeto. 
+4) Por ultimo llamamos al SaveChanges().
+
+using(var db = new AppVentaLibrosContext())
+{
+    var autor = db.Autor.SingleOrDefault(x=>x.AutorId==33);
+    if(autor!=null){
+        db.Remove(autor);
+        db.SaveChanges();
+    }
+}

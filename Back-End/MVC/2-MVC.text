@@ -1,0 +1,717 @@
+                                                        1) Api REST
+
+API REST: Es una aplicacion Web desde el lado del Back-End ( un servicio web), en el cual tenemos una serie de Metodos 
+configurados que realizan ciertas funcionalidades como la interaccion con la base de datos, Logica, etc, que puede ser
+consumida (utilizada) mediante el protocolo HTTPS por cualquier tipo de cliente que entienda el protocolo HTTPS.
+En esta API vamos a crear distintos metodos que necesitemos utilizar, para cada uno de estos metodos definiremos una ruta
+y cada una de esas rutas tendra un Metodo HTTPS diferente (Get, Head, Post, Put, Delete, Connect, Options, Path).
+Normalmente el ApiRest devuelve los datos en un JSON (Es mas organizada y liviana que un XML).
+
+Un API es como una página web, pero no para ser leída por personas sino para ser leídas por programas.
+
+Un API no lo consume/Utiliza una persona, la consume/Utiliza un programa. Al consumirla no lo hace a través de un navegador
+de internet, sino que envía un pedido a una dirección http también, pero en lugar de recibir un HTML, una API va a regresar
+un contenido JSON para ser consumido por el programa que envió el pedido.
+
+                                                    2) string vs StringBuilder
+
+1) string: string es inmutable, es decir que cada vez que se crea un objeto string este ya no puedo cambiar, su contenido no puede ser 
+modificado. Cada vez que se quiere modificar un string no se modifica sino que crea una instancia nueva.
+
+2) StringBuilder: Es Mutable, basicamente lo opuesto a string, este se puede  modificar despues de su creacion sin tener un instanciar 
+un nuevo StringBuilder.
+
+3) Cuando Usar uno u Otro: La ventaja de StringBuilder es que da mucha mas eficacia en rendimiento cuando estoy constantemente modificando
+una cadena, pero si mi cadena va a permanecer igual durante toda mi aplicacion es mejor usar solo string.
+
+                                                        3) TypeOff
+
+1) typeoff: Devuelve un objeto Type que representa un tipo de dato. Basicamente devuelve un Tipo de Dato.
+
+2) nameoff: Devuelve el nombre de una variable.
+
+                                                        4) Compilador
+
+1) Procesos de Compilacion de C#: 1) Compilador, esto convierte nuestro codigo en Intermediate Language (IL) 2) Entramos en la fase de 
+CLR donde con JIT (Just In Time) compilamos el IL en Lenguaje Binario.
+
+                                                       5) Tipos de Dato
+
+1) Build In Type: Tipos de datos ya definidos por el framework que solo debo llamar para utilizarlos (int, string, char, bool, object, 
+dynamic).
+
+2) User defined Type: Poder extender los tipos de datos existentes y crear mis propios tipos de datos (struct, enum, class, interface, 
+array, delegate).
+
+                                                        6) Parametros y Tuplas
+
+1) En el caso de que tenga un metodo con varios parametros para pasarle una forma facil de colocar los valores sin equivocarse en el 
+orden del paso de parametros es colocar el nombre del parametro original y ":" y luego el valor que ese parametro va a tomar.
+
+EJ: void MiFuncion(mensajeParametro: "Hola", numeroEJ: 33);
+
+2) Definir Parametro de Salida: void CalcularCosto(int costoUno, int Impuesto, out int total);
+                                     int saldo = 0;
+                                     CalcularCosto(100, 21, out saldo);
+
+
+3) Tuplas: Son estructuras de datos ligeras, me permiten almacenar conjunto de datos de formas sencillas y se las suele usar para que 
+las funciones puedan devolver mas de un tipo de dato.
+
+EJ: (int saldo, string cargo) informe = (0, "");
+
+EJ2: var miTupla = (20,"Tupla",false)
+
+3.1) Uso:   void CalcularCosto(int costoUno, int Impuesto, out (int,string) total)
+            {
+                total.Item1 = costoUno+Impuesto;
+                total.Item2 = "Gastos";
+            }
+            (int saldo, string cargo) informe;
+            informe.saldo = 0;
+            CalcularCosto(100, 21, out informe);
+            Console.WriteLine(informe);
+
+3.2) Segunda Forma de Retornar Tupla: (int, string) Costo(int saldo, int impuesto,string causa)
+                                      {
+                                        saldo += impuesto;
+                                        return (saldo, causa);
+                                      }
+                                      var Tupla = Costo(100, 21, "FURRY ZONE 4");
+.
+
+                                                            7) Colecciones
+
+1) List: RemoveAt(4) => Elimina por indice // Remove("Value") => Elimina por valor. // Contains("Value") => Devuelve T/F segun el valor 
+que le pase. // Exists(x=>x.length > 10) => Esta funcion me permite filtrar por distintos atributos, devuelve un true si encuentra.
+ Find(x=>x.StartWith("A")) => Find basicamente busca y devuelve el elemento, FindAll() devolvera un Enum
+
+2) LinkedList: A diferencia de las listas estas no cuentan con un indice. Para Acceder a los elementos se los hace mediante un acceso
+secuencial. Es decir para acceder a un elemento nos debemos basar en el elemento anterior y/o posterior. 
+Metodos: AddFirst()/AddLast() // AddAfter(referencia, "Agregado")/AddBefore() // ElementAtOrDefault(0) Selecciona por indice // 
+RemoveFirst()/RemoveLast() // Remove() Elimina pasandole el valor del elemento
+
+Cada Elemento de Estas listas los podemos Conocer como un LinkedListNode, estos tendran los atributos de Next, Previous y Value con los 
+cuales podremos usar para acceder a otros elementos o mostrar su valor.
+
+3) Stack: Es una coleccion que tiene la peculiaridad de que el ultimo elemento que agregue siempre se posicionara arriba del resto.
+Metodo: Push() => Me permite insertar elementos // Peek() => Me trae el Primer Elemento // Pop() Me devolvera un elemento y lo eliminara
+de la coleccion // Contains("") => devuelve T/F // ElementAt(0)
+
+4) Queue: Es Opuesto al funcionamiento del Stack. Metodos: Enqueue() => Agrega un elemento //  Peek() // Dequeue() Me devolvera un 
+elemento y lo eliminara de la coleccion  // Contains("") // ElementAt(0)
+
+5) Dictionary: Es una coleccion similar al List, Pero en vez de funcionar con indices funciona con una especie de llave/valor. El Primer
+generic definira el tipo de mi KEY y el segundo el tipo de mi VALUE. No puede haber 2 elementos en el Dictionary con el mismo KEY.
+Para acceder a algun elemento lo debo hacer mediante su KEY: "miDiccionario["miKey"]"
+Metodos: Add("Key", "Value") // TryAdd("Key", "Value") => devuelve un bool de si es valido ingresar esa Key-Value al diccionario. //
+         ElementAt(0) // ContainsKey("Key") => esta funcion buscara el elemento con la Key que le pasamos y devuelve un T/F 
+         // ContainsValue("Value") // Remove("Key")
+
+Dictionary<string, string> miDiccionario = new Dictionary<string, string>();
+
+                                                                8) Delegados
+
+1) Delegados: Basicamente un delegate es una variable en la cual podemos guardar una funcion (no su retorno, sino su logica) y luego
+llamarla y ejecutarla. Los argumentos y tipo de dato que devuelva la funcion debe coincidir con la firma del delegate.
+
+MyDelegate delegado = func1;                           //Asignacion de una funcion a un delegado.
+delegado(33,77);                                       //Ejecucion
+delegado = func2;                                      //Sobrescribo la funcion del delegado.
+public delegate string MyDelegate(int arg1, int arg2); //Declaracion de un delegado. => SIEMPRE VA AL ULTIMO
+
+2) Delegates Anonimos: Es basicamente un delegate al cual le asigno una logica de funcion en el momento de su iniciacion 
+mediante un delegate sin nombre.
+
+MiDelegado delegado = delegate(int arg){
+    return arg *= 1,21;
+}
+delegado(100);
+public delegate int MiDelegado(int arg);
+
+3) Delegates Compuestos: Basicamente seria un delegate que concatene otros Delegates. Para poder concatenar 2 delegates estos deben 
+si o si tener la misma firma/cabecera.
+
+public delegate void MyDelegate(string msg);
+MyDelegate delegate1 = (msg) => Console.WriteLine("Delegado 1 dice: " + msg);
+MyDelegate delegate2 = (msg) => Console.WriteLine("Delegado 2 dice: " + msg);
+
+// Concatenación de los delegados
+MyDelegate delegate3 = delegate1 + delegate2;
+
+// Invocación del delegado concatenado
+delegate3("Hola, mundo!");
+
+3.1) Remover una Funcion del Delegate Compuesto: delegate3 -= delegate2; (queda solo la funcion del delegate1)
+
+
+                                                      9) Creacion de Eventos   
+
+1) Events: Son funciones "Asincronas", las cuales se pueden ejecutar sin la necesidad de que otra accion haya terminado. Estan basadas
+en delegates. Para poder crear un evento debo usar la palabra reservada event.
+
+2) Crear Evento: Primero debo definir un delegate, luego para crear el evento debo usar la palabra reservada event y asignarle el
+delegate que cree anteriormente y colocarle un nombre. Con esto tengo creado el evento y puedo llamarlo como si fuera una 
+funcion. Los parametros y returns que haga dependeran de como este definido el delegado en el que se base. Tengo la opcion de en vez 
+de suscribir el evento a una funcion y definirla lo puedo hacer creando un delegate Anonimo.
+Tambien puedo utilizar otra clase que me ofrece C# para crear eventos, que es la plantilla base: EventHandler.
+    
+    private string? TheValue;                           //Class EventCreate
+    public string Value                                 //Class EventCreate
+    {
+        get { return TheValue!; }
+        set
+        {
+            this.TheValue = value;
+            this.valueChanged(TheValue);
+        }
+    }
+    public event MiEventoHandler valueChanged;          //Class EventCreate
+
+    public delegate void MiEventoHandler(string value); //Class Program
+    var obj = new EventCreate();                        //Class Program
+    obj.valueChanged += valueChanged;                   //Class Program
+    void valueChanged(string value){Action();}          //Class Program
+    obj.Value = "Changed";                              //Class Program
+
+3) Eventos Encadenados: Al igual que los delegates puedo acumular/concatenar funciones dentro de un evento.
+
+    obj.valueChanged += valueChanged;                   
+    void valueChanged(string value){Action(value);}
+    obj.valueChanged += delegate(string value){ActionSecundaria(value);}          
+
+4) Eventos Por Defecto: Este es la plantilla por defecto que nos ofrece .NET para crear eventos. En ella encontraremos 2 parametros:
+    1) object sender: este es la entidad que disparo el evento. 2) EventArgs e: Me proporciona data del evento. Para poder utilizar 
+Esta plantilla en mis clases debere heredar de la clase EventArgs.
+Pasos Para Crear Eventos en C#: 1) Creo una clase DTO que heredara de EventArgs, dentro de estas solo crearemos las propiedades que 
+queremos nuestro evento. 2) En la clase donde se realiza el disparo del evento debo crear el evento, utilizaremos EventHandler<> y dentro
+del generic colocaremos nuestra clase DTO. 3) En la llamada al Evento le pasaremos 2 parametro, estos son sender y e. 4) Al final 
+cuando llame a mi Evento le definire la logica para que actue, toda esto es similar a como funciona un delegado.
+
+La diferencia con la forma de crear eventos anterior es que La firma del evento en este caso la define EventHandler(que tiene 2 parametros
+sender y e) en cambio en la otra nosotros definimos un delegado manualmente sobre el cual se basara la firma. Esto debido a que 
+EventHandler Es en si un Delegado.
+
+1) public EventDTO : EventArgs {public string data;}
+2) public event EventHandler<EventDTO> MyEvent;
+3) MyEvent(this, new EventDTO{data = value});
+4) obj.MyEvent += MyEvent;
+   void MyEvent(object? sender, EventDTO e)
+   {
+      Console.WriteLine("Prueba"+e.data);
+}
+
+
+                                                        10) Lambda Functions
+
+1) Lambda: Es una forma de escribir funciones anonimas y delegates anonimos. Se los utiliza cuando la logica a implementar es 
+pequeña y compacta. Se escribe similar a JS, si necesito mas de una linea de codigo en la logica abro llaves. En sintesis las 
+arrow-functions son funciones anonimas que me permiten simplificar la escritura de codigo.
+
+Multiplicacion f = (x,y) =>  x * y;
+Console.WriteLine(f(5,3)); // Devuelve 15
+public delegate int Multiplicacion(int x, int y);
+
+Calculo f = (x,y) => {
+     int r = x * y;
+     r = r/3+33;
+     return r;
+};
+
+Console.WriteLine(f(5,3)); // Devuelve 15
+public delegate int Calculo(int x, int y);
+
+                                                            11) Interface  
+                                                        
+1) Por temas de escalabilidad en el desarrollo de software implementamos relaciones blandas/flexibles entre los componentes de una app.
+Por eso es que no basamos nuestra logica y comunicacion en instancias de clases, sino que por ese mismo motivo utilizamos las interfaces
+o las clases abastractas.
+
+2) Interfaz Vs Clase Abstracta: 1) La Interfaz permite una multiple implmentacion (herencia) sobre una clase, en cambio una clase hija 
+solo puede heredar de una clase padre. 2) La CA permite implementar tanto metodos abstractos (metodos sin logica solo con la firma 
+definida) como metodos concretos (con firma y logica). En Cambio en la interfaz solo puedo definir metodos abstractos. 3) La CA 
+me permite manipular modificadores de visibilidad de sus elementos (public, private, protected), la interfaz hara todo sus 
+elemento publicos. 4) La Interfaz es mas rapida que la implementacion de una clase abstracta.
+
+3) Interfaz: Una interfaz es donde voy a declarar las firmas de las funciones, mas no su logica. La clase que implemente las interfaces
+debera si o si implementar todas las funciones que se declaren en la interfaz.
+
+
+                                                        12) Generics Types
+
+1) Generics: Estos introducen el concepto de tipos en parametros para .NET, esto permite diseñar libremente clases y metodos. Es decir 
+que los generic son tipos de datos no definidos en las clases, son datos a definir por el dev. Esto sirve por ejemplo para las listas,
+estas implementan un Generic para definir el tipo de la lista, no se encierran en que la lista debe de ser de un tipo de dato, sino crean
+la lista con un generic y basan la logica trabajando sobre ese Generic, luego el usuario definira que tipo de dato usara.
+
+public class Stack
+{
+    public void Agregar<T>(T objeto){}
+    public T Devolver<T>() {}
+}
+
+2) Beneficios: 1) Reuso de Codigo, desarrollo una vez la logica y lo puedo utilizar con cualquier tipo de dato. 2) Evito usar object y 
+realizar los pesados casteos. 3) Performance al no realizar unboxing y Boxing.
+
+3) Boxing: Guardar una varible (un int por EJ) en una varible padre superior (object por ejemplo)
+3.1) Un-Boxing: Basicamente es Castear ese tipo de Dato. 
+3.2) El problema de estas tecnicas es que si abusamos de ellas el programa se hara lento, debido a que son tecnicas pesadas. Por esto 
+es que se recurre a los generics en la creacion de funciones antes de querer meter elementos objects y castearlos.
+
+4) En el momento de que un constructor me pida una Interfaz para su construccion lo que puedo hacer es pasarle  un objeto que implemente
+esa interfaz.
+
+5) Constraints Generics: Al definir una clase generica esto deriva en que cualquiera pueda implementar esta clase generica. En el caso 
+de que yo quiera restringir el acceso a mi clase generica puedo definirle Constraints Genericos. Esto me permitira evitar errores en las 
+implementaciones de Generics. Para aplicar una constraint a un generic lo aplico con la palabra Where y una condicion del Generic. En 
+el ejemplo defino que para poder usar esta interfaz generic el objeto generico debe implementar la interfaz IComparable
+
+EJ: public interface IEstudianteRepository<T> where T : IComparable<T>
+EJ: public class generic<T> where T : ClaseEJ, ISoyInterfaz // En este ejemplo estoy diciendo que el dato generico debe implentar una 
+interfaz y heredar o ser ClaseEJ.
+EJ: public interface IEstudianteRepository<T> where T : IComparable<T>, new()   //El new() obliga a la clase a tener un constructor sin 
+parametros
+
+6) En el Caso de tener un constructor vacio el cual queremos que cargue valores por defecto en base a otro constructor con parametros 
+lo haremos de la siguiente forma: 
+
+public MiClase () : this(arg1,arg2)
+{}
+
+                                                          13) Reflection
+
+1) Reflection: Esta herramienta me permite obtener/acceder la informacion de un tipo: sus campos, metodos, propiedades e Interfaces 
+que aplica. Basicamente permite analizar el contenido de un ensamblado durante la ejecucion.
+La reflexión en .NET te permite acceder y manipular elementos que ya han pasado la primera fase de compilación (donde se genera el 
+código IL) y se encuentran en ese formato intermedio. 
+
+2) Usos: 1) Obtener Informacion: Accedo a informacion del Type: sus miembros, atributos y metodos en tiempo de ejecución. 
+2) Crear instancias dinámicas: Puedes crear objetos de tipos desconocidos previamente. 3) Acceder a Metodos y Propiedades: Puedes leer o 
+modificar valores de propiedades y ejecutar Metodos. 4) Ver Los ensamblados
+
+3) Ensamblados: Los Ensamblados son archivos .dll o .exe que ya pasaron la primera fase de compilacion (CIL), normalmente los conocemos 
+como las librerias de .NET (using System // using System.Linq). Los Ensamblados son basicamente codigo de programacion en CIL.
+
+4) Para extraer el tipo de un tipo-de-dato en tiempo de ejecucion lo hago con typeof(), esto me devolvera toda la informacion sobre 
+el tipo de dato y acceso a propiedades y metodos utiles. La diferencia entre IsGenericType y IsGenericTypeDefinition es que en 
+la primera pregunto si es generica en su declaracion y la otra si es generica en su implementacion (si en este caso al no pasarle 
+ningun otro tipo de dato al IProcessor).
+
+var type = typeof(Processor<>);
+Console.WriteLine(type.IsGenericType);
+Console.WriteLine(type.IsGenericTypeDefinition);
+
+                                                        13.1) Generic Methods
+
+5) Obtener metodos: var metodos = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static); 
+//Obtengo metodos publicos y estaticos
+
+5.1) Obtener Parametros: var parametros = metodo.GetGenericArguments(); //Esa funcion devolvera parametros genericos de un metodo generico
+5.2) Obtener Posicion Parametro: var posicion = parametro.Position;
+
+5.3) Ejecutar metodos Generic: MethodInfo info = method.MakeGenericMethod(typeof(Trigger));
+                               info.Invoke(instancia, new[] {new Trigger(arg1,arg2)});
+En la primera linea guardamos el metodo, la funcion MakeGenericMethod() solo la uso si estoy guardando un metodo generico, ahi definimos
+el tipo del metodo generico. En segunda con Invoke() llamamos a la ejecucion, los parametros a pasarle seran la instancia del objeto del 
+que proviene la funcion (si es un metodo Static se le pasa null) y un array anonimo con los parametros del metodo.
+
+6) Instanciar Clases: object instancia = null;
+                      if(!method.IsStatic) instancia = Activator.CreateInstance(type); //Activator y su metodo me permite crear 
+                                                                                        instancias pasandole el type que quiero instanciar.
+
+
+6) Sintesis: La reflexion me permite acceder a la informacion de un tipo de dato (primitivo o complejo) donde puedo obtener sus 
+atributos (y leer/modificar sus valores), metodos (y Ejecutarlos), clases e interfaces que implementan. Ademas de propiedades y 
+funciones propias que puedo implementar con la reflexion. Todo Esto siendo posible durante el tiempo de ejecucion.
+
+6.1) Esta es util en los casos de que no conozca exactamente el Type de un objeto en tiempo de compilacion (por EJ cuando trabajo con 
+ensamblados dinamicos o interactuo con biblitecas externas). 2) Tambien es util cuando quiero adaptar una logica generica para diferentes
+objetos, es decir nos brinda flexibilidad para trabajar. 3) Tambien nos permite la instanciacion de objetos dinamicamente, inspeccion de 
+ensamblados y manipulacion de atributos.
+
+                                                14) Generics-Types Con Reflection
+
+1) Tomar la cantidad de Generic-Args que necesita un objeto Generic: "var Generic_Args = type.GetGenericArguments().Count();"
+1.1) Posicion Generic_Arg: "Generic_Arg.GenericParamiterPosition;"
+
+2) Tomar Constraints de un Generic_Args: "var constraints = Generic_Arg.GetGenericParameterConstraints();"
+2.1)"constraint.IsInterface; constraint.IsClass; constraint.IsEnum;" // Devuelven un T/F
+2.2) Cuando Quiera llevar un objeto/interfaz generic con Constraints a otra clase cuando la implemente debere volver a declarar sus 
+Constraints.
+
+3) Attribute-Mask: "parametro.GenericParameterAttributes"
+
+                                                14.1) Instanciar Generic Types Con Reflection
+
+1) Para poder crear una instancia en base a interfaces/clases genericas necesito saber que argumentos le debo pasar (y si estos cumplen
+su constraint). No le debo pasar la Clase ni la Interfaz sino su type.
+
+Type[] typeArguments = {typeof(Request), typeof(Response)} //Defino los types de mis parametros
+var genericInstance = typeof(IPipeLine<,>).MakeGenericType(typeArguments); //Guardo el Type pero con los argumentos cargados
+var obj = Activator.CreateInstance(genericInstance); //Paso el type ya que CreateInstance genera instancia pasandole un type.
+
+
+                                                           15) Variance
+
+1) Class More-Derived: Es aquella clase que es el resultado de extender funcionalidades (heredar) de clases padres/superiores.
+2) Class Less-Derived: Es aquella clase que no hereda o tiene menos herencias con respecto a otras.
+3) Se puede asignar un More-Derived a un Less-Derived (es decir al padre le puedo pasar el valor del hijo), pero no viceversa.
+
+4) Variance: A la Asignacion de valores entre objetos de un modelo de clases jerarquico se los llama Variance.
+
+5) Covariance: Si la reduccion de la Causa genera una reduccion en la consecuencia se le llama Covariance. Es decir cuando la Causa y 
+Consecuencia cambian en la misma direccion se llama Covariance.
+6) Contravariance: Es lo opuesto a Covariance, el cambio de la Causa provocara un Efecto contrario en la Consecuencia. Es decir cuando 
+la Causa cambia la Consecuencia lo hace de Forma Opuesta.
+
+7) Con la Asignacion Variance (asignar un More-Derived a un Less-Derived) "y" podra acceder solo a todos los metodos y propiedades que 
+Tiene originalmente su clase, no a los metodos y propiedades que implementa su clase Hija.
+
+Base x = new Base();
+Base y = new Derived();
+y.EjecutarDerived(); => Devolvera un Error
+
+8) Definir Covariance: interface IProducer<out T>{} => Esto genera que el Generic T solo pueda ser usado como parametro de salida.
+9) Definir Contravariance: interface IConsumer<in T>{} => Esto genera que el Generic T solo pueda ser usado como parametro.
+
+10) Sintesis: Cuando tenemos un Parametro-Generic que ingresa y este luego Se retorna en una funcion se llama Covariance, siempre debemos
+colocar en sus parametros genericos las Clases More-Derived, para que luego clases Less-Derived puedan almacenar la devolucion de la 
+funcion.
+Ahora cuando un Parametro-Generic ingresa y se utiliza como Argumento de una funcion lo llamamos Contravariance. Este funciona de forma 
+opuesta a la reglas Variance, y requiere que el parametro que le pasemos siempre sea el Less-Derived, de esta forma podremos pasar el 
+parametro Base/Padre y su respectivos Hijos.
+
+Covariance:
+interface IProducer<out T>{ T Produce(); }
+IProducer<Derived> prod = null!;
+Derived ds = prod.Produce();
+Base bs = prod.Produce();
+
+Contravariance:
+interface IConsumer<in T> {void Consume(T obj);}
+IConsumer<Base> consu = null!;
+consu.Consume(new Base());
+consu.Consume(new Derived());
+
+X) Array.Sort(): Es un metodo que me permite ordenar un array, pero antes debo utilizar la interfaz IComparable(), y desarrollar una 
+logica en esta para setear la comparacion.
+X) Operador IS: Me permite saber si un elemento ES un objecto determinado o una interface.
+X) Operador AS: Si quiero castear ciertos parametros un objeto (por ejemplo B hereda de A, y quiero que un Objeto A tome
+los valores de las propiedades de un objeto B, pero solo de las propiedades que existen en A) lo puedo hacer con el operador AS.
+B obj = new B();
+A obj2 = obj as A; // obj2 quedara cargado en sus propiedades con los valores del obj B.
+
+Dato: Una funcion, delegado u objeto Anonimo se refiere a un elemento que funciona como tal pero que no tiene nombre (no esta definido).
+
+                                                        15) Comandos DotNet
+
+1) Definir el SDK:  dotnet new globaljson --sdk-version "6.0" --force
+
+2) Crear Una Solucion : dotnet new sln --name NombreProyecto
+
+3) Crear Project Consola: dotnet new console
+
+4) Enlazar SLN con Project: dotnet sln add "NombreProyecto.csproj"
+
+5) Correr Proyecto: dotnet run --project "NameProject.csproj"
+
+
+                                                        16) Entity Framework: Select
+
+1) Es una de las formas de transformar la data SQL a data en C#, este es un ORM (Object Relational Mapper). Es como un traductor de 
+codigo SQL a codigo C#.
+
+2) Usar EF: 1) Primero deberemos crear la clase "Entidad" en C# que representara a la tabla que esta en SQL. 2) Luego a Esta clase
+deberemos asignarla como argumento del objeto DbSet<>. 3) db.MyClass.AsNoTracking() 4) Luego deberemos convertir este Codigo C# a 
+codigo SQL, de esto se encarga LINQ. 5) Una vez convertida la consulta la pasamos a la BD SQL. 6) Esta retornara un resultado en el 
+cual LINQ se encargara de convertirla a codigo C#, devolvera un array de el tipo de datos que le pasamos inicialmente.
+
+3) Paso a Paso: 1) Creo una clase con sus Propiedades. 2) Creo una Clase de Negocio que herede de DbContext. Una instancia de DbContext
+representa una sesion con la BD, es decir representa la BD como tal. Un DbSet<> Representa una tabla dentro del DbContext.
+  3) Luego en la clase de negocio overaideo un Metodo OnConfiguring(DbContextOptionsBuilder optionsBuilder) y dentro de este llamo 
+al metodo UseSqlServer(connectionString) 4) En La misma clase negocio crearemos la propiedad DbSet<Entidad>. 5) Luego en la 
+la ejecucion llamaremos a nuestra clase de negocio, accederemos a la propiedad que queremos mapear y Ejecutaremos el Metodo 
+AsNoTracking(), este me permitira no guardar en cache esta operacion.
+
+
+// CLASE DE NEGOCIO
+public class AppVentaLibrosContext : DbContext
+{
+    private const string ConnectionString = @"Data Source=.\;Initial Catalog= LibrosWeb; User ID=sa;Password=Admin123;";
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(connectionString: ConnectionString);
+    }
+    public DbSet<Libro> Libro { get; set; }
+}
+
+// CLASE DTO
+public class Libro{
+        public int LibroId { get; set; }
+        public string Titulo { get; set; }
+        public string Descripcion { get; set; }
+        public DateTime Fecha { get; set; }
+}
+
+// CLASE DE EJECUCION
+using(AppVentaLibrosContext db = new AppVentaLibrosContext())
+{
+    var Libros = db.Libro.AsNoTracking();
+    foreach (var item in Libros)
+    {
+        Console.WriteLine($"ID: {item.LibroId} || Titulo: {item.Titulo} || Descripcion: {item.Descripcion}");
+    }
+}
+
+4) Si tengo 2 tablas relacionadas en SQL tambien las debere relacionar desde C#. Para hacerlo utilizaremos Anclas, es decir colocaremos
+dentro de los clases una propiedad de con el objeto correspondiente (es decir a Precio le pondremos la propiedad de clase Libro y 
+a Libro la propiedad de clase Precio). Esto tendra el fin de que ambas clases puedan consumir la informacion de la otra mediante 
+esa ancla.
+
+5) Ahora que tengo las tablas relacionadas por FOREIGN KEYS y las clases que representan las tablas en C# relacionadas por las Anclas
+puedo con EF realizar una consulta JOINEADA. Sin el Paso de las FK y las Anclas esto no seria posible.
+
+EJ: var Libros = db.Libro.Include(x=> x.PrecioPromocion).AsNoTracking(); 
+
+6) Cuando se da una relacion de Uno a Muchos el Ancla de uno de los objectos implicados debera definir el Ancla como ICollection<T>.
+Cuando es de muchos a Muchos ambos implementaran el ICollection<>.
+
+EJ: public ICollection<Comentario> Comentario { get; set; }
+
+7) Trabajar con PK Compuesta en EF: Sobrescribiendo este evento en la clase de negocio defino que X clase tiene 
+una PK compuesta y le paso que props vienen a representar esa clave primaria.
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<LibroAutor>().HasKey(xy=> new {xy.AutorId,xy.LibroId});
+}
+Este metodo me permite definir reglas de las entidades de EF, como por ejemplo las claves primarias compuestas o las relaciones entre 
+nuestras Entidades/Tablas.
+
+8) Include(): Sirve para cargar los datos de una Propiedad (perteneciente a la entidad principal) que es entidad, es decir
+que si Libro en sus Props tiene el Ancla de ICollection<Comentario> para poder cargar la informacion de comentarios (la entidad 
+secundaria) debe llamar a Include() para poder rellenar los datos de esa entidad secundaria, Include() realiza la instancia del objeto 
+de la entidad secundaria y luego se cargan los datos de esta identidad secundaria. ThenInclude() Se lo usa para entidades 
+que estan dentro de entidades secundarias.
+
+// CLASS DTO
+public class Libro
+{
+    public int LibroId { get; set; }
+    public Precio PrecioPromocion { get; set; } // Esta Propiedad tiene como Type una Entidad
+    public ICollection<Comentario> ComentarioLista { get; set; } // Esta Propiedad tiene como Generic-Type una Entidad
+}
+
+// CLASS PROGRAM
+var Libros = db.Libro.Include(x=>x.PrecioPromocion).AsNoTracking(); 
+foreach (var Libro in Libros)
+{
+    Console.WriteLine(Libro.Titulo+" "+Libro.PrecioPromocion.PrecioActual);       
+}
+//Para que la Propiedad PrecioPromocion tenga datos debo instanciar la clase, mediante el uso de Include() la instacio y cargo los 
+datos, de Otra forma la Propiedad PrecioPromocion seria null.
+
+                                                    16.1) Entity Framework: Insert
+
+1) Para poder realizar un insert deberemos: 1) Primero deberemos crear una sesion usando el objeto DbContext o instanciar alguna clase 
+que lo implemente. 2) Luego deberemos instanciar una entidad de EF. 3) A esta Entidad instanciada deberemos cargarle los valores y llamar 
+al metodo Add() y luego al SaveChanges(). 4) Esta Transaccion devolvera un indicativo de que la Transaccion fue exitosa o no. Si es
+exitosa devolvera la cantidad de registros/rows afectados.
+using(AppVentaLibrosContext db = new AppVentaLibrosContext())
+{
+    Autor aux = new Autor {Nombre = "Karen", Apellido = "Romano"};
+    db.Add(aux);
+    var stateT = db.SaveChanges();    
+}
+
+                                                    16.2) Entity Framework: Update
+
+1) Para realizar un Update Deberemos: 1) Crear una sesion instanciando al DbContext o a la clase negocio que lo implemente. 2) Buscar 
+el registro que quiero actualizar con LINQ en la entidad 3) Esto nos devolvera una instancia del objeto a Actualizar. 4) Le realizaremos
+los cambios y llamaremos al metodo SaveChanges().
+
+using(var db = new AppVentaLibrosContext())
+{
+    var autor = db.Autor.SingleOrDefault(x=>x.Nombre=="Karen");
+    if(autor!=null){
+        autor.Nombre = "Pep";
+        var state = db.SaveChanges();
+    }
+}
+
+                                                    16.3) Entity Framework: Delete
+
+1) Para realizar un Update Deberemos: 1) Abrir una sesion instanciando al DbContext o clase que lo implemente. 2) Buscar con LINQ el 
+registro que quiero borrar y guardarlo en una varible. 3) Luego para borrarlo llamare al metodo Remove() y le pasare el objeto. 
+4) Por ultimo llamamos al SaveChanges().
+
+using(var db = new AppVentaLibrosContext())
+{
+    var autor = db.Autor.SingleOrDefault(x=>x.AutorId==33);
+    if(autor!=null){
+        db.Remove(autor);
+        db.SaveChanges();
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------------------
+
+1) Clase Program: Es el primer elemento que se ejecuta de mi pagina Web. A Este se lo llama el Contenedor de Dependencias y Servicios,
+ya que todos las Dependencias y Servicios de Dependencias son inicializados Aca mismo, esto debido a que es la primera clase que se 
+ejecuta, y por convencion para evitar errores en la carga de Estas Dependencias se las suele declarar aca Mismo.
+
+2) Controller: Recibe el Pedido de parte del cliente (objeto Request) y es el encargado de recibir la data del Modelo y retornarsela 
+a la vista, Es como un mediador entre los modelos y vistas. Es Basicamente un Orquestador, ya que se encarga de tomar la Data del Modelo y 
+usarlo para conectarse a la BD y realizar validaciones, y Se encarga de pasarle Data a la Vista para que esta se construya dinamicamente.
+
+3) Modelos: Aca se definen las clases de modelo (objetos con sus propiedades), Tenemos los: 1) DTO, clases que tienen solo propiedades y
+se encargan de trasladarla. 2) Repositorio, Clases donde hay logica para extraer contenido de la BD. 3) ViewModel, Clases que suelen 
+Nutrirse de las Repositorio y se encargan de transportar esa informacion al Controlador para que la lleve a la vista. No siempre se 
+necesita del Model Si el Request no hace un pedido de informacion que provenga de la BD.
+
+4) Views: Es lo que se dibujara al usuario, con razor puedo personalizar aun mas este codigo al usar data BackEnd que haya sido servida
+por mi Controlador.
+
+5) Patron MVC: 1) Los datos que envia el cliente al servidor lo llamamos Request, este sera un objeto de Tipo Request. 2) El Controller 
+sera quien reciba estos datos, este objeto Request. 3) En el caso de un Login Por Ejemplo, debere validar estos datos, el Controller
+llamara a la Entidad de Login para que verifique la existencia del User/Pass Ingresado. Una vez tenga un resultado lo devolvere el 
+resultado al Controller. 4) El Controller devolvera una vista u otra segun el resultado del Modelo, luego la vista le devolvera al 
+Controller un objeto Response y el Controller se la dara al cliente.
+
+6) @RenderBody(): Es una funcion que me permite cargar el HTML de forma dinamica. Para Indicar que Layaout Cargara cada View lo hago de 
+la siguiente Forma.
+@{
+    Layout = "_Layaout";
+}
+<h1>Vista Index</h1>
+
+7) Carpeta Domain: Dentro de la carpeta Domain del modelo suelen ir las clases a las cuales definiremos como Entidades en EF.
+
+8) DataAnnotations: Son atributos que puedo colocarles a mis propiedades para darle funcionalidades. Se las coloca encima de la prop y 
+entre []. Por EJ: 1) [Key]: Esta definira que esta propiedad sera una PK cuando se configure como entidad para EF. 2) [Required]: Indica
+que esta propiedad nunca debe de ser NULL.
+
+9) Modelo de Seguridad: El Framework ya nos da por defecto un Modelo de Seguridad para los usuarios . Para utilizarlo primero debo 
+instalar el paquete: dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version="". 
+Esto Me creara las siguientes clases: 1) AspNetUsers. 2) AspNetUserRoles. 3) AspNetRoles. 4) AspNetUserClaims 5) AspNetUserLogins
+Para usar este Modelo debo Llamar a la Clase IdentityDbContext<T>, esta me pedira un objeto generico, en este la clase que represente 
+a los usuarios de mi aplicacion (Esta clase Usuarios debera heredar de IdentityUser).
+
+10) Definir Relaciones de Muchos a Muchos entre Entidades y PK compuesta con EF: 
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Libro>().HasMany(x=>x.CategoriaList).WithMany(y=>y.LibroList).UsingEntity<LibroCategoria>(
+                j=> j.HasOne(p => p.Categoria).WithMany(p=>p.LibroCategoriaList).HasForeignKey(p=>p.CategoriaId),
+                j=> j.HasOne(p => p.Libro).WithMany(p=>p.LibroCategoriaList).HasForeignKey(p=>p.LibroId),
+                j=> {
+                    j.HasKey(x=> new {x.LibroId,x.CategoriaId});
+                }
+            );
+        }
+
+11) Migration de EF a SQL: Esta Migracion es basicamente el proceso de transformar las clase convertidas en Entidades por EF en tablas de 
+una base de datos. Para poder realizar esto necesito la herramienta "Dotnet -EF" y que esta coincida con la version del SDK.  
+
+11.1) Crear Archivos de la Migracion: "dotnet ef migrations add MigracionInicial". Lo que hara este comando sera crear codigo para 
+la migracion en base a las entidades que hayamos definido. Una Vez creado estos codigos de la migracion debo ejecutar el comando: 
+"dotnet ef database update" Otra forma de crear estas tablas mediante codigo es usando: 
+"await negocio.Database.MigrateAsync();"
+
+12) Realizar Conexion a la BD con MVC y EF: 
+builder.Services.AddDbContext<Negocio> (opt=>{
+    opt.LogTo(Console.WriteLine, new [] {DbLoggerCategory.Database.Command.Name},LogLevel.Information)
+    .EnableSensitiveDataLogging(); // Esto me dejara sentado por consola las operaciones contra la DB, es opcional.
+    opt.UseSqlite(builder.Configuration.GetConnectionString("SqliteDatabase")); 
+});
+
+13) Data Master: Es Data que crearemos en nuestra DB y que usaremos para probar las funcionalidades de nuestra APP.
+13.1) Insertar Data Usuarios Identity desde EF:
+public static async Task InsertData
+        (Negocio negocio, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            if(!roleManager.Roles.Any()) {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }     
+            if(!userManager.Users.Any()){var usuario = new User{Nombre = "Santino Boscatto",UserName = "Santinox51"};
+                await userManager.CreateAsync(usuario,"SoyAdmin123@");
+                await userManager.AddToRoleAsync(usuario, "Admin");
+            }
+            if(!negocio.Categorias!.Any()){
+                negocio.Categorias!.AddRange(
+                    new Categoria { Nombre="Drama"},
+                    new Categoria { Nombre="Comedia"}
+                );
+            }
+            if(!negocio.Libros!.Any()){
+                negocio.Libros!.AddRange(
+                    new Libro { Titulo="Libro 1"},
+                    new Libro { Titulo="Libro 2"}
+                );
+            }
+            if(!negocio.Libros!.Any()){
+                negocio.LibrosCategorias!.AddRange(
+                    new LibroCategoria { LibroId = 1, CategoriaId= 1},
+                    new LibroCategoria { LibroId = 1, CategoriaId= 2}
+                );
+            }
+            negocio.SaveChanges();
+}
+
+13.2) Ejecutar este Metodo:
+
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<Negocio>().AddDefaultTokenProviders();
+using (var amb = app.Services.CreateScope()){
+    var services = amb.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var negocio = services.GetRequiredService<Negocio>();
+        await negocio.Database.MigrateAsync();
+        await LoadDatabase.InsertData(negocio,userManager, roleManager );
+    }
+    catch (System.Exception e)
+    {  
+        var log = services.GetRequiredService<ILogger<Program>>();
+        log.LogError(e.ToString());
+    }
+}
+
+
+                                                        14) Patron Repository
+
+1) Patron Repository: El Patron repository tiene el Objetivo de ser un intermediario entre La Capa de Dominio y La Capa de 
+Negocio/Acceso-a-Datos. Es decir intermedia entre el Negocio y Las ClasesDTO/Entidades, se encarga de desarrollar logica en metodos 
+y funciones en las cuales implementan el Negocio para extraer datos (Es decir instancian la clase de Negocio) y con esos datos 
+cargan las clases, o realizar validaciones con respecto a la Data de la base.
+
+2) El Modo del trabajo de las Clases Repository son definir Las Abstracciones e Implementaciones. Es decir habra una carpeta donde 
+definire las Interfaces(o clases abstractas) y otra donde  definire las clases que implementaran estas interfaces. 
+X) Esto tiene el fin de que luego al implementar esta clase como servicio lo hagamos mediante la Inversion de inyeccion de Dependencias,
+es decir inyecto el objeto pero enmascarado con la interfaz.
+
+3) Donde Usar Patron Repository: Su servicio se debe declarar en la clase program (como cualquier otro servicio) y Consumido desde algun 
+Controller.
+
+                                                        15) Metodos y Datos EF
+
+1) Metodo Find() EF: Este metodo por defecto buscara un Elemento por Su Primary Key (Id). 
+EJ: Libro GetId(int id) => negocio.Libros.Find(id)!;
+
+2) Metodos EF: 1) Add(Object); 2) AddRange(IEnumerable<Object>); 3) Remove(Object); 4) RemoveRange(IEnumerable<Object>) 
+               5) Find(Id); 6) Update(Object);
+
+3) IQueryable(): Es el tipo de dato que devulve la BD originalmente, luego eso es parseado a ICollection() o IEnumerable().
+
+4)[NotMapped]: Si necesito crear una propiedad en mi entidad que no quiero que EF la mapee en la Base de Datos debere agregarle la 
+notacion [NotMapped].
+
+5) Dato: En una clase entidad yo no puedo acceder a las propiedades de mis propiedades, Es decir si libro tiene a Categoria no voy a 
+poder acceder a sus propiedades salvo que realice una instancia.
+
+                                                            16) TAG HELPERS
+
+0) Agregar Using de Tag-Helpers: @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+1) Asp-For: Me permite que la etiqueta que lo tenga guarde el valor de algun elemento de mi model.
+EJ:<input  name="name" value="" asp-for="@Model.CurrentPage"/>
+

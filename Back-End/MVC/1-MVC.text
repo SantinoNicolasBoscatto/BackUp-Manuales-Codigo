@@ -220,8 +220,6 @@ un controlador.
 4) ASP-Validation-Summary: es basicamente  un resumen de los errores de validacion. Tenemos 2 Modos a elegir con esta etiqueta: 
                             1) All: Muestra todos los errores. 2)ModelOnly: muestra todos los errores con relacion al modelo.
 
-5) Asp-Anchor:
-
 5) Asp-For: Esto ayuda a corregir a que los campos que cargo el usuario no se borren ante un error de POST. Este nos permitira sincronizar
 del @model que enviamos a la vista con los valores del FORMS HTML. 
 En sintensis esta se la coloca en el input y dentro de ella colocaremos el atributo de la propiedad la cual estemos cargando en ese input,
@@ -253,6 +251,19 @@ por parametro a la funcion View primero la pagina de la vista a la que va dirigi
 es que solo puedo colocar un dato en model.
 
 Dato: @model declara el tipo de dato y @Model Accede al valor del dato.
+
+@using AppStore.Models.DTO
+@{
+    Layout = "_Layaout";
+}
+@model LibroListVm;
+
+@foreach (var item in Model.LibroCollection!)
+{
+    <h1>@item.Titulo</h1>
+    <h1>@item.Autor</h1>
+}
+
 
 2) Recibir mas datos del Controlador a la Vista: Para esto usaremos una clase, es decir le pasaremos a @model una clase con los Atributos
 que despues quiera reutilizar. Despues haremos lo mismo, en la ACCION del controlador cargaremos el objeto de la clase con X datos y 
@@ -542,7 +553,6 @@ private async Task<JsonResult> ValidarRepetido(TiposCuentasDTO TiposCuentas)
 [Remote(action: ValidarRepetido, controller: TiposCuentas)]
 
 2) JSON: Es un formato para representar datos como una cadena de texto, esto nos sirve para transportar datos de el front al back y viceversa
-
 
 
                                                     3.6) Connection String
