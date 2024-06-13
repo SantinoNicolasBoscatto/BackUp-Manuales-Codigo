@@ -860,7 +860,7 @@ de editar de tipo POST solo se va a redireccionar). En general este es el unico 
 
     4.1) <a asp-action="Index">Inicio</a>
     
-5) asp-route: este TAG sigue al son de los anteriores, sirve como un enrutador dinamico, segun el valor que tenga este ASP route sera el
+5) @: este TAG sigue al son de los anteriores, sirve como un enrutador dinamico, segun el valor que tenga este ASP route sera el
 valor que tenga la ruta dinamica, al igual que los hacen area, controller y action.
 
     5.1) <a asp-controller="Productos" asp-action="Detalles" asp-route-id="@item.ID">Ver Detalles</a>
@@ -900,9 +900,9 @@ automaticamente en todos nuestros forms debemos generar el servicio antiforgery.
 12) asp-page: es un enrutador manual, ahi puedo otorgar manualmente la direccion de la pagina con una solo etiqueta. En proyectos completos
 es mejor la otras varibles.
 
-13) asp-items: se usa para especificar los elementos que se mostraran en un DDL. Este debera recibir un objeto SelectListItem o SelectList.
-Normalmente tendremos un LIST o ENUM, a este le haremos un SELECT(x=> ne SelectListItem(x.Display, x.Value)). Tambien puede ser que armemos
-un SelectList y directamente le pasamos eso. Sirve para todo tipo de listas
+13) asp-items: se usa para especificar los elementos que se mostraran en un DDL. Este debera recibir un objeto SelectList.
+Normalmente tendremos un LIST o ENUM, a este le haremos un SELECT(x=> new SelectListItem(x.Display, x.Value)). Tambien puede ser que armemos
+un SelectList y directamente le pasamos eso. Sirve para todo tipo de listas, siempre y cuando pueda ser casteada a SelectList.
 
     13.1) var lista = MyList.Select(x => New SelectListItem(x.D, x.V)); 
     13.2) <select asp-for="TuPropiedad" asp-items="@lista"></select>

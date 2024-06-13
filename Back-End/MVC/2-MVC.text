@@ -715,3 +715,77 @@ poder acceder a sus propiedades salvo que realice una instancia.
 1) Asp-For: Me permite que la etiqueta que lo tenga guarde el valor de algun elemento de mi model.
 EJ:<input  name="name" value="" asp-for="@Model.CurrentPage"/>
 
+
+                                                          17) API Controller
+
+1) El Controller normal que conocemos es aquel que recibe un response, maneja al modelo y al view y luego retorna un response con la 
+View cargada. Pero existe otro tipo de controller: ApiController: Este no se encarga de devolver vistas, sino se encarga de devolver,
+retornar Datos.
+
+2) ApiController: Este no devulve vistas sino DATA, los metodos que usan los ApiController son: 1) POST. 2) PUT. 3) GET. 4) DELETE.
+    1) POST lo usamos cuando queremos ingresar un registro o realizar una Transaccion de data generica. 2) PUT lo utilizamos para 
+actualizar alguna data en la DB. 3) GET es para consultar DATA. 4) DELETE para borrar.
+
+[HttpPost]
+public async Task<IActionResult> Login(LoginModel login)
+{
+    if(!ModelState.IsValid) return View(login);
+    var status = await _userAuthenticationService.LoginAsync(login);
+    if (status.StatusCode == 0)
+    {
+        TempData["msg"] = status.Msg; // Transaccion de data, en este caso le devulvo el msg de error al usuario
+        return RedirectToAction("Login");       
+    }
+    return RedirectToAction("Index", "Home");
+    
+} 
+
+3) TempData["anyName"]: Se utiliza para envolver la DATA que quiero devolverle al cliente. Basicamente es una coleccion de elementos que 
+puedo utilizar en las Views para mostrarselas al cliente, similar a Session en WebForms.
+
+                                                                X) Datos Varios
+
+1) En las View Puedo crear variables que luego puedo utilizar en esa misma view.
+@{
+    string username = User.Identity!.Name!;
+}
+2) Al hacer click en un boton Submit este llamara al Asp-Action del Formulario al que este relacionado.
+
+3) Subir Imagenes a la Carpeta del servidor: Es decir que cuando quiera cargar algun producto debo generar una copia de la imagen 
+que me manden en mi servidor. 1) Para Esto definiremos 1 funcion tupla, una que me devuelva un bool si la operacion fue exitosa y otra 
+un valor clave/key con el que se guardo la imagen. 2) Luego en la clase donde implementemos los metodos necesitaremos crear una 
+instancia de la carpeta "wwwroot" que nos permita acceder a ella y a sus subcarpetas, para ello realizamos una inyeccion de Dependencias
+de la interfaz "IWebHostEnvieroment". 3) Luego en la funcion de SaveImage(IFormFile imageFile) deberemos agarrar el directorio raiz de 
+la carpeta Upload (lugar donde guardaremos nuestras IMG), para esto guardaremos la ruta que devuelva IWebHostEnvieroment.WebRootPath.
+    4) Esta ruta lo Combinaremos con el nombre de mi carpeta Uploads, esto utilizando la funcion Path.Combine(arg1, arg2). 5) Tambien 
+guardaremos la extension del archivo con Path.GetExtension(imageFile.FileName); y Lo concatenaremos con Guid.NewGuid(), con esto 
+tendremos un nombre unico para el archivo. 6) Combinamos el nombre con la ruta de la carpeta. 7) Creamos un FileStream y le pasamos la 
+ruta con el nombre del archivo y configuramos el FileMode.Create, para que asi nos cree ahi mismo el archivo con el nombre ya definido.
+8) Por ultimo hacemos imageFile.CopyTo(stream);
+
+public Tuple<int, string> SaveImage(IFormFile imageFile)
+{
+    try
+    {
+        var path = env.WebRootPath;
+        path = Path.Combine(path, "Uploads");
+        if(!Directory.Exists(path)) Directory.CreateDirectory(path);
+        var ext = Path.GetExtension(imageFile.FileName);
+        var allowedExtension = new string[] { ".jpg", ".png", ".jpeg" };
+        if(!allowedExtension.Contains(ext)) return new Tuple<int,string>(0, "Error Formato de Imagen Incorrecto");
+        var fileNewName = Guid.NewGuid().ToString() + ext; 
+        var fileWithPath = Path.Combine(path, fileNewName);
+        var stream = new FileStream(fileWithPath, FileMode.Create);
+        imageFile.CopyTo(stream);
+        stream.Close();
+        return new Tuple<int, string>(1, fileNewName);
+    }
+    catch (Exception)
+    {
+        throw;
+    }
+}
+
+Si la subida de imagenes la manejo mediante un Forms, debo colocar su enctype="multipart/form-data"
+
+4) Parece que el usar href con direcciones de vistas que no existen (si si existen acciones) se ejecutan las acciones.
