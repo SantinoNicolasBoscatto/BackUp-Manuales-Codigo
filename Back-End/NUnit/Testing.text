@@ -1,0 +1,141 @@
+
+                                                    1) Pruebas Unitarias y UnitTesting
+
+1) Pruebas Unitarias: Prueba una unidad de trabajo que implementa un operacion logica accesible via la interfaz publica. Para las Pruebas
+Unitarias se debe aislar una clase de otra, para que el Testing sea solo sobre esa clase y no sobre sus dependencias.
+
+2) Requerimiento de una Prueba Unitaria: 1) No accede a la BD. 2) No accede al sistema de archivos. 3) No accede a la red. 4) No requiere
+una configuracion de ambiente. Herramientas de Testing: sunit, junit(unit Testing en Java), nunit(unit Testing en .NET). 
+
+3) Estructura de Prueba Unitaria: La estructura mas comun es la de la Triple A: 1) Arrange (es donde voy a preparar el contexto de mi
+prueba). 2) Act (Es donde voy a ejercitar el elemento que estoy probando). 3) Assert (es donde voy a verificar que efectivamente ocurrio
+el proceso de forma adecuada) 
+
+4) Prueba Unitaria sin Framework:
+
+static void PruebaUnitariaString()
+{
+    //Arrange => aca debo preparar lo que debo hacer antes de ejecutar la prueba, desarrollar el contexto de la prueba.
+    var stringHola = "hola";
+
+    //Act => Ejecutar la prueba en si
+    var Longitud = stringHola.Length
+
+    //Assert => Verifico si el resultado es el esperado
+    if(Longitud != 4) throw new Exception; 
+}
+
+5) Mocks (Dobles de Prueba):
+
+
+                                                                2) NUnit
+
+1) Clase Test Unit: Aquellos metodos que defina en la clase Test si quiero que sean Metodos que se ejecuten y testeen algun componente 
+o clase lo que debere hacer sera marcarlo con el DataAnnotations de [Test].
+
+public class Tests
+{
+    [Test]
+    public void Test1()
+    {
+        Assert.Pass();
+    }
+
+    [Test]
+    public void Test2()
+    {
+        Assert.Fail();
+    }
+
+    [Test]
+    public void Test3()
+    {
+        Assert.Inconclusive();
+    }
+
+    [Test, Ignore(reason:"")]
+    public void Test4()
+    {
+    }
+}
+
+2) Resultados posibles de un test: 1) Exitoso (pass). 2) Fallido (fail). 3) Inconcluso (error no esperado, no es un error de la logica o
+de resultado, sino un error que se produce en el Arrange). 4) Ignorado (su ejecucion No fue considerada)
+El test puede no tener un Assert.Pass() pero si este se ejecuto sin problemas este se va a considerar exitoso.
+
+3) El Test Siempre sera un proyecto aparte del proyecto Principal. Un Test debe ser sensibles a los cambios de logica de mi aplicacion.
+En el caso de pruebas unitarias estas por lo comun deben tener un solo Assert, para que nos sea sencillo saber que error tenemos.
+
+4) [Setup]: En cada test que hagamos deberemos definir el contexto, muchas veces podemos definir contextos repetidos o repetitivos 
+para cada TEST, por lo que existe una funcion que nos permitira centralizar la creacion de contextos en nunit. Deberemos declarar una
+funcion que tenga de DataAnnotations [Setup], en el podre realizar Inicializaciones de Objetos o varibles que despues quiera reutilizar 
+en mis pruebas. Esto debido a que la funcion de SetUp() se ejecutara cada vez antes de realizar un test.
+
+private Cuenta cuenta;
+[Setup]
+public void SetUp(){
+    var titular = new Persona(name: "juan");
+    this.cuenta = new Cuenta(titular);
+}
+
+public void CuentaConSaldoCero(){
+    Assert.AreEqual(expected: 0, actual: cuenta.Saldo);
+}
+
+
+5) Inicializacion y Finalizacion de Test en NUnit: 1) [OneTimeSetUp]: este DataAnnotations me permite realizar inicializaciones de 
+contexto pero solo se ejecutara una vez al inicio de la aplicacion, este nunca se volvera a ejecutar a diferencia del [SetUp]. 
+2) [OneTimeTearDown] Se ejecuta cuando ya no quedan test por ejecutar en la aplicacion, es la Finalizacion de el contexto declarado 
+en el [OneTimeSetUp] 3) [TearDown] se ejecuta cada vez que se termina un test, sirve para limpiar los datos del objeto del SetUp, viene 
+a servir como reinicio del objeto.
+
+
+6) Test de Situaciones de Excepcion:
+[Test]
+public void AcreditarMontoNegativoEsInvalido()
+{
+    var montoNegativo = -10;
+    Assert.Throws<OperacionInvalida>(code: () => this.cuenta.AcreditarMontoNegativoEsInvalido(montoNegativo))
+}
+
+7) Tipos de Assert: 1) Assert.Pass(); 2) Assert.Fail(); 3) Assert.Inconclusive(); 4) Assert.AreEqual(expected: 0, actual: array.count);
+                    5) Assert.IsEmpty(array); 6) Assert.Contains(expected: 1, array); 7) Assert.That(mivariable, Is.Not.Empty)
+
+
+8) Generacion de Casos de Prueba en NUnit: En los casos de testeo debo poder crear diferentes situaciones con la cual probar mi codigo, 
+no es seguro que con solo un caso de prueba mi codigo funcione correcto. En vez de Crear varios Test con distintos Inputs de entrada en 
+mi Arrange puedo hacer uso de TestCases:
+
+[Test]
+[TestCase(1)]
+[TestCase(2)]
+[TestCase(3)]
+[TestCase(4)]
+public void Test1(int nums)
+{
+    var num = nums;
+    if(num == 4) Assert.Fail();
+}
+
+
+9) Agrupamiento de Tests: Hay diversas formas de Agrupar: 1) Por Clase, para ejecutar los Tests que se encuentran en una misma clase
+debere escribir lo siguiente en la consola: dotnet test --filter My.NameSpace.MyClass // Incluso puedo especificar que Test en Particular 
+quiero correr de esa clase:  dotnet test --filter My.NameSpace.MyClass.Test1 // 2) La segunda es por categoria, la categoria de cada 
+test la Defino por un DataAnnotations [Category(name:"MyCategory")] y lo ejecuto con: dotnet test --filter TestCategory="MyCategory"
+
+
+10) Consideraciones Sobre Los Test Unit: 1) Que sean Simples de Escribir. 2) Simples de Entender. 3) De Rapida Ejecucion. 
+    4) Deben Ser Exhaustivas (cubrir la mayor cantidad de posibilidades que puedan ocurrir en esa prueba).
+
+
+11) Casos Tipicos: 1) Camino "Feliz": una ruta donde nuestra prueba se ejecuta exitosamente. 2) Camino de Excepcion: Son acciones que 
+son mas esporadicas en la ejecucion de la aplicacion y por ello lanzamos una excepcion. 3) Condiciones de borde. 4) Caminos Alternativos: 
+Valores alternativos al del camino feliz que puedan cumpli exitosamente mi prueba.
+
+12) Convencion de Nombres: <Situacion><ResultadoEsperado> => AcreditarMontoPositivoIncrementaSaldo();
+
+13) Datos Finales: 1) Las Pruebas ademas de servir para testear la logica tambien sirve para crear una documentacion del proyecto.
+                   2) Lo principal que testeamos en una Prueba es el Comportamiento de algo (aunque tambien podemos testear clases), 
+lo central es ver si X cosa se comporta/funciona como nosotros queremos. 3) Dobles de Prueba: En el caso de que mi Elemento A dependa de 
+B y a este no lo pueda testear o sea dificil lo que haremos sera usar un Doble de Prueba (Mocks), es decir una Copia del elemento B.
+4) Desarrollo Guiado Por Pruebas

@@ -554,6 +554,18 @@ using(var db = new AppVentaLibrosContext())
 }
 ------------------------------------------------------------------------------------------------------------------------------------------
 
+ICollection: Es una interfaz que proporciona un conjunto de métodos y propiedades para trabajar con colecciones en memoria. Cuando se usa ICollection 
+para una relación, Entity Framework carga todos los datos relacionados en memoria cuando se accede a la propiedad. Esto se conoce como carga temprana o
+eager loading.
+IQueryable: Es una interfaz que permite construir consultas de LINQ contra un origen de datos subyacente. Cuando se usa IQueryable para una relación, 
+Entity Framework no carga los datos hasta que se ejecuta la consulta. Esto se conoce como carga diferida o lazy loading.
+
+Entonces, ¿cuál deberías usar? Depende de tus necesidades:
+Si necesitas trabajar con todos los datos relacionados a la vez y no te preocupa el consumo de memoria, ICollection podría ser una buena opción.
+Si estás trabajando con grandes cantidades de datos y quieres minimizar el consumo de memoria, o si necesitas construir consultas más complejas contra
+los datos relacionados, IQueryable podría ser una mejor opción.
+------------------------------------------------------------------------------------------------------------------------------------------
+
 1) Clase Program: Es el primer elemento que se ejecuta de mi pagina Web. A Este se lo llama el Contenedor de Dependencias y Servicios,
 ya que todos las Dependencias y Servicios de Dependencias son inicializados Aca mismo, esto debido a que es la primera clase que se 
 ejecuta, y por convencion para evitar errores en la carga de Estas Dependencias se las suele declarar aca Mismo.
@@ -657,7 +669,6 @@ public static async Task InsertData
 }
 
 13.2) Ejecutar este Metodo:
-
 builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<Negocio>().AddDefaultTokenProviders();
 using (var amb = app.Services.CreateScope()){
     var services = amb.ServiceProvider;
@@ -675,7 +686,6 @@ using (var amb = app.Services.CreateScope()){
         log.LogError(e.ToString());
     }
 }
-
 
                                                         14) Patron Repository
 

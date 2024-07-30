@@ -1,0 +1,1400 @@
+
+                                                        1) Introduccion
+
+1) Entity Framework Core: es una libreria que me permite acceder a una BD. Este es un ORM (Object Relational Mapper), este nos permite 
+representar objetos de C# en tablas SQL. El trabajo contra la BD con entity Framework nos ahorra el tener que escribir codigo SQL 
+directamente.
+
+                                                 2) Code First VS DataBase First
+
+1) Code_First: Con esta tecnica empezamos sin una base de datos, sino que primero escribimos el codigo y luego generamos la base de 
+datos en base a las clases entidades de nuestra aplicacion y las relaciones que definamos entre ellas. Esto tiene como  ventaja 
+tener sincronizada la aplicacion con la BD
+
+2) Database_First: En este caso ya tendremos una BD definida y lo que haremos con EF sera que genere las clases/Entidades en base a las 
+tablas de mi BD.
+
+3) Eleccion: Ninguna de las tecnicas es mejor que otra, depende del contexto para saber cual usar.
+
+                                                     3) EF Core VS Dapper
+
+1) Dapper: Es un Micro-ORM, lo que nos da la ventaja de ser mas rapido y por ende ocupa menos memoria que un ORM normal. Con Dapper 
+puedo mapear los resultados de los Queries facilmente a objetos anonimos de C#, pero los querys deben ser escritos a mano.
+
+
+                                                    4) Inicializacion de Proyecto EF
+
+1) Primero luego de crear el Proyecto deberemos agregar las librerias mediante el NuGet-Packages, en esta Buscaremos la libreria EF Core
+y el correspondiente motor de BD que usaremos, ademas de agregar la libreria de EF-CORE-TOOLS. 2) Luego crearemos nuestra clase de 
+negocio la cual heredara de la clase DbContext (clase de EF que nos permite conectarnos) y configuraremos su metodo OnConfiguring(), 
+colocando el ConnectionString de nuestra BD. 3) Luego Creamos una clase y la configuraremos como entidad usando a DbSet<>. 4) Por 
+ultimo para generar la base de datos lo que deberemos hacer sera ejecutar la migration usando el comando: 
+4.1) dotnet ef migrations add MyNameMigration 4.2) dotnet ef database update
+5) En caso de una App MVC o API, deberemos hacer un paso extra, que sera definir un constructor base para nuestra clase de negocio y
+declarar el service de nuestra BD en program
+
+public class Negocio : DbContext
+{
+    public Negocio (DbContextOptions opt) : base(options){}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) // OPCIONAL SI LO DECLARO EN SERVICES
+    {
+        optionsBuilder.UseSqlServer("Server=DESKTOP-9S3UL5U;Database=DemoEfCore;User=sa;Password=Admin123; TrustServerCertificate=True;");
+    }
+    public DbSet<Persona> Persona { get; set; }
+}
+5) builder.Services.AddDbContext<Negocio>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerString"));)
+
+                                                        5) Configuraciones de EF
+
+1) PrimaryKey: Si una propiedad de alguna entidad tiene de nombre Id esta se configurara por defecto como PrimaryKey, o tambien si 
+contiene el nombre ID (GeneroID por ejemplo, aunque si tengo 2 campos con este nombre elegira cual debiria ser el PK). 2) En caso de 
+que debamos configurar manualmente la llave primaria por algun motivo lo podremos hacer de 2 formas: 
+2.1) DataAnnotations con el atributo [Key]
+2.2) En el OnModelCreating(ModelBuilder modelBuilder){modelBuilder.Entity<Genero>().HasKey(x => x.Identificador);}
+
+2) Longitud de Campos de Texto: Para configurar la Longitud de un campo de texto lo puedo hacer igualmente de 2 formas: 
+2.1) DataAnnotations con el atributo [StringLength(50)] o [MaxLength(50)]
+2.2) En el OnModelCreating(ModelBuilder modelBuilder){modelBuilder.Entity<Genero>().Property(x=>x.Name).HasMaxLength(50);}
+
+3) Campos Not Null: Esta configuracion igualmente se puede hacer de 2 formas:
+3.1) DataAnnotations con el atributo [Required]
+3.2) En el OnModelCreating(ModelBuilder modelBuilder){modelBuilder.Entity<Genero>().Property(x=>x.Name).IsRequired();}
+
+4) Configurar Nombres de Tablas/Columnas y Esquemas: 
+4.1) Para cambiar el Nombre a la tabla le debo colocar a la clase un DataAnnotations [Table("")] y especificarle el nombre que tendra, 
+tambien especificarle el schema al cual pertenece (por defecto sera dbo). Para las columnas es casi igual solo que en vez de table 
+sera [Column("MyName")]
+[Table("TablaGenero"), Schema = "peliculas"]
+public class Genero
+{
+    [Column("GeneroId")]
+    public int Id {get; set;}
+}
+4.2) Desde el OnModelCreating: 
+public override void OnModelCreating(ModelBuilder modelBuilder){   
+    modelBuilder.Entity<Genero>().ToTable(name: "TablaGenero", schema: "peliculas");
+    modelBuilder.Entity<Genero>().Property(x=>x.Identificador).HasColumnName("GeneroId");
+}
+
+5) Cambiar Type: Para Cambiar el Tipo de dato de una tabla de SQL lo haremos de 2 formas.
+5.1) [Column(TypeName = "Date")] 
+5.2) OnModelCreating(ModelBuilder modelBuilder){ modelBuilder.Entity<Actor>().Property(x => x.Born).HasColumnType("Date");}
+
+6) Precision de Decimales: Para cambiar la precision decimal tambien se lo hace de 2 formas
+6.1) [Precision(precision: 9, scale: 2)]
+6.2) OnModelCreating(ModelBuilder modelBuilder){ modelBuilder.Entity<Actor>().Property(x => x.Born).HasPresicion(precision: 9, scale: 2);}
+
+7) Datos Espaciales: En SQL tenemos el dato Geography, este nos permite hacer calculos sobre espacialidades, pero en C# no contamos con 
+el. Por ello si lo requerimos debemos usar una libreria externa de EF llamada .NetTopologySuite. Para Utilizarlo debemos inyectar 
+la dependencia en el Constructor:
+builder.Services.AddDbContext<Negocio>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), 
+sqlServer => sqlServer.UseNetTopologySuite()));
+
+8) UniCode(): Es un metodo para las columnas en EF, definir UniCode() en T/F me permitira (o no) utilizar en mi cadena caracteres 
+especiales (emojis, arabes, ñ, etc), si lo defino como false no aceptara estos caracteres, teniendo la ventaja de ahorrar espacio.
+
+9) Valor por Defecto: modelBuilder.Entity<SalaDeCine>().Property(x => x.TipoSala).HasDefaultValue(TipoSala.DosDimensiones);
+
+10) Configurar Convenciones EF: Basicamente cambiar comportamientos por defecto de EF (como mapear un DateTime a DateTime, en vez de 
+a date).
+protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+{
+    configurationBuilder.Properties<DateTime>().HaveColumnType("date");
+}
+
+
+                                                    6) Relaciones entre Entidades
+
+1) Relacion Uno a Uno: Es cuando un registro de una tabla solo posea como mucho un registro de la otra (basicamente que la PK de una tabla
+sea a su vez una PK-FK de otra tabla), tambien lo puedo conseguir (que es lo que hace EF) usando la Clausula UNIQUE de SqlServer que me 
+obliga que cada FK sea UNIQUE, por ende una relacion de uno a uno.
+
+2) Relacion Uno a Muchos: Es aquella que de un Registro salen Muchos, pero al reves solo sale uno solo.
+2.1) HashSet<t>: es una lista desordenada pero de elementos unicos, la ventaja es que es mas rapida pero no permite ordenamiento ni 
+repeticion de elementos.
+
+3) Relacion Muchos a Muchos: Es Cuando de un registro se generan varios y viceversa. Para poder generar relaciones entre tablas de 
+muchos a muchos debo tener una tabla intermediaria. Para trabajarlo con EF tenemos 2 formas:
+
+3.1) Relacion Muchos a Muchos Automatica: En esta no existira realmente una Entidad que represente a esta tabla intermedia, de ello 
+se encargara EF, el punto negativo es que tendremos menos control y personalizacion sobre esta tabla. Es util para cuando la relacion 
+es simple. Para esto lo unico que debemos hacer es crear las 2 anclas en las entidades (anclas que sean colecciones de entidades, HasSet,
+ICollection, IQueryable) y una vez que hagamos la migracion EF se encargara de crear una tabla intermedia que relacione los Id de las 
+entidades.
+
+3.2) Relacion Muchos a Muchos Manual: Es el caso donde deberemos crear una entidad manualmente que represente la tabla intermedia, esto 
+con el fin de poder rescatar mas datos de esta tabla intermedia. Una vez que creemos la clase que representa la tabla intermedia y 
+la configuremos como entidad deberemos agregarle a cada entidad (las que estemos relacionando) la propiedad de este tabla intermedia, 
+en formma de collection/hash. 
+public HashSet<PeliculaActor> PeliculaActorHash { get; set; }
+
+La razon por la que debemos tener el Ancla de la tabla intermedia como colecciones es porque las relaciones entre la tabla y la tabla
+intermedia es de una a muchas.
+
+4) Las Relaciones EF Core las definira automaticamente segun como definamos las anclas en las entidades.
+
+                                                    7) Organizar el OnModelCreating
+
+1) EF nos ofrece una interfaz que nos permite separar las configuraciones por entidad. Esto es posible utilizando la Interfaz 
+IEntityTypeConfiguration<Genero>.
+
+2) Para hacer uso de ella crearemos una carpeta configs dentro de Entitys, ahi crearemos una clase por cada Entidad que configuremos,
+luego esta clase heredara de IEntityTypeConfiguration<T> y el generico sera la Entidad que queramos configurar (en la Clase GeneroConfig
+usaremos la entidad Genero). Dentro del Metodo que nos provee esta interfaz declararemos nuestras configuraciones.
+
+public class GeneroConfig : IEntityTypeConfiguration<Genero>{
+    public void Configure(EntityTypeBuilder<Genero> builder)
+    {
+        builder.HasKey(x => x.Identificador);
+        builder.Property(x => x.Name).HasMaxLength(150).IsRequired();
+    }
+}
+
+3) Por Ultimo para aplicar estas configuracion en el OnModelCreating tengo 2 formas: 
+3.1) modelBuilder.ApplyConfiguration(new GeneroConfig()); //Esto lo deberia hacer con cada configuracion 
+3.2) modelBuilder.ApplyConfigurationFromAssembly(Assembly.GetExecutingAssembly()); // Tomara todas las clases que hereden de 
+IEntityTypeConfiguration<T> y las aplicara en el OnModelCreating()
+
+
+                                                        8) Consulta De Datos
+
+1) Insertar Datos Con Data-Seending: Crearemos una Carpeta Seeding en nuestras Entitys, dentro de esta una clase static con su metodo 
+static, y ahi haremos la carga de datos correspondiente.
+
+public static class SeedingModuloConsulta{
+    public static void Seed(ModelBuilder modelBuilder)
+    {
+        var accion = new Genero { Identificador = 1, Name = "Accion" };
+        var animacion = new Genero { Identificador = 1, Name = "Animacion" };
+        var comedia = new Genero { Identificador = 1, Name = "Comedia" };
+        var cienciaFiccion = new Genero { Identificador = 1, Name = "Sci-Fi" };
+        var drama = new Genero { Identificador = 1, Name = "Drama" };
+        modelBuilder.Entity<Genero>().HasData(accion, animacion, comedia, cienciaFiccion,drama);
+    }
+}
+
+2) AsNoTracking(): Cuando queramos consultar datos solo para leerlos y no para actualizarlos a posteriori deberemos implementar el 
+AsNoTracking(), lo que me permite realizar con mayor rapidez las lecturas. Para Configurar que por defecto se utilice un AsNoTracking()
+escribiremos el siguiente codigo: 
+2.1)builder.Services.AddDbContext<Negocio>(opt =>
+    { opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), sqlServer => sqlServer.UseNetTopologySuite());
+      opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
+3) Logica de Paginado: La logica de esto es (paginaActual  - 1)* cantidadDeRegistrosPorPagina.
+
+4) Eager Loading: Este metodo nos permite indicar explicitamente que data relacionada queremos cargar. Por Ejemplo si cargo peliculas 
+quiero que me cargue tambien la info que tenga en la tabla actores. Esto lo hago con la funcion Include(); Puedo usar tantos Includes()
+como entidades quiera relacionar con mi entidad principal, siempre y cuando las entidades a relacionar existan como anclas.
+4.1) Aveces si yo quiero cargar una lista con Include me puede dar el error de: "A possible object cycle was detected". Esto es debido 
+a las anclas (es decir si peliculas tiene una lista de Generos pero a su vez Genero tiene una pelicula cargara pelicula que tendra una 
+lista de generos y se generara un bucle). Tengo 2 Formas de solucionarlo: 1) Mapear el resultado en una clase DTO. 
+2) Agregar JSON Options en controllers: 
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+4.2) ThenInclude(): Es una extension del metodo Include que se encarga de buscar no en la entidad principal sino en la entidad que 
+referenciamos en include().
+
+5) Cargado Selectivo: Para esto lo que haremos sera un Select y definiremos un Objeto anonimo, de este Objeto Anonimo una de sus 
+propiedades Guardara la Entidad con la cual quiere relacionarse y traer su contenido.
+var peli = await negocio.Peliculas.Select(p =>
+new {
+    id = p.PeliculaId,
+    Titulo = p.Titulo,
+    Generos = p.GenerosHash //Aca hago la relacion
+}).FirstOrDefaultAsync(p=> p.id == id);
+5.1) Si quiero filtrar sobre esa misma entidad la cual quiero traer tambien los puedo hacer:
+var peli = await negocio.Peliculas.Select(p =>
+new {
+    id = p.PeliculaId,
+    Titulo = p.Titulo,
+    Generos = p.GenerosHash.Select(x=> new { Nombre = x.Name, Id = x.Identificador }).ToList()
+}).FirstOrDefaultAsync(p=> p.id == id);
+
+
+6) Explicit Loading: Este metodo me permitira cargar la data relacionada a posteriori de que cargue mi Entidad Principal. Para este 
+necesitare si o si realizar una consulta con el AsTracking() activado. El Problema de este forma de carga es que es mas lenta que ç
+Eager Loading o Select Loading debido a que realiza mas de una consulta a la BD, normalmente se recomienda usar estas otras 2.
+
+7) Lazy Loading: Configuramos EF para que cuando accedamos a una propiedad de Navegacion(ancla) si la data relacionada no esta cargada 
+la cargue. La desventaja de esta es que es muy ineficiente al tener que hacer varios Querys Separados. Para poder implementar este 
+antes debo hacer uso de la libreria Proxies de EF. Luego en cada Propiedad de Navegacion(ancla) debo hacer lo mismo. Por ultimo en el 
+options del DbContext debo agregar el Metodo UseLazyLoadingProxies().
+
+8) Group By: Me Permite agrupar elementos segun x condicion.
+
+9) Ejecucion Diferida: Esta se suele aplicar en los filtros, que segun si la paso o no parametros filtrara o no en base a esos parametros
+que le pase, sino realizara el accionar por defecto. Para ello crearemos un FiltroDTO. Basicamente es crear un query segun los filtros
+que haya seleccionado el usuario.
+
+10) AsQueryable(): Este Metedo lo que Hace es transformar un Consulta en un IQueryable(), la ventaja de esto es que al ejecutarse no se 
+ejecuta un el query de EF, sino que nos permite ir armando de a poco el Query segun los datos ingresados por el Usuario.
+La principal ventaja de usar AsQueryable() es que permite construir consultas de manera diferida. Esto significa que la consulta no se 
+ejecuta inmediatamente en la base de datos, sino que se aplaza hasta que se necesiten los resultados. Esto es especialmente útil cuando se 
+trabaja con datos ingresados por el usuario, ya que puedes construir la consulta de manera dinámica según los parámetros proporcionados.
+
+                                                            9) AutoMapper
+
+1) AutoMapper es basicamente una herramienta que permite mapear automaticamente una clase a otra, esto lo hace automaticamente si los 
+atributos de una clase coinciden en nombre (y tipo) con otra.
+
+2) Uso: 1) Primero crearemos la clase AutoMapperProfiles y que herede de Profile. En su Constructor declararemos las reglas de mapeo.
+        2) Luego lo declararemos como servicio en program: builder.Services.AddAutoMapper(typeof(Program)); 3) Luego creamos una carpeta 
+DTO en donde guardaremos las clase DTO que mapearemos Automaticamente. 4) Si el Mapeo Es simple la regla sera: CreateMap<Actor, ActoresDTO>();
+5) En caso de que quiera Mapear Algo de forma manual debere usar ForMember: 
+CreateMap<Pelicula, PeliculaDTO>()
+    .ForMember(dto => dto.CineCollection, ent => ent.MapFrom(prop => prop.SalaDeCineHash.Select(s => s.Cine)))
+    .ForMember(dto => dto.ActoresCollection, ent => ent.MapFrom(prop => prop.PeliculaActorHash.Select(s=>s.Actor)));
+
+3) ProjectTo(): Es otra forma de Mappear los Elementos con Automaper sin usar mapper.Map<T>(); Este te da la ventaja de que en caso de 
+tener relaciones entre Entidades si yo en la Configuracion de Automaper ya las defini a como funcionan las relaciones entre estas entidades
+y la carga de Data, ProjectTo() aplicare las reglas y las relaciones sin necesidad de usar los Includes(). Todo cambio que quiera hacer
+en como se me trae una lista lo debere hacer desde el Config de Automaper.
+
+                                              10) Modelo Conectado Vs Modelo Desconectado
+
+1) Cuando No Utilizamos el AsNoTracking() en el EF el o los objetos que capturemos tendran seguimiento, por lo que si realizamos cambios
+sobre ellos y ejecutamos el SaveChanges() se producira una modificacion en la BD. A Esto le llamamos modelo conectado. En este caso 
+usamos la misma instacia del DbContext para consultar y editar la data.
+
+2) Modelo Desconectado: Es cuando el Cliente nos genera una nueva Instancia de un Nuevo DbContext y los cambios que este genero no van 
+van a ser procesados por el mismo DbContext que la genero. Es decir que el Cambio se registra con el DbContext que genera el usuario 
+pero este cambio se procesara con un DbContext distinto.
+
+3) Estatus: El seguimiento que realiza EF sobre nuestros objetos lo hace mediante el estatus del mismo. Este tiene diferentes estatus:
+            1) Agregado (que una entidad esta pendiente de ser creada en la BD). 2) Modificado (que una entidad esta pendiente de 
+ser modificada en la BD). 3) Sin Modificar. 4) Borrado. 5) Sin Seguimiento.
+
+
+                                                        11) Insertar en EF
+
+1) Insert Simple EF: _negocio.Add(genero); 
+// Aca no hago la insercion sino cambio el estado de la entidad a Pendiente de agregar, lo mismo pasa con modicar y borrar, al ejecutar 
+sus funciones cambian su estado, recien se realizaran estas acciones cuando hagamos un SaveChanges();
+
+2) Para consultar el Estado de un objeto de Entidad lo que debo hacer es: _negocio.Entry(genero).State;
+
+
+3) Insert Multiple: _negocio.AddRange(genero1, genero2) // _negocio.AddRange(ListaGeneros)
+
+4) Insert Con Data Relacionada Nueva: Es basicamente insertar datos en una columna e insertar los datos con las columnas con las que se 
+relaciona. Para esto lo que haremos sera definir en la nueva entidad directamente los nuevos datos.
+
+var cine = new Cine(){
+    Nombre = "Mi Cine",
+    CineOferta = new CineOferta(){
+        Descuento = 5,
+        FechaInicio = DateTime.Today,
+        FechaFin = DateTime.Today.AddDays(7)
+    },
+    SalasDeCine = new HashSet<SalasDeCine>(){
+        new SalaDeCine(){
+            Precio = 200,
+            TipoSala = TipoSala.DosD
+        },
+        new SalaDeCine(){
+            Precio = 300,
+            TipoSala = TipoSala.TresD
+        }
+    }
+}
+
+5) Insert Con Data Relacionada Existente: Primero crearemos la clase DTO del objeto que queremos cargar con data relacionada. Una vez 
+cargada la data mapeamos la Clase DTO a la Entidad. Ahora al hacer esto EF Core tomara que los generos que carguemos en esta entidad 
+sera nuevos datos (como antes) pero no es lo que queremos, sino queremos que no agregue los generos que tiene nuestra nueva entidad, 
+sino que los reutilice. Para hacer esto hacemos lo siguiente:
+
+var pelicula = mapper.Map<Pelicula>(PeliculaDTO);
+pelicula.Generos.ForEach(x=> negocio.Entry(x).State = EntityState.Unchanged)
+
+Es decir que una vez cargada nuestra entidad debemos hacerle saber al EF que la data que entre de Generos es ya existente y no nueva
+
+6) Mapeo Flexible: Es Basicamente un tecnica en la que creamos una variable private en el modelo que sera utilizada por una propiedad 
+publica. Pero esta variable privada estara formateada o modificada para que el ingreso de la data cumpla con ciertas reglas. Basicamente
+es una forma de formatear la data que entre.
+
+public class Actor{
+    private string _nombre;
+    public string Nombre {
+        get{
+            return _nombre;
+        }
+        set{
+            _nombre = _nombre.ToUpperCase();
+        }
+    }
+}
+public void Configure (EntityTypeBuilder<actor> builder){
+    builder.Property(x=>x.Nombre).HasField("_nombre");
+}
+
+                                                        12) Update en EF
+
+
+1) Update Registros Modelo Conectado: En este caso lo que debemos hacer es capturar el elemento que queremos actualizar con su ID,
+luego modificaremos alguna de sus propiedades y aplicaremos el SaveChanges.
+
+var pelicula = negocio.Peliculas.FirstOrDefault(g => g.Id == id);
+genero.Nombre = "Otro Nombre";
+negocio.SaveChanges();
+
+2) Update Registros Modelo Desconectado: Es cuando un DbContext distinto al que hizo la lectura debe hacer la actualizacion. Para 
+Esto lo que haremos sera (una vez mapeado el elemento) ejecutar la funcion Update(elemento) que me permitira marcar el elemento como 
+pendiente a actualizar. ALgo a tener en cuenta es que en el modelo Desconectado se actualizan todos los campos del elemento, a diferencia
+del modelo conectado que solo se actualizan los campos que se modificaron.
+
+var actor = mapper.Map<Actor>(actorEntradaDTO);
+actor.Id = id;
+negocio.Update(actor);
+await negocio.SaveChanges();
+
+
+3) Update a Registros con Data Relacionada: Es el caso por ejemplo de querer actualizar una Pelicula y los Actores de la pelicula a la
+vez o El Cine y las Salas de Cine que Posee. Para realizar este tipo de Update debo utilizar Include() e incluir aquellas entidades que 
+estan relacionadas a mi entidad principal y saber si necesitan ser actualizadas. Debere colocar en el Includ las Anclas de las entidades 
+y no las entidades como tal. Luego usaremos autoMapper que me realizara una Mapeo automatico de la data relacionada.
+
+var cineDB = await negocio.Cines.Include(x => x.SalasDeCine).FirstOrDefault(x=>x.Id == id);
+cineDB = mapper.Map(CineDTO, cineDB);
+
+Cabe destacar que si en la actualizacion yo no mando la data existente esta es posible que se borre.
+
+                                                         13) Delete EF
+
+1) Delete Logico: Consta en no borrar el registro sino en declararle un campo Bool que cuando sea falso no nos traiga el registro.
+Esto lo hariamos mediante un Update y no el comando Delete.
+
+
+                                                    14) Filtros a Nivel de Modelo
+
+1) Es decir crear filtros predeterminados para un modelo sin tener que especficarlo en cada consulta, como por ejemplo la del borrado 
+suave, en donde siempre quiero que me traiga todo genero que no tenga el Borrado Logico en TRUE. Esto lo hago desde el Config individual 
+de entidad o desde el OnModelCreating()
+
+builder.HasQueryFilter(x => x.BorradoLogico == false);
+
+2) En caso de querer reactivar algun elemento descactivado deberemos hacer lo siguiente:
+
+var genero = negocio.Generos.IgnoreQueryFilters().FirstOrDefault(x=>x.Id == id);
+genero.BorradoLogico = false;
+negocio.SaveChanges();
+
+                                                    15) Configuraciones Avanzadas EF
+
+1) En EF tenemos 3 formas de realizar configuraciones: 1) Por Convenciones. 2) Por DataAnnotations. 3) Por el OnModelCreating() 
+
+1.1) Un ejemplo de Convenciones son que si una propiedad de una Entidad es Id esta sera configurada como PK, o que un DateTime sera 
+representado como un date2 en SQL usando ConfigureConventions().
+
+1.2) Son las anotaciones que definimos en nuestras entidades directamente.
+
+1.3) API Fluente: Es basicamente las configuraciones que realizamos en el OnModelCreating(), esta es la manera estadar debido a que 
+mediante el api Fluente puedo realizar cualquier configuracion aunque lleve mas codigo.
+
+2) PK GUID (Global Unique Identificator): Es una forma de generarle un Valor unico a un elemento, ya que los GUID son siempre unicos,
+por lo que servirian como ID ante alguna situacion. Si a mi Atributo Id (mi pk) le defino el dato GUID cada vez que agreguemos un nuevo
+elemento este GUID se generara automaticamente, aunque lo podemos desactivar con: 
+modelBuilder.Entity<Entidad>().Property(x=> x.Id).ValueGeneratedNever();
+
+3) Ignorar Propiedad de una Entidad: Lo podemos hacer con el DataAnnotations [NotMapped] o Mediante el Api Fluente usando .Ignore()
+
+4) Indices: Podemos configurar indices para tablas que no son necesariamente enteros, esto me permitira traer mas rapidamente una Tabla,
+tambien podre definirle si quiero que ese valor sea unico o no. Lo puedo configurar con DataAnnotations y API Fluente.
+
+[Index (nameof(Nombre), IsUnique=true)]
+public class Genero(){public string Nombre {get; set;}}
+
+builder.HasIndex(x=>x.Nombre).IsUnique();
+
+5) Indices Filtrados: En el caso anterior si queremos ignorar los filtros de Indice podemos hacer lo siguiente. De Esta forma decimos 
+que la condicion IsUnique() solo se aplicara a aquellos elementos que tengan BorradoLogico == false.
+
+builder.HasIndex(x=>x.Nombre).IsUnique().HasFilter("BorradoLogico = 'false'");
+
+6) HasConversion: Te permite especificar cómo se deben convertir los valores de una propiedad antes de escribirlos en la base de datos y 
+cómo se deben convertir al leerlos desde la base de datos. La primera Conversion responde al envio de datos a la BD, la segunda a la 
+conversion de datos cuando leo desde la BD.
+
+modelBuilder.Entity<Rider>()
+        .Property(e => e.Mount)
+        .HasConversion(
+            v => v.ToString(), // De Enum a cadena
+            v => (EquineBeast)Enum.Parse(typeof(EquineBeast), v) // De cadena a Enum
+        );
+
+7) Entidades sin PK: Nos permite guardar el resultado de Queries arbitrarios y Centralizar los queries que hacemos. Para definir que una 
+entidad no tiene PK debemos usar el metodo HasNoKey() o Usar el DataAnnotations [KeyLess]. Luego para cargar de datos esta entidad
+haremos un ToSqlQuery() con la consulta manual. El ToView(null) es para que no genere una nueva tabla. A la hora de ejecutar el query
+debemos llamar al metodo Set() debido a que CinesSinUbicacion no tiene un DbSet creado (no es una entidad como tal).
+
+modelBuilder.Entity<CinesSinUbicacion>().HasNoKey();
+modelBuilder.Entity<CinesSinUbicacion>().ToSqlQuery("Select id, Nombre From Cines").ToView(null);
+
+// EJECUTAR QUERY ARBITRARIO
+negocio.Set<CinesSinUbicacion>().ToList();
+
+7.1) Con estas entidades sin PK tambien podemos mapear una vista a una clase. Una Vista es una tabla virtual definida por un Query, el 
+cual es de solo lectura. Lo unico que cambia con respecto al metodo anterior es en vez de ToView(null) deberemos colocar el nombre 
+de la vista al que queremos acceder.
+
+modelBuilder.Entity<CinesSinUbicacion>().HasNoKey();
+modelBuilder.Entity<CinesSinUbicacion>().ToView("MyView");
+
+8) Propiedades Sombra: Son propiedades que me permiten acceder a Columnas SQL que no se encuentran en nuestras propiedades de la entidad
+en C#. Es util cuando hay data en la BD que no debe ser expuesta en las entidades. Para Configurar esta usamos el API Fluente.
+
+builder.Property<DateTime>("FechaCreacion").HasDefaultValueSql("GetDate()").HasColumnType("datetime2");
+// Creamos una Columna SQL sin una entidad que tenga esa propiedad
+
+var fechaCreacion = negocio.Entry(genero).Property<DateTime>("FechaCreacion").CurrentValue;
+// Acceder al Valor de una propiedad Sombra
+
+context.Generos.OrderBy(g => EF.Property<DateTime>(g, "FechaCreacion")).ToList();
+// Aplicar un OrderBy() a una propiedad Sombra
+
+
+                                                    16) Conceptos de configuraciones
+
+1) Llave Principal: Refiere a la PK de la entidad principal que enlaza a la Entidad principal con la secundaria, esta PK esta en forma 
+de FK.
+
+2) Entidad Principal: Es aquella que contiene a la llave principal, en el Caso de Cine y SalasDeCine La llave Principal es CineId por lo 
+que la entidad principal sera cine.
+
+3) Entidad Dependiente: Es aquella que consume la PK de otra entidad mediante una FK, para poder enlazarse con la entidad principal.
+
+4) Propiedad de Navegacion (Ancla): Estas nos permiten definir relaciones entre las entidades.
+
+5) Relacion Requirida: Es cuando la FK no puede ser nula, siempre requiere estar cargada con algun valor existente.
+
+6) Relacion Opcional: Cuando la FK puede ser nula.
+
+                                                    17) Configurar Relaciones en EF
+
+1) Tenemos 4 Modos de configurar la relaciones: 1) Por Convencion: Esta es cuando defino una propiedad con el nombre de mi entidad 
+y la referencia a una de sus propiedades: Por Ejemplo, si quiero relacionar SalasDeCine con Cine lo que hago es Crear una propiedad llamada
+CineId en SalasDeCine que Consumira a la Propiedad Id de Cines, esto gracias a que la relacion de FK se hace mediante el nombre de la 
+entidad y su campo. 2) Por Anclas: Segun como definamos las propiedades de las anclas se generaran las relaciones de una forma u otra.
+3) Por DataAnnotations: [ForeignKey(nameof())]
+
+2) Relaciones Opcionales: Para configurar relaciones opcionales debo configurar mi Campo int como Nullable, sino mi campo de Id nunca 
+sera null. Luego si quiero borrar un elemento de la entidad principal debo hacer un Include a las entidades dependientes para que si la 
+entidad Dependiente se queda sin FK si valor se vuelva NULL.
+
+public int? CineId {get; set;}
+var cine = negocio.Cines.Include(c=>c.SalasDeCine).FirstOrDefault(x=>x.Id == id):
+
+3) InverseProperty: Es cuando en una misma propiedad yo tengo 2 Anclas de la misma entidad. Con El DataAnnotations de InverseProperty 
+puedo Indicarle a que llave foranea le corresponde a cada ancla, me vasta solo con poner el nombre de la propiedad del ancla.
+
+public class Mensaje{
+    public int id {get; set;}
+    public string mensaje {get; set;}
+    public int EmisorId {get; set;}
+    public Persona Emisor {get; set;}
+    public int ReceptorId {get; set;}
+    public Persona Receptor {get; set;}
+}
+
+public class Persona{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    [InverseProperty("Emisor")]
+    public List<Mensaje> MensajesEnviados { get; set; }
+    [InverseProperty("Receptor")]
+    public List<Mensaje> MensajesRecibidos { get; set; }
+}
+
+
+                                                17.1) Configuraciones con API Fluente
+
+1) Relacion Uno a Uno con FK:  
+builder.HasOne(x => x.CineOferta).WithOne(x => x.Cine).HasForeignKey<CineOferta>(co => co.CineId);
+
+2) Relacion Uno a Muchos:
+builder.HasMany(x => x.SalasDeCine).WithOne(x => x.Cine).HasForeignKey<SalasDeCine>(sc => sc.CineId);
+
+3) Relacion Muchos a Muchos Con Entidad Intermedia:
+builder.HasOne(pa => pa.Actor).WithMany(a => a.PeliculasActores).ForeignKey(pa => pa.ActorId);
+builder.HasOne(pa => pa.Pelicula).WithMany(a => a.PeliculasActores).ForeignKey(pa => pa.PeliculaId);
+
+4) Relacion Muchos a Muchos sin Entidad Intermedia (Skip Navigation):
+builder.HasMany(p => p.Generos).WithMany(p => p.Peliculas).UsingEntity(j => j.ToTable("GenerosPelicula"))
+
+5) OnDelete(): builder.HasMany(p => p.Generos).WithMany(p => p.Peliculas).OnDelete(DeleteBehavior.Restrict);
+
+
+                                                            18) OnDelete
+
+1) En una relacion tenemos una Entidad Principal y una Dependiente, Cuando borramos datos de la entidad principal los datos que hayan 
+sidos consumidos por la entidad dependiente reaccionaran de distintas formas segun como configuremos el OnDelete.
+
+1.1) Cascade: La entidad dependiente es borrada si la entidad principal es borrada, por eso el nombre de Borrado en Cascada.
+
+1.2) No Action: Literalmente no hace nada con las entidades dependientes, aunque esto puede generar un error de referencia de datos 
+si la relacion esta establecida como obligatoria y no Opcional (FK no Nullable), por lo que si borro una entidad Principal con registros
+en la dependiente me arrojara un error.
+
+1.3) Restrict: No me dejara borrar la entidad principal si esta tiene existencia en registros en entidades dependientes, Similar a 
+No Action.
+
+1.4) Set Null: Colocara Null en la Columna de la FK.
+
+
+                                                        19) Otras Relaciones
+
+1) Division de Tablas: Con esta lo que haremos sera dividir una tabla en varias entidades, esto es util cuando tenemos una tabla 
+con muchas columnas y necesitamos separarlas en varias entidades. Esto nos ahorra tener que hacer varios Select cuando quiera traer 
+algunos resultados de una tabla, ya que al llamar a una entidad no se llamara a la otra automaticamente, sino debere usar el include()
+si requiero su data.
+Para esto debere crear al menos 2 Entidades que consuman de la misma Tabla de SQL, ambas deberan tener por lo menos un campo Required.
+
+modelBuilder.Entity<Split1>().HasOne(x => x.Split2).WithOne(x => x.Split1).HasForeignKey<Split2>(x => x.Split1Id);
+modelBuilder.Entity<Split2>().ToTable("TableSplit");
+
+2) Entidades de Propiedad: Es similar al Split-Table, salvo que esta Entidad puede ser reutilizada en varias tablas mas. Lo primero 
+debemos definir a la entidad que queramos reutilizar en varias tablas como Owned y debo definir cualquiera de sus propiedades como
+[Required]. Luego Aquellas Entidades/tablas en las que quiera usar esta esta entidad compartida debo agregarlas como anclas. Luego 
+para configurar el nombre de las propiedades de la Entidad de Propiedad lo haremos con el OwnsOne().
+A diferencia del Tabla-Split la data viene automaticamente sin usar el Include.
+
+[Owned]
+public class Direccion {}
+
+public class Cine{
+    public int Id {get; set;}
+    public string Nombre {get; set;}
+    public Direccion Direccion {get; set;}
+}
+
+builder.OwnsOne(ci => ci.Direccion, dir => {
+    dir.Property(d => d.Calle).HasColumnName("Calle");
+})
+
+Esta es util cuando tengo una entidad que quiero reutilizar con otras entidades.
+
+
+3) Relacion de Entidades por Herencia: La tecnica tabla por Jerarquia no permite almacenar todas clases de una jerarquia (una familia 
+jerarquica). Para esto tendremos una clase padre que heredara a clases Hijas. En las configuracion de EF de la clase padre deberemos 
+tener un HasDiscriminator() que debere dicernir a cada clase hija (Con un Enum por ejemplo), y luego preguntaremos cual de los valores 
+tiene. Luego para traer de forma discriminada cada Pago lo puedo hacer con OfType(), y sabre por que columna discriminar gracias al 
+HasDiscriminator() que configuramos.
+Cabe resaltar que aca se creara solo una tabla con todas las Propiedades de la clases hijas (aunque estas tengan propiedades no 
+compartidas)
+Basicamente esta relacion me permite centralizar una Entidad padre y luego poder consumir los datos de sus entidades hijas que lo heredan 
+pero discriminadamente, pudiendo seleccionar de que entidad hija quiero traer los datos.
+
+builder.HasDiscriminator(p => p.TipoPago)
+.HasValue<PagoPaypal>(TipoPago.Paypal)
+.HasValue<PagoTarjeta>(TipoPago.Tarjeta)
+
+negocio.Pagos.OfType<PagoTarjeta>();
+negocio.Pagos.OfType<PagoPaypal>();
+
+
+3.1) Tabla Por Tipo: Esta es otra tecnica para trabajar con la Herencia. Lo que si es que debo definir a cada una de las entidades Hijas 
+como tablas en SQL. Y para Poder Leerlos debere usar la Funcion Set<T>(). Es Similar al metodo Anterior al poder consumir entidades hijas,
+pero en este caso debo tener estas entidades hijas en tablas separadas, es decir que cada miembro de la jerarquia tiene su propia 
+tabla.
+
+modelBuilder.Entity<Merchandising>().ToTable("Merchandising");
+modelBuilder.Entity<PeliculasAlquilables>().ToTable("PeliculasAlquilables");
+
+negocio.Set<Merchandising>().ToList();
+negocio.Set<PeliculasAlquilables>().ToList();
+
+
+
+                                                          20) Comandos EF
+
+1) Get-Help My-Comand: Nos permite saber informacion de un comando en especifico, unas descripcion y sintaxis del mismo. Con CLI el 
+comando es "dotnet ef my comand --Help"
+1.1) Get-Help My-Comand -detailed: Me Da lo mismo pero con cada parametro del comando detallado. 
+
+2) Dotnet ef add Migration MyNameMigration: Me permite generar una nueva migracion. Esto Generara una clase con el nombre de la migracion,
+este tendra 2 eventos, 1) Up(): Este se ejecuta cuando implementamos la migracion a la base de datos. 2) Down(): Es aquel que se ejecuta 
+cuando necesitemos revertir la migracion a nivel de Base de datos. Este Metodo no cambia nada en la base de datos, solo empaqueta una 
+serie de cambios en nuestras entidades, Es el empaquetador de cambios pero no genera la actualizacion de la BD por si solo.
+
+3) Dotnet ef database Update: Este comando es quien se encarga de tomar una Migracion que hayamos creado y usarla para actualizar la 
+BD segun indique esa migracion, por defecto tomara todas las migraciones y verificara cual de ellas no esta aplicada. Si quiero aplicar 
+migraciones de forma discriminada lo puedo hacer, aunque no puedo aplicar un Migracion Posterior sin aplicar la migracion previa. Es decir
+si tengo migracion1 y migracion2 puedo aplicar solo la migracion1, pero no puedo aplicar por si sola la migracion2, si o si debera aplicar 
+la migracion1 antes o borrarla.
+
+EJ: dotnet ef database update migracion1
+
+4) Dotnet ef migrations remove: Este comando lo usamos para remover una migracion, tenemos 2 casos en el cual la podemos usar: 
+1) remover una migracion que no fue aplicada en la base de datos. Para este caso deberemos usar el comando "dotnet ef migrations remove", 
+esta nos borrara la ultima migracion que se nos genero en C#. 2) remover una migracion que si fue aplicada en una BD. Para este tengo 2 
+metodos: 2.1) "dotnet ef migrations remove --force" que se encargara de ejecutar el Down() de mi migration. 2.2) Modificar mis 
+entidades y crear una nueva migracion con los cambios deseados.
+
+5) Dotnet ef migrations list: Me devuelve una lista con todas las migraciones realizadas. Desde la consola de VS puedo usar Get-Migration
+y me dara una vista mas detallada de las migraciones.
+
+6) Dotnet ef database drop: Borra una BD.
+
+7) Migration Bundle: Es basicamente un ejecutable portable que se encarga de aplicar las migraciones (similar al update DataBase), es 
+un pequeño programa que se encarga de actualizar la BD con tus migraciones. Para ejecutar Esto debo usar el comando:
+"Dotnet ef migrations bundle --configuration Bundle".
+Esto me generara un ejecutable, para especificarle sobre que BD se tiene que ejecutar lo haremos por consola con el siguente comando.
+".\efbundle.ex --connection "ConecctionString" "
+
+Si tengo una nueva Migration puedo usar el siguiente comando para actualizar el Bundle: 
+Dotnet ef migrations bundle --configuration Bundle --force
+
+8) dotnet ef migrations script : Este comando Genera un Script de SQL con la informacion de las migraciones el cual podremos copiar 
+y ejecutar en SQL. Lo malo de este script es que no genera condicionales para casos en los que existan ya algunas tablas. Para estos 
+casos usamos:
+Dotnet ef migrations script --idempotent
+Aunque los Migration Bundle Siguen siendo mejores que estos scripts.
+
+9) Migrate In App: Me permite ejecutar una migracion cada vez que ejecute mi aplicacion.
+using (var scope = app.Services.CreateScope())
+{
+    var negocio = scope.ServicesProvider.GetRequiredService<Negocio>(); //Capturo una instancia de mi DbContext
+    negocio.Database.Migrate();
+}
+
+10) Modelos Compilados: Cuando Tenemos Miles o cientas de entidades la compilacion de la App puede ser lenta. EF Core viene a solucionar 
+este problema mediante los Modelos Compilados, es decir nos permiten optimizar nuestros modelos para que sean mas rapidos de cargar.
+No es recomendable usar estos modelos Compilados con Pocas entidades, no se pueden implementar filtros a nivel de modelo, no son 
+compatibles con LazyLoading y cada vez que realice un cambio en mis entidades debo ejecutar un modelo para generar los modelos compilados.
+
+Comando: Dotnet ef DbContext Optimize
+
+Esto nos generara una carpeta con todas nuestras entidades Compiladas. Para poder aplicar esto debemos Ejecutar la siguiente linea en 
+program.
+
+builder.Services.AddDbContext<Negocio>(opt => opt.UseModel(NegocioModel.Instance));
+
+
+                                                        20.1) Database First
+
+1) Es aquella que mediante una Base de Datos ya crea puedo con EF crear mis entidades segun la BD que tengo. Para ejecutar esto debo 
+poner el siguente comando: 
+"Dotnet ef DbContext scaffold name=DefaultConnection Microsoft.EntityFrameworkCore.SqlServer --output -dir Entidades"
+
+
+
+                                                            21) DbContext
+
+1) Propiedades DbContext: 1) Database: Esta propiedad me permite acceder a Funcionalidades relacionadas con Transacciones, Creacion o 
+Migracion de base de Datos (El DbContext.Database.Migrate() por ejemplo) y me permite ejecutar querys arbitrarios en mi BD. 
+2) ChangeTracker: Es el que me permite acceder a los cambios de las instancias de las entidades de nuestra aplicacion, es aquel que 
+va Trackeando los estados de mis entidades (el que declara los estados de Modificado, agregado, borrado, sin-cambios). 
+3) Model: Nos permite el acceso al modelo (Las Entidades y sus configuraciones) de la BD que EF Core utiliza para conectarse a nuestra 
+BD. 4) ContextId: Es un Identificador unico de cada instancia del DbContext.
+
+2) OnConfiguring(): Aca puedo configurar lo mismo que en la clase program (Declarar el ConnectionString y de demas configuraciones que 
+realizamos con el optionsBuilder). Lo unico que deberiamos hacer en el program es declarar el servicio de forma normal, sin realizarle 
+ninguna configuracion.
+
+3) Cambiar el Status de una Entidad: Ademas de las metodos Add(), Update(), o Remove() podemos usar la funcion Entry() para cambiar el 
+status de una entidad de forma manual:
+
+negocio.Entry(genero).State = EntityState.Added;
+
+
+4) Marcar El State de una propiedad: En el caso de que yo quiera actualizar solo algunas propiedades y no todas las props de la entidad 
+lo puedo hacer cambiando el estado individual de cada propiedad y no de la entidad entera.
+
+negocio.Entry(genero).Property(x => x.Nombre).IsModified = true;
+
+
+5) Sobrescribir el SaveChanges(): El uso de esto es que cada vez que realicemos una actualizacion de cualquier tipo en la BD queremos 
+que se ejecute alguna accion de forma centralizada. Para poder hacer lo haremos desde el DbContext.
+
+public override SaveChanges (CancellationToken cancellationToken = default)
+{
+    foreach (var item in ChangeTracker.Entries().Where(e => e.State == EntityState.Added))
+    {
+        var entidad = item.Entity;
+        entidad.UsuarioCreacion = "";
+        entidad.UsuarioModificacion = "";
+    }
+
+    foreach (var item in ChangeTracker.Entries().Where(e => e.State == EntityState.Modified))
+    {
+        var entidad = item.Entity;
+        entidad.UsuarioModificacion = "";
+        item.Property(nameof(entidad.UsuarioCreacion)).IsModified = false; // Esto es para que mi propiedad de Creado no se modifique nunca
+    }
+}
+
+6) Inyeccion de dependencias EF: En caso de que yo necesite el Id del usuario o el usuario como tal para alguna transaccion del DbContext
+lo que deberemos hacer sera Crear una Clase que implemente un metodo que me permita acceder al usuario, y luego enmascararla en una 
+interfaz con Invesion de Inyeccion de dependencias, declararla como servicio y utilizarla en el DbContext.
+
+7) Eventos Tracked EF: Este se ejecuta cuando una entidad recibe seguimiento. Para esto crearemos una funcion que me permita trackear 
+los eventos y luego se lo asignaremos al delegate DbContext.Tracked en mi clase del DbContext.
+
+public void ManejarTracker(object sender, EntityTrackedEventArgs args)
+{
+    var msg = $"Entidad: {arg.Entry.Entity}, Estado: {arg.Entry.State}";
+    logger.LogInformation(msg);
+}
+
+public Negocio (IEventosDbContext dbEventos){
+    this.ChangeTracker.Tracked += dbEventos.ManejarTracker;
+}
+
+8) Evento StateChanged EF: Este se ejecuta cuando una entidad tiene un cambio de estado. Para esto crearemos una funcion que me permita 
+saber el cambio de estado de las entidadades trackeadas y luego se lo asignaremos al delegate DbContext.StateChanged en mi 
+clase del DbContext.
+
+public void ManejarStateChaged(object sender, EntityTrackedEventArgs arg)
+{
+    var msg = $"Entidad: {arg.Entry.Entity}, Estado Old: {arg.OldState}, Estado New: {arg.NewState}";
+    logger.LogInformation(msg);
+}
+
+public Negocio (IEventosDbContext dbEventos){
+    this.ChangeTracker.StateChanged += dbEventos.ManejarStateChaged;
+}
+
+
+9) Eventos SaveChanges(): Sigue la misma aplicacion que los anteriores.
+
+// Se ejecuta Pre-Guardado
+public void ManejarSavingChanges(object sender, SavingChangesEventArgs arg){
+    var entidades = ((Negocio)sender).ChangeTracker.Entries();
+
+    foreach (var entidad in entidades){
+        var msg = $"Entidad: {entidad.Entity} tendra el estado {entidad.State}"
+        logger.LogInformation(msg);
+    }
+}
+
+// Se ejecuta Post-Guardado
+public void ManejarSavedChanges(object sender, SavedChangesEventArgs arg){
+    var entidades = ((Negocio)sender).ChangeTracker.Entries();
+
+    foreach (var entidad in entidades){
+        var msg = $"Fueron Procesadas {arg.EntitiesSavedCount}"
+        logger.LogInformation(msg);
+    }
+}
+
+public Negocio (IEventosDbContext dbEventos){
+    this.SavingChanges += dbEventos.ManejarSavingChanges;
+    this.SavedChanges += dbEventos.ManejarSavedChanges;
+}
+
+
+10) Querys Arbitrarios: Cuando hablamos de Querys Arbitrarios nos referimos a pasarle Querys de SQL a EF para que este las lleve a la 
+BD y los ejecute, estos pueden ser tanto de lectura como escritura. La desventaja de usar QuerysArbitrarios es que si o si debemos traer
+todas las columnas de esa tabla.
+
+// Con SqlRaw()
+var genero = negocio.Generos.FromSqlRaw("Select * from Generos where id = {0}", id).IgnoreQueryFilters().FirstOrDefault();
+
+// Con SqlInterpolated()
+var genero = negocio.Generos.FromSqlInterpolated("Select * from Generos where id = {id}").IgnoreQueryFilters().FirstOrDefault();
+
+// SqlInterpolated() con Data relacionada
+var cine = negocio.Cines.FromSqlInterpolated("Select * from Cines where id = {id}")
+.Include(c => c.SalaDeCine).Include(c => c.CineOferta).IgnoreQueryFilters().FirstOrDefault();
+
+// Escritura con SqlInterpolated()
+negocio.Database.ExecuteSqlInterpolated($@"Insert Into Generos(Nombre) Values({genero.Nombre})")
+
+
+11) ToSqlQuery(): modelBuilder.Entity<Cines>().ToSqlQuery("select * from Cines")
+
+
+12) Store Procedures: 
+
+// Lectura
+var generos = negocio.Generos.FromSqlInterpolated("EXEC MyStoreProcedure {arg1},{arg2}").AsEnumerable();
+
+// Escritura extrayendo el ultimo Id Insertado o Modificado
+var outputId = new SqlParameter();
+outputId.ParameterName = "@id";
+output.SqlDbType = System.Data.SqlDbType.Int;
+outputId.Direction = System.Data.ParameterDirection.Output;
+negocio.Generos.FromSqlInterpolated("EXEC MyStoreProcedureInsert @nombre = {Name}, @id = {Id} Output").AsEnumerable();
+var id =  (int)outputId.Value;
+
+
+13) Transacciones: Basicamente que si una operacion falla dentro de un Query o pedido que ninguna de las operaciones se complete. El 
+SaveChanges() suele cumplir esta tarea bien por si solo, pero en algunos casos no es suficiente, ya que si necesito hacer una operacion 
+guardarla y hacer la segunda pero en caso de fallo revertir la primera... el SaveChanges() no lo podra hacer.
+
+Para esto Existe el BeginTransaction:
+
+using var transaccion = await negocio.Database.BeginTransaction();
+try{
+    //Desarrollo mi Logica
+
+    transaccion.Commit(); // Le doy el OK a la transaccion para que guarde los cambios
+}
+catch(Exception ex){
+    BadRequest();
+}
+
+
+14) Deteccion de Cambios: EF Core le da seguimiento a nuestras entidades y esto le permite saber cuando debe modificar o no una Entidad.
+La Entidad Tiene propiedades de OriginalValues y CurrentValues, lo que le permite a EF saber cuando se realizo un cambio en esa 
+entidad. Pero si consideramos que esta deteccion de cambios es muy lenta podemos implementar detecciones personalizadas. Para esto 
+podriamos Implementar INotifyPropertyChanged.
+
+public class Notificacion : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void Set<T>(T valor, ref T Campo, [CallerMemberName] string propiedad = ""){
+
+        if(!Equals(valor, campo)){
+            campo = Valor;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propiedad))
+        }
+
+    }
+}
+public class Cine : Notificacion{
+    private string _nombre;
+    public string Nombre { get => _nombre; set => Set(value, ref _nombre);}
+    public ObservableCollection<SalaDeCine> SalasDeCine {get; set;}
+}
+public void Configure (EntityTypeBuilder<Cine> builder)
+{
+    builder.HasChangeTrackingStrategy(ChangeTrackingStrategy.ChangedNotifications);
+}
+Link del Actualizador: https://github.com/gavilanch/Entity-Framework-Core-De-Verdad/blob/master/6.0/Modulo%208%20-%20DbContext/Fin/EFCorePeliculas/EFCorePeliculas/Servicios/ActualizadorObservableCollection.cs
+
+
+
+                                                    22) Escenarios Avanzados
+
+1) Funciones Definidas Por el Usuario: Es una Funcion en nuestra BD en la Cual podemos encapsular una funcionalidad. Estas solo son 
+para realizar consultas, mas no realizar Acciones de escritura. El Resultado puede ser una funcion Escalar o un Conjunto de resultados.
+
+2) Funciones Escalares: Las funciones escalares son aquellas que toman uno o mas valores de entrada y que devuelven un unico valor 
+escalar, como lo pueden ser Promedios o sumas. Tengo 2 Formas de ejecutar estas funciones en C#: 
+
+2.1) Con DataAnnotations en el DbContext: Lo unico que debo hacer es respetar la firma de la funcion y darle un return cualquiera para
+que el compilador compile, esta funcion lo que ejecutara sera lo que contenga nuestra funcion escalar de SQL. Tambien podria definir 
+la funcion en una clase static y llamarla, para no llenar mi DbContext de Funciones.
+
+[DbFunction(name = "FacturaSuma")]
+public int FacturaSuma(int facturaid){
+    return 0;
+}
+
+2.2) Crear una Funcion que Registre mis funciones Definidas y luego llamarla en el OnModelCreating(): 
+
+public static void RegistrarFunciones(ModelBuilder modelBuilder){
+
+    modelBuilder.HasDbFunction(()=> FacturaAVG(0));
+}
+public int FacturaAVG(int facturaid){
+    return 0;
+}
+
+// Ejecucion de Funciones Escalares:
+var facturas = negocio.Facturas.Select(x => {
+
+    Id = x.Id,
+    Total = negocio.FacturaSuma(x.Id),
+    AVG = FuncionesStatic.FacturaAVG(x.Id)
+}).ToList();
+
+
+3) Funciones de Valor de Tabla: Son funciones que devuelven una tabla (un conjunto de filas y columnas), para poder ejecutar esta 
+y guardarla deberemos tener una Entidad Sin PK donde guardar el resultado del Query.
+
+modelBuilder.Entity<PeliculaConConteos>().HasNoKey().ToTable(name: null); //No quiero que esta entidad se mapee en una tabla.
+modelBuilder.HasDbFunction(()=> PeliculaConConteos());
+
+public IQueryable<PeliculaConConteos> PeliculaConConteos(int peliculaId){
+    return new IQueryable<PeliculaConConteos>();
+}
+
+
+4) Columnas Calculadas: Nos permiten automatizar el proceso de llenar las columnas con el resultado de alguna operacion. Existen 2 
+tipos de columnas Calculadas: 4.1) Las que guardan su valor final en la columna. 4.2) Las que no lo hacen, estas necesitan que su 
+valor se calcule cada vez que se consulte a la tabla. El parametro store de HasComputedColumnSql() define si se guarda o no.
+
+public Configuration(EntityTypeBuilder<Factura> builder){
+    builder.Property(f => f.Total)
+    .HasComputedColumnSql("Precio * Cantidad", stored: false)
+}
+
+
+5) Campos Secuenciales: Son Campos que van en orden secuencial (a diferencia de la PK este siempre se acomodara de forma secuencial).
+1) Para esto primero deberemos generar un propiedad de secuencia en nuestra entidad. 2) Luego debemos configurar la secuencia a nivel 
+del esquema SQL, cada secuencia debe contar con su propio Esquema, aunque esto no imposibilita que tablas en otros esquemas consuman 
+de la secuencia. 3) Debemos poner un valor por defecto a la propiedad donde se guardan nuestras secuenciales.
+
+// En el OnModelCreating()
+modelBuilder.HasSequence<int>("NombreSecuencia", "MySchema").StartAt(1).IncrementBy(1);
+
+// En el Config individual
+builder.Property(x => x.Secuencial).HasDefaultValueSql("NEXT VALUE FOR MySchema.NombreSecuencia");
+
+
+6) Conflicto de Concurrencia: Estos ocurren cuando 2 Personas intentan realizar un cambio sobre un mismo registro y el cambio de la 
+segunda persona sobrescribe el cambio del primero sin querer. Esto lo podemos manejar por campo o fila.
+
+6.1) Por Campo: En el caso del Campo se maneja individualmente por cada campo(no todos), lo que le devolvera al segundo usuario un error
+al querer actualizar la data pero sin tener la version mas reciente. Para marcar un campo como concurrencia lo haremos con el 
+DataAnnotations de concurrencia [ConcurrencyCheck] o Con el Api Fluente agregandole a la Propiedad el IsConcurrencyToken();
+
+
+6.2) Por Fila: A diferencia del anterior la configuracion afectara a todos los campos. Para esto deberemo crear en la entidad una 
+propiedad que sea un arreglo de Bytes que tendra la DataAnnotations TimeStamp. Lo que hace esto es verificar que el valor de version 
+del usuario sea el mismo que el que se encuentra en la BD, este se ira actualizando solo automaticamente.
+
+// Entidad
+[TimeStamp]
+public byte[] version {get; set;}
+
+
+6.3) Manejar Error de Concurrencia Modelo Conectado: Al manejar la Excepcion lanzada por el error de concurrencia tendremos acceso a 2 
+valores: 1) El Valor que se intento insertar. 2) El valor anterior.
+
+try{
+    //Logica de modificacion
+}
+catch(DbUpdateConcurrencyException ex){
+    var entry = ex.Entries.Single(); //Capturamos la entidad que genero el Error
+    var valorActual = negocio.Facturas.AsNoTracking().FirstOrDefault(f => f.Id == facturaId);
+
+    foreach(var prop in entry.Metadata.GetProperties()){
+        var valorIntentado = entry.Property(prop.Name).CurrentValue;
+        var valorBD = negocio.Entry(valorActual).Property(prop.Name).CurrentValue;
+        var valorAnterior = entry.Property(prop.Name).OriginalValue;
+        if(valorIntentado.ToString() == valorBD.ToString()) continue;
+
+        //Luego Imprimo estos valores de error
+    }
+}
+
+6.4) Manejar Error de Concurrencia Modelo Desconectado: RE-VER VIDEO
+
+
+
+7) Tablas Temporales: Nos permiten tener el historico de los cambio que tenemos en una tabla. La tabla temporal sera aquella que 
+tenga la data actual, esta nutrira a una tabla historica que guardara los datos historicos de los cambios de la tabla temporal.
+Estas tablas tendran 2 columnas que son PeriodStart y PeriodEnd (definen el momento en el que se crea la tabla y en el que termina,
+ambas columnas deben ser de tipo datetime2)
+
+Configurar Tabla Temporal:
+builder.ToTabla(name: "Generos", opt => opt.IsTemporal());
+
+
+Esto Generara una tabla temporal que dentro contendra su tabla Historica. Cada Vez que realicemos un cambio en nuestra columna temporal 
+esta tendra un nuevo valor en el PeriodStart, es decir que ante cualquier escritura PeriodStart se actualizara.
+
+En la Tabla Historica se guardara aquellos registros que fueron modificados o borrados, mantendran el data con la que tenian antes de 
+ser Modificados o Borrados. Su PeriodStart se mantendra Igual pero Su PeriodEnd mostrara la Fecha y Hora en la que ese registro 
+fue modificado o borrado.
+
+
+7.1) Consultar tabla Historica y Temporal: Para la temporal lo deberemos hacer como cualquier tabla comun, mediante el DbContext y la 
+Entidad. Para la tabla Historica deberemos hacer lo siguiente:
+
+var generos = negocio.Generos.TemporalAll(); //Esto nos traera los registros de ambas tablas, Historica y Temporal.
+
+7.2) TemporalAsOf(): Me permite sacar el valor de las tablas (tanto temporal como historica) en una fecha determinada.
+
+var generos = negocio.Generos.TemporalAsOf(fecha);
+
+7.3) TemporalFromTo(): Me permite sacar el valor de las tablas (tanto temporal como historica) en un intervalo de fechas, me permite 
+tomar los registros que estuvieron activos alguna vez (si el intervalo es mayor a su fecha de inicio lo tomara igual, porque desde 
+donde empieza el registro esta activo.)
+
+var generos = negocio.Generos.TemporalFromTo(desde,hasta);
+
+7.4) TemporalContainedIn(): Me devuelve los registros que estan contenidos(su PeriodStart y PeriodEnd) en el rango de fechas que les 
+pase, a diferencia del TemporalFromTo() no basta que el registro tome la vez que la version estuve activa, para que traiga X registro la 
+fecha del PeriodStart y PeriodEnd debe estar Comprendida en el rango que pasemos.
+
+var generos = negocio.Generos.TemporalContainedIn(desde,hasta);
+
+
+7.5) Restaurar un Registro Historico: Resturar un Registro con un borrado normal.
+
+var genero = negocio.Genero.TemporalAsOf(fecha).FirstOrDefault(x => x.Id == id);
+try{
+    negocio.Database.ExecuteSqlInterpolated
+    ("SET IDENTITY_INSERTO MyTabla ON; => Me permitira desactivar el AutoGenerado
+    Insert Into MyTabla (id, nombre) 
+    values ({genero.Id}, {genero.Nombre})
+    SET IDENTITY_INSERTO MyTabla OFF;
+    ")
+}
+finally{
+    negocio.Database.ExecuteSqlInterpolated("SET IDENTITY_INSERTO MyTabla OFF");
+}
+
+
+7.6) Personalizar Tabla Temporal:
+
+builder.ToTable(name: "Facturas", opt =>{
+    opt.IsTemporal(t =>{
+        t.HasPeriodStart("Desde");
+        t.HasPeriodEnd("Desde");
+        t.UseHistoryTable(name: "FacturasHistorio");
+    })
+})
+
+
+8) DbContext en Otro Proyecto: 1) Separamos los Proyectos en librerias de clase. 2) Instalamos solo EF SqlServer en el proyecto de las 
+entidades/DbContext. 3) Agregamos la referencia del Proyecto DbContext al proyecto principal. 4) Instalar Tools o Design en el proyecto
+principal. 5) Para la primera migracion la deberemos inicializar con el siguiente comando:
+
+dotnet ef migrations add Primera-Migracion --project ../ProyectoDbContext/ProyectoDbContext.csproj
+dotnet ef database update
+
+
+
+                                                     23) Pruebas Automaticas
+
+1) Pruebas Automaticas: Basicamente es un SoftWare que prueba nuestro software.
+
+2) Cualidades de un buen Testing: 1) Consistente: Que el resultado que de Sea Consistente si no realizo cambios en el Software.
+2) Independiente: Una Prueba no depende de otra prueba, es completamente Independiente. 3) Un Buen Testing no realiza cambios.
+4) Deben de ser rapidas de ejecutar.
+
+3) Suite de Pruebas: es un conjunto de pruebas automaticas.
+
+4) Mocks (Dobles de Prueba): Un Mock es un objeto que busca suplantar la dependencia de una clase. Nos permiten probar una clase 
+ignorando las dependencias. Lo que haremos sera crear una clase que herede las dependencias y luego utilizarlas en las pruebas 
+unitarias. Para esto en los Mocks implementaremos las funciones de la Interfaz aunque lo unico que haremos es lo basico para que esa 
+funcion no genere una Excepcion (solo haremos un return si lo pide). Cada Dependencia sera un Mock.
+
+5) Pruebas unitarias sobre el DbContext: Verificaremos ya no solo una simple funcion sino el comportamiento de una responsabilidad.
+Es decir que las pruebas no se haran solo por funciones sino por tareas. Por ende deberemos verificar si lo que realizamos se cumpla 
+contra la BD, para ello usaremos el Proveedor en Memoria.
+
+6) Proveedor en Memoria: Sera una BD que carguemos en memoria, una BD de datos de prueba pequeña pero muy rapida. Lo que haremos sera 
+instanciar el DbContext con el Proveedor en memoria, instanciaremos al menos 2 DbContext por prueba, 1) Para Cargar la Data. 
+2) El que usaremos para inyectar.
+Cada Prueba debera contar con su propia BD en memoria, con el fin de mantener aislada una prueba de otra.
+
+public class BasePruebas
+{
+    protected Negocio ConstruirContext(string nombreDB){
+        var opt = new DbContextOptionsBuilder<Negocio>().UseInMemoryDatabase(nombreDB).Options;
+        var servicioDependencia1 = new servicioDependencia1();
+        var servicioDependencia2 = new servicioDependencia2();
+        var negocio = new Negocio(opt, servicioDependencia1, servicioDependencia2);
+        return negocio;
+    }
+}
+
+7) Prueba Unitaria con EF Core:
+
+[TestClass]
+public class GeneroControllerPrueba : BasePruebas
+{
+    [Test]
+    public void Post_SiEnvioDosGeneros_SeInsertanAmbos(){
+
+        //Preparacion - Arrange
+        var nombreBD = GUID.NewGuid().ToString();
+        var contexto1 = ConstruirContext(nombreBD);
+        var generosController = new GenerosController(contexto1);
+        var generos = new Genero[]{
+            new Genero(){},
+            new Genero(){}
+        };
+
+        // Probar
+        generosController.Post(generos);
+
+        // Verificar
+        var contexto2 = ConstruirContext(nombreBD);
+        var generosBD = contexto2.Generos.ToList();
+        Assert.AreEqual(2, generosBD.Count);
+
+    }
+}
+
+
+8) LocalBD: Es un mini SQL Server, crearemos una BD y la borraremos con cada corrida del Test Suite. Cada vez que se ejecute una de 
+estas pruebas unitarias le haremos un RollBack a la LocalBD asi lo datos no se ven afectados para la siguiente prueba.
+
+[SetUp]
+public static void SetUp()
+{
+    DeleteDB();
+    CreateDB();
+}
+
+
+                                                    24) EF Core en ASP.NET Core
+
+1) El DbContext siempre debe ser un servicio declarado como Scoped o Transient, Nunca como singleton.
+
+2) Usar singleton DbContext:
+public class SingletonPrueba
+{
+    private readonly IserviceProvider serviceProvider;
+    public SingletonPrueba(IserviceProvider serviceProvider)
+    {
+        this.serviceProvider = serviceProvider;
+    }
+    public Ienumerabe<Genero> ObtenerGeneros()
+    {
+        using (var scope = serviceProvider.CreateAsyncScope()){
+            var context = scope.ServicesProvider.GetRequiredService<Negocio>();
+            return context.Generos.Tolist();
+        }
+    }
+}
+
+3) Factoria del DbContext: Nos permitira instanciar manualmente nuestro DbContext con la configuracion del program. Para ello debo 
+cambiar el AddDbContext() por AddDbContextFactory();
+Luego cuando lo quiera instanciar manualmente debo implementar la interfaz IDbContextFactory<Negocio>
+
+
+                                                 25) Manual de Sintaxis de Consultas
+
+Entry() => Viene a represetar el registro de un consulta SQL o Una Entidad.
+
+                                                    x.1) Lectura de Datos Con EF
+
+1) Select Sencillo: _negocio.Generos; 
+
+2) Select First/FirstOrDefault : await _negocio.Generos.FirstOrDefaultAsync(x => x.Identificador == id) // Siempre combiene mas 
+FirstOrDefault debido a que First si no encuentra resultado devuelve una Exception
+
+3) Select Where: _negocio.Generos.Where(x => x.Name.Contains(name) && x.Name.StartsWith("A")).ToListAsync();
+
+4) OrderBy - OrderByDescending:  _negocio.Generos.Where(x => x.Name.Contains(name)).OrderBy(x=>x.id);
+
+5) Logica de Paginado: var generos = await _negocio.Generos.Skip((ap-1)*cantidadDeGeneros).Take(cantidadDeGeneros).ToListAsync();
+
+6) Select Por Columnas de Tabla: _negocio.Actores.Select(x=>new {id = x.Identificador, name = x.nombre}).ToListAsync();
+En caso de que no quiero guardarlo en un objeto anonimo puedo crear una clase DTO.
+_negocio.Actors.Select(x => new ActoresDTO { Id = x.IdActor, Name = x.Name}).ToListAsync();
+
+7) Eager Loading: _negocio.Peliculas.Include(x=>x.PeliculasActorHash);
+
+7.1) ThenInclude(): var pelicula = await negocio.Peliculas
+                    .Include(x => x.GenerosHash)
+                    .Include(x => x.SalaDeCineHash)
+                        .ThenInclude(x=>x.Cine)
+                    .Include(x=> x.PeliculaActorHash)
+                        .ThenInclude(x=>x.Actor)
+                    .FirstOrDefaultAsync(x=> x.PeliculaId == id);
+
+8) OrderBy Data Filtrada: var pelicula = await negocio.Peliculas
+                          .Include(x => x.GenerosHash.OrderByDescending(x=> x.Name))
+                          .Include(x => x.SalaDeCineHash.OrderByDescending(x => x.Cine.NombreCine))
+                                .ThenInclude(x=>x.Cine)
+                          .Include(x=> x.PeliculaActorHash.OrderByDescending(x=>x.Actor.Name))
+                                .ThenInclude(x=>x.Actor)
+                          .FirstOrDefaultAsync(x=> x.PeliculaId == id);
+
+9) Select Loading: 
+var peli = await negocio.Peliculas.Select(p =>
+new {
+    id = p.PeliculaId,
+    Titulo = p.Titulo,
+    Generos = p.GenerosHash
+}).FirstOrDefaultAsync(p=> p.id == id);
+if(peli == null) return NotFound(); 
+return Ok(peli);
+
+10) Explicit Loading:
+var pelicula = await negocio.Peliculas.AsTracking().FirstOrDefaultAsync(p => p.PeliculaId == id);
+await negocio.Entry(pelicula).Collection(p => p.PeliculaActorHash).LoadAsync();
+var peliDTO = mapper.Map<PeliculaDTO>(pelicula);
+
+var count = await negocio.Entry(pelicula).Collection(p => p.GenerosHash).Query().CountAsync();
+
+11) Group By:
+var peliculasAgrupadas = await negocio.Peliculas.GroupBy(x=>x.EnCartelera)
+    .Select(x => new
+    {
+        EnCartelera = x.Key,
+        Conteo = x.Count(),
+        Peliculas = x.ToList()
+    }).ToListAsync();
+
+12) Ejecucion Diferida / AsQueryable: 
+[HttpGet("filtrar")]
+public async Task<ActionResult> Filtrado([FromQuery] PeliculaFiltroDTO filtroDTO)
+{
+    var peliculasQuery = negocio.Peliculas.AsQueryable();
+    if (!string.IsNullOrEmpty(filtroDTO.Titulo))
+    {
+        peliculasQuery = peliculasQuery.Where(x=>x.Titulo.Contains(filtroDTO.Titulo));
+    }
+    if (filtroDTO.EnCartelera)
+    {
+        peliculasQuery = peliculasQuery.Where(x => x.EnCartelera == true);
+    }
+
+    if(filtroDTO.GeneroId != 0)
+    {
+        peliculasQuery = peliculasQuery.Where(x => x.GenerosHash.Select(y => y.Identificador).Contains(filtroDTO.GeneroId));
+    }
+
+    var peliculas = await peliculasQuery.Include(x=> x.GenerosHash).ToListAsync();
+    return Ok(peliculas);
+}
+
+                                                x.2) Insercion de Datos Con EF
+
+1) Insert Simple EF: _negocio.Add(genero); 
+                     await SaveChangesAsync();
+// Aca no hago la insercion sino cambio el estado de la entidad a Pendiente de agregar, lo mismo pasa con modicar y borrar, al ejecutar 
+sus funciones cambian su estado, recien se realizaran estas acciones cuando hagamos un SaveChanges(), este lo que hace es revisar los 
+estados de los objetos de nuestras entidades y aplicarselos
+[HttpPost]
+public async Task<ActionResult> Post(Genero genero)
+{
+    _negocio.Add(genero);
+    await _negocio.SaveChangesAsync();
+    return Ok(genero);
+}
+
+2) Insert Multiple: _negocio.AddRange(genero1, genero2) // _negocio.AddRange(ListaGeneros)
+
+3) Insert Con Data Relacionada Nueva:
+
+var cine = new Cine(){
+    Nombre = "Mi Cine",
+    CineOferta = new CineOferta(){
+        Descuento = 5,
+        FechaInicio = DateTime.Today,
+        FechaFin = DateTime.Today.AddDays(7)
+    },
+    SalasDeCine = new HashSet<SalasDeCine>(){
+        new SalaDeCine(){
+            Precio = 200,
+            TipoSala = TipoSala.DosD
+        },
+        new SalaDeCine(){
+            Precio = 300,
+            TipoSala = TipoSala.TresD
+        }
+    }
+}
+
+4) Insert Data Relacionada Existente: 
+
+var pelicula = mapper.Map<Pelicula>(PeliculaDTO);
+pelicula.Generos.ForEach(x=> negocio.Entry(x).State = EntityState.Unchanged)
+
+5) Mapeo Flexible:
+
+public class Actor{
+    private string _nombre;
+    public string Nombre {
+        get{
+            return _nombre;
+        }
+        set{
+            _nombre = _nombre.ToUpperCase();
+        }
+    }
+}
+public void Configure (EntityTypeBuilder<actor> builder){
+    builder.Property(x=>x.Nombre).HasField("_nombre");
+}
+
+                                                x.3) Update de Datos Con EF
+
+
+1) Update Modelo Conectado: 
+
+var pelicula = negocio.Peliculas.FirstOrDefault(g => g.Id == id);
+genero.Nombre = "Otro Nombre";
+negocio.SaveChanges();
+
+2) Update Modelo Desconectado: 
+
+var actor = mapper.Map<Actor>(actorEntradaDTO);
+actor.Id = id;
+negocio.Update(actor);
+await negocio.SaveChanges();
+
+3) Update Data Relacionada:
+
+var cineDB = await negocio.Cines.Include(x => x.SalasDeCine).FirstOrDefault(x=>x.Id == id);
+cineDB = mapper.Map(CineDTO, cineDB);
+negocio.SaveChanges();
+
+                                                x.4) Delete de Datos Con EF
+
+1) DeleteNormal:
+
+var genero = negocio.Generos.FirstOrDefault(x=>x.Id == id);
+negocio.Remove(genero);
+SaveChanges();
+
+2) DeleteLogico: 
+
+var genero = negocio.Generos.FirstOrDefault(x=>x.Id == id);
+genero.BorradoLogico = true;
+negocio.SaveChanges();
+
+3) Filtro Modelo : builder.HasQueryFilter(x => x.BorradoLogico == false);
+
+4) Restaurar Registro Borrado Logico: 
+
+var genero = negocio.Generos.IgnoreQueryFilters().FirstOrDefault(x=>x.Id == id);
+genero.BorradoLogico = false;
+negocio.SaveChanges();
+
+
+                                                 x.5) Configuraciones avanzadas
+
+1) Ignorar Propiedades/Clases: 
+[NotMapped]
+public class Calle{} // Ignoro Clase 
+builder.Ignore(x=>x.Propiedad); // Ignoro Propiedad
+modelBuilder.Ignorar<Direccion>(); // Ignoro Clase
+
+2) Indices: Podemos configurar indices para tablas que no son necesariamente enteros, esto me permitira traer mas rapidamente una Tabla,
+tambien podre definirle si quiero que ese valor sea unico o no. Lo puedo configurar con DataAnnotations y API Fluente.
+
+[Index (nameof(Nombre), IsUnique=true)]
+public class Genero(){public string Nombre {get; set;}}
+
+builder.HasIndex(x=>x.Nombre).IsUnique();
+
+3) Indice Filtrado: builder.HasIndex(x=>x.Nombre).IsUnique().HasFilter("BorradoLogico = 'false'");
+
+4) HasConversion: 
+
+modelBuilder.Entity<Rider>()
+        .Property(e => e.Mount)
+        .HasConversion(
+            v => v.ToString(), // De Enum a cadena
+            v => (EquineBeast)Enum.Parse(typeof(EquineBeast), v) // De cadena a Enum
+);
+
+5) Entidades sin PK:
+
+modelBuilder.Entity<CinesSinUbicacion>().HasNoKey();
+modelBuilder.Entity<CinesSinUbicacion>().ToSqlQuery("Select id, Nombre From Cines").ToView(null);
+// EJECUTAR QUERY ARBITRARIO
+negocio.Set<CinesSinUbicacion>().ToList();
+
+6) Propiedades Sombra: 
+
+builder.Property<DateTime>("FechaCreacion").HasDefaultValueSql("GetDate()").HasColumnType("datetime2");
+// Creamos una Columna SQL sin una entidad que tenga esa propiedad
+
+var fechaCreacion = negocio.Entry(genero).Property<DateTime>("FechaCreacion").CurrentValue;
+// Acceder al Valor de una propiedad Sombra
+
+context.Generos.OrderBy(g => EF.Property<DateTime>(g, "FechaCreacion")).ToList();
+// Aplicar un OrderBy() a una propiedad Sombra
+
+7) Aplicar Views: 
+
+modelBuilder.Entity<CinesSinUbicacion>().HasNoKey();
+modelBuilder.Entity<CinesSinUbicacion>().ToView("MyView");
+
+                                                x.6) Configuraciones con API Fluente
+
+1) Relacion Uno a Uno:  
+builder.HasOne(x => x.CineOferta).WithOne(x => x.Cine).HasForeignKey<CineOferta>(co => co.CineId);

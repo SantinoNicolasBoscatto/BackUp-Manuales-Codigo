@@ -1,0 +1,295 @@
+                                                                1) Introduccion
+
+
+1) API: Es una Interfaz de SoftWare que permite conectar 2 programas distintos (es la via de conexion entre programas) indepediente del 
+lenguaje de programacion en que estos se encuentren. Esta conexion se realizara siempre y cuando se cumplan con los protocolos definidos 
+por la API.
+2) Web API: Una Web API nos permite realizar la comunicacion entre programas gracias al Protocolo HTTP.
+
+3) SOAP: Protocolo de Acceso de Objeto Simple, Es un protocolo de intercambio de Informacion en una red usando XML. Este puede usar varios 
+protocolos distintos (http, smtp). Una de sus ventajas es que te permite definir mensajes estandarizados. El gran problema de SOAP es que 
+solo trabaja con XML y no soporta otros formatos, tambien tiene poco soporte en los navegadores y pobre acceso al uso de cache.
+
+4) GraphQL: Es un Programa desarrollado por META y tiene como proposito solicitar datos especificos. La diferencia de este con REST esta 
+en como el usuario solicita la data. En el caso de rest si queremos traer una lista filtrada deberemos hacer 2 consultas (traer toda la 
+lista y luego refiltrar la lista), la solucion de esto en Rest es crear un EndPoint para cada necesidad, lo cual no afectara el rendimiento, 
+pero nos obligara a generar muchos EndPoint. En Cambio con GraphQL trabajamos con Querys donde solicitaremos la data que queremos.
+
+5.1) A la hora de crear web Apis en ASP Core tenemos 2 opciones: 1) Controladores: 1.1) Una accion es un metodo de C# que maneja 
+las peticiones HTTP, la clase que contenga los metodos que manejan las peticiones sera el controlador. El controlador tambien nos 
+permitira definir logica global que se aplicara a cada accion. Para cada entidad tendremos un controlador distinto 
+Estructura:
+[ApiController]
+[Route("api/generos")]
+public class GenerosController : ControllerBase
+{
+    [HttpGet]
+    public async Task<IEnumerable<Genero>> GetGeneros()
+
+    [HttpGet("Filtro")]
+    public async Task<IEnumerable<Genero>> Filtrado(string name)
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Genero>> GetId(int id)
+
+    [HttpPost]
+    public async Task<ActionResult> Post(Genero genero)
+}
+
+5.2) Minimal APIs: Nos permiten construir Web APIs mas rapidos y con menos codigo, trabajando directamente con los endpoints. Son 
+menos poderosos que los controladores pero mas rapidos y eficientes.
+
+app.MapGet("/weatherforecast", () => {
+    var forecast = MyForecast.ToArray();
+    return forecastM
+})
+
+
+                                                        2) Configuraciones del Proyecto
+
+1) Nullable: Me permitira volver NULL campos que no lo son, es decir podre asignar valores null a campos que por defecto no acepten 
+valores null. La configuracion Nullable lo que hace es advertirnos cuando estamos trabajando con un campo que quizas tenga un valor 
+null y pueda derivar en un error. Tambien cuando declaro una propiedad con un tipo no null me va a saltar una advertencia, ante esto 
+puedo hacer 2 cosas, o lo vuelvo Nullable con "?", o perdono el nulo de la siguiente forma: public string Nombre { get; set; } = null!;
+
+
+
+2) Usings Implicitos: Es una funcion que me permite que se agreguen librerias por defecto en la compilacion de la aplicacion.
+
+3) LaunchSettings: Configuraciones de la ejecucion de la aplicacion (solo valida para la ejecucion en ambito de desarrollo). Desde la 
+propiedad enviromentVariables puedo seleccionar sobre que appSettings quiero trabajar, si sobre el de Produccion o el de desarrollo.
+
+4) Program Estructura:
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Inicio Area de Servicios
+
+// Fin Area de Servicios
+
+var app = builder.Build();
+
+// Inicio de Area de middleware
+app.MapGet("/", () => "Hello World!");
+// Fin de Area de middleware
+
+app.Run();
+
+5) Middleware: Son las acciones que ejecutaremos ante una determinada peticion HTTP.
+
+6) EndPoint: Un EndPoint es una ruta sobre la cual se ejecutara una determinada Accion. Por Ejemplo sobre La ruta "/Generos" se ejecutara
+la funcion que trae a todos los generos, todo esto seria el EndPoint.
+
+                                                            3) Principios REST
+
+1) REST: Transferencia de Estado Representacional, es una Arquitectura diseñada para Apps que usan el protocolo HTTP. REST tambien exige 
+una serie de principios para diseñar nuestro Web API: 1) Separacion de Cliente-Servidor, es decir que la interfaz de usuario deberia 
+estar separada de nuestra logica de negocio. No se relaciona ni interfiere con la Interfaz de Usuario, solo se limita a manejar datos y 
+aplicar logicas de negocio. 2) Sin Estado: Es decr que no se deben recordar (guardar en memoria) nada acerca de peticiones anteriores,
+esto nos permitira que nos Web API sea mas rapido. 3) Uso de Cache: Siempre que se pueda se debera usar el cache ya que esto optimizara 
+la velocidad. El Cache es guardar datos en un lugar que sea de acceso rapido. 4) Sistema en Capas:  5) Interfaz Uniforme: Se refiere a 
+seguir un estandar en la creacion de mi API: 5.1) Identificador de recursos: Utilizar URLs claras y consistentes para identificar 
+recursos, como (miAPI.com/actores/1), 5.2) Manipulacion de recursos usando representaciones: Interactuar con los recursos a través de sus
+representaciones, como JSON 5.3) Mensajes auto-descriptivos: Los endpoints deben ser claros y proporcionar suficiente información para 
+que los clientes entiendan cómo interactuar con ellos 5.4) HiperMedia como motor del estado de la aplicacion: Incluir enlaces en las 
+respuestas que indiquen las acciones disponibles, guiando a los clientes a través de la API. 
+Si se cumplen con estos principios se considera que es una Web API RestFul.
+
+                                                    3.1) Aplicacion de principios REST
+
+1) Separacion Cliente-Servidor: El Web API debe funcionar de forma independiente con el cliente. A la hora de crear los APIs debo tener 
+en cuenta donde se van a encontrar mis clientes (las apps que van a consumir mi API) esto porque los navegadores WEB por defecto tienen 
+un mecanismo de seguridad que no permiten que cualquier pagina web consuma el Web API, este mecanismo se llama CORS.
+
+CORS: Intercambio de recursos de Origen cruzado, es quien decide que debe suceder cuando recibimos peticiones http de paginas web de un 
+origen distinto al nuestro (distinto dominio, subdominio, puerto y/o protocolo). Este mecanismo existe con el fin de evitar inyectar un 
+script malicioso de una pagina a otra. Pero habra casos en lo que queramos permitir estas peticiones de diferentes origenes para consumir 
+un EndPoint.
+                                                                       
+Habilitar CORS:
+
+var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(config =>
+    {
+        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
+    });
+    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+
+    options.AddPolicy("libre",config =>
+    {
+        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
+var app = builder.Build();
+app.UseCors();
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu"); // Este EndPoint no se va a regir por la politica por Default sino por la de libre
+app.MapGet("/generos", () =>...);
+
+2) No Usar Estado: Cada Peticion HTTP deberia contener toda la informacion necesaria para procesar dicha peticion. Esto nos permitira 
+hacer nuestra WebApi mas escalable.
+
+3) Cache: Son los mecanismos para servir informacion con menos esfuerzo, para esto podemos guardar el listado de objetos en un lugar 
+de rapido acceso para que sea de mas rapido acceso, y ahorrandonos el acceso a la BD. Existen 2 formas de cache: 1) Cache del Lado del 
+servidor: Son Mecanismos que utilizamos en nuestro servidor como Cache. 2) Cache del Lado del Cliente: Mecanismos que ejecutamos en el 
+cliente directamente, que podremos almacenar por un tiempo determinado, evitando que si el usuario quiere acceder a esos datos use la 
+Web API y el acceso a la BD.
+
+3.1) Cache del Servidor: Para esto utilizaremos OutPutCache, lo que hara esta sera guardar en memoria del servidor la consulta HTTP para 
+que si el cliente la vuelva a solicitar se le devuelva la Data en Cache.
+
+// En Servicios
+builder.Services.AddOutputCache();
+
+// En Los Middlewares
+app.UseOutputCache();
+app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)));
+
+Para limpiar esta cache deberemos darle un Tag al cache que utilice y luego al agregar u modificar esa misma entidad deberemos el 
+servicio IOutputCacheStore:
+
+
+
+4) Sistema en Capas: un sistema en capas nos  permite tener distintos componentes indepedientes en nuestra solucion. Ejemplo de esto 
+es tener nuestr Web API en una capa y nuestra BD en otra capa separada.
+
+
+                                                            4) Swagger UI
+                                                            
+1) Documentando el Web API: Para esto deberemos tener una interfaz grafica que nos permita listar los EndPoints y nos permita usarlos.
+Para esto existe Swagger UI.
+
+// Servicios
+builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
+builder.Services.AddSwaggerGen();
+
+// Middlewares
+if(builder.Enviroment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+                                                        5) Organizar EndPoints
+
+1) Normalmente (salvo que sea una API pequeña) no tendremos nuestros EndPoints directamente en el program.
+
+                                                X) Manual de Sintaxis de Minimal APIs
+
+1) GETs:
+
+1.1) Get con Policy Personalizada: 
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
+
+
+1.2) Get con EF y Cache: 
+app.MapGet("/generos", (IGeneroService genero) =>
+{
+    var list = genero.ListGeneros();
+    return list;
+}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+
+1.3) Get por Id:
+app.MapGet("/generos/{id:int}", (int id,IGeneroService generoService) =>
+{
+    var genero = await generoService.GeneroPorId(id);
+    if (genero == null) return Results.NotFound();
+    return Results.Ok(genero);
+}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(100)));
+
+
+
+2) POST:
+
+2.1) Post Insert:
+app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    var id = await generoService.InsertarGeneros(genero);
+    await cache.EvictByTagAsync("GenerosCache", default)
+    return Results.Created($"/generos/{id}", genero);
+});
+
+// Created() me permitira devolver un status code 201, la URL es una convencio de las WEB api que devuelven la URL por la cual puedo 
+acceder a ese elemento.
+
+3) PUT:
+
+3.1) Put Comun:
+app.MapPut("/generos/{id:int}", async (int id, Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    if(!await generoService.Existe(id)) return Results.NotFound();
+    var r = await generoService.Modificar(genero);
+    await cache.EvictByTagAsync("GenerosCache", default);
+    return Results.NoContent();
+});
+
+
+4) DELETE:
+
+4.1) Delete Comun:
+app.MapDelete("/generos/{id:int}", async (int id, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    if (!await generoService.Existe(id)) return Results.NotFound();
+    await generoService.BorrarGenero(id);
+    await cache.EvictByTagAsync("GenerosCache", default);
+    return Results.NoContent();
+});
+
+
+5) Configuraciones Varias:
+
+5.1) Configurar y Habilitar CORS:
+var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(config =>
+    {
+        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
+    });
+    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+
+    options.AddPolicy("libre",config =>
+    {
+        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+var app = builder.Build();
+app.UseCors();
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
+
+
+5.2) Configurar Cache en Servidor:
+
+// En Servicios
+builder.Services.AddOutputCache();
+
+// En Los Middlewares
+app.UseOutputCache();
+app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+
+5.3) Limpiando Cache en Servidor:
+
+app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    var id = await generoService.InsertarGeneros(genero);
+    await cache.EvictByTagAsync("GenerosCache", default); // Limpio el Cache referenciandolo por su tag
+    return Results.Created($"/generos/{id}", genero);
+});
+
+
+
+5.4) Configurar Swagger:
+
+// Servicios
+builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
+builder.Services.AddSwaggerGen();
+
+// Middlewares
+if(builder.Enviroment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
