@@ -1,295 +1,1446 @@
-                                                                1) Introduccion
+                                                                1) Introduccion y HTTP
+
+1) Metodos HTTP: Son una forma del protocolo HTTP de indicar que accion queremos ejecutar sobre ese recurso. Los verbos/metodos HTTP son
+GET, HEAD (hace lo mismo que GET pero no trae el cuerpo de la respuesta, sino que solo su cabecera), POST, PUT/PATCH y DELETE.
+Una Peticion HTTP es un mensaje que envia una computadora a otra usando el protocolo HTTP, y de ahi tambien surge una respuesta 
+HTTP.
+
+2) Partes de una Peticion HTTP: 1) una Linea de Peticion. 2) Un Conjunto de Campos cabecera. 3) Un cuerpo, el cual es opcional.
+
+POST /api/autores HTTP/1.1 (linea de peticion)
+Host: miWebApi.com (Cabecera)
+Content-Type: application/json (Cabecera)
+Cache-Control: no-cache (Cabecera)
+
+{ (Cuerpo)
+    "Nombre": "Pepe",
+    "Edad": 33
+}
+2.1) Linea de Peticion: En esta colocamos el metodo/verbo HTTP a utilizar, la URI de la peticion y el protocolo HTTP a usar. 
+EJ: GET /api/autores HTTP/2.0
+2.2) Cabecera de la Peticion: Las cabeceras son metadatos que se envian en la peticion para brindar informacion sobre la peticion.
+EJ: Host(cabecera): en.wikipedia.org
+2.3) Cuerpo De la Peticion: Es lo que vamos a enviar al servidor para que este trabaje, GET no suele trabajar con cuerpo debido a que 
+solo se centra en realizar una lectura.
+
+3) Partes de una Respuesta HTTP: 1) Linea de Estatus (devuelve informacion si fue exitosa o no la peticion y las causas). 
+2) Cabecera(Similar a la cabecera de Peticion). 3) Cuerpo, opcional.
+HTTP/1.1 200 OK (Linea de estatus)
+Date:2024-01-01 (Cabecera)
+Server: gws     (Cabecera)
+Accept-Ranges: WriteAllBytesAsync (Cabecera)
+Content-Type: text/html; charset= UTF-8 (Cabecera)
+
+<!doctype html><html...> (Cuerpo)
 
 
-1) API: Es una Interfaz de SoftWare que permite conectar 2 programas distintos (es la via de conexion entre programas) indepediente del 
-lenguaje de programacion en que estos se encuentren. Esta conexion se realizara siempre y cuando se cumplan con los protocolos definidos 
-por la API.
-2) Web API: Una Web API nos permite realizar la comunicacion entre programas gracias al Protocolo HTTP.
+4) Codigos de Estatus HTTP: En las respuestas HTTP recibiremos un codigo de estatus (que sera un numero y una frase) que indica el 
+resultado de esa Peticion HTTP. Existen 5 categorias de resultados: 1) 1XX: devuelve una respuesta informacional. 
+2) 2XX: devuelve una respuesta Existosa (200 OK, 201 Created, 202 Accepted, 204 NoContent). 3) 3XX: devuelve una redireccion 
+(301 Moved Permanently, 302 Found). 4) 4XX: devuelve una respuesta de error del cliente (400 Bad Request, 401 Unauthorized, 
+403 Forbidden, 404 Not Found, 405 Method Not Allowed). 5) 5XX: devuelve una respuesta de error en el servidor (500 Internal Server Error,
+503 Service Unavailable)
 
-3) SOAP: Protocolo de Acceso de Objeto Simple, Es un protocolo de intercambio de Informacion en una red usando XML. Este puede usar varios 
-protocolos distintos (http, smtp). Una de sus ventajas es que te permite definir mensajes estandarizados. El gran problema de SOAP es que 
-solo trabaja con XML y no soporta otros formatos, tambien tiene poco soporte en los navegadores y pobre acceso al uso de cache.
 
-4) GraphQL: Es un Programa desarrollado por META y tiene como proposito solicitar datos especificos. La diferencia de este con REST esta 
-en como el usuario solicita la data. En el caso de rest si queremos traer una lista filtrada deberemos hacer 2 consultas (traer toda la 
-lista y luego refiltrar la lista), la solucion de esto en Rest es crear un EndPoint para cada necesidad, lo cual no afectara el rendimiento, 
-pero nos obligara a generar muchos EndPoint. En Cambio con GraphQL trabajamos con Querys donde solicitaremos la data que queremos.
+                                                        2) Controladores API
 
-5.1) A la hora de crear web Apis en ASP Core tenemos 2 opciones: 1) Controladores: 1.1) Una accion es un metodo de C# que maneja 
-las peticiones HTTP, la clase que contenga los metodos que manejan las peticiones sera el controlador. El controlador tambien nos 
-permitira definir logica global que se aplicara a cada accion. Para cada entidad tendremos un controlador distinto 
-Estructura:
-[ApiController]
-[Route("api/generos")]
-public class GenerosController : ControllerBase
-{
+1) Estructura de Controlador CRUD:
+
+ [ApiConventionType(typeof(DefaultApiConventions))] // Me permite documentar los ResponseTypes
+ [ApiController] // Me permite realizar validaciones automaticas sobre la data recibida de mis controladores
+ [Route("api/autores")] // La ruta en la cual mi controlador reaccionara, si se hace una peticion sobre esta ruta sera mi controllador el que salte
+ public class AutoresController : ControllerBase
+ {
+    private readonly Negocio negocio;
+    public AutoresController(Negocio negocio)
+    {
+        this.negocio = negocio;
+    }
+
     [HttpGet]
-    public async Task<IEnumerable<Genero>> GetGeneros()
-
-    [HttpGet("Filtro")]
-    public async Task<IEnumerable<Genero>> Filtrado(string name)
-
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Genero>> GetId(int id)
+    public async Task<ActionResult<List<Autor>>> GetAutores() 
+    {
+        return await negocio.Autores.AsNoTracking().ToListAsync();
+    }
 
     [HttpPost]
-    public async Task<ActionResult> Post(Genero genero)
+    public async Task<IActionResult> PostAutores(Autor autor)
+    {
+        negocio.Add(autor);
+        await negocio.SaveChangesAsync();
+        return Created($"api/autores/{autor.Id}", autor);
+    }
+
+    [HttpPut("{id:int}")] // Parametro de Ruta
+    public async Task<IActionResult> PutAutores(Autor autor, int id)
+    {
+        var autorBD = negocio.Autores.Where(x => x.Id == id).FirstOrDefault();
+        if (autorBD == null) return BadRequest("");
+        autor.Id = id;
+        negocio.Update(autor);
+        await negocio.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")] // Parametro de Ruta
+    public async Task<IActionResult> DeleteAutores(int id)
+    {
+        var autor = await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+        if (autor == null) return BadRequest("");
+        negocio.Remove(autor);
+        await negocio.SaveChangesAsync();
+        return Ok();
+    }
+ }
+
+
+                                                        3) Fundamentos de ASP.NET Core y Web API
+
+1) Web Api: La idea de un Web Api es que tendremos clientes que realizaran peticiones HTTP a nuestros endpoints. Toda la ruta estara 
+compuesta por el dominio (https://miapi.com) y el recurso (/autores), aunque la ruta normalmente se le dice solo al recurso, ya que el 
+dominio suele repetirse.
+
+2) Acciones/Endpoints: Es una funcion de un controlador que se ejecutara como respuesta a una peticion HTTP realizada por el Web API,
+un controlador es una clase que se encargar de agrupar una serie de acciones/endpoints.
+
+3) Endpoints Ambiguos: Ante una misma ruta puedo generar varios metodos con distintos verbos HTTP, pero en el caso de que hayan 2 
+endpoints de mismo verbo y que respondan a la misma ruta HTTP esto derivara en un error de ambiguedad. Para solucionar esto debo cambiar
+la ruta de una de esos endpoints Ambiguos
+
+[HttpGet] // RUTA => api/autores
+public async Task<ActionResult<List<Autor>>> GetAutores() 
+{
+    return await negocio.Autores.Include(x => x.ListaLibros).AsNoTracking().ToListAsync();
+}
+[HttpGet("primero")] // RUTA => api/autores/primero
+public async Task<ActionResult<Autor>> GetFirstAutor()
+{
+    return await negocio.Autores.FirstOrDefaultAsync();
 }
 
-5.2) Minimal APIs: Nos permiten construir Web APIs mas rapidos y con menos codigo, trabajando directamente con los endpoints. Son 
-menos poderosos que los controladores pero mas rapidos y eficientes.
+4) Reglas de Ruteo:
 
-app.MapGet("/weatherforecast", () => {
-    var forecast = MyForecast.ToArray();
-    return forecastM
-})
+4.1) Poner un placeholder para el nombre de la ruta:
 
-
-                                                        2) Configuraciones del Proyecto
-
-1) Nullable: Me permitira volver NULL campos que no lo son, es decir podre asignar valores null a campos que por defecto no acepten 
-valores null. La configuracion Nullable lo que hace es advertirnos cuando estamos trabajando con un campo que quizas tenga un valor 
-null y pueda derivar en un error. Tambien cuando declaro una propiedad con un tipo no null me va a saltar una advertencia, ante esto 
-puedo hacer 2 cosas, o lo vuelvo Nullable con "?", o perdono el nulo de la siguiente forma: public string Nombre { get; set; } = null!;
+[ApiController]
+[Route("api/[controller]")]  => en este caso, la ruta del endpoint sera dinamica, tomara el nombre de nuestro controller.
+public class AutoresController : ControllerBase{}
 
 
+4.2) Definir varias rutas para un Endpoint:
 
-2) Usings Implicitos: Es una funcion que me permite que se agreguen librerias por defecto en la compilacion de la aplicacion.
+[HttpGet] // Ruta  => api/autores
+[HttpGet("listado")] // Ruta  => api/autores/listado
+[HttpGet("/listado")] // Ruta  => /listado
+public async Task<ActionResult<List<Autor>>> GetAutores() 
+{
+    return await negocio.Autores.Include(x => x.ListaLibros).AsNoTracking().ToListAsync();
+}
 
-3) LaunchSettings: Configuraciones de la ejecucion de la aplicacion (solo valida para la ejecucion en ambito de desarrollo). Desde la 
-propiedad enviromentVariables puedo seleccionar sobre que appSettings quiero trabajar, si sobre el de Produccion o el de desarrollo.
 
-4) Program Estructura:
+5) Variables/Parametros de Ruta: estos se utilizan para filtrar una lista o traer un elementos especifico, me permite pasarle un Parametro
+a mi endpoint y asi trabajar con ese valor, el ":int" se utiliza para obligar a que se mande un entero.
 
-var builder = WebApplication.CreateBuilder(args);
+[HttpGet("{id:int}")]
+public async Task<ActionResult<Autor>> GetAutorPorId(int id)
+{
+    return await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+}
 
-// Inicio Area de Servicios
+[HttpGet("{name}")]
+public async Task<ActionResult<Autor>> GetAutorPorNombre(string name)
+{
+    var autor = await negocio.Autores.FirstOrDefaultAsync(x => x.Nombre.ToLower().Contains(name.ToLower()));
+    if (autor == null) return NotFound("No se encontro autor");
+    return Ok(autor);
+}
 
-// Fin Area de Servicios
+[HttpGet("{id:int}/{parametro2?}")] => El "?" me permite hacer opcional un parametro.
+public async Task<ActionResult<Autor>> GetAutorPorId(int id)
+{
+    return await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+}
 
-var app = builder.Build();
+[HttpGet("{id:int}/{parametro2=RD}")] => El "=" me permite darle un valor por defecto al parametro
+public async Task<ActionResult<Autor>> GetAutorPorId(int id)
+{
+    return await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+}
 
-// Inicio de Area de middleware
-app.MapGet("/", () => "Hello World!");
-// Fin de Area de middleware
 
+6) Tipos de Datos de Retorno: Es recomendable no usar un tipo de dato especifico a devolver en un Endpoint/Accion, debido a que si 
+quiero devolver diferentes resultados(como un autor o un NotFound()) derivara en un error, por eso por convencion se devuelve un 
+ActionResult<T>, debido a que este me permitira devolver el generico que le pase (Autor por ejemplo) o un ActionResult (NotFound(), 
+BadRequest(), Forbidden()).
+
+Existe una tercera forma que es IActionResult(), en la que deberemos devolver si o si un resultado de respuesta(Ok(), NoContent()) y 
+dentro le podremos pasar el objeto a devolver, sin la necesidad de usar genericos.
+
+[HttpGet("{id:int}")]
+public async Task<IActionResult> GetAutorPorId(int id)
+{
+    var autor = await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+    if (autor == null) return NotFound("No se encontro autor");
+    return Ok(autor);
+}
+
+7) Model Binding: Nos permite mappear datos de una peticion HTTP a los parametros de un EndPoint. Estos parametros pueden venir De
+distintos lugares: De la URL (los parametros de ruta como "{id:int}/{parametro2=RD}"), del Cuerpo (en el cosa de una peticion Post o Put,
+en la cual mandamos normalmente el objeto a agregar o modificar), de la Cabecera, de un QueryString (un QueryString son parametros que 
+se colocan despues de la ruta, y son accesible por llave valor => api/autores?nombre=felipe)
+
+Puedo indicarle a los parametros de donde provienen con los atributos: [FromRoute], [FromBody], [FromQuery], [FromHeader], [FromForm], 
+[FromServices].
+
+
+8) Validaciones Con DataAnnotations: Siempre que mi Controller tenga el [ApiController] como atributo podre usar las validaciones a nivel 
+de modelo usando los DataAnnotations.
+
+public class Autor
+{
+    public int Id { get; set; }
+    [Required(ErrorMessage = "El Autor Requiere un nombre")]
+    public string Nombre { get; set; }
+    [Range(18, 99)]
+    public int Edad { get; set; }
+    [CreditCard]
+    public int Tarjeta { get; set; }
+    [URL]
+    public string URL { get; set; }
+    public List<Libro> ListaLibros { get; set; }
+}
+
+
+8.1) Validaciones Personalizadas por Atributo: Son reglas que crearemos que podran ser reutilizadas, es decir seran una especie de 
+DataAnnotations, creados por nosotros. Basicamente crearemos un DataAnnotations personalizado para validar.
+
+    public class PrimeraLetraMayusculaAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value == null || string.IsNullOrEmpty(value.ToString())) return ValidationResult.Success;
+
+            var r = value.ToString()[0].ToString() == value.ToString().ToUpper()[0].ToString() ? true : false;
+            if (r) return ValidationResult.Success;
+
+            return new ValidationResult("La primera letra debe ser mayuscula");
+        }
+    }
+
+
+8.2) Validaciones Por Modelo: Basicamente son reglas que voy a crear en mi modelo especificamente para mi modelo (es una situacion muy
+puntual).
+
+public class Autor : IValidatableObject
+{
+    public int Id { get; set; }
+    [Required(ErrorMessage = "El Autor Requiere un nombre")]
+    [StringLength(maximumLength: 50, ErrorMessage = "El nombre del autor no puede ser mayor a {1}")]
+    [PrimeraLetraMayuscula]
+    public string Nombre { get; set; }
+    public List<Libro> ListaLibros { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        var primeraLetra = Nombre[0].ToString();
+        if (primeraLetra != primeraLetra.ToUpper()) 
+            yield return new ValidationResult("La primera letra debe ser mayuscula", new string[] {nameof(Nombre)});
+    }
+}
+
+
+8.3) Validaciones con Controladores: Son validaciones en las cuales necesitamos interactuar con la BD, es decir son validaciones contra 
+la BD. Por ejemplo el caso donde no quiera insertar un autor del mismo nombre puedo validar contra la BD antes de insertarlo que no 
+existe ese mismo autor en la BD
+
+Ranking Validaciones: 1) DataAnnotations. 2) Controllers. 3) Attributes (DataAnnotations Personalizados). 4) Modelo.
+
+
+
+9) Inyeccion de Dependencias: Por el principio de resposabilidad unica las clases normalmente deberan tener una tarea definida a realizar
+(por ejemplo el controlador no deberia ser quien se encarga de conectar a la BD y realizar los Querys, sino esa responsabilidad debe 
+darsela a un repositorio, tampoco debe realizar validaciones a nivel modelo, o mandar mensajes a la consola, ETC). Por ello es que 
+Siempre una clase A dependera de una clase B (por EJ el controlador depende del repositorio para conectarse a la BD), a esto se le 
+llama Dependencia. Dentro de estas tenemos 2 formas de dependencias: 1) Acoplamiento Alto (una dependencia poco flexible en otras clases),
+lo cual generalmente no es bueno, esto sucede cuando la dependencia esta directamente instanciada en el metodo/funcion o en el
+constructor, pero sin usar los parametros.
+2) Acoplamiento Bajo tiene una mayor flexibilidad al trabajar con otras clases, esta lo que hace es instanciar las dependencias no en 
+los metodos sino directamente en el constructor, definiendo en el parametro del constructor la dependencia. 
+
+3) El Acoplamiento bajo se lo suele combinar usando interfaces y no clases para aumentar la flexibilidad. Por ejemplo, en el caso de que 
+mi constructor necesite una interfaz en su construccion le puedo pasar cualquier clase que implemente esa interfaz, haciendolo mas 
+flexible, al no depender solo de una clase. Esto cumple con el principio SOLID de inversion de Inyeccion de dependencias.
+
+1) ACOPLE ALTO
+public class MiClase
+{
+    private readonly MiDependencia _dependencia;
+    public MiClase()
+    {
+        _dependencia = new MiDependencia(); // Acoplamiento alto
+    }
+}
+
+public class MiClase
+{
+    public void HacerAlgo()
+    {
+        var dbContext = new dbContext();
+    }
+}
+
+2) ACOPLE BAJO
+public class MiClase
+{
+    private readonly IMiDependencia _dependencia;
+    public MiClase(IMiDependencia dependencia)
+    {
+        _dependencia = dependencia; // Acoplamiento bajo
+    }
+}
+
+
+10) Sistema de Inyeccion de Dependencias: Basicamente son los servicios, con estos inyectamos los objetos/interfaces en las distintas 
+clases de forma centralizada y compacta. Al configurar un objeto/interfaz como un servicio, cada vez que ese objeto aparezca como 
+dependencia en algun constructor de una clase el "Sistema de Inyeccion de Dependencias" se encargara de instanciarlo con todas sus 
+configuraciones para poder utilizarlo. Este "Sistema de Inyeccion de Dependencias" lo que hara sera inyectar/instanciar de forma 
+automatica las dependencias de nuestras dependencias.
+
+Depende el tiempo de vida del servicio sera: 1) Transient(tiempo de vida minimos, util para pequeñas funciones en las que devuelvo 
+un simple resultado, sin tener que mantener data, no necesito mantener un estado, se crea una nueva instancia cada vez que solicito el 
+servicio, incluso en el mismo contexto HTTP), 2) Scope(el tiempo de vida es al tiempo de vida la peticion HTTP, util para acciones en 
+las que debo mantener el estado en una misma solicitud HTTP, la instancia del servicio sera siempre la misma en un mismo contexto
+HTTP). 3) Singleton (Se instancia solo Uno por ejecucion de la APP, incluso sera la misma para todos los usuarios).
+
+----------------------------------------------------------------------------------------------------------------------------------------
+1) Cuando tengas un servicio que no necesita mantener "estado" (es decir, datos que sobrevivan más allá de la invocación de una función): 
+Usa Transient.
+
+2) Cuando tengas un servicio que necesita mantener estado durante un contexto HTTP (es decir, durante la consulta de un cliente al Web 
+API): Usa Scoped. Un ejemplo de sería el ApplicationDbContext, con el que podemos hacer consultas a una base de datos. Es importante 
+usarlo en modo scoped para que el usuario tenga acceso a las operaciones realizadas en dicho contexto HTTP. Esto le podría permitir 
+incluso revertir dichas operaciones, sin afectar las operaciones de otros usuarios.
+
+3) Cuando tengas un servicio el cual quieres usar la misma instancia siempre, sin importar el cliente que invoque el Web API: 
+usa Singleton. Un ejemplo sería un servicio de cache en memoria, donde quieres que todos los usuarios accedan al mismo repositorio 
+de datos.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+11) Middleware: cuando se realiza una peticion HTTP esta realmente no pasa directamente al controlador, sino que pasa por un 
+"Tuberia HTTP". Esta Tuberia de peticiones es el conjunto de procesos conectados, que reciben una peticion HTTP y la procesan para 
+devolver algun resultado. Uno de esos procesos en el del Endpoint/accion de los controladores, otro proceso es el de autorizacion.
+
+Para crear un middleware, creamos una clase con un constructor que reciba RequestDelegate y un método llamado Invoke que reciba 
+HttpContext como parámetro.
+A cada uno de estos procesos los llamamos middleware. En estos es importante el orden en el que se ejecuten.
+
+// EJ de Middleware que me permite guardar todas las respuestas del cuerpo al cliente
+app.Use(async (context, next) =>
+{
+    using (var ms = new MemoryStream())
+    {
+        //Primera Ejecucion del Middleware
+        var cuerpoOriginalRespuesta = context.Response.Body;
+        context.Response.Body = ms;
+        await next.Invoke(); // => Indico que se ejecuten los siguientes Middleware
+
+        // Ejecucion POST respuesta del resto de Middlewares
+        ms.Seek(0, SeekOrigin.Begin);
+        string respuesta = new StreamReader(ms).ReadToEnd();
+        ms.Seek(0, SeekOrigin.Begin);
+        await ms.CopyToAsync(cuerpoOriginalRespuesta);
+        context.Response.Body = cuerpoOriginalRespuesta;
+    }
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
 
-5) Middleware: Son las acciones que ejecutaremos ante una determinada peticion HTTP.
 
-6) EndPoint: Un EndPoint es una ruta sobre la cual se ejecutara una determinada Accion. Por Ejemplo sobre La ruta "/Generos" se ejecutara
-la funcion que trae a todos los generos, todo esto seria el EndPoint.
+12) Filtros: Los filtros nos permiten ejecutar codigo en determinados momentos del ciclo de vida del procesamiento de una peticion HTTP.
+Los filtros son utiles para cuando queremos ejecutar una logica en varios endpoints de varios controladores y queremos evitar repetir 
+codigo. Basicamente es realizar validaciones centralizadas a los endpoints. Un filtro muy comun es el de autorizacion. Puedo aplicar 
+un filtro a nivel de accion/endpoint, a nivel de controlador o a nivel global (a todo el WebApi). Es un concepto muy similar a los 
+Middleware, aunque puede ser aplicado individualmente (y no solo de forma global como los Middleware).
 
-                                                            3) Principios REST
+Tipos de filtro: 1) Filtros de Autorizacion. 2) Filtros de recurso (son filtros para validar cosas generales o para una capa de cache, 
+ademas pueden detener la ejecucion de filtros y Middlewares) 3) Filtros de Accion (se ejecutan antes y despues de un endpoint/accion, 
+se puede usar para manipular los argumentos del controlador o manipular el resultado del controlador). 4) Filtros de Excepcion: Se 
+ejecuta cuando hubo una excepcion no atrapada en una Accion, filtro de Accion, durante la creacion de un controlador o durante el 
+ModelBinding. 5) Filtro de Resultado: se ejecuta antes y despues de la ejecucion de un ActionResult
 
-1) REST: Transferencia de Estado Representacional, es una Arquitectura diseñada para Apps que usan el protocolo HTTP. REST tambien exige 
-una serie de principios para diseñar nuestro Web API: 1) Separacion de Cliente-Servidor, es decir que la interfaz de usuario deberia 
-estar separada de nuestra logica de negocio. No se relaciona ni interfiere con la Interfaz de Usuario, solo se limita a manejar datos y 
-aplicar logicas de negocio. 2) Sin Estado: Es decr que no se deben recordar (guardar en memoria) nada acerca de peticiones anteriores,
-esto nos permitira que nos Web API sea mas rapido. 3) Uso de Cache: Siempre que se pueda se debera usar el cache ya que esto optimizara 
-la velocidad. El Cache es guardar datos en un lugar que sea de acceso rapido. 4) Sistema en Capas:  5) Interfaz Uniforme: Se refiere a 
-seguir un estandar en la creacion de mi API: 5.1) Identificador de recursos: Utilizar URLs claras y consistentes para identificar 
-recursos, como (miAPI.com/actores/1), 5.2) Manipulacion de recursos usando representaciones: Interactuar con los recursos a través de sus
-representaciones, como JSON 5.3) Mensajes auto-descriptivos: Los endpoints deben ser claros y proporcionar suficiente información para 
-que los clientes entiendan cómo interactuar con ellos 5.4) HiperMedia como motor del estado de la aplicacion: Incluir enlaces en las 
-respuestas que indiquen las acciones disponibles, guiando a los clientes a través de la API. 
-Si se cumplen con estos principios se considera que es una Web API RestFul.
 
-                                                    3.1) Aplicacion de principios REST
+12.1) Filtro de Cache: 
 
-1) Separacion Cliente-Servidor: El Web API debe funcionar de forma independiente con el cliente. A la hora de crear los APIs debo tener 
-en cuenta donde se van a encontrar mis clientes (las apps que van a consumir mi API) esto porque los navegadores WEB por defecto tienen 
-un mecanismo de seguridad que no permiten que cualquier pagina web consuma el Web API, este mecanismo se llama CORS.
+// En Program
+app.UseResponseCaching();
 
-CORS: Intercambio de recursos de Origen cruzado, es quien decide que debe suceder cuando recibimos peticiones http de paginas web de un 
-origen distinto al nuestro (distinto dominio, subdominio, puerto y/o protocolo). Este mecanismo existe con el fin de evitar inyectar un 
-script malicioso de una pagina a otra. Pero habra casos en lo que queramos permitir estas peticiones de diferentes origenes para consumir 
-un EndPoint.
-                                                                       
-Habilitar CORS:
+// En un controlador
+[ResponseCache(Duration = 60)]
+public async Task<IActionResult> GetAutores() 
 
-var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
-builder.Services.AddCors(options =>
+
+12.2) Filtro de Autorizacion:
+
+// Service Program
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+// Middleware Program
+app.UseAuthorization();
+
+// En un controlador
+[Authorize]
+public async Task<IActionResult> GetAutores() 
+
+// Colocarlo a nivel controlador
+[Authorize]
+public class AutoresController : ControllerBase{}
+
+
+12.3) Filtros Personalizados:
+
+public class FiltroEndpoint : IActionFilter
 {
-    options.AddDefaultPolicy(config =>
+    // Se ejecuta antes de ejecutar el Endpoint
+    public void OnActionExecuting(ActionExecutingContext context)
     {
-        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
-    });
-    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+        throw new NotImplementedException();
+    }
 
-    options.AddPolicy("libre",config =>
+
+    // Se ejecuta despues de ejecutar el Endpoint
+    public void OnActionExecuted(ActionExecutedContext context)
     {
-        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
+        throw new NotImplementedException();
+    }      
+}
 
-var app = builder.Build();
-app.UseCors();
-app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu"); // Este EndPoint no se va a regir por la politica por Default sino por la de libre
-app.MapGet("/generos", () =>...);
-
-2) No Usar Estado: Cada Peticion HTTP deberia contener toda la informacion necesaria para procesar dicha peticion. Esto nos permitira 
-hacer nuestra WebApi mas escalable.
-
-3) Cache: Son los mecanismos para servir informacion con menos esfuerzo, para esto podemos guardar el listado de objetos en un lugar 
-de rapido acceso para que sea de mas rapido acceso, y ahorrandonos el acceso a la BD. Existen 2 formas de cache: 1) Cache del Lado del 
-servidor: Son Mecanismos que utilizamos en nuestro servidor como Cache. 2) Cache del Lado del Cliente: Mecanismos que ejecutamos en el 
-cliente directamente, que podremos almacenar por un tiempo determinado, evitando que si el usuario quiere acceder a esos datos use la 
-Web API y el acceso a la BD.
-
-3.1) Cache del Servidor: Para esto utilizaremos OutPutCache, lo que hara esta sera guardar en memoria del servidor la consulta HTTP para 
-que si el cliente la vuelva a solicitar se le devuelva la Data en Cache.
-
-// En Servicios
-builder.Services.AddOutputCache();
-
-// En Los Middlewares
-app.UseOutputCache();
-app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)));
-
-Para limpiar esta cache deberemos darle un Tag al cache que utilice y luego al agregar u modificar esa misma entidad deberemos el 
-servicio IOutputCacheStore:
+// En el Controlador
+[ServiceFilter(typeof(FiltroEndpoint))]
+public async Task<ActionResult<Autor>> GetAutorPorNombre(string name)
 
 
+12.4) Filtros Globales:
 
-4) Sistema en Capas: un sistema en capas nos  permite tener distintos componentes indepedientes en nuestra solucion. Ejemplo de esto 
-es tener nuestr Web API en una capa y nuestra BD en otra capa separada.
-
-
-                                                            4) Swagger UI
-                                                            
-1) Documentando el Web API: Para esto deberemos tener una interfaz grafica que nos permita listar los EndPoints y nos permita usarlos.
-Para esto existe Swagger UI.
-
-// Servicios
-builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
-builder.Services.AddSwaggerGen();
-
-// Middlewares
-if(builder.Enviroment.IsDevelopment())
+public class FiltrosDeExcepcion : ExceptionFilterAttribute
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    private readonly ILogger<FiltrosDeExcepcion> logger;
+
+    public FiltrosDeExcepcion(ILogger<FiltrosDeExcepcion> logger)
+    {
+        this.logger = logger;
+    }
+
+    public override void OnException(ExceptionContext context)
+    {
+        logger.LogError(context.Exception, context.Exception.Message);
+        base.OnException(context);
+    }
+}
+
+// En Program
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add(typeof(FiltrosDeExcepcion));
+}).AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+
+13) Ejecutar Codigo Recurrente: Para esto usaremos el IHostedService, que se ejecutara al inicio y al final (apagado) de nuestro 
+WebApi.
+
+public class EscribirEnArchivo : IHostedService
+{
+    private readonly IWebHostEnvironment environment;
+    private readonly string nombreArchivo = "Archivo.text";
+    private Timer timer;
+
+    // El IWebHostEnvironment me permite acceder al ambiente en el que me encuentro
+    public EscribirEnArchivo(IWebHostEnvironment environment)
+    {
+        this.environment = environment;
+    }
+
+    // Cuando se levante el servidor se ejecutara
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+        Escribir("Proceso Iniciado");
+        return Task.CompletedTask;
+    }
+
+    // Cuando se apague el servidor se ejecutara
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        timer.Dispose();
+        Escribir("Proceso Finalizado");
+        return Task.CompletedTask;
+    }
+
+    // Codigo Recurrente
+    private void DoWork(object state)
+    {          
+        Escribir("En Ejecucion: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+    }
+
+
+    private void Escribir(string msg)
+    {
+        var rutaGuardado = $@"{environment.ContentRootPath}\wwwroot\{nombreArchivo}";
+        using (StreamWriter writer = new StreamWriter(rutaGuardado, append: true))
+        {
+            writer.WriteLine(msg);
+        }
+    }
+}
+
+// Program
+builder.Services.AddHostedService<EscribirEnArchivo>();
+
+
+
+                                                        3) Manipulando Recursos
+
+1) DTO y AutoMapper: Los DTO (data transfer object) son objetos que se encargaran de servir informacion al cliente o enviar informacion 
+hacia el servidor, son clases que solo transportan datos. Por ejemplo, a lo hora de crear un Autor no espero que me pasen todos las 
+propiedades de mi clase autor, para eso creo un DTO que solo rellene los campos que requiero para crear el autor.
+
+public AutoMapperProfile()
+{
+    CreateMap<CrearAutorDTO, Autor>();
+    CreateMap<Autor, LecturaAutorDTO>();
+
+    CreateMap<CrearLibroDTO, Libro>()
+        .ForMember(libro => libro.ListaAutoresLibros, opt => opt.MapFrom(MapAutoresLibros));
+    CreateMap<Libro, LecturaLibroDTO>();
+
+
+    CreateMap<CrearComentarioDTO, Comentario>();
+    CreateMap<Comentario, LecturaComentarioDTO>();
+
+}
+
+private List<AutorLibro> MapAutoresLibros(CrearLibroDTO libroDTO, Libro libro)
+{
+    var resultado = new List<AutorLibro>();
+
+    if(libroDTO.AutoresId == null) return resultado;
+
+    foreach (var id in libroDTO.AutoresId)
+    {
+        resultado.Add(new AutorLibro { AutorId = id });         
+    }
+
+    return resultado;
 }
 
 
-                                                        5) Organizar EndPoints
+2) Controlador de un Recurso Dependiente: En el caso de que yo tenga una entidad que dependa de otra (por ejemplo comentarios depende de 
+libro, ya que si elimino el libro se eliminan los comentarios, pero no viceversa). Para esto crearemos un controlador que tenga en 
+su ruta el ID de la identidad de la que depende.
 
-1) Normalmente (salvo que sea una API pequeña) no tendremos nuestros EndPoints directamente en el program.
-
-                                                X) Manual de Sintaxis de Minimal APIs
-
-1) GETs:
-
-1.1) Get con Policy Personalizada: 
-app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
-
-
-1.2) Get con EF y Cache: 
-app.MapGet("/generos", (IGeneroService genero) =>
+[ApiController]
+[Route("api/libros/{libroId:int}/comentarios")]
+public class ComentariosController : ControllerBase
 {
-    var list = genero.ListGeneros();
-    return list;
-}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+}
 
-1.3) Get por Id:
-app.MapGet("/generos/{id:int}", (int id,IGeneroService generoService) =>
+
+3) Pasos Relacion Muchos a Muchos: 1) Primero Identificar las identidades (Libro y autor por ejemplo), Crearemos una entidad intermedia
+que tenga los ID de las 2 entidades (LibroId y AutorId) y sus 2 Anclas. 2) Segun la estructura de creacion de los objetos variara los 
+siguientes paso, en el EJ al crear un Libro Pido una Lista de Autores (Libro debe tener una propiedad que sea List<int> AutoresId), por 
+lo que en el controlador verificaremos que esa lista no sea NULL, y que todos los IDs existan en la tabla de autores. 3) Por ultimo 
+Mapearemos nuestro DTO a nuestra entidad a agregar (el mapeo variara segun lo que hayamos hecho), en este caso hacemos que mapeamos la 
+ListaAutoresLibros de LIBRO con el resultado de una funcion, esta funcion lo que hace es crear una List<AutorLibro> que tiene cargado 
+el AutoId (el resto de datos los cargara EF).
+
+
+
+4) Error Null: Cuando tenemos una relacion ciclica en nuestros DTO (por ejemplo Libro tiene una lista de AutoresDTO y viceversa)
+En las lecturas de estas DTO estos campos devuelven NULL, lo cual no es un problema pero es molesto. A esto lo podriamos solucionar con 
+herencia entre DTO (para no repetir todas las propiedades heredo las del DTO padre y creo las que necesite para el hijo.)
+-VIDEO 59 y 60
+
+
+5) Nombres de Rutas y CreatedAtRoute():
+
+[HttpGet("id:int", Name = "PorId")]
+
+// Dentro de un Endpoint de Post
+return CreatedAtRoute("PorId", new {id = autor.Id}, lecturaAutorDTO)
+
+
+6) Actualizar entidad que tiene relaciones: Para esto me tengo que traer el registro directo de la BD con sus relaciones (las anclas con 
+include()). Le realizare las modificaciones pertinentes y luego hare un SaveChangesAsync(), esto debido a que el libro ya esta traqueado 
+para actulizar. El mapeo puede ser manual o con AutoMapper.
+-Video 63
+
+
+7) HTTP Patch: Se lo utiliza cuando queremos hacer cambios parciales a un recurso. Su funcionamiento consta en que el usuario definira 
+en el cuerpo de la peticion los cambios que va a querer. Para definir esto usaremos el JSON PATCH, este nos indicara como debe de 
+ser la estructura del cuerpo de la peticion. Para esto deberemos instalar la libreria Microsoft.AspNetCore.Mvc.Newtonsoft
+
+Ejemplo de JSON Patch: {"op": "replace", "path": "/nombre", "value": "Pepe"}
+
+// Agregar el servicio de NewtonsoftJson
+builder.Services.AddControllers(opt =>
 {
-    var genero = await generoService.GeneroPorId(id);
-    if (genero == null) return Results.NotFound();
-    return Results.Ok(genero);
-}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(100)));
+    opt.Filters.Add(typeof(FiltrosDeExcepcion));
+}).AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+.AddNewtonsoftJson();
 
 
-
-2) POST:
-
-2.1) Post Insert:
-app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+// EndPoint Patch
+[HttpPatch("id:int")]
+public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibroPatchDTO> patchDocument)
 {
-    var id = await generoService.InsertarGeneros(genero);
-    await cache.EvictByTagAsync("GenerosCache", default)
-    return Results.Created($"/generos/{id}", genero);
-});
+    if (patchDocument is null) return BadRequest("");
 
-// Created() me permitira devolver un status code 201, la URL es una convencio de las WEB api que devuelven la URL por la cual puedo 
-acceder a ese elemento.
+    var libroBD = await negocio.Libros.FirstOrDefaultAsync(x => x.Id == id);
+    if (libroBD is null) return NotFound();
 
-3) PUT:
+    var libroDTO = mapper.Map<LibroPatchDTO>(libroBD);
+    patchDocument.ApplyTo(libroDTO, ModelState);
 
-3.1) Put Comun:
-app.MapPut("/generos/{id:int}", async (int id, Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+    var esValido = TryValidateModel(libroDTO);
+    if (!esValido) return BadRequest(ModelState);
+
+    mapper.Map(libroDTO, libroBD);
+    await negocio.SaveChangesAsync();
+    return NoContent();
+}
+
+
+                                                        4) Configuraciones
+
+1) Las configuraciones son datos extenernos de nuestra aplicacion que nos ayudan a nuestra app a funcionar correctamente. Por ejemplo 
+Los distintos Connection-String para servicios externos, Los Logs, los Allowed Host, etc. Para comunicarnos con estas fuentes externas 
+lo hacemos mediante los Proveedores de Configuracion (El AppSetings.json es nuestro principal proveedor de configuraciones), en ASP 
+accedemos al proveedor de Configuracion mediante el IConfiguration.
+
+1.1) Acceder a un Configuracion: configuration["MyConfiguration"]  //  configuration["MyConfiguration:SubConfiguracion"]
+
+2) Proveedores de configuracion: 1) AppSetings 2) Varibles de ambiente: Es un valor al cual puedo acceder desde un ambiente especifico,
+por EJ una variable a la que accedo solo en PRODUCCION pero no en DESARROLLO. 3) User Secrets: Son un archivo en el cual podemos 
+colocar nuestras configuracion, pero estas estaran fuera del codigo fuente. Estas tienen la caracteristica de no afectar el ambiente 
+de otros programadores, son propias de un entorno de desarrollo individual. Es decir que el User Secrets esta configurado para funcionar 
+solo en tu PC (en un ambiente de desarrollo IND, sin afectar a otros ambientes de desarrollo). 4) Lineas de Comando:
+
+3) Orden de Declaracion de los Proveedores de Configuracion: Si hay coincidencias en los nombres de las variables en los Proveedores de 
+configuracion se tomara el valor del ultimo provedor configurado, el orden Jerarquico es: 1) Linea de comandos 2) Variables de ambiente. 
+3) User Secrets. 4) AppSetings.json.
+
+4) Consideraciones de Seguridad: Existe data (como Connection-Strings, u otros datos sensibles) que es importante proteger y no tenerlo 
+directamente en un texto-plano (Por EJ no guardar la configuraciones en un archivo accecible por GitHub). Para esto lo mejor suele ser 
+colocar las Configuraciones en las variables de ambiente.
+
+
+                                                            5) Seguridad
+
+1) Autenticacion: se trata de que un usuario muestre credenciales para verificar su identidad, es decir que demuestre que es un usuario 
+verificado en la BD.
+1.1) Autorizacion: Se refiere a lo que un usuario tiene permitido hacer.
+
+2) Esquemas de Autenticacion: 1) Anonimo: Cualquiera puede consumir un EndPoint. 2) Basic: Requerira un User-Password, y la password se 
+convertira en Base64 al mandarla al WebApi, si se la utiliza necesitaremos de SSL. 3) Bearer: Una vez autorizado el servidor le otorga 
+un Token(un string)
+
+
+3) Identity: Para usuarilo con EF Core debo instalar su paquete Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+// Defino los servicios.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<Negocio>().AddDefaultTokenProviders();
+
+
+// Configuro autorizacion en Endpoint
+[HttpGet("{id:int}")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+public async Task<ActionResult<LecturaLibroDTO>> GetLibroPorId(int id){}
+
+
+3.1) Register Identity: 1) Crear un DTO de RespuestaAutenticacion con la propiedad Token(string) y Expiracion(DateTime). 2) Un DTO con 
+las crendeciales del usuario. 3) Inyecto en nuestro endpoint el UserManager<IdentityUser>. 4) Creo la funcion de construir el token 
+(Esta recibira las crendeciales, primero creamos los Claims, Extraemos la Secret-Key, Firmo las credenciales de acceso, configuro la 
+Expiracion del token, genero el Token y devuelve la RespuestaAutenticacion). 5) Creo el Endpoint de registro.
+
+private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario cred)
 {
-    if(!await generoService.Existe(id)) return Results.NotFound();
-    var r = await generoService.Modificar(genero);
-    await cache.EvictByTagAsync("GenerosCache", default);
-    return Results.NoContent();
-});
-
-
-4) DELETE:
-
-4.1) Delete Comun:
-app.MapDelete("/generos/{id:int}", async (int id, IGeneroService generoService, IOutputCacheStore cache) =>
-{
-    if (!await generoService.Existe(id)) return Results.NotFound();
-    await generoService.BorrarGenero(id);
-    await cache.EvictByTagAsync("GenerosCache", default);
-    return Results.NoContent();
-});
-
-
-5) Configuraciones Varias:
-
-5.1) Configurar y Habilitar CORS:
-var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(config =>
+    // Estos pueden ser accesibles por el usuario, por ende no se debe poner data sensible en el.
+    var claims = new List<Claim>()
     {
-        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
-    });
-    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+        new Claim("email", cred.Email)
+    };
 
-    options.AddPolicy("libre",config =>
+    var usuario = await userManager.FindByEmailAsync(cred.Email);
+    var claimsBD = await userManager.GetClaimsAsync(usuario);
+    claims.AddRange(claimsBD);
+
+    // Aca extraemos la llave secreta para firmar el Token
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["keyjwt"]));    
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    var exp = DateTime.UtcNow.AddHours(5);
+    var token = new JwtSecurityToken(issuer: null, audience: null, expires: exp, claims: claims, signingCredentials: creds);
+
+    return new RespuestaAutenticacion
     {
-        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        Token = new JwtSecurityTokenHandler().WriteToken(token),
+        Exp = exp
+    };
+}
+
+// Endpoint
+[HttpPost("registrar")]
+public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario cred)
+{
+    var user = new IdentityUser { UserName = cred.Email, PasswordHash = cred.Password };
+    var result = await userManager.CreateAsync(user, cred.Password);
+    if(!result.Succeeded) return BadRequest(result);
+
+    return ConstruirToken(cred);
+}
+
+3.2) Login Identity: 1) Inyecto el SignInManager<IdentityUser>. 2) Creo el Endpoint
+
+[HttpPost("login")]
+public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario cred)
+{
+    var result = await signInManager.PasswordSignInAsync(cred.Email, cred.Password, isPersistent: false, lockoutOnFailure: false);
+
+    if (!result.Succeeded) return BadRequest();
+    return ConstruirToken(cred);
+}
+
+
+3.3) Autorizacion Con Identity: Yo no quiero que todo usuario Autenticado tenga los mismos permisos, por eso mismo usaremos La 
+autorizacion en base a Claims:
+
+// En Program
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("EsAdmin", politica => politica.RequireClaim("EsAdmin")); => Defino la politica de Autorizacion, el usuario que ejecute
+                                                                            Un endpoint con esta politica debera tener el Claim "EsAdmin"
+});
+
+// Agregando la politica la Authorize
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+
+
+3.4) Agregar Claims Especificos a Usuarios:
+[HttpPost]
+public async Task<ActionResult> HacerAdmin(AdminDTO adminDTO)
+{
+    var usuario = await userManager.FindByEmailAsync(adminDTO.Email);
+    await userManager.AddClaimAsync(usuario, new Claim("EsAdmin", "1"));
+    return NoContent();
+}
+
+
+4) Creacion del JWT: Este es firmado con una Llave secreta (en nuestro caso se define en el UserSecrets), proveniente de una variable 
+de ambiente por EJ. Esta llave secreta firma el Token, solo los Tokens firmados por nuestras llaves seran correctamente autenticados.
+
+
+5) Configurar Verificacion: Configuraremos que se verifique que el token fue firmado por nuestra llave y no por otra llave:
+
+6) Enviar a Swagger el JWT:
+
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            }, new string[] { }
+        }
     });
 });
-var app = builder.Build();
+
+7) AllowAnonimus: Si tengo todo mi controlador Autenticado pero quiero sacarle la autenticacion a una accion le coloco [AllowAnonimus]
+
+8.1) Obtener un Claims: Por defecto ASP.NET realiza un mapeo automatico sobre algunos Claims, para evitarlo haremos la siguiente:
+
+// Program
+(JwtSecurityTokenHandler.DefaultInboundClaimTypeMap).Clear();
+
+// rescatamos el Claim. Solo se puede hacer si estamos empleando [Authorize]
+var emailClaim = HttpContext.User.Claims.Where(x => x.Type == "email").FirstOrDefault();
+var email = emailClaim.Value;
+var user = await userManager.FindByEmailAsync(email);
+var userId = user.Id;
+
+8.2) Si necesito obtener los claims pero sin usar [Authorize] en mi Endpoint lo mejor sera hacer [Authorize] a todo mi controller y al 
+Endpoint liberado colocarle [AllowAnonimus]
+
+
+9) Renovar Token:
+
+[HttpGet("RenovarToken")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
+{
+    var claim = HttpContext.User.Claims.Where(x => x.Type == "email").FirstOrDefault();
+    var email = claim.Value;
+    var credenciales = new CredencialesUsuario
+    {
+        Email = email
+    };
+    return await ConstruirToken(credenciales);
+}
+
+10) LogOut: A nivel de WebAPI no hay un LogOut como tal, para poder desloguearse lo unico que se debe hacer es borrar el token del 
+usuario. En el caso de una App-Web usualmente se almacena el JWT en el LocalStorage o una Cookie, y al hacer un deslogueo se debe borrar 
+ese JWT almacenado.
+
+
+11) CORS: Es una medida de seguridad por defecto que no permite consumir mi API desde terceros. A esta la puedo configurar para que sea 
+consumida por terceros, comunmente a X origenes en especificos, o si es publica a cualquier origen. Esta Politica es solo de navegadores.
+Un origen diferente es que cambie: El subdominio, el Protocolo, el puerto y/o El dominio.
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(b =>
+    {
+        b.WithOrigins(builder.Configuration["alloworigins"]).AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 app.UseCors();
-app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
 
 
-5.2) Configurar Cache en Servidor:
+12) Encriptacion: La Encriptacion es un proceso en el cual le aplicamos a un mensaje para codificarlo y solo sea accesible para usuarios
+autorizados el mensaje original. El mensaje original le llamamos TEXTO-PLANO y al encriptado TEXTO-CIFRADO. Esto con el fin de proteger 
+el texto plano.
+Para encriptar usamos una llave secreta y debe estar colocada en un lugar seguro como en una variable de ambiente, ya que mediante este 
+llave secreta se podra desencriptar el mensaje.
 
-// En Servicios
-builder.Services.AddOutputCache();
+12.1) Encriptar en ASP.NET:
 
-// En Los Middlewares
-app.UseOutputCache();
-app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+//Declarar Servicio
+builder.Services.AddDataProtection();
 
-5.3) Limpiando Cache en Servidor:
-
-app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+// En El Controller
+private readonly IDataProtector dataProtector;
+public MyClassController(IDataProtectionProvider dataProtection)
 {
-    var id = await generoService.InsertarGeneros(genero);
-    await cache.EvictByTagAsync("GenerosCache", default); // Limpio el Cache referenciandolo por su tag
-    return Results.Created($"/generos/{id}", genero);
+    dataProtector = dataProtection.CreateProtector("string_de_proposito");
+}
+[HttpGet("Encriptar")]
+public ActionResult Encriptar(string textPlain)
+{
+    var cifrado = dataProtector.Protect(textPlain);
+    var desencriptado = dataProtector.Unprotect(cifrado);
+    return Ok(new
+    {
+        cifrado = cifrado,
+        plano = desencriptado
+    });
+}
+[HttpGet("EncriptarPorTiempo")]
+public ActionResult EncriptarPorTiempo(string textPlain)
+{
+    var tiempoProtector = dataProtector.ToTimeLimitedDataProtector();
+    var cifrado = tiempoProtector.Protect(textPlain, TimeSpan.FromSeconds(10));
+    var desencriptado = tiempoProtector.Unprotect(cifrado);
+    return Ok(new
+    {
+        cifrado = cifrado,
+        plano = desencriptado
+    });
+}
+
+
+13) Hashes: Es otra forma de codificar un mensaje, pero con la diferencia de que esta forma de codificar no permite obtener el texto 
+plano original. Una funcion Hash es un algoritmo el cual transforma un mensaje de tal forma que es imposible descifrarlo. Es comun 
+utilizar Hashes para verificar passwords, lo que hacemos es comparar Hashes en vez de los textos-planos. Estos utilizan SAL, un valor 
+aletorio que se le agrega al texto-plano para hacerlo mas seguro, pero si lo utilizamos en contraseñas deberemos guardar este SAL tambien,
+sino siempre tendremos hashes diferentes.
+
+// Creo DTO
+public class ResultadoHashDTO
+{
+    public string Hash { get; set; }
+    public byte[] Sal { get; set; }
+}
+// Creo funciones para generar un HASH
+public class HashService
+{
+    // Crear una SAL aleatoria
+    public ResultadoHashDTO Hash(string textPlain)
+    {
+        var sal = new byte[16];
+        using (var random = RandomNumberGenerator.Create())
+        {
+            random.GetBytes(sal);
+        }
+        return Hash(textPlain, sal);
+    }
+
+    // Genera el HASH
+    public ResultadoHashDTO Hash(string textPlain, byte[] sal)
+    { 
+        var keyDerivate = KeyDerivation.Pbkdf2(password: textPlain, salt: sal, prf: KeyDerivationPrf.HMACSHA1, 
+                                        iterationCount: 10000, numBytesRequested: 32);
+        var hash = Convert.ToBase64String(keyDerivate);
+
+        return new ResultadoHashDTO { Hash = hash, Sal = sal };
+    }
+}
+// Lo declaro como servicio:
+builder.Services.AddTransient<HashService>();
+
+
+                                                            6) HATEOAS
+
+1) HATEOAS: Es una restriccion REST que sirve para ayudar a los clientes a navegar por nuestros recursos y saber que son capaces de 
+hacer. Es una forma de documentar mediante Hipermedia para facilitar el uso del API al cliente, crearemos un Endpoint donde guardaremos 
+los Endpoints de nuestra Web-Api, con sus metodos HTTP y descripciones.
+
+public class DatoHATEOAS
+{
+    public DatoHATEOAS(string enpoint, string desc, string metodo)
+    {
+        this.Descripcion = desc;
+        this.Metodo = metodo;
+        this.Endpoint = enpoint;
+    }
+
+    public string Endpoint { get; private set; }
+    public string Descripcion { get; private set; }
+    public string Metodo { get; private set; }
+}
+public class RecursoDTO
+{
+    public List<DatoHATEOAS> Endpoints { get; set; }
+}
+
+[ApiController]
+[Route("api")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+public class RootController : ControllerBase
+{
+    private readonly IAuthorizationService authorizationService;
+
+    public RootController(IAuthorizationService authorizationService) 
+    {
+        this.authorizationService = authorizationService;
+    }
+
+    [HttpGet(Name = "ObtenerRoot")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<DatoHATEOAS>>> Get() 
+    {
+        var datosHateoas = new List<DatoHATEOAS>();
+
+        // Evalua si el Usuario que le paso cuenta con la politica es admin
+        var esAdmin = await authorizationService.AuthorizeAsync(User, "EsAdmin");
+
+        datosHateoas.Add(new DatoHATEOAS(enpoint: Url.Link("ObtenerRoot", new { }), desc: "self", metodo: "GET"));
+        datosHateoas.Add(new DatoHATEOAS(enpoint: Url.Link("ObtenerAutores", new { }), desc: "autores", metodo: "GET"));      
+        datosHateoas.Add(new DatoHATEOAS(enpoint: Url.Link("ObtenerLibros", new { }), desc: "libros", metodo: "GET"));
+        if(esAdmin.Succeeded)
+        {
+            datosHateoas.Add(new DatoHATEOAS(enpoint: Url.Link("CrearAutor", new { }), desc: "autores", metodo: "POST"));
+            datosHateoas.Add(new DatoHATEOAS(enpoint: Url.Link("CrearLibro", new { }), desc: "libros", metodo: "POST"));
+        }   
+        return datosHateoas;
+    }
+}
+
+
+2) HATEOAS Para recursos especificos:
+private void GenerarEnlaces(LecturaAutorDTO autorDTO, bool esAdmin)
+{
+    autorDTO.Endpoints.Add(new DatoHATEOAS(Url.Link("ObtenerAutor", new { id = autorDTO.Id }), 
+        desc: "self", metodo: "GET"));
+    if(esAdmin)
+    {
+        autorDTO.Endpoints.Add(new DatoHATEOAS(Url.Link("ActualizarAutor", new { id = autorDTO.Id }),
+        desc: "autor-actualizar", metodo: "PUT"));
+        autorDTO.Endpoints.Add(new DatoHATEOAS(Url.Link("BorrarAutor", new { id = autorDTO.Id }),
+            desc: "autor-delete", metodo: "DELETE"));
+    }
+}
+[HttpGet("{id:int}", Name = "ObtenerAutor")]
+public async Task<IActionResult> GetAutorPorId(int id)
+{
+    var autor = await negocio.Autores.FirstOrDefaultAsync(x => x.Id == id);
+    if (autor == null) return NotFound("No se encontro autor");
+    var lectura = mapper.Map<LecturaAutorDTO>(autor);
+    var esAdmin = await authorizationService.AuthorizeAsync(User, "EsAdmin");
+    GenerarEnlaces(autorDTO: lectura, esAdmin.Succeeded);
+    return Ok(lectura);
+}
+
+
+3) HATEOAS Lista de Recursos Especificos: // VIDEO 102
+
+
+4) Excluir HATEOAS con QueryString: En el caso de que el cliente no quiera ver la informacion del HATEOAS, podemos crear un mecanismo
+para ignorarlo mediante un QueryString.
+
+public async Task<IActionResult> GetAutores([FromQuery] bool incluirHATEOAS = true) 
+{
+    var autores = await negocio.Autores.Include(x => x.ListaAutoresLibros).AsNoTracking().ToListAsync();
+    var dtos = mapper.Map<List<LecturaAutorDTO>>(autores);
+    if (incluirHATEOAS)
+    {
+        
+        dtos.ForEach(dto => GenerarEnlaces(dto));
+        var result = new ColeccionDeRecursos<LecturaAutorDTO> { Valores = dtos };
+        result.Endpoints.Add(new DatoHATEOAS(enpoint: Url.Link("CrearAutor", new { }),
+            desc: "crear-autor", metodo: "POST"));
+        return Ok(result);
+    }
+    return Ok(dtos);
+}
+
+*Del Video 100 al 106 se detalla bien la creacion de los HATEOAS*
+
+
+
+
+                                                          7) Versionado
+
+1) Actualizar el WebAPI es sencillo, pero no es sencillo actualizar los clientes que consumen la WebAPI, por ello se suele crear 
+versionados de las WebAPI. Esto permite que el cliente elija con cual version del WebAPI desea trabajar, y no se vea forzado a una 
+version especifica. La forma de especificar la version puede ser por URL (api/v1/autores o api/v2/autores), QueryString, cabecera 
+HTTP, etc.
+
+2) Versionado con URL: 1) Crearemos una carpeta por cada version en nuestros controladores (V1, V2). 2) Cambiaremos la ruta central 
+agregando la version (api/v1/autores). 3) Debo asegurar de que los nombres de mis rutas sean distintos entre versiones de endpoints.
+
+2.1) Configurar Swagger para manejar versionado: Lo que haremos sera tomar el valor de la ultima carpeta del controller (V1, V2) que se 
+encuentra en el nameSpace del controlador.
+
+// En Program
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add(typeof(FiltrosDeExcepcion));
+    opt.Conventions.Add(new SwaggerAgruporPorVersion()); => Esto
+}).AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddNewtonsoftJson();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "V1", Version = "v1" });
+    opt.SwaggerDoc("v2", new OpenApiInfo { Title = "V2", Version = "v2" });
+});
+// Middleware
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1");
+    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebApi v2");
+});
+// En Utilidades
+public class SwaggerAgruporPorVersion : IControllerModelConvention
+{
+    public void Apply(ControllerModel controller)
+    {
+        var nameSpaceController = controller.ControllerType.Namespace; // Controllers.V1
+        var versionAPI = nameSpaceController.Split(".").Last().ToLower(); // v1
+        controller.ApiExplorer.GroupName = versionAPI;
+    }
+}
+
+3) Versionado con Cabecera: *Video 111*
+
+
+                                                          8) Paginacion
+
+1)// Primero Crear una Clase de paginacionDTO
+public class PaginacionDTO
+{
+    public int Pagina { get; set; } = 1;
+    private int recordsPorPagina = 10;
+    private readonly int recordsPorPaginaMax = 50;
+    public int RecordsPorPagina
+    {
+        get{return recordsPorPagina;}
+        set{recordsPorPagina = (value > recordsPorPaginaMax) ? recordsPorPaginaMax : value;}
+    }
+}
+
+2)// Crear una Clase que me devuelva todos los registros de mi columna de la DB, Estos me los va a devolver en la Cabecera HTTP
+public static class HttpContextExtensions
+{
+    public async static Task InsertarParametrosPaginacionEnCabeceraHTTP<T>(this HttpContext httpContext, IQueryable<T> query)
+    {
+        if(httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+        double cantidad = await query.CountAsync();
+
+        // En la respuesta HTTP coloca un header con el numero de registros totales
+        httpContext.Response.Headers.Append("cantidadTotalDeRegistros", cantidad.ToString());
+    }
+}
+
+3)// Creo Una clase y Metodo que me tenga la logica de paginado
+public static class IQueyableExtensions
+{
+    public static IQueryable<T> Paginar<T>(this IQueryable<T> query, PaginacionDTO paginacionDTO)
+    {
+        return query
+               .Skip((paginacionDTO.Pagina - 1) * paginacionDTO.RecordsPorPagina)
+               .Take(paginacionDTO.RecordsPorPagina);
+    }
+}
+
+4)// Ejecuto el metodo que quiero Paginar
+public async Task<List<Actor>> ListActores(PaginacionDTO paginacionDTO)
+{
+    var query = applicationDbContext.Actores.AsQueryable();
+    await HttpContext.InsertarParametrosPaginacionEnCabecera(query);    
+    return await query.OrderBy(actor => actor.Nombre).Paginar(paginacionDTO).ToListAsync();
+}
+
+
+5) Por ultimo, para leer la cantidad total de registros en la cabecera debere usar WithExposedHeaders() para que me permita acceder 
+a los datos de la cabecera: 
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(b =>
+    {
+        b.WithOrigins(builder.Configuration["alloworigins"]).AllowAnyMethod().AllowAnyHeader()
+        .WithExposedHeaders(new string[] { "cantidadTotalDeRegistros" });
+    });
 });
 
 
+                                                          9) Pruebas Automaticas
 
-5.4) Configurar Swagger:
+1) Pruebas Automaticas: El tener que probar un software en su totalidad y verificar que este en todos los casos funcione correctamente
+es muy dificil de hacer o ejecutar, por lo que se opta a crear pruebas automaticas para estos casos, lo cual agilizara el proceso de 
+testing. 
+Basicamente una prueba automatica es un software que prueba nuestro software, esto nos permite realizar cambios en nuestro codigo y 
+probar de forma rapida si nuestro codigo sigue funcionando de forma correcta. Esta normalmente se centra en probar una parte de 
+nuestra aplicacion, por ejemplo cada accion del CRUD seria recomendable que tenga su prueba automatica. A un conjunto de pruebas 
+las llamamos suite de pruebas.
 
-// Servicios
-builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
-builder.Services.AddSwaggerGen();
+1.1) Caracteristicas de una prueba automatica: 1) Son consistentes, es decir que el resultado no varie si no se cambia el codigo. 
+2) Una buena prueba automatica es independiente de otra. 3) Una buena prueba no realiza cambios externos.
 
-// Middlewares
-if(builder.Enviroment.IsDevelopment())
+
+1.2) Etapas de una prueba: 1) Preparar: Consta en prepara el ambiente para desarrollar la prueba (setear variables o cases), es decir 
+generar la data u objetos de prueba. 2) Probar: Ejecutamos la funcionalidad de nuestro software. 3) Verificar: Veremos que resultado 
+devuelve la prueba.
+
+
+2) Pruebas Unitarias: Se encargan de probar una pequeña parte aislada del software, una pequeña funcion u accion. Estas son de rapida 
+ejecucion, por lo que generalmente las test-suite suelen estar compuesta en su mayoria por pruebas Unitarias. En sintesis, las pruebas
+Unitarias suelen probar una funcion de una clase, se pueden crear varias pruebas unitarias para una misma funcion. El nombre de la 
+clase de la prueba unitaria debe ser el mismo de la clase a probar + TESTS. Los nombres de los metodos deben ser autodescriptivos de 
+que prueba realizamos y que esperamos de ella.
+
+EJ:
+[TestClass]
+public class PrimeraLetraMayusculaAttributeTests
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    [TestMethod]
+    public void PrimeraLetraMinuscula_DevuelveError()
+    {
+        //Preparacion
+        var primeraLetra = new PrimeraLetraMayusculaAttribute();
+        var name = "pepe";
+        var valContext = new ValidationContext(new {Nombre = name });
+        //Ejecucion
+        var resultado = primeraLetra.GetValidationResult(name, valContext);
+
+        //Verificacion
+        Assert.AreEqual("La primera letra debe ser mayuscula", resultado!.ErrorMessage);
+    }
+
+    [TestMethod]
+    public void ValorNull_Exitoso()
+    {
+        //Preparacion
+        var primeraLetra = new PrimeraLetraMayusculaAttribute();
+        string? name = null;
+        var valContext = new ValidationContext(new { Nombre = name });
+        //Ejecucion
+        var resultado = primeraLetra.GetValidationResult(name, valContext);
+        //Verificacion
+        Assert.IsNull(resultado);
+    }
+
+    [TestMethod]
+    public void PrimeraLetraMayuscula_Exitoso()
+    {
+        //Preparacion
+        var primeraLetra = new PrimeraLetraMayusculaAttribute();
+        string? name = "Pepe";
+        var valContext = new ValidationContext(new { Nombre = name });
+        //Ejecucion
+        var resultado = primeraLetra.GetValidationResult(name, valContext);
+        //Verificacion
+        Assert.IsNull(resultado);
+    }
+}
+
+[TestClass]
+public class RootControllerTests
+{
+    [TestMethod]
+    public async Task SiEsAdmin_Devolver5URL()
+    {
+        //Preparacion
+        var authorizationServiceMock = new AuthorizationServiceSuccessMock();
+        var urlHelperMock = new UrlHelperMock();
+        var rootController = new RootController(authorizationServiceMock);
+        rootController.Url = new UrlHelperMock();
+        //Ejecucion
+        var resultado = await rootController.Get();
+
+        //Verificacion
+        Assert.AreEqual(5, resultado.Value!.Count());
+    }
+}
+
+
+3) Suplantar Dependencias con Mocks: Habra algunas clases que querramos probar pero que tengan dependencias de otras clases, por lo que 
+deberemos usar MOCKS para solucionar este problema, lo que hace es manejar las dependencias y excluirlas para solo probar el metodo de 
+la clase que quiero testear. Es decir el MOCK busca aislar la dependencia para que en la prueba solo se evalue la logica de la prueba.
+
+En sintesis un Mock Basicamente es una clase que viene a Suplantar una dependencia.
+
+public class AuthorizationServiceSuccessMock : IAuthorizationService
+{
+    public Task<AuthorizationResult> AuthorizeAsync(ClaimsPrincipal user, object? resource, IEnumerable<IAuthorizationRequirement> requirements)
+    {
+        return Task.FromResult(AuthorizationResult.Success());
+    }
+
+    public Task<AuthorizationResult> AuthorizeAsync(ClaimsPrincipal user, object? resource, string policyName)
+    {
+        return Task.FromResult(AuthorizationResult.Success());
+    }
+}
+
+public class UrlHelperMock : IUrlHelper
+{
+    public ActionContext ActionContext => throw new NotImplementedException();
+
+    public string? Action(UrlActionContext actionContext)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string? Link(string? routeName, object? values)
+    {
+        return "Ruta";
+    }
+}
+
+
+3) Libreria Mocks: En caso de no querer crear las clases manualmente podemos usar una libreria de MOCKS que nos automatizara el 
+proceso de creados de mocks, la libreria se llama: MOQ. Al objeto MOCK de la libreria le pasaremos la interfaz a instanciar.
+
+EJ:
+
+[TestMethod]
+public async Task NoAdmin_Devolver3URL_ConMOQ()
+{
+    //Preparacion Con Mocks
+    var mockAuthorization = new Mock<IAuthorizationService>();
+    mockAuthorization.Setup(x => x.AuthorizeAsync
+    (It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), It.IsAny<IEnumerable<IAuthorizationRequirement>>()))
+    .Returns(Task.FromResult(AuthorizationResult.Failed()));
+
+    var mockUrl = new Mock<IUrlHelper>();
+    mockUrl.Setup(x => x.Link(It.IsAny<string>(), It.IsAny<object>())).Returns("");
+
+
+    var rootController = new RootController(mockAuthorization.Object);
+    rootController.Url = mockUrl.Object;
+
+    //Ejecucion
+    var resultado = await rootController.Get();
+
+    //Verificacion
+    Assert.AreEqual(3, resultado.Value!.Count());
+}
+
+
+4) Pruebas de Integracion: Verifica que las distintas partes de un software trabajen correctamente en conjunto. Lo normal es separar 
+las pruebas unitarias de las de integracion debido a que estas son considerablemente mas lentas de ejecutar. Normalmente no se 
+utilizan Mocks ya que queremos ver como funciona el total del software, no es la idea aislar sus dependencias.
+Para realizar estas pruebas ejecutaremos la aplicacion en memoria, de ahi realizaremos peticiones HTTP al WebAPI. Esto nos permite 
+probar todo el ciclo de vida de la aplicacion.
+
+
+
+
+                                                          X) Despliegues
+
+1) Entrega Continua: es el proceso automatico de compilacion, corrido de pruebas-testing y despliegue del proyecto en un ambiente 
+determinado, ya sea en una ambiente de pruebas o produccion. Basicamente sera un Branch que por cada commit que realicemos de los 
+cambios que hicimos en el WebAPI se dispare el proceso de entrega continua, en el caso de que la compilacion de la WebAPI sea exitosa 
+intentara publicar el proyecto en el servidor. Antes el codigo debe estar subido a un repositorio, para luego pasar por el proceso de 
+entrega continua.
+
+2) Integracion Continua: *Video 130 y 131*
+
+
+                                                    11) Datos Practicos de Proyectos
+
+1) Validar Imagenes en el [FromForm]:
+
+
+// VALIDAR PESO DE ARCHIVOS
+
+public class PesoArchivoValidacionAttribute : ValidationAttribute
+{
+    private readonly int pesoMaximo;
+
+    public PesoArchivoValidacionAttribute(int pesoMaximo)
+    {
+        this.pesoMaximo = pesoMaximo;
+    }
+
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        if(value == null) return ValidationResult.Success;
+
+        IFormFile? file = value as IFormFile;
+        if(file == null ) return ValidationResult.Success;
+        if (file.Length > pesoMaximo * 1024 * 1024) return new ValidationResult($"El Peso del Archivo no debe ser mayor a {pesoMaximo}Mb");
+        return ValidationResult.Success;
+    }
+}
+
+// VALIDAR EXTENSION DE ARCHIVOS
+
+public class ExtensionArchivoValidation : ValidationAttribute
+{
+    private readonly string[]? extensionesArchivo;
+
+    public ExtensionArchivoValidation(GruposExtensiones gruposExtensiones)
+    {
+        if(gruposExtensiones == GruposExtensiones.Imagen) extensionesArchivo = new string[] { "image/jpeg", "image/png", "image/gif" };
+        else if(gruposExtensiones == GruposExtensiones.Video) extensionesArchivo = new string[] { "video/mp4", "video/avi" };
+        else extensionesArchivo = new string[] { "text/html", "text/json" };
+    }
+
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+       if(value == null) return ValidationResult.Success;
+       IFormFile? formFile = value as IFormFile;
+       if(formFile == null) return ValidationResult.Success;
+
+        if (!extensionesArchivo!.Contains(formFile.ContentType))
+            return new ValidationResult($"El archivo enviado es de formato incorrecto, porfavor ingrese un archivo con las siguientes Extensiones: {string.Join(",", extensionesArchivo!)}");
+
+        return ValidationResult.Success;
+    }
+}
+
+public enum GruposExtensiones
+{
+    Imagen,
+    Video,
+    DocumentoTexto
+}
+
+
+
+
+
+
+
+
+// En el DTO de Crear 
+[PesoArchivoValidacionAttribute(pesoMaximo: 50)]
+[ExtensionArchivoValidation(gruposExtensiones: GruposExtensiones.Imagen)]
+public IFormFile Foto { get; set; } = null!;
+
+
+                                                        12) Conceptos Varios
+
+1) FACTORIAS: Las factorias son clases que utilizamos para instanciar otras clases, por Ejemplo IUrlHelperFactory. IUrlHelperFactory es
+una factoria que nos permite instanciar IUrlHelper que nos permite generar URL en nuestro WebAPI. El Sistema de Inyeccion de Dependencias
+nos permite definir nuestras propias factorias:
+
+// Program
+builder.Services.AddScoped<IGuardarImagenes>(Factorias.GuardarImagen);
+
+// Clase estatica de FACTORIAS
+public static class Factorias
+{
+    public static IGuardarImagenes GuardarImagen(IServiceProvider serviceProvider)
+    {
+        var env = serviceProvider.GetRequieredService<IWebHostEnvironment>();
+        if(env.IsDevelopment()) return GuardarImagenLocal();
+        return GuardarImagenAzure();
+    }
+}
+
+
+2) HttpContextAccessor: es un servicio que nos permite acceder al contexto HTTP. Recordamos que como estamos en un ambiente web, 
+nuestros clientes se comunican con nosotros vía una petición HTTP. Cada vez que un cliente se comunica con nosotros, ASP.NET Core 
+instancia un objeto especial el cual contiene los datos del cliente y de la petición en sí. El nombre de ese objeto es HttpContext. 
+Cuando estamos en un controlador, es simple acceder al HttpContext. Sin embargo, si no estamos dentro de un controlador, tenemos que 
+utilizar el HttpContextAccessor para acceder al HttpContext.
+
+3) IActionContextAccessor: me permite acceder al ActionContext. El ActionContext es un objeto que tiene los datos acerca de la acción 
+que se va a ejecutar como parte de la petición HTTP. Con este podemos obtener datos como los parámetros y valores de ruta.
+
+
+4) Cabecera Accept: esta cabecera determinara el formato del cuerpo que va a devolver la peticion HTTP, Puedo decirle que devuelva el 
+formato por defecto usando "*/*", para JSON sera "application/json" y para XML sera "application/xml". Puedo pasarle un listado de 
+formatos a devolver, para que en caso de no poder formatearlo utilice un secundario.
+
+5) Cabecera Content-Type: esta cabecera se usa para decirle al WebAPI cual es el formato del contenido que envio por el cuerpo de la
+peticion.
+
+
+6) IServiceProvider: Esta interfaz  mediante el metodo GetRequiredService<T>() me permite agarrar un servicio e insertarlo en un
+servicio Singleton, que en el caso de querer insertar un Scoped dentro de un Singleton resultara en error. Es util para los 
+casos en que no pueda inyectar una dependencia de forma directa por su tiempo de vida.
+
+public class IniciarCalendario : IHostedService
+{
+    private readonly IServiceProvider serviceProvider;
+    public IniciarCalendario(IServiceProvider serviceProvider)
+    {
+        this.serviceProvider = serviceProvider;
+    }
+
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var negocio = scope.ServiceProvider.GetRequiredService<Negocio>();
+            if (!await negocio.Calendario.AnyAsync())
+            {
+                var calendario = new Calendario();         
+                negocio.Calendario.Add(calendario);
+                await negocio.SaveChangesAsync();
+            }
+        }
+    }
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }

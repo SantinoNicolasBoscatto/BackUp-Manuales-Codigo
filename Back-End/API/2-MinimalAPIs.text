@@ -1,0 +1,1342 @@
+                                                            1) Introduccion
+
+
+1) API: Es una Interfaz de SoftWare que permite conectar 2 programas distintos (es la via de conexion entre programas) indepediente del 
+lenguaje de programacion en que estos se encuentren. Esta conexion se realizara siempre y cuando se cumplan con los protocolos definidos 
+por la API.
+2) Web API: Una Web API nos permite realizar la comunicacion entre programas gracias al Protocolo HTTP.
+
+3) SOAP: Protocolo de Acceso de Objeto Simple, Es un protocolo de intercambio de Informacion en una red usando XML. Este puede usar varios 
+protocolos distintos (http, smtp). Una de sus ventajas es que te permite definir mensajes estandarizados. El gran problema de SOAP es que 
+solo trabaja con XML y no soporta otros formatos, tambien tiene poco soporte en los navegadores y pobre acceso al uso de cache.
+
+4) GraphQL: Es un Programa desarrollado por META y tiene como proposito solicitar datos especificos. La diferencia de este con REST esta 
+en como el usuario solicita la data. En el caso de rest si queremos traer una lista filtrada deberemos hacer 2 consultas (traer toda la 
+lista y luego refiltrar la lista), la solucion de esto en Rest es crear un EndPoint para cada necesidad, lo cual no afectara el rendimiento, 
+pero nos obligara a generar muchos EndPoint. En Cambio con GraphQL trabajamos con Querys donde solicitaremos la data que queremos.
+
+5.1) A la hora de crear web Apis en ASP Core tenemos 2 opciones: 1) Controladores: 1.1) Una accion es un metodo de C# que maneja 
+las peticiones HTTP, la clase que contenga los metodos que manejan las peticiones sera el controlador. El controlador tambien nos 
+permitira definir logica global que se aplicara a cada accion. Para cada entidad tendremos un controlador distinto 
+
+5.2) Minimal APIs: Nos permiten construir Web APIs mas rapidos y con menos codigo, trabajando directamente con los endpoints. Son 
+menos poderosos que los controladores pero mas rapidos y eficientes.
+
+                                                        2) Configuraciones del Proyecto
+
+1) Nullable: Me permitira volver NULL campos que no lo son, es decir podre asignar valores null a campos que por defecto no acepten 
+valores null. La configuracion Nullable lo que hace es advertirnos cuando estamos trabajando con un campo que quizas tenga un valor 
+null y pueda derivar en un error. Tambien cuando declaro una propiedad con un tipo no null me va a saltar una advertencia, ante esto 
+puedo hacer 2 cosas, o lo vuelvo Nullable con "?", o perdono el nulo de la siguiente forma: public string Nombre { get; set; } = null!;
+
+2) Usings Implicitos: Es una funcion que me permite que se agreguen librerias por defecto en la compilacion de la aplicacion.
+
+3) LaunchSettings: Configuraciones de la ejecucion de la aplicacion (solo valida para la ejecucion en ambito de desarrollo). Desde la 
+propiedad enviromentVariables puedo seleccionar sobre que appSettings quiero trabajar, si sobre el de Produccion o el de desarrollo.
+
+4) Program Estructura:
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Inicio Area de Servicios
+
+// Fin Area de Servicios
+
+var app = builder.Build();
+
+// Inicio de Area de middleware
+app.MapGet("/", () => "Hello World!");
+// Fin de Area de middleware
+
+app.Run();
+
+5) Middleware: Son las acciones que ejecutaremos ante una determinada peticion HTTP.
+
+6) EndPoint: Un EndPoint es una ruta sobre la cual se ejecutara una determinada Accion. Por Ejemplo sobre La ruta "/Generos" se ejecutara
+la funcion que trae a todos los generos, todo esto seria el EndPoint.
+
+                                                            3) Principios REST
+
+1) REST: Transferencia de Estado Representacional, es una Arquitectura diseñada para Apps que usan el protocolo HTTP. REST tambien exige 
+una serie de principios para diseñar nuestro Web API: 1) Separacion de Cliente-Servidor, es decir que la interfaz de usuario deberia 
+estar separada de nuestra logica de negocio. No se relaciona ni interfiere con la Interfaz de Usuario, solo se limita a manejar datos y 
+aplicar logicas de negocio. 2) Sin Estado: Es decr que no se deben recordar (guardar en memoria) nada acerca de peticiones anteriores,
+esto nos permitira que nos Web API sea mas rapido. 3) Uso de Cache: Siempre que se pueda se debera usar el cache ya que esto optimizara 
+la velocidad. El Cache es guardar datos en un lugar que sea de acceso rapido. 4) Sistema en Capas:  5) Interfaz Uniforme: Se refiere a 
+seguir un estandar en la creacion de mi API: 5.1) Identificador de recursos: Utilizar URLs claras y consistentes para identificar 
+recursos, como (miAPI.com/actores/1), 5.2) Manipulacion de recursos usando representaciones: Interactuar con los recursos a través de sus
+representaciones, como JSON 5.3) Mensajes auto-descriptivos: Los endpoints deben ser claros y proporcionar suficiente información para 
+que los clientes entiendan cómo interactuar con ellos 5.4) HiperMedia como motor del estado de la aplicacion: Incluir enlaces en las 
+respuestas que indiquen las acciones disponibles, guiando a los clientes a través de la API. 
+Si se cumplen con estos principios se considera que es una Web API RestFul.
+
+                                                    3.1) Aplicacion de principios REST
+
+1) Separacion Cliente-Servidor: El Web API debe funcionar de forma independiente con el cliente. A la hora de crear los APIs debo tener 
+en cuenta donde se van a encontrar mis clientes (las apps que van a consumir mi API) esto porque los navegadores WEB por defecto tienen 
+un mecanismo de seguridad que no permiten que cualquier pagina web consuma el Web API, este mecanismo se llama CORS.
+
+CORS: Intercambio de recursos de Origen cruzado, es quien decide que debe suceder cuando recibimos peticiones http de paginas web de un 
+origen distinto al nuestro (distinto dominio, subdominio, puerto y/o protocolo). Este mecanismo existe con el fin de evitar inyectar un 
+script malicioso de una pagina a otra. Pero habra casos en lo que queramos permitir estas peticiones de diferentes origenes para consumir 
+un EndPoint.
+                                                                       
+Habilitar CORS:
+
+var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(config =>
+    {
+        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
+    });
+    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+
+    options.AddPolicy("libre",config =>
+    {
+        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
+var app = builder.Build();
+app.UseCors();
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu"); // Este EndPoint no se va a regir por la politica por Default sino por la de libre
+app.MapGet("/generos", () =>...);
+
+2) No Usar Estado: Cada Peticion HTTP deberia contener toda la informacion necesaria para procesar dicha peticion. Esto nos permitira 
+hacer nuestra WebApi mas escalable.
+
+3) Cache: Son los mecanismos para servir informacion con menos esfuerzo, para esto podemos guardar el listado de objetos en un lugar 
+de rapido acceso para que sea de mas rapido acceso, y ahorrandonos el acceso a la BD. Existen 2 formas de cache: 1) Cache del Lado del 
+servidor: Son Mecanismos que utilizamos en nuestro servidor como Cache. 2) Cache del Lado del Cliente: Mecanismos que ejecutamos en el 
+cliente directamente, que podremos almacenar por un tiempo determinado, evitando que si el usuario quiere acceder a esos datos use la 
+Web API y el acceso a la BD.
+
+3.1) Cache del Servidor: Para esto utilizaremos OutPutCache, lo que hara esta sera guardar en memoria del servidor la consulta HTTP para 
+que si el cliente la vuelva a solicitar se le devuelva la Data en Cache.
+
+// En Servicios
+builder.Services.AddOutputCache();
+
+// En Los Middlewares
+app.UseOutputCache();
+app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)));
+
+Para limpiar esta cache deberemos darle un Tag al cache que utilice y luego al agregar u modificar esa misma entidad deberemos el 
+servicio IOutputCacheStore:
+
+
+
+4) Sistema en Capas: un sistema en capas nos  permite tener distintos componentes indepedientes en nuestra solucion. Ejemplo de esto 
+es tener nuestr Web API en una capa y nuestra BD en otra capa separada.
+
+
+                                                            4) Swagger UI
+                                                            
+1) Documentando el Web API: Para esto deberemos tener una interfaz grafica que nos permita listar los EndPoints y nos permita usarlos.
+Para esto existe Swagger UI.
+
+// Servicios
+builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
+builder.Services.AddSwaggerGen();
+
+// Middlewares
+if(builder.Enviroment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+                                                        5) Organizar EndPoints
+
+Normalmente (salvo que sea una API pequeña) no tendremos nuestros EndPoints directamente en el program. Para organizar las minimal 
+APIs existen distintos modos:
+
+
+1) MapGroup(): Es un metodo que nos permite tener configuraciones comunes para distintos EndPoints que compartan una ruta, Es decir me 
+permite agrupar mis EndPoints.
+
+var endpointGeneros = app.MapGroup("/generos");
+endpointGeneros.MapGet("/", async (IGeneroService genero) =>{});
+endpointGeneros.MapGet("/{id:int}", async (int id, IGeneroService generoService) => {});
+
+
+2) Usar Metodos nombrados en vez de Lambdas Anonimos en mis Endpoints: Es lo mismo solo que creo los metodos y funciones y luego las 
+llamo a ejecutar en el EndPoint.
+
+// En el Caso de Devolver un Resultado
+static async Task<Ok<List<Genero>>> ObtenerGeneros(IGeneroService generoService)
+{
+    var generos = await generoService.ListGeneros();
+    return TypedResults.Ok(generos);
+}
+
+// En Caso de Poder devolver 2 resultados posibles 
+static async Task<Results<Ok<Genero>, NotFound>> ObtenerPorId(IGeneroService generoService, int id)
+{
+    var genero = await generoService.GeneroPorId(id);
+
+    if (genero is null) return TypedResults.NotFound();
+
+    return TypedResults.Ok(genero);
+}
+
+
+3) Organizar Endpoints en clases por Entidades: Para no tener nuestros Endpoints en la clase program lo que podriamos hacer  es crear una 
+clase donde pondremos todos los Endpoints que pertenezcan a una misma entidad (similar a lo que se hace con los controladores).
+
+public static class GenerosEndPoints
+{
+    public static RouteGroupBuilder MapGeneros(this RouteGroupBuilder group)
+    {
+        group.MapGet("/", async (IGeneroService genero) =>
+        {
+            var list = await genero.ListGeneros();
+            return list;
+        }).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(100)).Tag("GenerosCache"));
+        group.MapGet("/{id:int}", async (int id, IGeneroService generoService) =>
+        {
+            try
+            {
+                var genero = await generoService.GeneroPorId(id);
+                if (genero == null) return Results.NotFound();
+                return Results.Ok(genero);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        });
+        group.MapPost("/", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+        {
+            var id = await generoService.InsertarGeneros(genero);
+            await cache.EvictByTagAsync("GenerosCache", default);
+            return Results.Created($"/generos/{id}", genero);
+        });      
+        return group;
+    }
+}
+
+// En la Clase Program configuraremos la Ruta del MapGroup()
+app.MapGroup("/generos").MapGeneros();
+
+
+4) Generalmente no es recomendable que al devolver un resultado en la API (tambien en MVC) devolvamos directamente la entidad, sino que 
+siempre es mas conveniente devolver una Clase DTO o ViewModel, con los datos formateados, o solo los datos que nos interesen devolver. 
+Esto ademas permite que cada clase tenga su responsabilida (la de las entidades es comunicarse y cargarse con los datos de la BD), 
+cumpliendo el principio de responsabilidad unica (SOLID).
+
+public class CrearGeneroDTO
+{
+    public string Nombre { get; set; } = null!;
+}
+
+
+5) AutoMapper:
+
+// Declaramos el servicio
+builder.Services.AddAutoMapper(typeof(Program));
+
+// Creamos la Clase AutoMapper Profile
+public class AutoMapperProfile : Profile
+{
+    public AutoMapperProfile() 
+    { 
+        CreateMap<CrearGeneroDTO, Genero> (); => La funcion se leeria como: Quiero Mapear mi CrearGeneroDTO a Genero
+         CreateMap<Genero, LecturaGeneroDTO> (); => La funcion se leeria como: Quiero Mapear mi Genero a LecturaGeneroDTO
+    }
+}
+
+
+// Por ultimo en alguna funcion ejecutaremos el Mapeo
+group.MapPost("/", async (CrearGeneroDTO crearGeneroDTO, IGeneroService generoService, IOutputCacheStore cache, IMapper mapper) =>
+{
+    var genero = mapper.Map<Genero>(crearGeneroDTO);
+    var id = await generoService.InsertarGeneros(genero);
+    await cache.EvictByTagAsync("GenerosCache", default);
+    var lecturaGenero = mapper.Map<LecturaGeneroDTO>(genero);
+    return Results.Created($"/generos/{id}", lecturaGenero);
+});
+
+
+
+                                                 6) Validaciones y Manejo de Errores
+
+1) La mayoria de validaciones que tenemos en ASP .NET no funcionan por defecto con Minimal API (si asi con API de Controladores), por lo 
+que debemos generar nuestras propias soluciones. 
+
+2) Fluent Validator: Es una libreria que nos permitira definir las reglas de validacion utilizando una sintaxis fluida. Podemos usarla 
+para todo tipo de validaciones, tanto sincronas como asincronas. Ademas Trae muchas validadciones por defecto. Para realizar las 
+validaciones con esta libreria debo crear una carpeta donde poner las clases de mis validaciones. Creare una clase validadora por cada 
+clase que quiera validar.
+
+3) Validadores: En la clase deberemos crear las reglas de la clase en el constructor.
+
+    public class CrearGeneroDTOValidador : AbstractValidator<CrearGeneroDTO>
+    {
+
+        public CrearGeneroDTOValidador(IGeneroService generoService, IHttpContextAccessor httpContext)
+        {
+            var valorDeRuta = httpContext.HttpContext?.Request.RouteValues["id"];
+            var id = 0;
+            if(valorDeRuta is string valorString) int.TryParse(valorString, out id);
+
+            RuleFor(x => x.Nombre).NotEmpty().WithMessage("El Campo {PropertyName} es requerido Rey")
+                       .MaximumLength(75).WithMessage("El Campo {PropertyName} tiene una logitud maxima de {MaxLength} caracteres")
+                       .Must(PrimeraLetraEnMayuscula).WithMessage("El Campo {PropertyName} debe comenzar con mayuscula")
+                       .MustAsync(async (nombre, _) =>
+                       {
+                           var existe = await generoService.ExisteGeneroNombre(id, nombre);
+                           return !existe;
+                       }).WithMessage(g => $"Ya existe un genero con el nombre: {g.Nombre}");
+            
+        }
+
+        private bool PrimeraLetraEnMayuscula(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor)) return true;
+            var primeraLetra = valor[0].ToString();
+            return primeraLetra == primeraLetra.ToUpper();
+        }
+    }
+
+
+3.1) Aplicar Validaciones en EndPoints:
+
+group.MapPost("/", async (CrearGeneroDTO crearGeneroDTO, IValidator<CrearGeneroDTO> validator) =>
+{
+    var validacion = await validator.ValidateAsync(crearGeneroDTO);
+    if(!validacion.IsValid) return TypedResults.ValidationProblem(validacion.ToDictionary());
+})
+
+
+3.2) Validaciones Personalizadas: Para Esto puedo utilizar el Metodo Must() o MustAsync(), a estos le debo pasar un metodo que ejecutara
+para validar, los metodos que les pase deben devolver un BOOL. Las verificaciones Asincronas son verificaciones que conllevan verificar 
+algo de la BD (de ahi su asincronia).
+
+3.3) Obtener Parametros por Ruta en las Validaciones: Para esto debemos obtener el httpContext, para poder capturar los parametros por 
+ruta. Para esto usaremos el IHttpContextAccessor para acceder al HttpContext (debo tener el Service del HttpContextAccesor inicializado
+en program).
+
+ var valorDeRuta = httpContext.HttpContext?.Request.RouteValues["id"];
+ var id = 0;
+ if(valorDeRuta is string valorString) int.TryParse(valorString, out id);
+
+
+4) Multiples Validaciones a Multiples Propiedades: Esto Consiste en utilizar multiples RulesFor() con distintos criterios (como el de 
+GreaterThanOrEqualTo())
+
+ public class CrearActorDTOValidador : AbstractValidator<CrearActorDTO>
+ {
+     public CrearActorDTOValidador()
+     {
+         RuleFor(x => x.Nombre).NotEmpty().WithMessage("El Campo {PropertyName} es Requerido");
+
+         var fechaMinima = new DateTime(1900, 1, 1);
+         RuleFor(x => x.FechaNacimiento).GreaterThanOrEqualTo(fechaMinima)
+             .WithMessage("El Campo {PropertyName} Debe ser posterior a" + fechaMinima.ToString("yyyy-MM-dd"));
+     }
+ }
+
+
+5) Reutilizar configuraciones de Validacion: Aveces tendremos codigo repetido en nuestras validaciones, para reutilizarlo crearemos una 
+clase de utilidades y luego lo llamaremos en caso de necesitarlo en mis validadores.
+
+public static class Utilidades
+{
+    public static string CampoRequeridoMensaje = "El Campo {PropertyName} es requerido";
+
+    public static bool PrimeraLetraEnMayuscula(string valor)
+    {
+        if (string.IsNullOrWhiteSpace(valor)) return true;
+        var primeraLetra = valor[0].ToString();
+        return primeraLetra == primeraLetra.ToUpper();
+    }
+}
+
+
+6) Endpoints Filter: Son metodos que me permiten trabajar con los Endpoints tanto antes de su Ejecucion como posterior a su ejecucion,
+este me permitira por ejemplo realizar las validaciones directamente en el Endpoint-Filter y si esto es OK dejar que ejecute la funcion
+asignada al endpoint. Por comodidad las acciones que definamos en un filtro las podemos centralizar en una Funcion de una clase filtro.
+
+6.1) Acceder a argumentos de EndPoint con EndpointFilter: usaremos el context.Arguments.ofType<T>().FirstOrDefaultAsync() para acceder, 
+siempre y cuando nuestro endpoint no tenga 2 parametros del mismo tipo.
+
+public class FiltroDePrueba : IEndpointFilter
+{
+    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+        var result = await next(context);
+        var paramIMapper = context.Arguments.ofType<IMapper>().FirstOrDefaultAsync();
+        var paramIActor = context.Arguments.ofType<IActoresService>().FirstOrDefaultAsync();
+        return result;
+    }
+}
+// El ENDPOINT
+group.MapGet("/{id:int}", ObtenerActorPorId).AddEndpointFilter<FiltroDePrueba>();
+
+
+
+6.2) EndPoint Filter para centrar Validaciones:  Cuando queremos usar IValidator Normalmente tenemos el Inconveniente de que lo deberemos 
+pasar a cada Endpoint como Parametro y escribir su funcion validadora, con el Endpoint filter podemos centralizar esto:
+
+    public class FiltroValidaciones<T> : IEndpointFilter
+    {
+        public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+        {
+            var validador = context.HttpContext.RequestServices.GetService<IValidator<T>>();
+            if (validador == null) return await next(context);
+
+            var elementoValidar = context.Arguments.OfType<T>().FirstOrDefault();
+            if (elementoValidar == null) return TypedResults.Problem("No se pudo encontrar la entidad a validar");
+
+            var result = await validador.ValidateAsync(elementoValidar);
+            if (!result.IsValid) return TypedResults.ValidationProblem(result.ToDictionary());
+
+            return await next(context);
+        }
+    }
+
+Tambien usaremos genericos para nuestro filtro asi es facilmente reutilizable.
+
+
+
+7) Manejo de Errores: Para manejar Errores deberemos primero declarar el servicio de AddProblemDetails() y luego configurar los 
+middleware para que se ejecute este servicio:
+
+//Servicios
+builder.Services.AddProblemDetails();
+
+//Middleware
+app.UseExceptionHandler(exc => exc.Run(async context => await TypedResults.BadRequest(new {tipo = "Error", 
+msg = "Ocurrio un error Inesperado", statusCode = 500}).ExecuteAsync(context)));
+app.UseStatusCodePages();
+
+
+
+8) Guardar Errores en la BD: Crearemos una Entidad con sus propiedades para que se genere una tabla en la BD que se encargue de guardar
+los errores. Luego declararemos una clase Service/Repositorio, crearemos su metodo crear para subir el error en la BD y declararemos el 
+servicio en la clase program. Luego configuraremos el UseExceptionHandler() de la siguiente forma:
+
+
+app.UseExceptionHandler(exc => exc.Run(async context =>{
+    var ExceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+    var exc = ExceptionHandlerFeature?.Error!;
+
+    var error = new Error();
+    error.Fecha = DateTime.UtcNow;
+    error.MensajeDeError = exc.Message;
+    error.StackTrace = exc.StackTrace;
+
+    var repositorio = context.RequestServices.GetRequiredService<IErroresService>();
+    await repositorio.Crear(error);
+    await TypedResults.BadRequest(new {tipo = "Error", msg = "Ocurrio un error Inesperado", statusCode = 500}).ExecuteAsync(context);
+
+}));
+
+
+
+                                                        7) SISTEMA DE USUARIOS
+
+1) Autenticacion: Es que el usuario muestre credenciales para verificar su identidad (user y password).
+
+1.1) Autorizacion: Lo que un usuario Autenticado tiene permitido hacer.
+
+2) JWT: JSON Web Token, es un string seguro que tiene informacion confiable acerca del usuario. Este es seguro al estar firmado con una 
+secret-key. Cuando el usuario quiera usar un Endpoint debera enviar el JWT atraves de una cabecera de una peticion HTTP para que se 
+valide como un usuario autenticado.Este JWT contiene CLAIMS, que son informaciones del usuario (nombre, mail, password).
+
+2.1) Claims: Un Claim es una informacion acerca de algo o alguien, es decir un RolClaim seria informaciones sobre el Rol, un UserClaim es
+informaciones sobre el usuario.
+
+
+3) Proteger un Endpoint: Debemos instalar la libreria JWTBearer:
+//Servicios 
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
+
+//Middleware
+app.UseAuthorization();
+
+//Autenticar el Endpoint
+group.MapGet("/", funcion).RequiereAuthorization();
+
+
+3.1) Generar JWT de Prueba: Podemos generar este Token de prueba sin el sistemas de usuario creado (estos son independientes entre si). 
+Para generarlo solo debemos escribir en consola lo siguiente: "dotnet user-jwts create" y nos generara un Token.
+
+
+4) En el AppSettings.json se crearan los siguentes elementos: 1) ValidAudiences: Contendra sobre que URLs se encargara de validar nuestro 
+Token. 2) ValidIssuer: Quienes son las entidades que generan Tokens confiables.
+
+"Authentication": {
+  "Schemes": {
+    "Bearer": {
+      "ValidAudiences": [
+        "http://localhost:27307",
+        "https://localhost:44398",
+        "http://localhost:5189",
+        "https://localhost:7047"
+      ],
+      "ValidIssuer": "dotnet-user-jwts"
+    }
+  }
+}
+
+Estos Tokens son seguros al funcionar con una Secret-Key, esta se guarda en el archivo de los User-Secrets, este nos permite guardar 
+configuraciones del token (el Id del token, la firma de seguridad, el Issuer que genero la clave). Cabe aclarar que cada emisor valido 
+tendra solo una firma, es decir que por emisor se tendra solo una SigningKey, no multiples. Si se puede tener multiples Emisores de 
+firmas validos.
+{
+  "Authentication:Schemes:Bearer:SigningKeys": [
+    {
+      "Id": "fb471764",
+      "Issuer": "dotnet-user-jwts",
+      "Value": "j37HqA0S2GcCuD\u002BuyQ93ww4xyYChshZ4ag\u002ByZ10qMOQ=",
+      "Length": 32
+    }
+  ]
+}
+
+
+4.1) Firma: Cada emisor valido posee una firma para validar la vericidad de un usuario, por cada emisor existira una firma, no multiples.
+Estos son valores ocultos de configuracion que nunca deben ser mostrados al usuario.
+
+
+5) Identity: Es el sistema de Usuarios de ASP.NET, este nos permite generar automaticamente las tablas de usuarios para nuestra 
+BD, ademas tendra una serie de metodos auxiliares utiles. Una vez completada correctamente la autenticacion este devolvera un JWT. Para 
+usarlo debemos instalar una libreria antes que es la Microsoft.AspNetCore.Identity.EntityFrameworkCore.
+
+5.1) Para implementar mi Sistema de usuarios primero debere cambiar mi DbContext por el IdentityDbContext en mi clase de negocio, esta
+clase funcionara igual que el DbContext solo que me generara automaticamente las tablas y relaciones de usuarios.
+
+modelBuilder.Entity<IdentityUser>().ToTable("Usuarios"); => Tabla de usuarios creados
+modelBuilder.Entity<IdentityRole>().ToTable("Roles"); => El Rol que tendra el Usuario
+modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RolesClaims"); => Los permisos que tendra cada Rol
+modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UsuariosClaims"); => Los permisos de cada usuario fuera del Rol 
+                                                                                o Info extra del Usuario
+modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UsuariosLogins"); => Logins que tiene el usuario, con que cuentas se puede loguear
+modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UsuariosRoles");   => Tabla intermedia de relacion de muchos a muchos entre 
+                                                                                Usuario y Roles
+modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UsuariosTokens"); => Tabla donde guardamos los Tokens de Autenticacion del usuario
+
+
+5.2) Declarar Servicios de Identity:
+builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<UserManager<IdentityUser>>();
+builder.Services.AddScoped<SignInManager<IdentityUser>>();
+
+
+5.3) Registrando Usuarios: 1) Primero Crearemos el DTO de nuestro usuario y su respectiva clase validadora. 2) Crearemos un DTO que va a 
+contener nuestro JWT y el tiempo de expiracion de este. 3) Crearemos un EndPoint de Usuarios
+
+Paso 1:
+public class CrendencialesUsuariosDTO
+{
+    public string Email { get; set; } = null!;
+    public string Password { get; set; } = null!;
+}
+
+
+Paso 2: 
+public class RespuestaAutenticacionDTO
+{
+    public string Token { get; set; } = null!;
+    public DateTime Expiracion { get; set; }
+}
+
+
+Paso 3:
+
+public static class EndpointUsuarios
+{
+    public static RouteGroupBuilder MapUsuarios(this RouteGroupBuilder group) 
+    {
+        group.MapPost("/registrar", RegistrarUsuarios).AddEndpointFilter<FiltroValidaciones<CrendencialesUsuariosDTO>>();
+        return group;
+    }
+
+    static async Task<Results<Ok<RespuestaAutenticacionDTO>, BadRequest<IEnumerable<IdentityError>>>> RegistrarUsuarios
+        (CrendencialesUsuariosDTO crendencialesDTO, [FromServices] UserManager<IdentityUser> userManager, IConfiguration configuration)
+    {
+        var usuario = new IdentityUser
+        {
+            UserName = crendencialesDTO.Email,
+            Email = crendencialesDTO.Email
+        };
+        var resultado = await userManager.CreateAsync(usuario, crendencialesDTO.Password);
+
+        if (resultado.Succeeded)
+        {
+            var respuestaAutenticacion = ConstruirToken(crendencialesDTO, configuration);
+            return TypedResults.Ok(respuestaAutenticacion);
+        }
+
+        return TypedResults.BadRequest(resultado.Errors);
+    }
+
+    
+    private async static Task<RespuestaAutenticacionDTO> ConstruirToken(CrendencialesUsuariosDTO crendencialesDTO, IConfiguration configuration,
+    UserManager<IdentityUser> userManager)
+{
+    // Definire que claims quiero que tenga mi usuario, en este no debo poner informacion secrete porque puede ser leida.
+    var claims = new List<Claim>
+    {
+        new Claim("email", crendencialesDTO.Email),
+        new Claim("usuario", crendencialesDTO.Email),
+    };
+
+    // Obtengo el Usuario, sus Claims de la BD y le anexo los claims de la BD del usuario a los claims con los que construiere
+    //El Token
+    var usuario = await userManager.FindByNameAsync(crendencialesDTO.Email);
+    var claimsDB = await userManager.GetClaimsAsync(usuario!);
+    claims.AddRange(claimsDB);
+
+    // Obtengo mi Llave
+    var llave = Llaves.ObtenerLlave(configuration);
+    //Creo la firma
+    var credenciales = new SigningCredentials(llave.First(), SecurityAlgorithms.HmacSha256);
+    // Creo la fecha de Expiracion
+    var expiracion = DateTime.UtcNow.AddYears(1);
+
+    //Creo el token
+    var tokenDeSeguridad = new JwtSecurityToken(issuer: null, audience: null, claims: claims, expires: expiracion, 
+        signingCredentials: credenciales);
+    var token = new JwtSecurityTokenHandler().WriteToken(tokenDeSeguridad);
+
+    return new RespuestaAutenticacionDTO
+    {
+        Token = token,
+        Expiracion = expiracion,
+    };
+}
+
+}
+
+
+
+6) Administrar JWT: Primero crearemos manualmente nuestro JWT, para la llave la podemos generar en: https://generate.plus/es/base64
+{
+  "Id": "fb000000",
+  "Issuer": "MyApp",
+  "Value": "A693s8yVuWYo/fWlOGCVDlclMIe6lULr14Ayg9j/bGQ=",
+  "Length": 32
+}
+
+6.1) Luego Creremos una Clase Llaves que se encargue de la administracion de nuestros JWTs:
+
+    public static class Llaves
+    {
+        public const string MyIssuer = "MyApp";
+        public const string SeccionLlaves = "Authentication:Schemes:Bearer:SigningKeys";
+        private const string SeccionLlaves_Emisor = "Issuer";
+        private const string SeccionLlaves_Valor = "Value";
+
+        public static IEnumerable<SecurityKey> ObtenerLlave(IConfiguration configuration) => ObtenerLlave(configuration, MyIssuer);
+
+        public static IEnumerable<SecurityKey> ObtenerLlave(IConfiguration configuration, string issuer)
+        {
+            var signingKey = configuration.GetSection(SeccionLlaves)
+                                          .GetChildren().SingleOrDefault(key => key[SeccionLlaves_Emisor] == issuer);
+            if(signingKey != null && signingKey[SeccionLlaves_Valor] is string valorLlave)
+            {
+                yield return new SymmetricSecurityKey(Convert.FromBase64String(valorLlave));
+            }
+        }
+
+        public static IEnumerable<SecurityKey> ObtenerTodasLasLlaves(IConfiguration configuration)
+        {
+            var signingKeys = configuration.GetSection(SeccionLlaves).GetChildren();
+
+            foreach (var signingKey in signingKeys)
+            {
+                if (signingKey[SeccionLlaves_Valor] is string valorLlave)
+                {
+                    yield return new SymmetricSecurityKey(Convert.FromBase64String(valorLlave));
+                }
+            }    
+        }
+    }
+
+
+6.2) Por Ultimo configuraremos el AddJwtBearer():
+
+builder.Services.AddAuthentication().AddJwtBearer(opt => {
+    opt.MapInboundClaims = false;
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = Llaves.ObtenerLlave(builder.Configuration).SingleOrDefault(), //Este metodo si solo quiero usar las llaves que mi app emitio
+        /*IssuerSigningKeys = Llaves.ObtenerTodasLasLlaves(builder.Configuration)*/ // Este metodo es para si quiero trabajar con mas de una llave
+                                                                                    // de validacion, por ejemplo si mis JWT validan con mi APP, pero
+                                                                                    // tambien con gmail, facebook, hotmail, etc.
+    };
+}); 
+
+
+7) Crear Politica de usuarios: En algun momento deberemos crear una politica de usuarios que defina que ciertos usuarios pueden o no 
+borrar/modificar/agregar un registro:
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("esAdmin", policy => policy.RequireClaim("esadmin"));
+});
+
+group.MapDelete("/{id:int}", async ... =>
+{
+}).RequireAuthorization("esadmin");
+
+
+8) Claims Personalizados por usuario:
+
+
+Paso 1: Creamos un DTO EditarClaim y le hacemos sus respectivas validaciones:
+
+public class EditarClaimDTO
+{
+    public string Email { get; set; } = null!;
+}
+
+Paso 2: Creamos el Endpoint
+
+ static async Task<Results<NoContent, NotFound>> HacerAdmin(EditarClaimDTO editarClaimDTO, 
+     [FromServices] UserManager<IdentityUser> userManager)
+ {
+     var usuario = await userManager.FindByEmailAsync(editarClaimDTO.Email);
+     if (usuario == null) return TypedResults.NotFound();
+
+     await userManager.AddClaimAsync(usuario, new Claim("esadmin", "true"));
+     return TypedResults.NoContent();
+ }
+
+
+Paso 3: actualizamos nuestra funcion de construir el Token para que agregue dinamicamente los CLAIMS
+
+// Obtengo el Usuario, sus Claims de la BD y le anexo los claims de la BD del usuario a los claims con los que construiere
+//El Token
+var usuario = await userManager.FindByNameAsync(crendencialesDTO.Email);
+var claimsDB = await userManager.GetClaimsAsync(usuario!);
+claims.AddRange(claimsDB);
+
+
+9) Renovar Tokens: Para que el usuario mientras usa la APP se le cierre, podemos renovar su Token automaticamente de forma oculta:
+
+public async static Task<Results<Ok<RespuestaAutenticacionDTO>, NotFound>> RenovarToken(IUsuarioService usuarioService,
+    IConfiguration configuration, [FromServices] UserManager<IdentityUser> userManager)
+{
+    var usuario = await usuarioService.ObtenerUsuario();
+    if(usuario == null) return TypedResults.NotFound();
+
+    var credencialesUsuarioDTO = new CrendencialesUsuariosDTO { Email = usuario.Email!};
+    var respuestaAutenticacionDTO = await ConstruirToken(credencialesUsuarioDTO, configuration, userManager);
+    return TypedResults.Ok(respuestaAutenticacionDTO);
+}
+
+
+
+
+
+                                                            7.1) JWT
+
+1) JWT: JSON Web Token, es un estadar que define un formato compacto y seguro de Transferencia de informacion entre partes mediante un 
+JSON. Se Utiliza para Autenticar y Autorizar usuarios en Apps Webs o APIs.
+
+Este se compone de 3 partes: 1) Header: Contiene el algoritmo de encriptamiento a utilizar y el tipo de Token. 2) Payload: contiene 
+informacion sobre el usuario (claims), en formato JSON. 3) Signature: Es basicamente la carga util (codificada en base64) mas una 
+Secret-Key. Esta nos sirve para Autenticar al usuario.
+
+2) Ventajas: 1) Autenticacion sin estado: no me hace falta mantener datos en Session u otra forma para autenticar el token. 
+    2) Interoperabilidad: al ser un estandar es compatible con varios lenguajes. 3) Seguridad: Al estar firmado digitalmente el JWT 
+garantiza que la informacion no ha sido alterada en el camino.
+
+
+                                                      8) Escenarios Avanzados
+
+1) ILogger Service: Es un servicio pre-configurado que nos permite escribir mensajes de log. Un mensaje de Log es un mensaje que 
+mostramos en un lugar especifico (consola en este caso). Es util para entender que ocurre en nuestro sistema mientras se ejecuta, y 
+a diferencia del debugging funcionan en un ambiente de produccion. Estos tendran distintos niveles de importancia, para seleccionar que 
+nivel de importancia se muestre por consola lo hago desde el AppSettings
+
+var tipo = typeof(ActoresEndPoints);
+var logger = loggerFactory.CreateLogger(tipo.FullName!);
+logger.LogInformation("Obtengo Generos");
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+2) Model Binding:  es un proceso que permite mapear los datos de la solicitud del cliente (como JSON o XML) a los parámetros de los 
+métodos de acción. En otras palabras, convierte automáticamente los datos enviados por el cliente (desde cadenas de consulta, cuerpo 
+de la solicitud, datos de ruta, etc.) en objetos .NET que se pasan como parámetros a los métodos de acción
+([FromForm], [FromQuery], [FromBody], [FromHeader], [FromRoute]) - VIDEO 133
+
+
+
+3) AsParameters: En el caso de que quiera reducir la cantidad de Parametros de un metodo podemos usar AsParameters, primero deberemos 
+crear una clase DTO que contenga los parametros de ese metodo, luego utilizar el ([AsParameters] CrearComentariosEndPointDTO parameters)
+Deberemos tener cuidado de no realizar esto sobre una clase con filtros, porque sino tendriamos errores al querer cazar los parametros.
+
+public class CrearComentariosEndPointDTO
+{
+    public int peliculaId { get; set; }
+    public CrearComentarioDTO crearComentarioDTO { get; set; }
+    public IComentarioService comentarioService { get; set; }
+    public IMapper mapper { get; set; }
+    public IPeliculasService peliculasService { get; set; }
+    public IOutputCacheStore cache { get; set; }
+    public IUsuarioService usuarioService { get; set; }  
+}
+
+static async Task Funcion ([AsParameters] CrearComentariosEndPointDTO parameters){}
+
+
+4) BindAsync: En los Mapeos GET yo no puedo pasarle un elemento [FromBody], como por ejemplo PaginacionDTO u otro objeto complejo, sino 
+esto me dara error y no ejecutara la app. Para esto deberemos crear el metodo BindAsync():
+
+    public class PaginacionDTO
+    {
+        private const int pagValorInicial = 1;
+        private const int recordsValorInicial = 10;
+        public int Pagina { get; set; } = pagValorInicial;
+        private int recordsPorPagina = recordsValorInicial;
+
+        private readonly int recordsPorPaginaMax = 50;
+        public int RecordsPorPagina
+        {
+            get{return recordsPorPagina;}
+            set{recordsPorPagina = (value > recordsPorPaginaMax) ? recordsPorPaginaMax : value;}
+        }
+
+        public static ValueTask<PaginacionDTO> BindAsync(HttpContext context)
+        {
+            var pagina = context.Request.Query[nameof(Pagina)];
+            var records = context.Request.Query[nameof(recordsPorPagina)];
+
+            var paginaInt = pagina.IsNullOrEmpty() ? pagValorInicial : int.Parse(pagina.ToString());
+            var recordsInt = records.IsNullOrEmpty() ? recordsValorInicial : int.Parse(records.ToString());
+
+            var result = new PaginacionDTO { Pagina = paginaInt, recordsPorPagina = recordsInt };
+            return ValueTask.FromResult(result);
+        }
+    }
+
+
+5.1) Documentando API - Agregando Parametros: En Ocasiones nosotros necesitamos indicarle a Swagger que acepte ciertos parametros 
+especificos para que nuestra api funcione correctamente. Lo primero debemos instalar una libreria llamada AspNetCore.OpenAPI, Luego 
+crearemos una funcion para desarrollar la logica: 
+
+public static class SwaggerExtensions
+{
+    public static TBuilder AgregarParametrosPaginacionOpenAPI<TBuilder>(this TBuilder builder)
+        where TBuilder : IEndpointConventionBuilder
+    {
+        return builder.WithOpenApi(opt =>
+        {
+            opt.Parameters.Add(new OpenApiParameter
+            {
+                Name = "Pagina",
+                In = ParameterLocation.Query,
+                Schema = new OpenApiSchema { Type = "integer" }
+            });
+
+            opt.Parameters.Add(new OpenApiParameter
+            {
+                Name = "Records",
+                In = ParameterLocation.Query,
+                Schema = new OpenApiSchema { Type = "integer" }
+            });
+            return opt;
+        });
+    }
+}
+
+group.MapGet("/", ObtenerActores).AgregarParametrosPaginacionOpenAPI();
+
+
+5.2) Modificaciones Generales a Swagger:
+
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Peliculas API",   
+        Description = "",
+        Contact = new OpenApiContact { Email = "", Name = "", Url = new Uri("")},
+        Version = "v1"
+    });
+});
+
+
+5.3) Descripciones a Endpoints:
+
+group.MapPut("/{id:int}", ModificarActor).DisableAntiforgery().WithOpenApi(opt =>
+{
+    opt.Summary = "Actualizar un actor";
+    opt.Description = "";
+    opt.Parameters[0].Description = "El Id del actor";
+    opt.RequestBody.Description = "El Actor a Actualizar";
+    return opt;
+});
+
+
+5.4) Swagger FromForm:
+group.MapPost("/", AgregarActor).DisableAntiforgery().WithOpenApi();
+
+
+5.5) Swagger y JWT:
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+
+    // El Codigo de OpenApiSecurityRequirement se lo reemplaza en una funcion
+
+    opt.OperationFilter<FiltroSwagger>();
+});
+
+
+5.6) Filtrar que Endpoints deben requerir Authorization en Swagger:
+
+    public class FiltroSwagger : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            //Si mi endpoint no tiene el metodo Authorization() entonces retorno vacio
+            if (!context.ApiDescription.ActionDescriptor.EndpointMetadata.OfType<AuthorizeAttribute>().Any())
+            {
+                return;
+            }
+
+            operation.Security = new List<OpenApiSecurityRequirement> { new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    }, new string[]{}
+                }
+            } };
+        }
+    }
+
+
+6) Ejecucion Diferida: Con EF Core podemos realizar un filtrado dinamico, de modo que podemos filtrar en base a una condicion dada. 
+Es decir al query lo vamos armando Paso a Paso, a esto lo llamamos ejecucion diferida. Un Ejemplo de esto es el AsQueryable(), este 
+no acciona contra la BD, sino me permite agregarle filtros a esa consulta hasta que decida realizar la consulta. Estas acciones 
+devolveran un IQueryable<T>, es decir un listado de objetos todavia no consultados en la BD. El ToListAsync() es quien manda a 
+ejecutar el query.
+
+
+6.1) Ordenar los resultados: Para esto usaremos una libreria => System.Linq.Dynamic.Core
+
+public async Task<List<Pelicula>> Filtrar(PeliculasFiltrarDTO peliculasFiltrarDTO)
+{
+    var peliculasQueryables = dbContext.Peliculas.AsQueryable();
+    if(!string.IsNullOrEmpty(peliculasFiltrarDTO.Titulo))
+    {
+        peliculasQueryables  = peliculasQueryables.Where(x => x.Titulo.ToLower().Contains(peliculasFiltrarDTO.Titulo.ToLower()));
+    }
+
+    if (peliculasFiltrarDTO.EnCines)
+    {
+        peliculasQueryables = peliculasQueryables.Where(x => x.EnCines == true);
+    }
+
+    if (peliculasFiltrarDTO.ProximosEstrenos)
+    {
+        var hoy = DateTime.Today;
+        peliculasQueryables = peliculasQueryables.Where(x => x.FechaLanzamiento > hoy);
+    }
+
+    if(peliculasFiltrarDTO.GeneroId != 0)
+    {
+        peliculasQueryables = peliculasQueryables.Where(x =>
+        x.ListaGenerosPeliculas.Select(gp => gp.GeneroId).Contains(peliculasFiltrarDTO.GeneroId));
+    }
+
+    if(!string.IsNullOrEmpty(peliculasFiltrarDTO.CampoOrdenar))
+    {
+        var tipoOrden = peliculasFiltrarDTO.OrdenAscendente ? "ascending" : "descending";
+        try
+        {
+            peliculasQueryables = peliculasQueryables.OrderBy($"{peliculasFiltrarDTO.CampoOrdenar} {tipoOrden}");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+        }
+    }
+
+    await httpContext.InsertarParametrosPaginacionEnCabecera(peliculasQueryables);
+    var peliculas = await peliculasQueryables.Paginar(peliculasFiltrarDTO.PaginacionDTO).ToListAsync();
+    return peliculas;
+}
+
+
+6.2) Agregar Parametro DropDownList en Swagger: 
+
+opt.Parameters.Add(new OpenApiParameter
+{
+    Name = "campoOrdenar",
+    In = ParameterLocation.Query,
+    Schema = new OpenApiSchema { Type = "string", Enum = new List<IOpenApiAny> { 
+        new OpenApiString("Titulo"), new OpenApiString("FechaLanzamiento") } }
+});
+
+
+7) Cache IOutputCacheStore: La estrategia de cache (IOutputCacheStore) que usamos tiene 2 desventajeas: 1) Si reiniciamos el servidor se 
+pierden todos los datos del cache. 2) La memoria esta limitada a una instancia, porque see suele levantar la misma API varias veces 
+para que la consuman los usuarios, y esto genera que quizas el cache de una de estas instancias no exista en otras instancias.
+
+
+8) Cache Distribuido: Este viene a solucionar los problemas antes mencionados. Es una capa de cache compartida por varias APPs en 
+varios servidores. Se lo puede pensar como una BD rapida y externa. Hay varias formas de implementarlo, por Ejemplo REDIS.
+
+8.1) Redis: Es una tecnologia de codigo abierto que permite guardar datos en memoria, Con ella implementaremos nuestra logica de 
+cache distribuido. Para ello tenemos 2 opciones: 1) Crear un Servidor local de Redis. 2) Crear un servidor de Redis en Azure.
+
+
+9) Limitaciones REST: 1) OverFetching (Pasar mas datos de los que se necesita). 2) UnderFetching (Lo opuesto, menos data que lo que 
+necesitamos). Las Solucion a esto son crear mas EndPoints, pero la desventaja de esto es crear aun mas codigo.
+
+
+
+10) GraphQL: Es una lenguaje para APIs que nos permite que el cliente indique exactamente que datos quiere, esto permitira reducir la 
+cantidad de endpoints que tengamos que crear. Con GraphQL podemos hacer: 1) Querys, es decir lecturas de datos. 2) Mutation: insertar, 
+actualizar y borrar datos. 3) Subscription, que sirve para mensajeria en tiempo real.
+
+Desventajas: 1) No es sencillo usar Cache con GraphQL. 2) El Performance no es bueno, esto debido a tener que traducir las peticiones 
+a querys. 3) Es mas complejo de entender y resolver problemas.
+
+                                                          9) Despliegues
+
+1) AzureDevOps: Con esto vamos a poder automatizar el proceso de compilado y despligue de nuestras aplicaciones. Es quien se encarga de 
+ejecutar una Integracion continua y entrega continua.
+
+2) Integracion Continua: Se refiere a colocar el codigo en un repositorio comun para que se verifique que esta en un estatus correcto.
+Luego a este codigo se le realizan las pruebas unitarias para verificar que este todo correcto. Esto con el fin de verificar que la 
+introduccion de codigo funcione OK en el proyecto.
+
+3) Entrega Continua: es enviar a produccion cualquier tipo de cambio del sistema de forma automatizada.
+
+                                                            10) DATOS
+
+1) [FromForm]: Al colocarle esto a un objeto de un parametro me permitira cargarle archivos al objeto del parametro. Debemos tener en 
+cuenta que este cuenta con una proteccion (anti-forgery) que evita la carga de elementos extraños en nuestra pagina web, en el caso de 
+nuestra API Normalmente no es necesario asi que deberemos deshabilitarlo para que no nos de error el API.
+
+private static async Task<Created<LecturaActoresDTO>> AgregarActor(IActoresService actoresService, [FromForm] CrearActorDTO actorDTO)
+{}
+
+2) Guardado de archivos: Para guardar archivos lo puedo hacer de 2 maneras: 2.1) Guardar archivos en Azure. 2.2) Guardar archivos localmente
+
+2.1) Guardar en Azure: Primero debemos instalar el Paquete "Azure.Storage.Blobs"
+
+public class FilesServiceAzure : IFilesService
+{
+    private string cs;
+    public FilesServiceAzure(IConfiguration config)
+    {
+        cs = config.GetConnectionString("AzureStorage")!;
+    }
+
+    public async Task<string> GuardarImagen(string contenedor, IFormFile file)
+    {
+        var cliente = new BlobContainerClient(cs, contenedor);
+        await cliente.CreateIfNotExistsAsync();
+        cliente.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+        var extensionFile = Path.GetExtension(file.FileName);
+        var nuevoNombreArchivo = $"{Guid.NewGuid()}{extensionFile}";
+        var blob = cliente.GetBlobClient(nuevoNombreArchivo);
+        var blobHttpHeaders = new BlobHttpHeaders();
+        blobHttpHeaders.ContentType = file.ContentType;
+        await blob.UploadAsync(file.OpenReadStream(), blobHttpHeaders);
+        return blob.Uri.ToString();
+    }
+
+    public async Task Borrar(string? ruta, string contenedor)
+    {
+        if (string.IsNullOrEmpty(ruta)) return;
+        var cliente = new BlobContainerClient(cs, contenedor);
+        await cliente.CreateIfNotExistsAsync();
+        var fileName = Path.GetFileName(ruta);
+        var blob = cliente.GetBlobClient(fileName);
+        await blob.DeleteIfExistsAsync();
+    } 
+}
+
+
+2.2) Guardar en Local: Debo declarar en program el siguiente servicio: builder.Services.AddHttpContextAccessor(); 
+y tambien debemos configurar un Middleware: app.UseStaticFiles();
+
+public class FileServiceLocal : IFilesService
+{
+    private readonly IWebHostEnvironment webHostEnvironment;
+    private readonly IHttpContextAccessor httpContextAccessor;
+    public FileServiceLocal(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+    {
+        this.webHostEnvironment = webHostEnvironment;
+        this.httpContextAccessor = httpContextAccessor;
+    }
+
+    public async Task<string> GuardarImagen(string carpeta, IFormFile file)
+    {
+        var extensionFile = Path.GetExtension(file.FileName);
+        var newFileName = $"{Guid.NewGuid()}{extensionFile}";
+        string folder = Path.Combine(webHostEnvironment.WebRootPath, carpeta);
+        if(!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+        string ruta = Path.Combine(folder, newFileName);
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.CopyToAsync(memoryStream);
+            var contenido = memoryStream.ToArray();
+            await File.WriteAllBytesAsync(ruta, contenido);
+        }
+        var url = $"{httpContextAccessor.HttpContext!.Request.Scheme}://{httpContextAccessor.HttpContext!.Request.Host}";
+        var urlArchivo = Path.Combine(url, carpeta, newFileName).Replace('\\', '/');
+        return urlArchivo;
+    }
+
+    public Task Borrar(string? ruta, string carpeta)
+    {
+        if (string.IsNullOrWhiteSpace(ruta)) return Task.CompletedTask;
+
+        var fileName = Path.GetFileName(ruta);
+        var directory = Path.Combine(webHostEnvironment.WebRootPath, carpeta, fileName);
+        if(File.Exists(directory)) File.Delete(directory);
+        return Task.CompletedTask;
+    } 
+}
+
+
+
+3) Paginar:
+
+// Primero Crear una Clase de paginacion
+public class PaginacionDTO
+{
+    public int Pagina { get; set; } = 1;
+    private int recordsPorPagina = 10;
+    private readonly int recordsPorPaginaMax = 50;
+    public int RecordsPorPagina
+    {
+        get{return recordsPorPagina;}
+        set{recordsPorPagina = (value > recordsPorPaginaMax) ? recordsPorPaginaMax : value;}
+    }
+}
+
+// Crear una Clase que me devuelva todos los registros de mi columna de la DB, Estos me los va a devolver en la Cabecera HTTP
+public static class HttpContextExtensions
+{
+    public async static Task InsertarParametrosPaginacionEnCabeceraHTTP<T>(this HttpContext httpContext, IQueryable<T> query)
+    {
+        if(httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+        double cantidad = await query.CountAsync();
+
+        // En la respuesta HTTP coloca un header con el numero de registros
+        httpContext.Response.Headers.Append("cantidadTotalDeRegistros", cantidad.ToString());
+    }
+}
+
+// Creo Una clase y Metodo que me tenga la logica de paginado
+public static class IQueyableExtensions
+{
+    public static IQueryable<T> Paginar<T>(this IQueryable<T> query, PaginacionDTO paginacionDTO)
+    {
+        return query
+               .Skip((paginacionDTO.Pagina - 1) * paginacionDTO.RecordsPorPagina)
+               .Take(paginacionDTO.RecordsPorPagina);
+    }
+}
+
+// Ejecuto el metodo que quiero Paginar
+public async Task<List<Actor>> ListActores(PaginacionDTO paginacion)
+{
+    var query = applicationDbContext.Actores.AsQueryable();
+    await httpContext.InsertarParametrosPaginacionEnCabecera(query);       
+    return await query.Paginar(paginacion).ToListAsync();
+}
+
+
+
+4) Editar una entidad Relacionada:
+public async Task EditarGenero(int id, List<int> generosIds)
+{
+    var pelicula = await dbContext.Peliculas.Include(x => x.ListaGenerosPeliculas).FirstOrDefaultAsync(x => x.Id == id);
+    if (pelicula is null) throw new ArgumentException($"No Existe Pelicula con el Id {id}");
+
+    var generosPeliculas = generosIds.Select(generoId => new GeneroPelicula() { GeneroId = generoId });
+    pelicula.ListaGenerosPeliculas = mapper.Map(generosPeliculas, pelicula.ListaGenerosPeliculas);
+    await dbContext.SaveChangesAsync();
+}
+
+EndPoint:
+static async Task<Results<NoContent, BadRequest<string>, NotFound>> AsignarGeneros(int id, List<int> listadoGeneros, 
+    IPeliculasService peliculasService, IGeneroService generoService)
+{
+    if(! await peliculasService.Existe(id)) return TypedResults.NotFound();
+    var generosExistentes = new List<int>();
+    if (listadoGeneros.Count != 0)
+    {
+        generosExistentes = await generoService.ExistenListado(listadoGeneros);
+    }
+
+    if(listadoGeneros.Count != generosExistentes.Count)
+    {
+        var noExisten = listadoGeneros.Except(listadoGeneros);
+        return TypedResults.BadRequest($"Los generos de id {string.Join(",", noExisten)} no existen");
+    }
+
+    await peliculasService.EditarGenero(id, listadoGeneros);
+    return TypedResults.NoContent();
+}
+
+
+5) Filtrar con Listado:
+
+ public async Task<List<int>> ExistenListado(List<int> Ids)
+ {
+     return await applicationDbContext.Generos.Where(g => Ids.Contains(g.Id)).Select(g => g.Id).ToListAsync();
+ }
+
+                                                X) Manual de Sintaxis de Minimal APIs
+
+1) GETs:
+
+1.1) Get con Policy Personalizada: 
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
+
+
+1.2) Get con EF y Cache: 
+app.MapGet("/generos", (IGeneroService genero) =>
+{
+    var list = genero.ListGeneros();
+    return list;
+}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+
+1.3) Get por Id:
+app.MapGet("/generos/{id:int}", (int id,IGeneroService generoService) =>
+{
+    var genero = await generoService.GeneroPorId(id);
+    if (genero == null) return Results.NotFound();
+    return Results.Ok(genero);
+}).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(100)));
+
+
+
+2) POST:
+
+2.1) Post Insert:
+app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    var id = await generoService.InsertarGeneros(genero);
+    await cache.EvictByTagAsync("GenerosCache", default)
+    return Results.Created($"/generos/{id}", genero);
+});
+// Created() me permitira devolver un status code 201, la URL es una convencio de las WEB api que devuelven la URL por la cual puedo 
+acceder a ese elemento.
+
+3) PUT:
+
+3.1) Put Comun:
+app.MapPut("/generos/{id:int}", async (int id, Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    if(!await generoService.Existe(id)) return Results.NotFound();
+    var r = await generoService.Modificar(genero);
+    await cache.EvictByTagAsync("GenerosCache", default);
+    return Results.NoContent();
+});
+
+
+4) DELETE:
+4.1) Delete Comun:
+app.MapDelete("/generos/{id:int}", async (int id, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    if (!await generoService.Existe(id)) return Results.NotFound();
+    await generoService.BorrarGenero(id);
+    await cache.EvictByTagAsync("GenerosCache", default);
+    return Results.NoContent();
+});
+
+
+5) Configuraciones Varias:
+5.1) Configurar y Habilitar CORS:
+var origenesPermitidos = builder.Configuration.GetValue<string>("Origenes")!;
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(config =>
+    {
+        config.WithOrigins(origenesPermitidos).AllowAnyHeader().AllowAnyMethod();
+    });
+    // Todos mis EndPoint se regiran por mi politica por defecto, salvo que le declare otra politica con [EnableCors]
+
+    options.AddPolicy("libre",config =>
+    {
+        config.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+var app = builder.Build();
+app.UseCors();
+app.MapGet("/", [EnableCors(policyName: "libre")]() => "Hola Papu");
+
+
+5.2) Configurar Cache en Servidor:
+
+// En Servicios
+builder.Services.AddOutputCache();
+
+// En Los Middlewares
+app.UseOutputCache();
+app.MapGet("/generos", () => ...).CacheOutput(c => c.Expire(TimeSpan.FromSeconds(15)).Tag("GenerosCache"));
+
+5.3) Configurando Cache para rutas Especificas: Lo que haremos sera crear cache para cada ruta especifica que consultemos, esto se lo 
+suele hacer cuando quiero consultar una lista de elementos pertenecientes a un ID, no tiene sentido usar el mismo cache si busco con 
+otro id.
+
+group.MapGet("/", ListaComentarios)
+    .CacheOutput(c => c.Expire(TimeSpan.FromSeconds(120))
+    .Tag("get-comentarios")
+    .SetVaryByRouteValue(new string[] {"peliculaId"}));
+
+5.4) Limpiando Cache en Servidor:
+app.MapPost("/generos", async (Genero genero, IGeneroService generoService, IOutputCacheStore cache) =>
+{
+    var id = await generoService.InsertarGeneros(genero);
+    await cache.EvictByTagAsync("GenerosCache", default); // Limpio el Cache referenciandolo por su tag
+    return Results.Created($"/generos/{id}", genero);
+});
+
+
+5.4) Configurar Swagger:
+// Servicios
+builder.Services.AddEndpointsApiExplorer(); // Permitira a Swagger explorar los Endpoints que tenemos y listarlos
+builder.Services.AddSwaggerGen();
+// Middlewares
+if(builder.Enviroment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+

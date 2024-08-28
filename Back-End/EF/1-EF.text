@@ -152,7 +152,7 @@ public class GeneroConfig : IEntityTypeConfiguration<Genero>{
 
 3) Por Ultimo para aplicar estas configuracion en el OnModelCreating tengo 2 formas: 
 3.1) modelBuilder.ApplyConfiguration(new GeneroConfig()); //Esto lo deberia hacer con cada configuracion 
-3.2) modelBuilder.ApplyConfigurationFromAssembly(Assembly.GetExecutingAssembly()); // Tomara todas las clases que hereden de 
+3.2) modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); // Tomara todas las clases que hereden de 
 IEntityTypeConfiguration<T> y las aplicara en el OnModelCreating()
 
 
