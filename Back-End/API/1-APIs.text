@@ -391,7 +391,21 @@ public async Task<IActionResult> GetAutores()
 12.2) Filtro de Autorizacion:
 
 // Service Program
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddAuthentication().AddJwtBearer(opt => {
+    opt.MapInboundClaims = false;
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]!)),, //Este metodo si solo quiero usar las llaves que mi app emitio
+        /*IssuerSigningKeys = Llaves.ObtenerTodasLasLlaves(builder.Configuration)*/ // Este metodo es para si quiero trabajar con mas de una llave
+                                                                                    // de validacion, por ejemplo si mis JWT validan con mi APP, pero
+                                                                                    // tambien con gmail, facebook, hotmail, etc.
+    };
+}); 
 
 // Middleware Program
 app.UseAuthorization();
@@ -599,7 +613,7 @@ builder.Services.AddControllers(opt =>
 
 // EndPoint Patch
 [HttpPatch("id:int")]
-public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibroPatchDTO> patchDocument)
+public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<LibroPatchDTO> patchDocument)
 {
     if (patchDocument is null) return BadRequest("");
 
@@ -656,7 +670,21 @@ un Token(un string)
 3) Identity: Para usuarilo con EF Core debo instalar su paquete Microsoft.AspNetCore.Identity.EntityFrameworkCore
 
 // Defino los servicios.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddAuthentication().AddJwtBearer(opt => {
+    opt.MapInboundClaims = false;
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]!)), //Este metodo si solo quiero usar las llaves que mi app emitio
+        /*IssuerSigningKeys = Llaves.ObtenerTodasLasLlaves(builder.Configuration)*/ // Este metodo es para si quiero trabajar con mas de una llave
+                                                                                    // de validacion, por ejemplo si mis JWT validan con mi APP, pero
+                                                                                    // tambien con gmail, facebook, hotmail, etc.
+    };
+}); 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Negocio>().AddDefaultTokenProviders();
 
@@ -1084,13 +1112,13 @@ public class PaginacionDTO
 2)// Crear una Clase que me devuelva todos los registros de mi columna de la DB, Estos me los va a devolver en la Cabecera HTTP
 public static class HttpContextExtensions
 {
-    public async static Task InsertarParametrosPaginacionEnCabeceraHTTP<T>(this HttpContext httpContext, IQueryable<T> query)
+    public async static Task InsertarParametrosPaginacionEnCabeceraHTTP<T>(this HttpContext httpContext, IQueryable<T> query, int recordsPorPagina)
     {
         if(httpContext is null) throw new ArgumentNullException(nameof(httpContext));
         double cantidad = await query.CountAsync();
-
+        double cantidadPags = Math.Ceiling(cantidad/recordsPorPagina);
         // En la respuesta HTTP coloca un header con el numero de registros totales
-        httpContext.Response.Headers.Append("cantidadTotalDeRegistros", cantidad.ToString());
+        httpContext.Response.Headers.Append("cantidadDePaginas", cantidadPags.ToString());
     }
 }
 
@@ -1106,10 +1134,10 @@ public static class IQueyableExtensions
 }
 
 4)// Ejecuto el metodo que quiero Paginar
-public async Task<List<Actor>> ListActores(PaginacionDTO paginacionDTO)
+public async Task<List<Actor>> ListActores([FromQuery] PaginacionDTO paginacionDTO)
 {
     var query = applicationDbContext.Actores.AsQueryable();
-    await HttpContext.InsertarParametrosPaginacionEnCabecera(query);    
+    await HttpContext.InsertarParametrosPaginacionEnCabecera(query, paginacionDTO.RecordsPorPagina);    
     return await query.OrderBy(actor => actor.Nombre).Paginar(paginacionDTO).ToListAsync();
 }
 
@@ -1307,7 +1335,6 @@ entrega continua.
 
 
 // VALIDAR PESO DE ARCHIVOS
-
 public class PesoArchivoValidacionAttribute : ValidationAttribute
 {
     private readonly int pesoMaximo;
@@ -1329,7 +1356,6 @@ public class PesoArchivoValidacionAttribute : ValidationAttribute
 }
 
 // VALIDAR EXTENSION DE ARCHIVOS
-
 public class ExtensionArchivoValidation : ValidationAttribute
 {
     private readonly string[]? extensionesArchivo;
@@ -1353,7 +1379,6 @@ public class ExtensionArchivoValidation : ValidationAttribute
         return ValidationResult.Success;
     }
 }
-
 public enum GruposExtensiones
 {
     Imagen,
@@ -1361,20 +1386,545 @@ public enum GruposExtensiones
     DocumentoTexto
 }
 
-
-
-
-
-
-
-
 // En el DTO de Crear 
 [PesoArchivoValidacionAttribute(pesoMaximo: 50)]
 [ExtensionArchivoValidation(gruposExtensiones: GruposExtensiones.Imagen)]
 public IFormFile Foto { get; set; } = null!;
 
 
-                                                        12) Conceptos Varios
+
+2) Model Binder Personalizado: En ocasiones el ModelBinder por defecto de ASP.NET no mapeara nuestros datos correctamente (como transformar un ARRAY a List<>), por lo 
+que deberemos crear una Extension Personalizada.
+
+public class TypeBinder<T> : IModelBinder
+{
+    public Task BindModelAsync(ModelBindingContext bindingContext)
+    {
+        var nombrePropiedad = bindingContext.ModelName;
+        var proveedorDeValores = bindingContext.ValueProvider.GetValue(nombrePropiedad);
+
+        if(proveedorDeValores == ValueProviderResult.None) return Task.CompletedTask;
+
+        try
+        {
+            var valorDeserializado = JsonConvert.DeserializeObject<T>(proveedorDeValores.FirstValue!);
+            bindingContext.Result = ModelBindingResult.Success(valorDeserializado);
+        }
+        catch (Exception)
+        {
+            bindingContext.ModelState.TryAddModelError(nombrePropiedad, $"Valor Invalido para Tipo {typeof(T).ToString()}");
+        }
+        return Task.CompletedTask;
+    }
+}
+
+[ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
+public List<int> ListaActoresIds { get; set; } = null!;
+
+
+
+3) Mapeo Con Funciones AutoMapper:
+
+CreateMap<CrearPeliculaDTO, Pelicula>()
+    .ForMember(x => x.Poster, dest => dest.Ignore())
+    .ForMember(x => x.ListActores, dest => dest.MapFrom(MapearActoresPeliculas))
+    .ForMember(x => x.ListGeneros, dest => dest.MapFrom(MapearGenerosPeliculas));
+
+private List<ActoresPeliculas> MapearActoresPeliculas(CrearPeliculaDTO DTO, Pelicula pelicula)
+{
+    var list = new List<ActoresPeliculas>();
+    if (DTO.ListActores == null) return list;
+    foreach (var item in DTO.ListActores)
+    {
+        list.Add(new ActoresPeliculas { ActorId = item.ActorId, Personaje = item.Personaje! });
+    }
+    return list;
+}
+private List<GenerosPeliculas> MapearGenerosPeliculas(CrearPeliculaDTO DTO, Pelicula pelicula)
+{
+    var list = new List<GenerosPeliculas>();
+    if (DTO.ListaGenerosIds == null) return list;
+    foreach (var item in DTO.ListaGenerosIds)
+    {
+        list.Add(new GenerosPeliculas { GeneroId = item });
+    }
+    return list;
+}
+
+
+// CLASES A MAPEAR
+public class Pelicula
+{
+    public int Id { get; set; }
+    public string Titulo { get; set; } = null!;
+    public bool EnCines { get; set; }
+    public DateTime Estreno { get; set; }
+    public string Poster { get; set; } = null!;
+    public List<ActoresPeliculas>? ListActores { get; set; }
+    public List<GenerosPeliculas>? ListGeneros { get; set; }
+}
+
+public class CrearPeliculaDTO
+{
+    public string Titulo { get; set; } = null!;
+    public bool EnCines { get; set; }
+    public DateTime Estreno { get; set; }
+    [PesoArchivoValidacion(4)]
+    [ExtensionArchivoValidator(GrupoExtensionArchivo.Imagen)]
+    public IFormFile? Poster { get; set; }
+
+    [ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
+    public List<int> ListaGenerosIds { get; set; } = null!;
+
+    [ModelBinder(BinderType = typeof(TypeBinder<List<ActorPeliculasCreacionDTO>>))]
+    public List<ActorPeliculasCreacionDTO>? ListActores { get; set; }
+}
+
+
+4) Filtrado Complejo:
+
+// EL DTO PARA FILTRAR
+public class FiltroPeliculasDTO
+{
+    public int Pagina { get; set; } = 1;
+    public int RecordsPorPagina { get; set; } = 10;
+    public PaginacionDTO PaginacionDTO 
+    {
+        get
+        {
+            return new PaginacionDTO { RecordsPorPagina = this.RecordsPorPagina, Pagina = Pagina };
+        }
+    }
+    public string? Titulo { get; set; }
+    public int GeneroId { get; set; }
+    public bool EnCines { get; set; }
+    public bool Estrenos { get; set; }
+
+    public string? CampoOrdenar { get; set; }
+    public bool Ascendente { get; set; } = true;
+}
+
+
+// ENDPOINT
+
+[HttpGet("filtro")]
+public async Task<List<LecturaPeliculaDTO>> GetFiltrado([FromQuery] FiltroPeliculasDTO filtroPeliculasDTO)
+{
+    var query = negocio.Peliculas.AsQueryable();
+
+    if(!string.IsNullOrEmpty(filtroPeliculasDTO.Titulo)) 
+        query = query.Where(x => x.Titulo.Contains(filtroPeliculasDTO.Titulo));
+    if(filtroPeliculasDTO.EnCines)
+        query = query.Where(x => x.EnCines == true);
+    if (filtroPeliculasDTO.Estrenos)
+        query = query.Where(x => x.Estreno > DateTime.Today);
+    if (filtroPeliculasDTO.GeneroId != 0) 
+        query = query.Where(x => x.ListGeneros!.Select(y => y.GeneroId).Contains(filtroPeliculasDTO.GeneroId));
+
+    if(!string.IsNullOrEmpty(filtroPeliculasDTO.CampoOrdenar))
+    {
+        try
+        {
+            if (filtroPeliculasDTO.Ascendente) query = query.OrderBy($"{filtroPeliculasDTO.CampoOrdenar} ascending");
+            else query = query.OrderBy($"{filtroPeliculasDTO.CampoOrdenar} descending");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+        }
+    }
+
+    await HttpContext.InsertarRegistrosTotalesBDCabecera(query);
+    var list = await query.Paginar(filtroPeliculasDTO.PaginacionDTO).ToListAsync();
+    return mapper.Map<List<LecturaPeliculaDTO>>(list);
+}
+
+
+5) DATA RELACIONADA: -Video 150
+
+6) Ordernamiento con Filtros: Para esto usaremos System.Linq.Dynamic.Core
+
+if(!string.IsNullOrEmpty(filtroPeliculasDTO.CampoOrdenar))
+{
+    try
+    {
+        if (filtroPeliculasDTO.Ascendente) query = query.OrderBy($"{filtroPeliculasDTO.CampoOrdenar} ascending");
+        else query = query.OrderBy($"{filtroPeliculasDTO.CampoOrdenar} descending");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex.Message, ex);
+    }
+}
+
+
+7) CustoControllerBase:
+
+ public class CustomBaseController : ControllerBase
+ {
+     private readonly Negocio negocio;
+     private readonly IMapper mapper;
+
+     public CustomBaseController(Negocio negocio, IMapper mapper)
+     {
+         this.negocio = negocio;
+         this.mapper = mapper;
+     }
+
+     protected async Task<ActionResult<List<TDTO>>> GetBase<TEntity, TDTO>() where TEntity : class
+     {
+         var entidad = await negocio.Set<TEntity>().ToListAsync();
+         return Ok(mapper.Map<List<TDTO>>(entidad));
+     }
+
+     protected async Task<ActionResult<TDTO>> GetIdBase<TEntity, TDTO>(int id) where TEntity : class, IId
+     {
+         var entidad = await negocio.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+         if (entidad == null) return NotFound();
+         return Ok(mapper.Map<TDTO>(entidad));
+     }
+
+     protected async Task<ActionResult> PostBase<TEntity, TCreacion,TLectura>([FromBody] TCreacion creacionDTO, string nombreRuta)
+         where TEntity : class, IId
+     {
+         var entidad = mapper.Map<TEntity>(creacionDTO);
+         negocio.Add(entidad);
+         await negocio.SaveChangesAsync();
+         var lectura = mapper.Map<TLectura>(entidad);
+         return CreatedAtRoute(nombreRuta, new { id = entidad.Id }, lectura);
+     }
+
+     protected async Task<ActionResult> PutBase<TEntity, TCreacion>([FromBody] TCreacion creacionDTO, int id)
+         where TEntity : class, IId
+     {
+         var entidad = mapper.Map<TEntity>(creacionDTO);
+         entidad.Id = id;
+         negocio.Update(entidad);
+         await negocio.SaveChangesAsync();
+         return NoContent();
+     }
+
+     protected async Task<ActionResult> DeleteBase<TEntity>(int id) where TEntity : class, IId, new()
+     {
+         if(!await negocio.Set<TEntity>().AnyAsync(x => x.Id == id)) return NotFound();
+         negocio.Remove(new TEntity() { Id = id});
+         await negocio.SaveChangesAsync();
+         return NoContent();
+     }
+
+     protected async Task<ActionResult<List<TLectura>>> GetPaginadoBase<TEntity, TLectura>(PaginacionDTO paginacionDTO)
+         where TEntity : class
+     {
+         var query = negocio.Set<TEntity>().AsQueryable();
+         await HttpContext.InsertarRegistrosTotalesBDCabecera(query);
+         var lectura = mapper.Map<List<TLectura>>(await query.Paginar(paginacionDTO).ToListAsync());
+         if (lectura.Count == 0) return NotFound();
+         return Ok(lectura);
+     }
+ }
+ public interface IId
+ {
+     public int Id { get; set; }
+ }
+
+ [ApiController]
+[Route("api/generos")]
+public class GenerosController : CustomBaseController
+{
+    public GenerosController(Negocio negocio, IMapper mapper) : base(negocio, mapper)
+    {
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<LecturaGeneroDTO>>> Get()
+    {
+        return await GetBase<Genero, LecturaGeneroDTO>();
+    }
+
+    [HttpGet("{id:int}", Name = "GeneroPorId")]
+    public async Task<ActionResult<LecturaGeneroDTO>> GetId(int id)
+    {
+        return await GetIdBase<Genero, LecturaGeneroDTO>(id);
+    }
+
+
+    [HttpPost]
+    public async Task<ActionResult> Post([FromForm] CrearGeneroDTO generoDTO)
+    {
+        return await PostBase<Genero, CrearGeneroDTO, LecturaGeneroDTO>(generoDTO, "GeneroPorId");
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Put([FromForm] CrearGeneroDTO generoDTO, int id)
+    {
+       return await PutBase<Genero, CrearGeneroDTO>(generoDTO, id);
+    }
+}
+
+
+8) Filtro Por Attribute: -Video 157 Minuto 13
+
+
+                                                         12) NetTopologySuite
+
+1) NetTopologySuite:
+
+// CONFIGURAR SERVICIO:
+builder.Services.AddDbContext<Negocio>
+    (opt => opt.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"), 
+    sqliteOpt => sqliteOpt.UseNetTopologySuite()));
+
+// AGREGAR EL TIPO DE DATO ESPACIAL POINT 
+public class SalasDeCine : IId
+{
+    public int Id { get; set; }
+    public string? Nombre { get; set; }
+    public Point Ubicacion { get; set; } = null!;
+    public List<SalasPeliculas> ListPeliculas { get; set; } = null!;
+}
+
+
+// CONFIGURAR AUTOMAPPER 
+CreateMap<SalasDeCine, LecturaSalaDeCineDTO>()
+    .ForMember(x => x.Latitud, dest => dest.MapFrom(y => y.Ubicacion.Y))
+    .ForMember(x => x.Longitud, dest => dest.MapFrom(y => y.Ubicacion.X));
+
+var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+CreateMap<LecturaSalaDeCineDTO, SalasDeCine>()
+    .ForMember(x => x.Ubicacion, dest => dest
+    .MapFrom(y => geometryFactory.CreatePoint(new Coordinate(y.Longitud, y.Latitud))));
+
+CreateMap<CrearSalaDeCineDTO, SalasDeCine>()
+    .ForMember(x => x.Ubicacion, dest => dest
+    .MapFrom(y => geometryFactory.CreatePoint(new Coordinate(y.Longitud, y.Latitud))));
+
+
+
+2) Querys Espaciales: Me permiten resolver cuestiones de cercanias o distancias geograficas. -Video 155
+
+
+// DTO DE ENTRADA DE DATOS SOBRE EL CINE A BUSCAR
+public class SalaDeCineCercanoFiltroDTO
+{
+    [Range(-90, 90)]
+    public double Latitud { get; set; }
+    [Range(-180, 180)]
+    public double Longitud { get; set; }
+    private int distanciaEnKms = 10;
+    private int maxDistanciaEnKms = 50;
+    public int RecordsPorPagina
+    {
+        get
+        {
+            return distanciaEnKms;
+        }
+        set
+        {
+            distanciaEnKms = value <= maxDistanciaEnKms ? value : maxDistanciaEnKms;
+        }
+    }
+}
+
+// SALIDA DE DATOS SOBRE EL CINE A BUSCAR
+public class SalaDeCineCercanoDTO : LecturaSalaDeCineDTO
+{
+    public double DistanciaEnMetros { get; set; }
+}
+
+
+
+                                                            13) Testing Unitario
+
+1) Proveedor en memoria: En los casos de que necesite realizar instancias de mi dbContext en mis pruebas unitarias recurriremos al 
+Proveedor en memoria de EF Core. Basicamente es una simulacion de una BD en memoria (aunque super limitada). Para esto instalaremos 
+la libreria: Microsoft.EntityFrameworkCore.InMemory
+
+Configurar Clase Base de Testing: Para este caso crearemos una clase Base que reutilizaremos para mis pruebas unitarias.
+En esta clase base configuramos las reglas de IMapper y el generar una BD en memoria.
+
+public class BasePruebas
+{
+    protected Negocio ConstruirContext (string nombreBD)
+    {
+        var opt = new DbContextOptionsBuilder<Negocio>()
+                  .UseInMemoryDatabase(nombreBD).Options;
+        return new Negocio(opt);
+    }
+
+    protected IMapper ConfigurarMapper()
+    {
+        var config = new MapperConfiguration(opt =>
+        {
+            opt.AddProfile(new AutoMapperProfile());
+        });
+        return config.CreateMapper();
+    }
+}
+
+
+2) Testing EJ:
+
+// Obtener Lista de generos
+[TestMethod]
+public async Task ObtenerTodosLosGeneros()
+{
+    // Preparacion
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+
+    negocio.Add(new Genero() { Id = 33, Nombre = "Gen1" });
+    negocio.Add(new Genero() { Id = 34, Nombre = "Gen2" });
+    await negocio.SaveChangesAsync();
+
+    var negocio2 = ConstruirContext(nombreBD);
+
+    // Prueba
+    var controller = new GenerosController(negocio2, mapper);
+    var respuesta = await controller.Get();
+    var generos =  respuesta.Result as OkObjectResult;
+    if (generos!.StatusCode != 200) Assert.Fail();
+}
+
+// Devolver NotFound al no encontrar Genero por ID
+[TestMethod]
+public async Task ObtenerGeneroPorIdNoExistente()
+{
+    // Preparacion
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+    var negocio2 = ConstruirContext(nombreBD);
+    var controller = new GenerosController(negocio2, mapper);
+    var respuesta = await controller.GetId(1);
+    var result = respuesta.Result as StatusCodeResult;
+    Assert.AreEqual(404, result!.StatusCode);
+}
+
+// Test Metodo Post
+[TestMethod]
+public async Task CrearGenero()
+{
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+    var nuevoGenero = new CrearGeneroDTO() { Nombre = "Nombre" };
+    var controller = new GenerosController(negocio, mapper);
+
+    var respuesta = await controller.Post(nuevoGenero);
+    var resultado = respuesta as CreatedAtRouteResult;
+    Assert.IsNotNull(resultado);
+
+    var contexto2 = ConstruirContext(nombreBD);
+    var count = await contexto2.Generos.CountAsync();
+    Assert.AreEqual(1, count);
+}
+
+// Test Metodo Put
+[TestMethod]
+public async Task ModGenero()
+{
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+
+    negocio.Add(new Genero() { Id = 1, Nombre = "nombreBD" });
+    await negocio.SaveChangesAsync();
+
+    var negocio2 = ConstruirContext(nombreBD);
+    var controller = new GenerosController(negocio2, mapper);
+    var nuevoGenero = new CrearGeneroDTO() { Nombre = "Nombre" };
+    var id = 1;
+    var respuesta = await controller.Put(nuevoGenero, id);
+    var resultado = respuesta as StatusCodeResult;
+    Assert.AreEqual(204, resultado!.StatusCode);
+
+    var negocio3 = ConstruirContext(nombreBD);
+    var exist = await negocio3.Generos.AnyAsync(x => x.Nombre == nuevoGenero.Nombre);
+    Assert.IsTrue(exist);
+}
+
+
+3) Testing Endpoints Complejos:
+
+// Testear PaginadoDTO
+[TestMethod]
+public async Task ObtenerActoresPaginados()
+{
+    // Preparacion
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+
+    negocio.Actores.Add(new Actor() { Id = 1, Nombre = "Actor1", Foto = "",Nacimiento = DateTime.Now });
+    negocio.Actores.Add(new Actor() { Id = 2, Nombre = "Actor2", Foto = "",Nacimiento = DateTime.Now });
+    negocio.Actores.Add(new Actor() { Id = 3, Nombre = "Actor3", Foto = "",Nacimiento = DateTime.Now });
+    await negocio.SaveChangesAsync();
+
+    var negocio2 = ConstruirContext(nombreBD);
+    var controller = new ActoresController(negocio2, mapper, null);
+
+    controller.ControllerContext.HttpContext = new DefaultHttpContext();
+    var pag1 = await controller.Get(new PeliculasAPI.DTOs.PaginacionDTO() { Pagina = 1, RecordsPorPagina = 2 });
+    var actoresPag1 = pag1.Value;
+
+    controller.ControllerContext.HttpContext = new DefaultHttpContext();
+    var pag2 = await controller.Get(new PeliculasAPI.DTOs.PaginacionDTO() { Pagina = 2, RecordsPorPagina = 2 });
+    var actoresPag2 = pag2.Value;
+
+    controller.ControllerContext.HttpContext = new DefaultHttpContext();
+    var pag3 = await controller.Get(new PeliculasAPI.DTOs.PaginacionDTO() { Pagina = 3, RecordsPorPagina = 2 });
+    var actoresPag3 = pag3.Value;
+
+
+    Assert.AreEqual(2, actoresPag1!.Count);
+    Assert.AreEqual(1, actoresPag2!.Count);
+    Assert.AreEqual(0, actoresPag3!.Count);
+}
+
+// Testear IFormFile Carga
+
+[TestMethod]
+public async Task CrearActorConFoto()
+{
+    // Preparacion
+    var nombreBD = Guid.NewGuid().ToString();
+    var negocio = ConstruirContext(nombreBD);
+    var mapper = ConfigurarMapper();
+
+    var content = Encoding.UTF8.GetBytes("Imagen De Prueba");
+    var file = new FormFile(new MemoryStream(content), 0,content.Length,"Data","imagen.jpg");
+    file.Headers = new HeaderDictionary();
+    file.ContentType = "image/jpg";
+
+
+    var actor = new CrearActorDTO() { Nombre = "", Nacimiento = DateTime.Now, Foto = file};
+    var mock = new Mock<IFilesService>();
+    mock.Setup(x => x.GuardarImagen("actores", file)).Returns(Task.FromResult("url"));
+    var controller = new ActoresController(negocio, mapper, mock.Object);
+    var respuesta = await controller.Post(actor);
+    var result = respuesta as CreatedAtRouteResult;
+    Assert.AreEqual(201, result!.StatusCode);
+
+    var contexto2 = ConstruirContext(nombreBD);
+    var list = await contexto2.Actores.ToListAsync();
+    Assert.AreEqual(1, list.Count);
+    Assert.AreEqual("url", list[0].Foto);
+    Assert.AreEqual(1, mock.Invocations.Count);
+}
+
+
+4) Testing Metodos de Cuentas/Usuarios: -Video 162
+
+
+5) Testing con LocalBD: -Video 163
+
+
+                                                        14) Pruebas de Integracion
+1)
+
+
+                                                        15) Conceptos Varios
 
 1) FACTORIAS: Las factorias son clases que utilizamos para instanciar otras clases, por Ejemplo IUrlHelperFactory. IUrlHelperFactory es
 una factoria que nos permite instanciar IUrlHelper que nos permite generar URL en nuestro WebAPI. El Sistema de Inyeccion de Dependencias
@@ -1444,3 +1994,9 @@ public class IniciarCalendario : IHostedService
         return Task.CompletedTask;
     }
 }
+
+
+7) Clases Base: Las clases base son clases que por si sola no se utilizaran, sino solo serviran para herencia de otras clases, como 
+por ejemplo CustomControllerBase, Basicamente son clases que tienen la funcion de ser reutilizadas mediante la herencia, estas 
+tendran sus Metodos con el indicador de visibilida en protected, es decir solo seran accesibles para aquellas clases que hereden de 
+ella.
