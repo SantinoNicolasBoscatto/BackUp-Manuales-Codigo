@@ -1,0 +1,28 @@
+                                                                      1) Objetivos de Solid
+
+1) Los objetivos de SOLID son: 1) crear un software eficaz, que cumpla con su cometido y sea robusto y estable. 2) Codigo Limpio y flexible, que me
+permita modificarlo facilmente segun las necesidades. Es decir escribir codigo reutilizable y mantenible. 3) Escalabilidad, es decir que pueda ser 
+ampliable en sus funciones.
+
+                                                                         
+                                                                         3) Principios Solid
+
+1) Inversion de Inyeccion de dependencias: El principio de inyeccion de dependencias consiste en declarar de forma centralizada las dependencias de las
+clases. Ademas se busca que estas depenencias sean de un acople bajo (es decir que la dependencia no se construyan y declaran dentro de los metodos 
+de una clase, sino mediante un constructor). El cambio que hace la Inversion de Inyeccion de dependencias es que en vez de utilizar tipos concretos 
+para las dependencias (es decir usar clases), busca que se usen tipos abstractos (interfaces o clases abstractas). Esto nos dara mas flexibilidad a la
+hora de construir nuestro software debido a que ya no dependemos de una clase, sino de una interfaz la cual puede ser implementada en una clase.
+
+2) Responsabilidad Unica: Este principio dice que las clases deben tener una unica responsabilidad a realizar, y no contar con varias a la vez, por 
+ello las clases deben tener una unica responsabilidad. Por ejemplo, los controladores en las APIs, estos no deben realizar las configuraciones de la BD,
+abrir su conexion, y realizar sus transacciones, solo se limita a recibir y servir las peticiones HTTP del cliente, tampoco realiza validaciones (en
+su mayoria).
+
+3) Abierto/Cerrado: Este principio establece que una clase debe estar abierta para su extension (para ser heredada), pero cerrada para su modificacion.
+Es decir que las clases deben estar abiertas para poder heredarse pero cerradas para ser modificadas (y no alterar su comportamiento).
+
+4) Sustitucion de Liskov: Este principio establece que las clases derivadas deben poder sustituirse por sus clases base. Es decir que en los lugares
+en que implemente mis clases bases/Padres, las puedo sustituir por sus clases hijas sin alterer su comportamiento o funcionamiento.
+
+5) Segregacion de Interfaces: Este principio establece que es mejor crear muchas interfaces de pocos metodos (una interfaz de una finalidad concreta),
+que crear pocas interfaces pero de muchos metodos que muchas veces no seran implementados.

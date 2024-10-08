@@ -556,6 +556,10 @@ private List<AutorLibro> MapAutoresLibros(CrearLibroDTO libroDTO, Libro libro)
 }
 
 
+1.1) ProjectTo(): Me permite realizar mapeos dinamicos de mis entidades, que traeran solamente las columnas que realmente deseo utilizar y no todas ellas.
+await negocio.Generos.ProjectTo<GeneroDTO>(mapper.ConfigurationProvider).ToListAsync();
+
+
 2) Controlador de un Recurso Dependiente: En el caso de que yo tenga una entidad que dependa de otra (por ejemplo comentarios depende de 
 libro, ya que si elimino el libro se eliminan los comentarios, pero no viceversa). Para esto crearemos un controlador que tenga en 
 su ruta el ID de la identidad de la que depende.
@@ -1145,11 +1149,13 @@ public async Task<List<Actor>> ListActores([FromQuery] PaginacionDTO paginacionD
 5) Por ultimo, para leer la cantidad total de registros en la cabecera debere usar WithExposedHeaders() para que me permita acceder 
 a los datos de la cabecera: 
 
+var origenesPermitidos = builder.Configuration.GetValue<string>("alloworigins")!.Split(",");
+
 builder.Services.AddCors(opt =>
 {
-    opt.AddDefaultPolicy(b =>
+    opt.AddDefaultPolicy(optCors =>
     {
-        b.WithOrigins(builder.Configuration["alloworigins"]).AllowAnyMethod().AllowAnyHeader()
+        optCors.WithOrigins(origenesPermitidos).AllowAnyMethod().AllowAnyHeader()
         .WithExposedHeaders(new string[] { "cantidadTotalDeRegistros" });
     });
 });
@@ -1407,7 +1413,9 @@ public class TypeBinder<T> : IModelBinder
 
         try
         {
-            var valorDeserializado = JsonConvert.DeserializeObject<T>(proveedorDeValores.FirstValue!);
+            var tipoDestino = bindingContext.ModelMetadata.ModelType;
+            var valorDeserializado = JsonConvert.DeserializeObject<T>(proveedorDeValores.FirstValue!, tipoDestino, 
+                                                    new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
             bindingContext.Result = ModelBindingResult.Success(valorDeserializado);
         }
         catch (Exception)
@@ -1921,7 +1929,94 @@ public async Task CrearActorConFoto()
 
 
                                                         14) Pruebas de Integracion
-1)
+
+1) Metodos Auxiliares: Primero instalar la libreria Microsoft.AspNetCore.Mvc.Testing.
+
+// Este filtro se ejecutara antes de ejecutar los controladores, Este filtro me permitira simular un usuario
+public class UsuarioFalsoFiltro : IAsyncActionFilter
+{
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        context.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, "test@email.com"),
+            new Claim(ClaimTypes.Name, "test@email.com"),
+            new Claim(ClaimTypes.NameIdentifier, "9722b56a-77ea-4e41-941d-e319b6eb3712"),
+        }, "prueba"));
+        await next();
+    }
+}
+
+// Con esto creamos un servicio que permita pasar toda Autorizacion
+public class AllowAnonymousHandler : IAuthorizationHandler
+{
+    public Task HandleAsync(AuthorizationHandlerContext context)
+    {
+        foreach (var requirement in context.PendingRequirements.ToList())
+        {
+            context.Succeed(requirement);
+        }
+        return Task.CompletedTask;
+    }
+}
+
+protected WebApplicationFactory<Program> ConstruirApp(string nombreBD, bool ignorarSeguridad)
+{
+    var factory = new WebApplicationFactory<Program>();
+    factory.WithWebHostBuilder(builder =>
+    {
+        builder.ConfigureTestServices(services =>
+        {
+            var descriptorDBContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<Negocio>));
+            if(descriptorDBContext != null) services.Remove(descriptorDBContext);
+
+            services.AddDbContext<Negocio>(opt => opt.UseInMemoryDatabase(nombreBD));
+            if(ignorarSeguridad)
+            {
+                services.AddSingleton<IAuthorizationHandler, AllowAnonymousHandler>();
+
+                services.AddControllers(opt =>
+                {
+                    opt.Filters.Add(new UsuarioFalsoFiltro());
+                });
+            }
+        });
+    });
+    return factory;
+}
+
+
+2) Ejemplo de prueba de integracion: 
+
+[TestClass]
+public class AutosControllerTest : BasePruebas
+{
+    private static readonly string urlRoute = "/api/autos";
+
+    [TestMethod]
+    public async Task ObtenerTodosLosAutosListadoVacio()
+    {
+        var nombreBD = Guid.NewGuid().ToString();
+        var factory = ConstruirApp(nombreBD, true);
+
+        var cliente = factory.CreateClient();
+        var respuesta = await cliente.GetAsync(urlRoute);
+
+        respuesta.EnsureSuccessStatusCode();
+        var autos = JsonConvert.DeserializeObject<List<LecturaAutoDTO>>(await respuesta.Content.ReadAsStringAsync());
+        Assert.AreEqual(0, autos!.Count());
+    }
+}
+
+
+3) La diferencia principal con las unitarias (ademas de la velocidad) es que puedo probar las funciones a nivel mas global, lo que me 
+permite poder verificar filtros u otras cosas reglas que recaeen sobre el controlador, debido a que en las pruebas de integracion no 
+instanciamos directamente el controlador (que al hacerlo perdemos la capacidad de probar nuestros filtros), si no que hacemos una 
+peticion directamente a nuestra clase Controlador con todas sus reglas de forma directa, lo que me permite verificar que todo funcione 
+correctamente.
+
+Esto debido a que construimos la aplicacion directamente con las pruebas de integracion, a diferencia de las unitarias que nos 
+centramos en probar una pequeña parte del codigo simulando el funcionamiento de la app. 
 
 
                                                         15) Conceptos Varios
@@ -2000,3 +2095,36 @@ public class IniciarCalendario : IHostedService
 por ejemplo CustomControllerBase, Basicamente son clases que tienen la funcion de ser reutilizadas mediante la herencia, estas 
 tendran sus Metodos con el indicador de visibilida en protected, es decir solo seran accesibles para aquellas clases que hereden de 
 ella.
+
+
+8) Configurar Output Cache:
+
+// Program
+builder.Services.AddOutputCache(opt=> 
+{
+    opt.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
+})
+
+// Middleware
+app.UseOutputCache();
+
+// Usar el DataAnnotations en la accion de un controlador
+[OutPutCache(Tags = ["generos"])]
+
+
+8.1) Limpiar Cache Manualmente:
+
+// Configurar antes el campo de IOuputCacheStore
+[HttpPost]
+public async Task<IActionResult> Post([FromBody] Genero genero)
+{
+    negocio.Crear(genero);
+    await outputCacheStore.EvictByTagAsync("generos", default)
+}
+
+
+9) PipeLine: Es el conjunto de procesos conectados que reciben una solicitud HTTP y la procesan devolviendo un resultado. Los Middleware vendrian 
+siendo cada uno de estos procesos del PipeLine. Tenemos variaos Middleware como: Autorizacion, StaticFiles, Controladores, etc.
+
+
+10) Model Binding: Consiste en mapear datos de una peticion HTTP a paramatros de una accion.

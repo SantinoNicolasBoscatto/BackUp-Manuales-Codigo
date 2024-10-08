@@ -1,0 +1,1831 @@
+
+                                                                1) Angular
+
+1) Angular: Es una plataforma de desarrollo que nos permite crear Apps Web Modernas. Este plataforma posee una gran cantidad de 
+herramientas para trabajar (Sistema para generar componentes, sistema de ruteo, peticiones HTTP a un Web-Api, Testing, etc). Podemos 
+usar Angular con cualquier IDE. Esto debido a que Angular tiene como pieza central la utilizacion de Angular-CLI (utilizar comandos de 
+consola). Angular CLI nos permite crear, compilar, probar y publicar proyectos de Angular.
+
+A diferencia de Angular, AngularJS era solo un framework y no una plataforma de desarrollo. La diferencia entre ambas es que un framework
+es solo el codigo, es decir un framework es solo un conjunto de librerias que permitia el desarrollo de una App. En cambio una plataforma
+es un conjunto de herramientas que nos ayuda en todas las etapas de desarrollo, y estas no se limitan solo a la parte del codigo.
+
+
+2) NgModules y App StandAlone: Antes era obligatorio utilizar modulos en Angular. Un modulo de Angular era la pieza clave de cualquier 
+App-Angular, en estos realizabamos la declaracion de los distintos objetos angular (componentes, servicios). En las nuevas actualizaciones se elimino
+esa restriccion y podemos crear apps sin modulos, llamadas StandAlone. Es una App de angular que no necesita utilizar modulos de 
+Angular/NgModules.
+
+3) TypeScript: Es un lenguaje desarrollado por Microsoft que se base en JS. Es una evolucion de JS, al volverse un codigo tipado.
+Este incorpora un sistema de tipos estaticos (es decir poder definir tipos de datos para variables, parametros, valores de salida, ETC).
+Todo codigo de JS valido es codigo de TS valido. Basicamete TypeScript vuelve tipado a JS. Por norma, cuando trabajamos con angular 
+trabajamos con TypeScript.
+
+EJ:
+let nombre: string = "Felipe";
+let numero: number = 2;
+function sumar (a: number, b: number): number{
+    return a + b;
+}
+
+4) Anatomia de una App-Angular: 1) Componentes: los componentes son como las vistas, un conjunto de elementos de pantalla con los cuales
+el usuario puede interactuar. Un Componente es una clase decorada con el decorador @Component, en esta clase definimos la data que usara
+el componente y su logica. Ademas cada componente estara asociado a una plantilla HTML que defina sus elementos visuales. Para 
+ejecutar funcionalidades cuando el usuario utilice la pagina utilizamos Events-Bindings() (basimente son eventos que se ejecutan segun X
+accion del usuario). Tambien encontramos los Property-Bindings[]  para inyectar valores calculados en el HTML, es decir inyectar el valor 
+de una variable de mi componente en mi plantilla HTML. 2) Directivas: Las Directivas nos ayudan a transformar los elementos de las 
+plantillas HTML. Existen 3 tipos de directivas: 2.1) Componentes. 2.2) Estructurales: son directivas que alteran las etiquetas del HTML
+de nuestra pagina (como agregar o eliminar elementos). 2.3) Atributo: son directivas que  cambian la apariencia o comportamiento de los 
+elementos de nuestra pagina, es decir modifican los elementos pero no la estructura del HTML/DOM. 3) Servicios: Utilizamos servicios 
+para compartir data o logica que no se asocia especificamente con un componente, es decir que podemos reutilizar una misma logica 
+para varios componentes declarando esa logica como un servicio. 4) Pipes: Los pipes nos permiten transformar data de un formato a otro.
+5) Ruteos: El ruteo sirve para tener funcionalidad de navegacion en nuestra app de angular.
+
+
+5) Node Version Manager (NVM): Es un programa que nos permite instalar y controlar las versiones de NodeJS mediante comandos.
+
+6) Comando para instalar Angular: 
+6.1) Desde PowerShell: "Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned"
+6.2) Desde CMD: "npm install -g @angular/cli@18.1.1"
+6.3) verificar version: "ng --version"
+
+7) Crear una App-Angular con CLI:"ng new My-Proyect"
+
+8) Ejecutar proyecto: "ng serve -o"
+
+
+
+                                                        2) Componentes de Angular
+
+1) Los componentes son parte escencial de angular, siempre que desarrolle algo en angular seguramente sera algo relacionado a un 
+componente. Dentro de estos componentes tenemos: 1.1) Componentes HTML 1.2) Componentes CSS 1.3)Componentes.specs.ts (sirven para 
+realizar Testing) 1.4) Componentes TS (basimente un archivo de TS donde guardamos la logica de nuestro componente) 
+1.5) Componentes.config.TS () 1.6) Componentes.routes.TS (sirve para manejar el enrutamiento)
+
+2) Estrucutra de un componente TS: 1) selector: este define el nombre del componente cuando queremos llamarlo desde el HTML como etiqueta.
+2) standalone: define si este componente debe estar o no inicializado desde un modulo. 3) imports: colocamos las dependencias aca.
+4) templateUrl: es la plantilla HTML que va a utilizar este componente. 5) styleUrl: plantilla base de CSS del componente.
+
+Tambien podemos exportar un AppComponent donde colocaremos variables o funciones. Estas variables o funciones las puedo llamar desde la 
+plantilla HTML con la que este relacionado mi Componente y utilizarla.
+
+EJ:
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'angular-peliculas';
+  edad = 999;
+  DuplicarNumero(num: number) : number
+  {
+     return num*2;
+  }
+  pelicula = {
+    titulo: "Peli",
+    Estreno: new Date()
+  }
+}
+
+
+3) Interpolacion: Es Basicamente colocar variables, funciones, propiedades de objetos complejos o expresiones que devuelvan resultados 
+en mi vista (similar a razor)
+
+EJ:
+<h1>Hola te habla {{ name }}, mi edad es {{edad}}</h1> 
+<h2>{{DuplicarNumero(33)}}</h2>
+<h3>{{pelicula.titulo}}</h3>
+<h5>{{pelicula.Estreno}}</h5>
+<p>{{2+2}}</p> => devolvera 4 en la vista
+
+
+4) Pipes: Se encarga de formatear datos para que la salida de estos sea amigable al usuario:
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, DatePipe, UpperCasePipe, CurrencyPipe], => importamos los Pipes de DatePipe y UpperCasePipe
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+<h3>{{pelicula.titulo | uppercase}}</h3>
+<h5>{{pelicula.Estreno | date: "dd-MMMM-yyyy"}}</h5>
+
+
+
+5) NgFor y @For: En el caso de que quiera mostrar un listado de elementos tengo 2 opciones: 1) NgFor: es la forma clasica de iterar 
+objetos, para esto debo importar la directiva NgFor. 2) @For: Es la forma moderna de realizar las iteraciones, es similar al 
+funcionamiento de un Foreach. Ambas son Directivas Estructurales ya que afectan a como se conforma la estructura del HMTL
+
+5.1) NgFor:
+<div *ngFor="let pelicula of peliculas; let indice = index">
+    <h3>{{pelicula.titulo | uppercase}}</h3>
+    <h5>{{pelicula.Estreno | date: "MM-dd-yyyy"}}</h5>
+    <h5>{{pelicula.Precio | currency}}</h5>
+</div>
+
+
+5.2) @For:
+@for (pelicula of peliculas; track $index) {
+  <h3>{{pelicula.titulo | uppercase}}</h3>
+  <h5>{{pelicula.Estreno | date: "MM-dd-yyyy"}}</h5>
+  <h5>{{pelicula.Precio | currency}}</h5>
+}
+
+
+6) Directiva de Imagenes - NgOptimizedImage: En el caso de que queramos cargar muchas imagenes deberemos implementar NgOptimizedImage,
+debido a que sino nuestra App se volvera muy lenta. Para eso usaramos un funcionalidad que se encargara de cargar las imagenes 
+progresivamente (cargara solo las que esten cerca del usuario). Antes debemos Importar la directiva NgOptimizedImage en mi componente 
+para poder utilizar la funcion de cargado progresivo. Si o si debo definir el width y height de la imagen en la etiqueta, priority 
+me permite darle prioridad a la primera imagen. Tambien debemos colocar en el index.html el Preconnect de mi imagen y usar el priority
+correctamente.
+
+// En el component
+<img [ngSrc]="pelicula.poster" alt="" priority width="169" height="250">
+
+// en el index
+<link rel="preconnect" href="https://m.media-amazon.com">
+
+
+7) Propiedades Dinamicas: Con el EJ anterior, tenemos el problema de que todas nuestras IMG quedaran marcadas como Priority, lo cual 
+no es correcto. Para ello utilizaremos Property-Binding:
+<img [ngSrc]="pelicula.poster" alt="" [priority]="$index===0" width="169" height="250">
+
+
+8) NgIf - @If: Cuando traigamos datos de la BD, estos tardaran, por lo que debemos señalarle al usuario que debe esperar y que se 
+esta realizando un proceso de carga, para esto solemos usar un Loading-Gif. Basicamente lo que queremos es poder mostrar interfaz de 
+usuario de acuerdo una expresion BOOLEANA (es decir si el contenido no esta cargado muestro la vista de carga, si esta cargado muestra 
+la vista de los elementos cargados). Ambas son Directivas Estructurales ya que afectan a como se conforma la estructura del HMTL
+
+Para esto implementaramos un elemento de ciclo de vida en mi componente, llamado OnInit. Esta es una interfaz que me obliga a implementar
+la funcion ngOnInit(), esta se ejecutara una vez que se termine de cargar el componente. Dentro de esta funcion terminariamos de cargar 
+los datos que hayamos recibido de la BD.
+
+Ahora para ejecutar la vista de carga podemos usar NgIf o @If: 1) Para NgIf deberemos importar su directiva y luego darle una expresion 
+BOOLEANA para verificar. 2) @If es la forma moderna de realizar Ifs, es similar a los If{} de razor.
+
+8.1) NgIf:
+<div *ngIf="!peliculas"> => aca evalua que si peliculas es == null, entonces entrara
+  <img src=""/>
+</div>
+
+<div *ngIf="peliculas?.length ===  0">
+  <h1>No se encontraron peliculas</h1>
+</div>
+
+<div *ngIf="peliculas && peliculas.length > 0"> => aca evalua que si peliculas es != null y tiene mas de 0 elementos, entonces entrara
+    //Contenido cargado
+</div>
+
+8.2) @If:
+
+@if (!peliculas) {
+  <img src=""/>
+}
+@else if (peliculas.length ===  0) {
+  <h1>No se encontraron peliculas</h1>
+}
+@else {
+    //Contenido cargado
+}
+
+9) Creando un componente de 0: Para poder crear un componente de 0 en angular utilizaremos el Angular-CLI:
+"ng generate component carpeta/nombre-componente --skip-tests"
+
+9.1) Reutilizar un componente en otro Componente: Esto es tan facil como agregar una directriz cualquiera, una vez agregado el componente
+que deseo utilizar en mi lista de imports lo unico que tengo que hacer es en el HTML hacer referencia al nombre del componente como si 
+fuera una etiqueta HTML.
+
+// En el TS del componente
+@Component({
+  selector: 'root',
+  standalone: true,
+  imports: [ListadoPeliculasComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+
+// En el HTML
+<app-listado-peliculas></app-listado-peliculas>
+
+
+10) @Input: en nuestro caso centralizamos el iterador de peliculas en un componente, lo que me permitira reutilizar el mismo en varias 
+vistas. Ahora el problema de este componente es que siempre me devolvera el mismo listado de peliculas, para ello utilizaremos @Input, 
+que me permitira enviar parametros al componente para poder filtrar la lista que quiero traer desde mi Componente iterador de lista.
+
+// Componente Iterador
+export class ListadoPeliculasComponent {
+  @Input({required: true})
+  peliculas!: any[]
+}
+
+// Componente ejecutor
+export class AppComponent  implements OnInit{
+  ngOnInit(): void {
+    // Cargo las listas con los datos BD.
+  }
+  peliculasEnCines!: any[];
+  peliculasProximosEstrenos!: any[];
+}
+
+// Vista HTML
+<h1>Peliculas En cines</h1>
+<app-listado-peliculas [peliculas]="peliculasEnCines"></app-listado-peliculas>
+
+<h1>Estrenos</h1>
+<app-listado-peliculas [peliculas]="peliculasProximosEstrenos"></app-listado-peliculas>
+
+
+11) Eventos: Cuando quiera transportar DATA HTML hacia mi componente en TS utilizamos los eventos. Un evento es Basicamente una accion del usuario que hace que se dispare
+una funcion. Para referenciar que queremos disparar un evento utilizamos Event-Binding. Para poder llamar una funcion esta debe estar declarada en el AppComponent{} en el 
+export.
+
+<button (click)="hagoClick()">Button</button>
+<button (click)="Remover(pelicula)">Eliminar</button>
+
+
+12) Variables de Referencia de plantilla:
+<input type="file" style="display: none;" #cargadorArchivos>
+<button (click)="cargadorArchivos.Cargar(file)">Cargar</button>
+
+<button (click)="cargadorArchivos.click()" mat-raise-button>Cargar</button>
+<input type="file" hidden #cargadorArchivos accept="image/*" /> 
+
+
+13) Proyeccion de Contenido: en algunos casos quizas queramos pasar a nuestro componente elementos HTML como parametros, para ello debemos usar la proyeccion de contenido.
+Esto lo lograremos mediante el uso de las etiquetas <ng-content> y <ng-container>.
+
+13.1) <ng-container>: Es solo un contenedor que me ayudara a contener codigo HTML y proyectarlo si se cumplen una serie de requisitos. Para que este proyecte un 
+contenido del <ng-content> debera tener su misma KEY (la propiedad select), segun el KEY del <ng-container> proyectara distintos <ng-content>
+
+13.2) <ng-content>: Es un proyector de contenido, este trabajara con los <ng-container>.
+
+- VIDEO 33
+// En mi HTML Base - app-listado-generico:
+@if (!listado) {
+    <img src=""/>
+  }
+@else if (listado.length ===  0) {
+<h1>No se encontraron peliculas</h1>
+}
+@else {
+    <ng-content select="[contenido]"></ng-content>
+}
+
+// En mi HTML Padre:
+<app-listado-generico [listado]="peliculas">
+    <ng-container contenido>
+        @for (pelicula of peliculas; track $index) {
+            // Itera
+        }        
+    </ng-container>
+</app-listado-generico>
+
+
+Tambien puedo generar que el usuario cargue una respuesta pero tambien generar una por default:
+
+@else if (listado.length ===  0) {
+ <div #contenedorVacio>
+    <ng-content select="[Vacio]"></ng-content>
+ </div>
+
+ @if (!contenedorVacio.innerHTML.trim()) {
+    <div>
+        <h1>No hay nada</h1>
+    </div>
+ }
+}
+
+
+
+14) Angular Material: Existen librerias que nos facilitan la creacion de componentes y reglas de estilo ya creadas, un ejemplo de estas es Angular-Material. Para instalarlo
+en nuestro proyecto es tan facil como: "ng add @angular/material". https://material.angular.io/components/categories
+
+<button mat-flat-button (click)="Remover(pelicula)"><mat-icon>delete</mat-icon> Eliminar</button>
+
+
+15) Construir NAV con Angular Material:
+
+<mat-toolbar>
+    <span>
+        <a mat-button>
+            <mat-icon>local_movies</mat-icon> Angular Peliculas
+        </a> 
+    </span>
+</mat-toolbar>
+
+
+
+16) Directiva [ngClass]: Esta directiva de propiedad me permite colocar clases de CSS dinamicamente, por ejemplo segun una expresion BOOLEANA colocare o no una clase. Esto 
+me sirve para colocar de forma dinamica clases de CSS a etiquetas HTML (me ahorro tener que hacer todas esas funcion con JS).
+
+@for (item of maximoRatingArray; track $index) {
+    <mat-icon 
+    (mouseenter)="manejarMouseEnter($index)"
+    (mouseleave)="manejarMouseLeave()"
+    (click)="manejarClick($index)"
+    [ngClass]="{iluminado: RatingSeleccionado>$index}">star</mat-icon>
+}
+
+
+17) Funciones Transformadoras: Son funciones que me permiten transformar valores. En este caso recibiremos una numero y este lo transformaremos en un Array.
+
+@Input({required: true, transform: (valor: number ) => Array(valor).fill(0)})
+maximoRating! : number[];
+
+
+18) Comunicacion de Componentes: En nuestro componente generalmente desde el componente padre le pasamos data al hijo, como funciones o propiedades. Pero tambien podemos 
+hacer una comunicacion a la inversa, puedo enviar DATA del hijo al padre. Una forma es mediante un OutPut. El OutPut nos permite invocar una funcion del Padre mediante la 
+ejecucion de una funcion del hijo. -Video 39
+
+// En el Hijo creamos la Property de salida
+@Output()
+eventoVotado = new EventEmitter<number>(); => creamos un evento y el tipo de dato que devuelve este evento
+manejarClick($index : number){
+    this.RatingSeleccionado = $index + 1;
+    this.ratingAnterior = this.RatingSeleccionado;
+    this.votado.emit(this.RatingSeleccionado); => aca capturo el valor desde el componente hijo
+}
+
+
+// En el Padre creamos una funcion 
+procesarVoto(voto: number){
+    alert(`Calificado ${voto}`)
+}
+
+// en el HTML Padre suscribo la funcion al EventEmitter, la variable $event sera el valor que devuelva el evento
+<app-rating [maximoRating]="5" (eventoVotado)="procesarVoto($event)"></app-rating>
+
+
+RESUMEN: En el HIJO Creo el EventEmitter<T>, especificando el tipo de dato que devuelve, este EventEmitter podra ser llamado desde el HTML PADRE. Luego defino en alguna funcion 
+del HIJO el EMIT(valorCapturar), que se encargara de capturar el valor. En el Padre creo una funcion que reciba el $event como parametro, y desde el HTML Padre suscribimos con 
+esta funcion al EventEmitter.
+
+                                                                              4) Ruteo
+
+1) Ruteo: Para navegar de una pagina a otra utilizamos el ruteo. Con angular ya tenemos configurado el ruteo dentro del app.config.ts. Dentro del app.config encontraremos 
+una serie de proveedores, estos se encargan de darnos recursos para nuestra App. Dentro de estos proveedores encontramos el provideRouter(routes), que es el que nos provee 
+las rutas. Primero para que nuestro app.component.ts pueda utilizar el provideRouter(routes) debe importar la directiva RouterOutlet.
+
+Luego en el HTML de mi app.component.html debo crear un <div> contaniner y dentro el <router-outlet>. Iremos al archivo app.routes.ts y en el arreglo de rutas colocaremos
+la ruta con su respectivo componente, es decir que dentro del <router-outlet> se pondra el componente que corresponda a una determinada ruta.
+
+1.1) // Primero en nuestro app.component.ts agregamos RouterOutlet
+@Component({
+  selector: 'root',
+  standalone: true,
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+
+
+1.2) // Desde el root (app.component.html) agregamos el <router-outlet>, este funcionara como un @RenderBody() en .NET MVC
+
+<div class="contenedor">
+    <router-outlet></router-outlet>
+</div>
+
+
+1.3) // Vamos a app.routes.ts, ahi configuraremos las rutas y que componente se debe mostrar segun la ruta
+
+import { Routes } from '@angular/router';
+import { LandingPageComponent } from './landing-page/landing-page.component';
+import { IndiceGenerosComponent } from './generos/indice-generos/indice-generos.component';
+
+export const routes: Routes = [
+    {path: '', component: LandingPageComponent},
+    {path: 'generos', component: IndiceGenerosComponent}
+];
+
+
+2) RouterLink: Una vez configuradas las rutas necesito configurar los <a> para poder navegar, esto estan simple como agregar la directiva RouterLink en el TS en el que 
+vaya a realizar traslados y configurar los <a> con RouterLink:
+
+// En mi Navbar importamos RouterLink
+@Component({
+  selector: 'app-menu',
+  standalone: true,
+  imports: [MatToolbarModule, MatIconModule, MatButtonModule, RouterLink],
+  templateUrl: './menu.component.html',
+  styleUrl: './menu.component.css'
+})
+
+
+// En el HTML de mi navbar configuramos los <a>
+
+<mat-toolbar>
+    <span>
+        <a mat-button routerLink="">
+            <mat-icon>local_movies</mat-icon> Angular Peliculas
+        </a> 
+    </span>
+    <div>
+        <a mat-button routerLink="generos">
+             Generos
+        </a> 
+    </div>
+</mat-toolbar>
+
+
+3) Navegacion con JS: en ocasiones no querremos que el usuario navegue mediante links, por lo que usaremos JS para navegar. Para esto primero que nada debemos tener 
+acceso al ruteador (provideRouter()), este es un servicio el nos permite navegar en la App. Para utilizar un servicio en Angular utilizamos Inyeccion de dependencias,
+con esta podemos obtener la instacia de una clase sin tener que instanciarla manualmente. Primero obtendremos el router con inject(Router) y luego de tener el router 
+usaremos la funcion navigate("") para trasladarnos a la URL que queramos.
+
+
+
+// en el TS
+export class CrearGenerosComponent {
+   router = inject(Router);
+
+   guardarCambios(){
+      this.router.navigate(["/generos"]);
+   }
+}
+
+// en el HTML
+<button mat-flat-button type="button" (click)="guardarCambios()">Crear</button>
+
+
+4) Parametros por URL: Cuando quiera editar algun elemento en mi pagina deberemos crear una ruta dinamica con el ID de ese elemento. Ahora para mandarselo al WebApi debemos 
+aprender a como extraer ese ID del objeto para pasarlo al Endpoint. Para crear la ruta dinamica con el ID debemos configurarlo en el app.routes.ts. Luego debemos ir al 
+app.config.ts para configurar un servicio que me permita extraer los parametros de la URL. El  withComponentInputBinding(), va a funcionar como una especie de parametro de 
+entrada para capturar el valor del parametro URL.
+
+4.1) // Configurar ruta dinamica con ID
+{path: 'generos/editar/:id', component: EditarGeneroComponent}
+
+4.2) // Configurar el servicio  withComponentInputBinding() para extraer parametros
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes, withComponentInputBinding()), provideAnimationsAsync('noop')]
+};
+
+
+4.3) // Inyectamos el valor en el componente
+export class EditarGeneroComponent {
+    @Input({transform: numberAttribute})
+    id! : number;
+}
+
+
+5) Rutas no encontradas: Para las rutas no encontradas podemos usar un Wild-Card, seria como un atrapa todo, es decir si ingreso una ruta invalida sere trasladado al 
+Wild-Card. Este debe ser colocado en la lista de rutas pero siempre al ultimo.
+
+export const routes: Routes = [
+    // El resto de rutas
+    {path: '**', redirectTo: ''}
+];
+
+
+
+
+
+                                                                            5) Formularios
+
+1) Formulario Por Plantilla: estos tienen su configuracion principalmemte en la plantilla del componente (HTML). En estos formularios las reglas de validacion se 
+suelen colocar como atributos en las etiqutas HTML.
+
+2) Formularios Reactivos: estos tienen su configuracion principalmemte en la clase del componente (TS). Las validaciones se las realiza directamente con TS. Este 
+tipo de formularios me permite tener codigo HTML mas limpio.
+
+2.1) Crear un Formulario Reactivo:
+
+// EN TS
+// Directivas a Usar => imports: [MatButtonModule, RouterLink, MatFormFieldModule, ReactiveFormsModule, MatInputModule]
+export class CrearGenerosComponent {
+   private formBuilder = inject(FormBuilder); // Injecto Servicio FormBuilder
+
+   form = this.formBuilder.group( //=> con Group puedo definir los campos de mi formulario
+   {
+      nombre: ['', {validators: [Validators.required]}] // => el Primer parametro en el valor inicial del campo, el segundo definira los Validadores
+   });
+
+   guardarCambios(){
+      console.log(this.form.value.nombre);
+   }
+}
+
+// EN EL HTML
+<form (submit)="guardarCambios()" [formGroup]="form"> => la propiedad [formGroup] me permite pasarle la estructura del formulario que definimos en el TS
+    <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input  matInput [formControl]="form.controls.nombre"> => el [formControl] me permite definir a que propiedad relaciono cada input
+    </mat-form-field>
+    <div>
+        <button mat-flat-button type="submit" [disabled]="form.invalid">Crear</button> => la Property-Binding [disable] me permite darle una condicion para desactivar o no el 
+                                                                                          boton, en este caso si el FORM es invalido el boton estara desactivado
+        <a mat-stroked-button routerLink="/generos">Volver</a>
+    </div>
+</form>
+
+
+2.2) Validaciones por Defecto para formularios Reactivos: Existen varios: min, max, required, requiredTrue(Que el checkbox este marcado), minLength, maxLength, pattern(darle
+un patron Regex y ver si el contenido es valido), ETC.
+
+form = this.formBuilder.group( //=> con Group puedo definir los campos de mi formulario
+{
+  nombre: ['', {validators: [Validators.required]}] // => el Primer parametro en el valor inicial del campo, el segundo definira los Validadores
+});
+
+
+Para los mensajes de error bajo los inputs creare una funcion para cada input:
+
+// EN EL TS
+ErrorCampoNombre() : string{
+  let nombre = this.form.controls.nombre;
+  if(nombre.hasError('required'))
+  {return "Porfavor complete el campo nombre";}
+  return "";
+}
+
+
+// EN EL HTML
+<mat-error>{{ErrorCampoNombre()}}</mat-error>
+
+
+// En el App.config.ts configuraremos un tamaño por defecto para los errores y no se produzcan solapamientos.
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes, withComponentInputBinding()), provideAnimationsAsync(),
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {subscriptSizing: 'dynamic'}}
+  ]
+};
+
+
+2.3) Validaciones Personalizadas para formularios Reactivos:
+
+// En un Archivo de TS aparte
+export function PrimeraLetraMayuscula() : ValidatorFn{
+    return (control: AbstractControl) : ValidationErrors | null => {
+        const valor = <string>control.value;
+        if(!valor)return null;
+        if(valor.length === 0)return null;
+        
+        const firstCharacter = valor[0];
+        if(firstCharacter !== firstCharacter.toUpperCase()){
+            return{
+                primeraLetraMayuscula: // Este primeraLetraMayuscula sera la llave de la validacion, con ella puedo validar con HasError()
+                {
+                    mensaje: "La primera letra debe ser mayuscula"
+                }
+            }
+        }
+        return null; 
+    }
+}
+
+// Implementar la validacion
+form = this.formBuilder.group( //=> con Group puedo definir los campos de mi formulario
+{
+  nombre: ['', {validators: [Validators.required, PrimeraLetraMayuscula()]}] // => el Primer parametro en el valor inicial del campo, el segundo definira los Validadores
+});
+
+ErrorCampoNombre() : string{
+  let nombre = this.form.controls.nombre;
+
+  if(nombre.hasError('primeraLetraMayuscula'))
+  {return nombre.getError('primeraLetraMayuscula').mensaje}
+
+  return "";
+}
+
+
+2.4) Usar form Crear para modificar: Para reutilizarlo primero crearemos el Componente del formulario aparte, para que pueda ser consumido por el componente editar y 
+crear. Luego haremos el pasaje de datos de hijo a padre(VER EXPLICACION DETALLADA). Por ultimo definiremos es el formulario un @Input opcional, que cargara nuestro 
+formulario en el caso de editar o dejarlo vacio en el caso de crear. Implementaremos la interfaz OnInit y si nuestro parametro de entrada no es undefined, entonces 
+cargaremos los campos del formulario. VIDEO - 54
+
+@Input()
+modelo?: LecturaGenerosDTO;
+
+ngOnInit(): void {
+  if(this.modelo !== undefined)
+  {
+    this.form.patchValue(this.modelo);
+  }
+}
+
+
+2.5) Formulario con DateTime: Para nuestro componente [matDatepicker] deberemos instalar un proveedor, en este caso usaremos momentJS: "npm install moment" y 
+"npm i @angular/material-moment-adapter" VIDEO - 55
+
+<mat-form-field>
+  <mat-label>Fecha de nacimiento</mat-label>
+  <input  matInput [matDatepicker]="picker" [formControl]="form.controls.fechaNacimiento">
+  <mat-datepicker #picker></mat-datepicker>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-error>{{ErrorCampoFecha()}}</mat-error>
+</mat-form-field>
+
+imports: [MatButtonModule, RouterLink, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatDatepickerModule, MatNativeDateModule ]
+form = this.formBuilder.group({
+    nombre: ['', {validators: [Validators.required, PrimeraLetraMayuscula()]}],
+    fechaNacimiento: new FormControl<Date | null>(null)
+});
+guardarCambios(){
+  if(!this.form.valid) return;
+  const actor = this.form.value as ActorCreacionDTO;
+  actor.fechaNacimiento = moment(actor.fechaNacimiento).toDate();
+  this.posteoFormulario.emit(actor)
+}
+
+
+2.6) Validar Formulario con fecha:
+
+export function fechaNoPuedeSerFutura() : ValidatorFn{
+    return (control: AbstractControl) : ValidationErrors | null =>{
+        const fecha = new Date(control.value);
+        const hoy =  new Date();
+        if(fecha>hoy)
+        {
+            return{
+                futuro:{
+                    mensaje: "La Fecha debe ser anterior a hoy"
+                }
+            }
+        }
+        return null; 
+    }
+}
+
+ErrorCampoFecha() : string{
+  let fechaCampo = this.form.controls.fechaNacimiento;
+  if(fechaCampo.hasError('required'))
+  {return "Porfavor complete el campo fecha";}
+  if(fechaCampo.hasError('futuro'))
+  {return fechaCampo.getError('futuro').mensaje}
+  return "";
+}
+
+
+3) Crear Componente para seleccionar Fotos:
+
+// EN EL HTML HIJO
+<h4>{{titulo}}</h4>
+<div>
+    <button (click)="cargadorArchivos.click()" mat-raised-button type="button">Cargar</button>
+    <input type="file" hidden #cargadorArchivos accept="image/*" (change)="CambioInputTypeFile($event)"/> 
+</div>
+<div>
+    @if(imagenBase64 !== undefined){
+        <img [src]="imagenBase64" width="169" height="250">
+    }
+    @else if(urlImagen){
+        <img [src]="urlImagen" width="169" height="250">
+    }
+</div>
+
+// FUNCION PARA CONVERTIR BITS A STRING
+export function toBase64(file: File): Promise<string>{
+    return new Promise((resolve, reject) => {
+        const lector = new FileReader();
+        lector.readAsDataURL(file);
+        lector.onload = () => resolve(lector.result as string);
+    });
+}
+
+// EN EL TS DEL COMPONENTE (Hijo)
+export class InputImgComponent {
+    @Input({required: true})
+    titulo!: string;
+    @Input()
+    urlImagen?: string;
+
+    @Output()
+    archivoSeleccionado = new EventEmitter<File>();
+
+    imagenBase64?: string;
+
+    CambioInputTypeFile(event: Event){
+      const input = event.target as HTMLInputElement;
+      if(input.files && input.files.length>0){
+        const file: File = input.files[0];
+        toBase64(file)
+        .then((valor: string) => this.imagenBase64 = valor)
+        .catch((err) => console.log(err))
+        this.archivoSeleccionado.emit(file);
+        this.urlImagen = undefined;
+      }
+    }
+}
+
+// EN EL HTML PADRE
+<app-input-img titulo="Seleccione imagen" [urlImagen]="modelo?.foto" (archivoSeleccionado)="archivoSelect($event)"></app-input-img>
+
+// EN EL TS DEL COMPONENTE (Padre)
+archivoSelect(file: File){
+    this.form.controls.foto.setValue(file);
+}
+
+guardarCambios(){
+  if(!this.form.valid) return;
+  const actor = this.form.value as ActorCreacionDTO;
+  actor.fechaNacimiento = moment(actor.fechaNacimiento).toDate();
+
+  if(typeof actor.foto === "string"){ // Esto es para que si es la misma foto (por eso sera un type-string) no se modifique a la hora de guardar los cambios
+    actor.foto = undefined;
+  } 
+
+  this.posteoFormulario.emit(actor)
+  console.log(actor)
+}
+
+
+4) Usando un Mapa con Leaflet: "npm install leaflet@1.9.4", "npm install @bluehalo/ngx-leaflet@18.0.2" y "npm install --save-dev @types/leaflet@1.9.12".
+
+4.1) Primero configuraremos el Angular.JSON para usar Leaflet:
+"assets": [
+{
+  "glob": "**/*",
+  "input": "public"
+},
+{
+  "glob": "**/*",
+  "input": "./node_modules/leaflet/dist/images",
+  "output": "assets/"
+}
+],
+"styles": [
+  "@angular/material/prebuilt-themes/azure-blue.css",
+  "src/styles.css",
+  "./node_modules/leaflet/dist/leaflet.css"
+],
+
+
+4.2) Luego Crearemos un DTO que nos ayudara con los datos del mapa:
+export interface CoordenadaDTO{
+    texto?: string;
+    latitud: number;
+    longitud: number;
+}
+
+4.3) Luego configuraremos el TS de la siguiente manera
+
+export class MapaComponent implements OnInit {
+
+  // En el caso de que haya coordenadas las cargare y mostrare en el mapa
+  ngOnInit(): void {
+    this.capas = this.coordInicial.map(valor =>{
+      const marcador = marker([valor.latitud, valor.longitud], this.markerOptions)
+      return marcador;
+    })
+  }
+
+  //Este parametro Opcional me servira para declararle unas coordenadas inciales a un cine, por EJ en el caso de Editarlos.
+  @Input()
+  coordInicial: CoordenadaDTO[] = [];
+  @Output()
+  coordenadaSeleccionada = new EventEmitter<CoordenadaDTO>();
+
+  // Aca defino la configuracion inicial del Mapa
+  options = {
+    layers:[
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+    ],
+    zoom: 14,
+	  center: latLng(-31.3515782767758, -64.17225219391173)
+  }
+  // Capas llamamos a los marcadores que colocaremos sobre el mapa
+  capas: Marker<any>[] = [];
+
+  // Aca voy a crear un estilo de marcador
+  markerOptions: MarkerOptions ={
+    icon: icon({
+      iconSize: [25, 41],
+      iconAnchor: [13, 41],
+      iconUrl: "assets/marker-icon.png",
+      iconRetinaUrl: "assets/marker-icon-2x.png",
+      shadowUrl: "assets/marker-shadow.png"
+    })
+  }
+  manejarClick(event: LeafletMouseEvent){
+    // Capturamos la latitud y longitud gracias al LeafletMouseEvent
+    const lat = event.latlng.lat;
+    const lng = event.latlng.lng;
+    // Limpiamos el arrays de Markers 
+    this.capas = []
+    this.capas.push(marker([lat, lng], this.markerOptions))
+    let cord : CoordenadaDTO = {texto: "", latitud: lat, longitud: lng};
+    this.coordenadaSeleccionada.emit(cord)
+  }
+}
+
+// Y el HTML de la siguiente manera:
+<div leaflet [leafletOptions]="options" 
+[leafletLayers]="capas"
+(leafletClick)="manejarClick($event)"
+style="width: 800px; height: 600px;"> 
+</div>
+
+
+4.4) En el componente padre modificaremos el formGroup de la siguiente forma:
+
+form = this.formBuilder.group({
+  nombre: ['', {validators:[Validators.required, PrimeraLetraMayuscula()]}],
+  latitud: new FormControl<number | null>(null, [Validators.required]),
+  longitud: new FormControl<number | null>(null, [Validators.required])
+});
+
+CoordenadaSeleccionada(coord: CoordenadaDTO){
+  this.form.patchValue(coord);
+}
+
+//HTML PADRE
+<app-mapa (coordenadaSeleccionada)="CoordenadaSeleccionada($event)"></app-mapa>
+
+
+5) Filtros:
+
+// Codigo TS
+export class FiltroPeliculasComponent implements OnInit {
+
+    ngOnInit(): void {
+
+      // Esto me permitira suscribirme a los values que cambiaron en el formulario
+      this.form.valueChanges.subscribe(values => {
+        this.peliculas = this.peliculasOriginal;
+        this.buscarPeliculas(values as FiltroPeliculasDTO)
+      });
+    }
+
+    // Filtro de peliculas
+    buscarPeliculas(values: FiltroPeliculasDTO){
+      if(values.titulo){
+        this.peliculas = this.peliculas.filter(pelicula => pelicula.titulo.indexOf(values.titulo) !== -1)
+      }
+      if(values.generoId !== 0){
+        this.peliculas = this.peliculas.filter(pelicula => pelicula.generos.indexOf(values.generoId) !== -1)
+      }
+      if(values.proximosEstrenos){
+        this.peliculas = this.peliculas.filter(pelicula => pelicula.proximosEstrenos)
+      }
+      if(values.enCines){
+        this.peliculas = this.peliculas.filter(pelicula => pelicula.enCines)
+      }
+    }
+
+
+    private formBuilder = inject(FormBuilder);
+    form = this.formBuilder.group({
+      titulo: '',
+      generoId: 0,
+      proximosEstrenos: false,
+      enCines: false
+    })
+    peliculasOriginal = [];
+    peliculas = this.peliculasOriginal;
+    generos: LecturaGenerosDTO[] = [{id: 1, nombre: "Drama"}, {id: 2, nombre: "Comedia"}, {id: 3, nombre: "Accion"}]
+    LimpiarFiltro(){
+      this.form.patchValue({titulo: '', generoId: 0, enCines: false, proximosEstrenos: false})
+    }
+}
+
+// Codigo HTML
+<form [formGroup]="form">
+    <mat-form-field appearance="fill">
+        <mat-label>Titulo</mat-label>
+        <input matInput [formControl]="form.controls.titulo"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Genero</mat-label>
+        <mat-select [formControl]="form.controls.generoId">
+            <mat-option [value]="0">Seleccione un Genero</mat-option>
+            @for (genero of generos; track $index) {
+                <mat-option [value]="genero.id">{{genero.nombre}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <mat-checkbox [formControl]="form.controls.proximosEstrenos">Proximos Estrenos</mat-checkbox>
+    </div>
+    <div>
+        <mat-checkbox [formControl]="form.controls.enCines">En Cines</mat-checkbox>
+    </div>
+
+    <div>
+        <button mat-flat-button color="warn" (click)="LimpiarFiltro()">Limpiar</button>
+    </div>
+</form>
+<app-listado-peliculas [peliculas]="peliculas"></app-listado-peliculas>
+
+
+5.1) Filtro con QueryStringDinamicos: Esto me sirve cuando quiero refrescar la pagina y que se mantenga a la vez mis busqueda. Para esto necesito que esa data que 
+cargo en mi formulario de filtro se cargue en QueryString en mi URL. Para esto vamos a necesitar el servicio de "Location" => import { Location } from '@angular/common';
+
+ngOnInit(): void {
+  // Con esta linea leere los QueryString y los buscare para que me devuelva la lista de peliculas filtradas
+  this.leerValoresURL();
+  this.buscarPeliculas(this.form.value as FiltroPeliculasDTO)
+  // Esto me permitira suscribirme a los values que cambiaron en el formulario
+  this.form.valueChanges.subscribe(values => {
+    this.peliculas = this.peliculasOriginal;
+    this.buscarPeliculas(values as FiltroPeliculasDTO);
+    this.escribirParametrosBusquedaEnURL(values as FiltroPeliculasDTO);
+  });
+}
+
+private location = inject(Location);
+private activatedRoute = inject(ActivatedRoute);
+escribirParametrosBusquedaEnURL(values: FiltroPeliculasDTO){
+  let queryString = [];
+  if(values.titulo){
+    queryString.push(`titulo=${encodeURIComponent(values.titulo)}`);
+  }
+  if(values.generoId !== 0){
+    queryString.push(`generoId=${values.generoId}`);
+  }
+  if(values.proximosEstrenos){
+    queryString.push(`proximosEstrenos=${values.proximosEstrenos}`);
+  }
+  if(values.enCines){
+    queryString.push(`enCines=${values.enCines}`);
+  }
+  this.location.replaceState('peliculas/filtrar', queryString.join('&'))
+}
+leerValoresURL(){
+  this.activatedRoute.queryParams.subscribe((params: any) => {
+    let obj: any = {};
+    if(params.titulo){
+      obj.titulo = params.titulo;
+    }
+    if(params.generoId){
+      obj.generoId = Number(params.generoId);
+    }
+    if(params.proximosEstrenos){
+      obj.proximosEstrenos = params.proximosEstrenos;
+    }
+    if(params.enCines){
+      obj.enCines = params.enCines;
+    }
+    this.form.patchValue(obj);
+  });
+}
+
+
+6) Formulario Peliculas:
+<form (submit)="guardarCambios()" [formGroup]="form">
+    <mat-form-field appearance="outline">
+        <mat-label>Titulo</mat-label>
+        <input matInput [formControl]="form.controls.titulo">
+        <mat-error>{{ErrorCampoTitulo()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Fecha de Lanzamiento</mat-label>
+        <input matInput [matDatepicker]="picker" [formControl]="form.controls.fechaLanzamiento"/>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-error>{{ErrorCampoFecha()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Trailer</mat-label>
+        <input matInput [formControl]="form.controls.trailer"/>
+    </mat-form-field>
+
+    <app-input-img titulo="Poster de la Pelicula" [urlImagen]="modelo?.poster" (archivoSeleccionado)="archivoSeleccionado($event)"></app-input-img>
+
+    <div class="button-container">
+        <button type="submit" mat-flat-button [disabled]="form.invalid">Crear Pelicula</button>
+        <a mat-stroked-button routerLink="/">cancelar</a>
+    </div>
+</form>
+
+
+7) Componente de Seleccion Multiple: En el caso de las peliculas, estas pueden tener muchos generos, por lo que deberemos crear un Select de seleccion multiple para 
+poder cargar las peliculas.
+
+// Codigo TS
+export class SelectorMultipleComponent {
+  @Input({required: true})
+  Seleccionados!: SelectorMultipleDTO[];
+  @Input({required: true})
+  NoSeleccionados!: SelectorMultipleDTO[];
+
+  seleccionarElemento(elemento: SelectorMultipleDTO, index: number){
+    this.Seleccionados.push(elemento);
+    this.NoSeleccionados.splice(index, 1);
+  }
+  deseleccionarElemento(elemento: SelectorMultipleDTO, index: number){
+    this.NoSeleccionados.push(elemento);
+    this.Seleccionados.splice(index, 1);
+  }
+
+  seleccionarTodo(){
+    this.Seleccionados.push(...this.NoSeleccionados);
+    this.NoSeleccionados.length = 0;
+  }
+
+  deseleccionarTodo(){
+    this.NoSeleccionados.push(...this.Seleccionados);
+    this.Seleccionados.length = 0;
+  }
+}
+// Codigo HTML
+<div class="contenedor">
+    <ul>
+        @for (item of NoSeleccionados; track $index) {
+            <li (click)="seleccionarElemento(item, $index)" >{{item.valor}}</li>
+        }
+    </ul>
+
+    <div class="div-botones">
+        <button type="button" mat-flat-button (click)="seleccionarTodo()">>></button>
+        <button type="button" mat-flat-button (click)="deseleccionarTodo()"><<</button>
+    </div>
+
+    <ul>
+        @for (item of Seleccionados; track $index) {
+            <li (click)="deseleccionarElemento(item, $index)" >{{item.valor}}</li>
+        }
+    </ul>
+</div>
+
+
+8) Componente de AutoComplete:
+
+// Codigo TS
+export class ActorsAutocompleteComponent implements OnInit {
+  
+  actors: ActorAutoCompleteDTO[] = [
+    {id: 1, name: 'Tom Holland', character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Tom_Holland_by_Gage_Skidmore.jpg/330px-Tom_Holland_by_Gage_Skidmore.jpg'},
+    {id: 2, name: 'Tom Hanks', character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Tom_Hanks_TIFF_2019.jpg/220px-Tom_Hanks_TIFF_2019.jpg' },
+    {id: 3, name: 'Samuel L. Jackson', character: '', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/SamuelLJackson.jpg/250px-SamuelLJackson.jpg' }
+  ];
+
+  actorsOriginal = this.actors;
+
+  @Input({required: true})
+  selectedActors: ActorAutoCompleteDTO[] = [];
+
+  control = new FormControl();
+
+  columnsToDisplay = ['image', 'name', 'character', 'actions'];
+
+  @ViewChild(MatTable)
+  table!: MatTable<ActorAutoCompleteDTO>;
+
+  ngOnInit(): void {
+    this.control.valueChanges.subscribe(value => {
+      this.actors = this.actorsOriginal;
+      this.actors = this.actors.filter(actor => actor.name.indexOf(value) !== -1);
+    });
+  }
+
+  handleSelection(event: MatAutocompleteSelectedEvent){
+    this.selectedActors.push(event.option.value);
+    this.control.patchValue('');
+    if (this.table !== undefined){
+      this.table.renderRows();
+    }
+  }
+
+  delete(actor: ActorAutoCompleteDTO){
+    const index = this.selectedActors.findIndex((a: ActorAutoCompleteDTO) => a.id === actor.id);
+    this.selectedActors.splice(index, 1);
+    this.table.renderRows();
+  }
+
+  handleDrop(event: CdkDragDrop<any[]>){
+    const previousIndex = this.selectedActors.findIndex(actor => actor === event.item.data);
+    moveItemInArray(this.selectedActors, previousIndex, event.currentIndex);
+    this.table.renderRows();
+  }
+}
+
+// Codigo HTML
+<form>
+    <mat-form-field>
+        <input type="text" placeholder="Write the name of the actor" matInput [formControl]="control"
+        [matAutocomplete]="auto" />
+        <mat-autocomplete #auto (optionSelected)="handleSelection($event)">
+            @for (actor of actors; track $index) {
+                <mat-option [value]="actor">
+                    <img [src]="actor.picture"/> {{actor.name}}
+                </mat-option>
+            }
+        </mat-autocomplete> 
+    </mat-form-field>
+</form>
+@if(selectedActors.length > 0){
+    <table mat-table [dataSource]="selectedActors" class="mat-elevation-z8"
+    cdkDropList [cdkDropListData]="selectedActors" (cdkDropListDropped)="handleDrop($event)"
+    >
+        <ng-container matColumnDef="image">
+            <td mat-cell *matCellDef="let element">
+                <img style="width: 50px" [src]="element.picture" />
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <td mat-cell *matCellDef="let element">
+                {{element.name}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="character">
+            <td mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline" style="margin: 10px 0">
+                    <mat-label>Character</mat-label>
+                    <input matInput [(ngModel)]="element.character" />
+                </mat-form-field>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <td mat-cell *matCellDef="let element">
+                <mat-icon mat-list-icon (click)="delete(element)">
+                    close
+                </mat-icon>
+            </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay" cdkDrag [cdkDragData]="row"></tr>
+    </table>
+}
+
+9) Cdk-Drag-drop: -Video 67
+
+
+                                                                6) Conectar Angular a API
+
+1) Servicios: En el caso de que queramos incorporar logica a nuestro componente, pero que esta no esta directamente creada en el componente usaremos los 
+servicios. En Angular un servicio es una clase con un proposito bien definido. La utilizacion de servicios me permite tener mi codigo organizado y reutilizable.
+En el caso de Angular puedo crear servicios que me permitan encapsular Llamados a mi Web API
+
+EJ Crear Servicio: "ng generate service MyFolder/service --skip-tests"
+
+// CLASE SERVICIO
+import {Injectable} from '@angular/core';
+@Injectable({
+  providedIn: 'root'
+})
+export class GenerosService{
+  constructor(){}
+  obtenerGeneros() : Generos[]{
+
+  }
+}
+
+// Obtener Servicios
+export class IndexGenresComponent {
+  generosService = inject(GenresService);
+  constructor(){
+    this.generosService.obtenerTodosGeneros();
+  }
+}
+
+
+2) Peticiones HTTP en Angular: Para consumir APIs (realizar peticiones http) debemos configurar la clase HTTPClient, desde nuestros provieders. Tenemos que tener 
+en cuenta de que tengamos el CORS bien configurado en nuestra api asi la podemos consumir desde angular.
+
+// Configurarmos el HTTPCLient
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideRouter(routes, withComponentInputBinding()), provideAnimationsAsync(),
+  {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {subscriptSizing: 'dynamic'}},
+  provideMomentDateAdapter({
+    parse: {
+      dateInput: ['DD-MM-YYYY'],
+    },
+    display: {
+      dateInput: 'DD-MM-YYYY',
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY',
+    },
+  }),
+  provideHttpClient(withFetch()) // Configuramos el HTTPCLient
+  ]
+};
+
+// Lo utilizamos
+export class GenresService {
+  httpClient = inject(HttpClient);
+  constructor() { }
+  obtenerTodosGeneros() : Observable<GenreDTO[]>{
+    return this.httpClient.get<GenreDTO[]>("");
+  }
+}
+
+// Consumo del GenresService
+export class IndexGenresComponent {
+  generosService = inject(GenresService);
+  constructor(){
+    this.generosService.obtenerTodosGeneros().suscribe(generos => {
+      console.log(generos);
+    })
+  }
+}
+
+
+2.1) Suscribe(): Esta funcion lo que hace es suscribirse al ultimo metodo ejecutado y recuperar el resultado que devolvio y poder ejecutar una CallBack con eso.
+Tambien en caso de que no devuelva resultado tambien nos servira con un AWAITER, debido a que esta funcion no se ejecutara hasta que la funcion a la que esta 
+suscripta no haya terminado.
+
+2.2) Observable: Son un tipo de dato que se asemeja a las Task, son tipos de datos que manejan operaciones asincronicas.
+
+
+3) Configurar una variable de ambiente en angular: al igual que en C# tendremos 2 archivos, un proveedor de configuracion que se ejecute en Desarrollo y otro que 
+solo se ejecute en produccion. 
+Para generar esto escribiremos los siguiente en el CLI: "ng generate environments"
+
+// Variable de ambientes
+export const environment = {
+    production: false,
+    endPointGet: "localHost"
+};
+
+// Utilizarlas en nuestros servicios
+
+export class GenresService {
+  httpClient = inject(HttpClient);
+  urlBase = environment.endPointGet + '/generos';
+  constructor() { }
+  public obtenerTodosGeneros() : Observable<GenreDTO[]>{
+    return this.httpClient.get<GenreDTO[]>(this.urlBase);
+  }
+  public crear(genero: GenreCreationDTO){
+    return this.httpClient.post(this.urlBase, genero);
+  } 
+}
+
+
+4) Consumir un Endpoint de POST:
+
+// Creamos la funcion en nuestro servicio
+public crear(genero: GenreCreationDTO){
+    return this.httpClient.post(this.urlBase, genero);
+}
+
+// La consumimos
+export class CreateGenreComponent {
+  private router = inject(Router);
+  private generosService = inject(GenresService);
+  saveChanges(genre: GenreCreationDTO){
+    this.generosService.crear(genre).subscribe(() => {
+      this.router.navigate(['/genres']);
+    });
+  }
+}
+
+
+
+5) Mostrar Errores de validacion del Web API en nuestra APP de angular: Cuando hagamos un envio al Web-Api esta puede devolver un codigo exitoso(200,201,204) o un 
+codigo de error (400,401,404), a estos normalmente les colocamos un mensaje de error de los sucedido. Ahora veremos como recuperar en las respuestas de error esos 
+mensajes para mostrarlos. Cabe resaltar que antes debemos realizar las validaciones de front-end (como vimos en los formularios), pero tambien las haremos en el 
+backend por las dudas que salteen las primeras validaciones.
+
+// Funcion para extraer y mostrar mensajes de error
+export function extraerErrores(obj: any) : string[]{
+    const err = obj.error.errors;
+    let mensajesDeError : string[] = [];
+    for (const key in err) {
+        let campo = key;
+        const mensajesConCampos = err[key].map((msg:string) => `${campo}: ${msg}`);
+        mensajesDeError = mensajesDeError.concat(mensajesConCampos);
+    }
+    return mensajesDeError;
+}
+
+
+// Implementacion en TS:
+export class CreateGenreComponent {
+  private router = inject(Router);
+  private generosService = inject(GenresService);
+  errores: string[] = [];
+  saveChanges(genre: GenreCreationDTO){
+    this.generosService.crear(genre).subscribe({
+      //Esto se ejecutara si la accion crear se realizo exitosamente, es decir el Endpoint se ejecuto sin problemas y nos devuelve un 
+      //codigo 2xx
+      next: () => {
+        this.router.navigate(['/genres']);
+      },
+      // Este se ejecutara en caso de que ocurra algun error en la ejecucion de WebApi
+      error: (err) => {
+        let msgErrores = extraerErrores(err);
+        this.errores = msgErrores;
+      }
+    });
+  }
+}
+
+// Implementacion en HTML:
+<h2>Create Genre</h2>
+<app-genres-form (postForm)="saveChanges($event)"></app-genres-form>
+@if (errores.length > 0) {
+<app-errores-mostrar [listaErrores]="errores"></app-errores-mostrar>
+}
+
+
+// Componente de mostrar error TS:
+export class ErroresMostrarComponent {
+  @Input({required: true})
+  listaErrores!: string[]
+}
+
+// Componente de mostrar error HTML:
+<ul>
+    @for (err of listaErrores; track $index) {
+        <li>{{err}}</li>
+    }
+</ul>
+
+
+
+6) Paginar Angular: Para esto vamos a utilizar un componente de angular material llamado paginator. Primero crearemos un DTO de Paginacion, Luego modificaremos el 
+metodo de obtener la lista de elementos(por ejemplo obtener todos los generos), le agregaremos al metodo un parametro que sera la paginacionDTO. Luego lo que haremos
+sera agarrar los datos de PaginacionDTO y colocarlos como QueryString en nuestra URL, para esto crearemos una funcion auxiliar.
+
+
+6.1):
+export interface PaginacionDTO{
+  pagina: number;
+  recordsPorPagina: number;
+}
+
+6.2):
+obtenerPaginado(paginacionDTO: PaginacionDTO) : Observable<GenreDTO[]>{
+    return this.httpClient.get<GenreDTO[]>(this.urlBase);
+}
+
+
+6.3):
+// Funcion Auxiliar
+export function construirQueryParams(obj: any) : HttpParams{
+    let queryParams = new HttpParams();
+    for (const propiedad in obj) {
+        if (obj.hasOwnProperty(propiedad)) {
+            queryParams = queryParams.append(propiedad, obj[propiedad]);
+        }
+    }
+    return queryParams;
+}
+// Implementar funcion
+export class GenresService {
+  httpClient = inject(HttpClient);
+  urlBase = environment.endPointGet + '/generos';
+  constructor() { }
+  obtenerPaginado(paginacionDTO: PaginacionDTO) : Observable<HttpResponse<GenreDTO[]>>{
+    let queryParams = construirQueryParams(paginacionDTO);
+    return this.httpClient.get<GenreDTO[]>(this.urlBase, {params: queryParams, observe: 'response'});
+  }
+
+  public crear(genero: GenreCreationDTO){
+    return this.httpClient.post(this.urlBase, genero);
+  }
+}
+
+La razon por la que usamos HttpResponse<> en el Observable, es que con ello podremos acceder a la cabecera de la peticion, en ella, gracias a nuestro metodo de 
+paginacion BackEnd, enviamos la cantidad total de registros y/o paginas.
+
+6.4) Usar el Paginado:
+export class IndexGenresComponent {
+  generosService = inject(GenresService);
+  generos!: GenreDTO[;]
+  enProduccion = environment;
+  paginacionDTO: PaginacionDTO = {pagina: 1, recordsPorPagina: 5};
+  cantidadTotalRegistros!: number;
+
+  constructor(){
+    this.cargarRegistros();
+  }
+
+  cargarRegistros(){
+    this.generosService.obtenerPaginado(this.paginacionDTO)
+    .subscribe((respuesta: HttpResponse<GenreDTO[]>)  => {
+      this.generos = respuesta.body as GenreDTO[];
+      const cabecera = respuesta.headers.get("cantidad-total-registros") as string;
+      this.cantidadTotalRegistros = parseInt(cabecera, 10);
+    })
+  }
+
+  actualizarPaginacion(dataos: PageEvent){
+    this.paginacionDTO = {pagina: datos.pageIndex+1, recordsPorPagina: datos.pageSize};
+    this.cargarRegistros();
+  }
+}
+
+
+6.5): Importar la directiva de MatPaginatorModule, luego pegar el <mat-paginator> en el HTML.
+
+<mat-paginator showFirstLatButtons [length]="cantidadTotalRegistros" [pageSize]="paginacion.recordsPorPagina" [pageSizeOptions]="[5,10,50]" class="mat-elevation-z8"
+(page)="actualizarPaginacion($event)">
+<mat-paginator/>
+
+
+7) Crear Consumo de endpoints:
+
+// GET ARRAY
+obtenerPaginado(paginacionDTO: PaginacionDTO) : Observable<HttpResponse<GenreDTO[]>>{
+  let queryParams = construirQueryParams(paginacionDTO);
+  return this.httpClient.get<GenreDTO[]>(this.urlBase, {params: queryParams, observe: 'response'});
+}
+
+// GET SINGLE
+public obtenerPorId(id: number): Observable<GenreDTO>{
+  return this.httpClient.get<GenreDTO>(`${this.urlBase}/${id}`)
+}
+
+// POST
+public crear(genero: GenreCreationDTO){
+  return this.httpClient.post(this.urlBase, genero);
+}
+
+// PUT
+public actualizar(id: number, genero: GenreCreationDTO){
+  return this.httpClient.put(`${this.urlBase}/${id}`, genero);
+}
+
+// DELETE
+public borrar(id: number){
+  return this.httpClient.delete(`${this.urlBase}/${id}`);
+}
+
+
+7.1) EndPoint Para FromForms:
+
+public crear (actor: ActorCreationDTO){
+  const formData = this.construirFormData(actor);
+  return this.httpClient.post(this.urlBase,formData);
+}
+
+private construirFormData(actor: ActorCreationDTO): FormData{
+  const formData = new FormData();
+  formData.append('name', actor.name);
+  formData.append('dateOfBirth', actor.dateOfBirth.toISOString().split('T')[0]);
+  if(actor.picture){
+    formData.append('picture', actor.picture);
+  }
+  return formData;
+}
+
+
+
+8) Utilizar Servicio de Endpoints:
+
+// GET ARRAY
+constructor(){
+    this.cargarRegistros();
+}
+cargarRegistros(){
+  this.generosService.obtenerPaginado(this.paginacionDTO)
+  .subscribe((respuesta: HttpResponse<GenreDTO[]>)  => {
+    this.generos = respuesta.body as GenreDTO[];
+    const cabecera = respuesta.headers.get("cantidad-total-registros") as string;
+    this.cantidadTotalRegistros = parseInt(cabecera, 10);
+  })
+}
+
+// POST
+saveChanges(genre: GenreCreationDTO){
+  this.generosService.crear(genre).subscribe({
+    next: () => {
+      this.router.navigate(['/genres']);
+    },
+    error: (err) => {
+      let msgErrores = extraerErrores(err);
+      this.errores = msgErrores;
+    }
+  });
+}
+
+// PUT
+ngOnInit() : void{
+  this.generosService.obtenerPorId(this.id).suscribe(genero => {
+    this.genero = genero;
+  });
+}
+saveChanges(genre: GenreCreationDTO){
+  this.generosService.actualizar(this.id ,genre).subscribe({
+    next: () => {
+      this.router.navigate(['/genres']);
+    },
+    error: (err) => {
+      let msgErrores = extraerErrores(err);
+      this.errores = msgErrores;
+    }
+  });
+}
+
+
+// DELETE
+borrarRegistro(id: number){
+  this.generosService.borrar(id).subscribe(()=>{
+    this.paginationDTO.pagina = 1;
+    this.cargarRegistros();
+  })
+}
+
+
+9) Libreria SweetAlert: Esta libreria me permitira tener alertas para distintas acciones, como una alerta para confirmar el borrado 
+de un elemento. Instalacion: "npm i sweetalert2@11.12.4" y "npm i @sweetalert2/ngx-sweetalert2@12.4.0"
+
+Configuracion Dentro de app.config.ts: importProvidersFrom([SweetAlert2Module.forRoot()])
+
+// USO
+<button [swal]="{title: 'Confirmacion', text: 'Desea Borrar?', showCancelButton: true}"
+(confirm)="borrarRegistro(element.id)"></button>
+
+
+10) Componente Indice Entidades: -Video 124
+
+// Codigo TS generico
+export class IndiceEntidadComponent<TDTO> {
+  @Input({required: true})
+  titulo!: string;
+  @Input({required: true})
+  rutaCrear!: string;
+  @Input({required: true})
+  rutaEditar!: string;
+  @Input({required: true})
+  columnasAMostrar!: string[];
+
+  paginacion: PaginacionDTO = {pagina: 1, recordsPorPagina: 5};
+  cantidadTotalRegistros!: number;
+  entidades!: TDTO[];
+  servicioCRUD = inject(SERVICIO_CRUD_TOKEN) as IServicioCrud<TDTO, TCreacionDTO>;
+
+
+  cargarRegistros(){
+    this.servicioCRUD.obtenerPaginado({pagina: 1, recordsPorPagina: 5})
+    .subscribe((respuesta: HttpResponse<TDTO[]>)  => {
+      this.entidades = respuesta.body as TDTO[];
+      const cabecera = respuesta.headers.get("cantidad-de-registros") as string;
+      this.cantidadTotalRegistros = parseInt(cabecera, 10);
+    })
+  }
+
+  actualizarPaginacion(datos: PageEvent){
+    this.paginacion = {pagina: datos.pageIndex+1, recordsPorPagina: datos.pageSize};
+    this.cargarRegistros();
+  }
+
+  borrarRegistro(id: number){
+    this.servicioCRUD.borrar(id).subscribe(()=>{
+      this.paginacion.pagina = 1;
+      this.cargarRegistros();
+    })
+  }
+}
+
+
+// Configurar el El Inject Token
+@Component({
+  selector: 'app-index-genres',
+  standalone: true,
+  imports: [RouterLink, MatIconModule, MatButtonModule, SweetAlert2Module],
+  templateUrl: './index-genres.component.html',
+  styleUrl: './index-genres.component.css',
+  providers: [
+    {provide: SERVICIO_CRUD_TOKEN, useClass: GenresService}
+  ]
+})
+
+
+11) Interfaces y Servicios: En los casos de que tenga mis diferentes servicios pero quiera referenciarlos a todos bajo un mismo nombre 
+usaremos las interfaces. Esta para que todos nuestros servicios (que al fin son similares) llamen a las funciones que determine la 
+interfaz.
+
+export interface IServicioCrud<TDTO, TCreacionDTO>{
+  obtenerPaginado(paginacion: PaginacionDTO) : Observable<HttpResponse<TDTO[]>>
+}
+
+
+12) Pasar por Parametro un Componente:
+
+// Dentro de un Componente Padre:
+formularioGeneros = FormularioGenerosComponent; // Tomo una referencia al FormularioGenerosComponent
+
+// Padre HTML, El parametro [formulario] es un any
+<app-crear-entidad rutaIndice="/generos" titulo="Crear Genero" [formulario]="formularioGeneros">
+
+
+// HTML: Renderizar el Componente que recibimos por parametro (componente Hijo)
+<ng-template #contenedorFormulario></ng-template>
+
+
+// TS: Renderizar el Componente que recibimos por parametro (componente Hijo)
+export class CrearEntidadComponent<TDTO, TCreacionDTO> implements AfterViewInit{
+  ngAfterViewInit() : void{
+    this.componentREF = this.contenedorFormulario.createComponent(this.formulario); => Creo el Form sobre el contenedor que agarre.
+    this.componentREF.instance.posteoFormulario.suscribe((entidad: any)=>{
+      this.guardarCambios(entidad);
+    })
+    // Suscribo el evento del formulario y ejecuto el guardarCambios()
+  }
+
+  @ViewChild('contenedorFormulario', {read: ViewContainerRef}) => Accedo al <ng-template>
+  contenedorFormulario!: ViewContainerRef; => tengo el contenedor proveniente del <ng-template>
+  private componentREF!: ComponentRef<any>;
+
+  guardarCambios(entidad: TCreacionDTO){}
+}
+
+
+13) Filtro Angular: -Video 146
+
+public filtrar(valores: any) : Observable<HttpResponse<PeliculaDTO[]>{
+  const params = new HttpParams({fromObject: valores});
+  return this.httpClient.get<PeliculaDTO[]>(`${this.urlBase}/filtrar`, {params, observe:'response'})
+}
+
+
+14) DebounceTime(): Esta funcion me permite introducir un tiempo de espera en los cambios de valor del formulario para reducir la cantidad de 
+peticiones de nuestra servidor. - Video 147
+
+
+                                                                    7) Seguridad
+
+1) RouteGuards: Aveces necesitaremos realizar acciones en el momento en que el usuario esta por entrar, o salir de una ruta. Para esto existen los RouteGuards:
+1.1) CanActivate: Define si un usuario debe entrar a una ruta especifica. 1.2) CanActivateChild: Define si un usuario debe entrar a una hija ruta especifica
+1.3) CanDeactivate: Define si un usuario puede salir de una ruta. 1.4) Resolve: Permite obtener data antes de la activacion de la ruta. 1.5) CanMatch: Me permite 
+tener distintos componentes para una misma ruta, el componente a mostrar sera bajo una condicion dada. 1.6) CanLoad.
+
+
+2) Crear un RouteGuard: "ng g guard compartidos/guards/es-admin --skip-tests" => luego me dejara elegir que tipo de RouteGuard quiero crear.
+
+3) Usar CanActivate:
+
+// Componente RouteGuard-CanActivate
+export const esAdminGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  const seguridadService = inject(SeguridadService);
+
+  if(seguridadService.obtenerRol() === 'admin'){
+    return true;
+  }
+  router.navigate(['/login'])
+  return true;
+}
+
+// Usarlo en app.routes.ts
+{path: 'generos/crear', component: CrearGenerosComponent, canActivate: [esAdminGuard]}
+
+
+4) Manejo del JSON Web Token en angular:
+
+export interface CredencialesUsuarioDTO{
+  email: string;
+  password: string;
+}
+
+export interface RespuestaAutenticacionDTO{
+  token: string;
+  expiracion: Date;
+}
+
+
+// SERVICIO DE LOGIN Y REGISTER
+
+private httpClient = inject(HttpClient);
+private urlBase = environment.urlBase + '/usuarios';
+private readonly llaveToken = 'token';
+private readonly llaveExpiracion = 'token-expiracion';
+
+registrar(credenciales: CredencialesUsuarioDTO): Observable<RespuestaAutenticacionDTO>{
+  return this.httpClient.post(`${this.urlBase}/registrar`, credenciales)
+  .pipe(
+    tap(respuestaAutenticacion => this.guardarCambios(respuestaAutenticacion))
+  );
+}
+login(credenciales: CredencialesUsuarioDTO): Observable<RespuestaAutenticacionDTO>{
+  return this.httpClient.post(`${this.urlBase}/login`, credenciales)
+  .pipe(
+    tap(respuestaAutenticacion => this.guardarCambios(respuestaAutenticacion))
+  );
+}
+// Aca voy a crear la funcion para guardar mi token en el LocalStorage del navegador.
+guardarToken(respuestaAutenticacion: RespuestaAutenticacionDTO){
+  localStorage.setItem(this.llaveToken, respuestaAutenticacion.token);
+  localStorage.setItem(this.llaveExpiracion, respuestaAutenticacion.expiracion.toString());
+}
+
+
+// Este metodo verificara si el usuario esta logueado
+
+estaLogueado() : boolean{
+  const token = localStorage.getItem(this.llaveToken);
+
+  if(!token){
+    return false;
+  }
+
+  const expiracion = localStorage.getItem(this.llaveExpiracion)!;
+  const fechaExpiracion = new Date(expiracion);
+
+  if(fechaExpiracion <= new Date()){
+    this.logOut();
+    return false;
+  }
+  return true;
+}
+logOut(){
+  localStorage.removeItem(this.llaveToken);
+  localStorage.removeItem(this.llaveExpiracion);
+}
+
+
+5) Funcion para extraer errores de Identity:
+
+export function extraerErroresIdentity(obj: any) : string[]{
+  let msgDeError = string[] = [];
+
+  for(let i = 0; i < obj.error.length; i++){
+    const elemento = obj.error[i];
+    msgDeError.push(elemento.description);
+  }
+  return msgDeError;
+}
+
+
+6) Obtener Claims:
+
+// En el Service de seguridad
+obtenerCampoJWT(campo: string) : string{
+  const token = localStorage.getItem(this.llaveToken);
+  if(!token) return '':
+  var dataToken = JSON.parse(atob(token.split('.')[1]));
+  return dataToken[campo];
+}
+
+
+7) Obtener Usuario ID con JWT Claims:
+
+private readonly IHttpContextAccessor httpContextAccessor;
+private readonly UserManager<IdentityUser> UserManager;
+
+public async Task<string> ObtenerUsuarioId()
+{
+  var email = httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.type == "email")!.value;
+  var usuario = await userManager.findByEmailAsync(email);
+  return usuario!.id;
+}
+
+
+
+8) Interceptores HTTP: Al usar authorize en mis Endpoints cada vez que les quiera consultar data a estos endpoints debere mandarle mis JWT para pasar el filtro de 
+authorize, sino el API nos devolvera un 401. Para no tener que pasar el JWT servicio por servicio podemos usar Interceptores HTTP, que lo que hacen es interceptar 
+toda peticion HTTP que se realice.
+
+export const authInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<any>,
+  next: HttpHandlerFn
+) =>{
+  const seguridadService = inject(SeguridadService);
+  const token = seguridadService.obtenerToken();
+  if(token){
+    req = req.clone({
+      setHeaders: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  }
+  return next(req);
+}
+
+
+9) Crear Policys usando Claims:
+
+// Creo la politica
+builder.Services.AddAuthorization(opt => {
+  opt.AddPolicy("esadmin", policy => politica.RequiereClaim("esadmin"));
+});
+
+
+// Aplico la politica, puede ser sobre un controlador o accion
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "esadmin")]
+
+// CONFIGURAR EL INTERCEPTOR:
+provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
+
+
+10) Indice de usuarios: -Video 163
+
+
+
+
+                                                            8) Publicar App Angular en FireBase
+
+1) -Video 169
+
+
+                                                                     X) DATOS
+
+1) Directivas Estructurales: ngIf, @If{}, ngSwitch, ngFor, @For{}
+2) Directivas Atributo: [src], [ngSrc], [ngClass], [ngStyle], [(ngModel)] => esto tambien se lo conoce como Binding de propiedad o Property-Binding
+
+3) PatchValue(): Es una funcion que sirve para actualizar los valores de los campos de un formulario.
+
+4) [(ngModel)]: Es un binding de doble via, lo que tenga en un Input por ejemplo se colocara en la propiedad relacionada al Input, y la propiedad relacionada tambien 
+podra cargar al Input.
+
+
+5) Observable: Un Observable es un objeto que puede emitir una secuencia de valores a lo largo del tiempo. Estos valores pueden ser de cualquier tipo. Primero creamos
+un Observable, luego nos suscribimos a el para recibir los valores que este emita.
+
+const numbers$ = of(1, 2, 3);
+numbers$.subscribe(value => console.log(value));
+
+

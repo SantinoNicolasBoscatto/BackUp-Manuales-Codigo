@@ -1,0 +1,37 @@
+1) :root: es un pseudoElemento que se refiere a la raiz del documento, es aquello que esta por encima de la etiqueta HTML.
+
+1.1) Dark-Mode Automatico:
+:root{
+    color-scheme: light dark;
+}
+
+2) Property Bindings: Property Binding refiere al traslado de valores entre elementos, Angular tiene la ventaja de un Property-Binding Bidireccional, esto quiere decir 
+que el padre le puede pasar parametros al hijo (como normalmente sucede), a estos se los escribe con @Input(), y el hijo puede devolverles valores al padre, 
+esto mediante los @Output(). 
+Los @Output() lo que hacen es suscribir a un del hijo evento al padre, primero declaramos el decorador OutPut, declaramos la propiedad como new EventEmitter<T>(), 
+luego en alguna funcion emitimos este evento con this.evento.emit(valor); y luego lo rescatamos desde el padre suscribiendonos a este evento.
+
+3) State y Renders: Cada vez que ejecuto un evento y se produce algun cambio en los valores de mis propiedades la pagina se renderiza por si sola, esto es muy 
+util ya que aveces una variable cambiara su estado y querremos que ante esto se produzca un cambio visual, angular hara esto de forma automatica.
+
+
+4) Carga Diferida: con la directiva @defer(){} priorizo los elementos a cargar, Basicamente realizo cargas tardias de elementos que no son tan importantes de cargar 
+de primeras.
+
+4.1) @PlaceHolder{}: Para evitar el cambio de tamaño de la pagina con la carga Diferida puedo utilizar un @PlaceHolder{} que sirva de esqueleto anterior a que comienze
+a cargar el LazyLoading.
+
+4.2) @Loading{}: Este se lo utiliza tambien como esqueleto al igual que el placeholder, pero solo cuando se comieza la Carga perezosa, antes de que comienza la carga
+se encuentra el placeholder, durante la carga se muestra el Loading.
+
+EJ:
+@defer(on viewport){
+    <app-games />
+} @PlaceHolder{
+    <p></p>
+} @Loading{
+    <p>Cargando</p>
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
