@@ -1,0 +1,892 @@
+                                                                                1) Introduccion
+
+1) Test Automatico: Es basicamente codigo que escribimos que tiene la capacidad de probar multiples veces una funcionalidad de nuestra aplicacion. Generalmente los 
+proyectos estan divididos en 2: El Codigo de produccion y el de testing.
+
+
+2) Tipos de Test: 1) Unit-Test: Es una prueba que se encarga de probar una sola funcionalidad, son sencillas y rapidas de ejecutar. Sera la mejor herramienta para 
+detectar errores logicos o de sintaxis. Hay que tener en cuenta que solo prueba las funciones por separado, sin tener en cuenta el contexto global de la app.
+2) Integration-Test: Es util para evaluar el funcionamiento conjunto de elementos de nuestra APP, es decir toma en cuenta las dependencias a la hora de realizar los 
+test. 3) UI-Test.
+Generalmente en el desarrollo se suelen usar en mayor proporcion los Unit-Test, luego los Integration-Test y en menor medida los UI-Test.
+
+3) Estructura de Prueba Unitaria:  1) Arrange, es donde voy a preparar el contexto de mi prueba, variables, objetos, etc. 2) Act, es donde voy a testear el 
+elemento/metodo que estoy probando. Es decir es el proceso de ejecucion. 3) Assert es donde voy a verificar que efectivamente ocurrio el proceso de forma adecuada, 
+es decir voy a evaluar el resultado.
+
+
+                                                                     2) Estructura base de Unit-Test
+
+[TestClass] // Nomenclatura: NombreClase_Framework_Test
+public class OperacionMSTest
+{
+    [TestMethod] // Nomenclatura: MetodoOriginal_Parametros_OperacionAValidar
+    public void Sumar_InputDosNumeros_GetValorCorrecto()
+    {
+        // Arrange: Inicializar variables y/o Objetos, es decir setearle valores.
+        var op = new Operacion();
+        int num1 = 4;
+        int num2 = 6;
+
+        // Act: Ejecucion del metodo a evaluar
+        var result = op.Sumar(num1, num2);
+
+        // Assert: Verificar el resultado.
+        Assert.AreEqual(10, result);
+    }
+}
+
+
+
+
+                                                                         3) Framework NUnit
+
+1) A diferencia de MStest debo instalar manualmente la libreria NUnit mediante un NugetPackage. Instalaremos: 1) NUnit. 2) NUnit3TestAdapter. 3) Microsoft.Net.Test.Sdk
+
+2) Configuracion Proyecto NUnit: -Ver Video 7
+
+3) Estructura basica de un test NUnit:
+
+[TestFixture] // Es el TestClass pero de NUnit
+public class OperacionNUnitTest
+{
+    [Test] // Es el TestMethod Pero de NUnit
+    public void Sumar_InputDosNumeros_GetValorCorrecto()
+    {
+        // Arrange
+        var op = new Operacion();
+        int num1 = 4;
+        int num2 = 6;
+
+        // Act
+        var result = op.Sumar(num1, num2);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void IsPar_InputNumeroPar_ReturnTrue()
+    {
+        var op = new Operacion();
+        int num1 = 4;
+
+        var result = op.IsPar(num1);
+
+        Assert.That(result, Is.True);
+    }
+}
+
+
+4) Assertion Model: En NUnit para realizar las evaluaciones con Assertion tenemos 2 Modelos: 1) Modelo Clasico: Assert.AreEqual(30, result); Assert.IsTrue(result); 
+este modelo clasico esta presente en las versiones anteriores a NUnit 4.0, despues del 4.0 desaparecen y las reemplaza el modelo de restricciones. 
+2) Modelo de Restricciones: Assert.That(30, Is.EqualTo(result)); Assert.That(result, Is.True); Es la variante del modelo clasico, esta disponible en todas las 
+versiones. La condicion logica esta incrustada en los parametros del metodo.
+
+
+5) TestCases: Para realizar una prueba con diferentes valores usaremos los TestCases, donde podre definir multiples valores y mi test realizara la prueba con todos 
+los valores que le pase, por cada TestCase sera una vez que se ejecute el metodo. Con esto tambien podremos simular parametros de entrada.
+
+[Test]
+[TestCase(2)]
+[TestCase(4)]
+[TestCase(6)]
+public void IsPar_InputNumeroPar_ReturnTrue(int num1)
+{
+    var op = new Operacion();
+
+    var result = op.IsPar(num1);
+
+    Assert.That(result, Is.True);
+}
+
+
+
+5.1) Expected Result: En el TestCase podemos definir ademas de parametros de entrada el valor que devolvera el metodo. 
+[Test]
+[TestCase(2, ExpectedResult = true)]
+[TestCase(3, ExpectedResult = false)]
+[TestCase(6, ExpectedResult = true)]
+public bool IsPar_InputNumeroPar_ReturnBool(int num1)
+{
+    var op = new Operacion();
+    return op.IsPar(num1);
+}
+
+
+
+6) Intervalos: En el caso que yo quiera definir a un intervalo como un resultado correcto (por ejemplo que los valores entre 0 y 100 sean correctos, mas no cuales 
+esten por fuera de esta intervalo) debo hacer lo siguiente:
+[Test]
+[TestCase(2.5, 1.75)]
+[TestCase(2.5, 1.85)]
+public void SumarDecimales_InputDosNumeros_ReturnValorCorrecto(double num1, double num2)
+{
+    var op = new Operacion();
+    var result = op.SumarDecimal(num1, num2);
+    // WithIn define el rango de tolenrancia, en este caso 0.1 positivo y negativo
+    Assert.That(result, Is.EqualTo(4.25).Within(0.1)); 
+}
+
+
+7) Metodos Helpers Para Evaluar Strings:
+[Test]
+public void CrearNombre_InputDosString_ReturnNombreCompleto()
+{
+    var cliente = new Cliente();
+
+    var nombreCompleto = cliente.CrearNombre("Santino", "Boscatto");
+
+    // Con contain verifico que almenos ese texto se encuentre en la cadena, IgnoreCase ignora las 
+    // Mayusculas y minusculas.
+    Assert.That(nombreCompleto, Does.Contain("Santino").IgnoreCase);
+    // Evalua que empiece con ciertos caracteres
+    Assert.That(nombreCompleto, Does.StartWith("S"));
+    // Evalua que termine con ciertos caracteres
+    Assert.That(nombreCompleto, Does.EndWith("o"));
+}
+
+[Test]
+public void ClientNombre_NoValues_ReturnNull()
+{
+    var client = new Cliente();
+    Assert.That(client.ClienteNombre, Is.Null);
+}
+
+
+8) Setup de Objetos: En el caso de que requiera instanciar varias veces un objeto en distintas pruebas unitarias lo que puedo hacer es crear una instancia global 
+del objeto mediante el metodo Setup().
+
+// Creo el campo
+private Cliente cliente;
+[SetUp] // Este DataAnnotation me dara la prioridad en la ejecucion del metodo
+public void Setup()
+{
+    // Lo inicializo
+    cliente = new Cliente();
+}
+
+
+                                                                    3.1) Pruebas Unitarias con Collections
+
+1) EquivalentTo():
+
+[Test]
+public void GetListaNumerosImpares_InputMinValueMaxValue_ReturnListaImpar()
+{
+    List<int> numerosEsperados = new List<int> { 1, 3, 5, 7, 9 };
+    _operacion.GetListaNumerosImpares(1, 10);
+    // EquivalentTo me permitira comparar listas mas facilmente.
+    Assert.That(_operacion.NumerosImpares, Is.EquivalentTo(numerosEsperados));
+}
+
+
+2) Metodos Helpers:
+// Funcion similar a EquivalentTo
+Assert.That(_operacion.NumerosImpares, Is.EqualTo(numerosEsperados));
+
+// Evaluamos que la lista contenga X valor
+Assert.That(_operacion.NumerosImpares, Does.Contain(1));
+
+// Evaluamos que la lista no contenga X valor, ambas funcionan igual
+Assert.That(_operacion.NumerosImpares, Does.Not.Contain(2));
+Assert.That(_operacion.NumerosImpares, Has.No.Member(33));
+
+// Evaluaremos que la lista no este vacia
+Assert.That(_operacion.NumerosImpares, Is.Not.Empty);
+
+// Evaluaremos la cantidad de elementos
+Assert.That(_operacion.NumerosImpares.Count, Is.EqualTo(3));
+
+// Evaluaremos si estan ordenados
+Assert.That(_operacion.NumerosImpares, Is.Ordered);
+Assert.That(_operacion.NumerosImpares, Is.Ordered.Descending);
+
+// Evaluo no tener valores duplicados
+Assert.That(_operacion.NumerosImpares, Is.Unique);
+
+// Evaluo rango de valores
+int descuento = cliente.Descuento;
+Assert.That(descuento, Is.InRange(5, 24));
+
+
+3) Logs de Multiples Asserts: En el caso de que yo tenga varios Assert y quiera ver la causa de excepcion de cada uno de ellos debo usar el metodo Multiple()
+
+[Test]
+public void CrearNombre_InputDosString_ReturnNombreCompleto()
+{
+    var nombreCompleto = cliente.CrearNombre("Santino", "Boscatto");
+    Assert.Multiple(() =>
+    {
+        Assert.That(nombreCompleto, Does.Contain("Santino").IgnoreCase);
+        Assert.That(nombreCompleto, Does.StartWith("S"));
+        Assert.That(nombreCompleto, Does.EndWith("o"));
+    });
+}
+
+
+                                                                            3.2) Excepciones Unit-Test
+
+1) Aveces necesitare crear Unit-Test que capturen una excepcion:
+
+// Evaluo el MSG de error de la excepcion
+var excepcion = Assert.Throws<ArgumentException>(() => cliente.CrearNombre("", "Boscatto"));
+Assert.That("El nombre esta en blanco", Is.EqualTo(excepcion!.Message));
+
+// Evaluo el tipo de dato de la excepcion, a ver si coincide, ambas formas funcionan igual.
+Assert.Throws<ArgumentException>(() => cliente.CrearNombre("", "Boscatto"));
+Assert.That(() => cliente.CrearNombre("", "Boscatto"), Throws.ArgumentException);
+
+
+                                                                       3.3) Herencia de Clases
+
+[Test] // Si no tengo parametros puedo detallar la logica de mi funcion
+public void GetClienteDetalle_CrearClienteMenos500OrderTotal_ReturnClienteBasico()
+{
+    cliente.OrderTotal = 150;
+    var result = cliente.GetClienteDetalle();
+    // Puedo evaluar el tipo de dato de mi resultado
+    Assert.That(result, Is.TypeOf<ClienteBasico>());
+}
+
+
+                                                                              4) Mocks
+
+1) Va a suceder que a la hora de hacer Test de clases, estas tengan dependencias de otras clases, esto es un problema a la hora de hacer Tests-Unitarios ya que 
+estos se centran en probar una pequeña parte del codigo de una clase, si pruebo tambien las dependencias de esas clases ya dejarian de ser Test-Unitarios y pasarian 
+a ser Test-Integration. Lo correcto es Aislar la clase a testear de sus dependencias, para solucionar esto Surgen los Mocks.
+
+2) Mocking: Es el proceso de reemplazar la depenencia de una clase por una dependencia falsa. A cada una de estas falsas dependencias las llamaremos Mock. Existen 
+varias librerias para realiar Mocking, pero la mejor es MOQ. La utilidad de un mock es su capacidad para facilitar tests de tu lógica real, simulando 
+dependencias externas.
+
+
+3) Uso simple MOQ: Para generar un objeto Mocking si o si debo pasarle una interfaz como Generic al Mock, sin interfaz el mock no sera correcto. En caso de que mi 
+clase no implemente una interfaz quizas no sea lo mas correcto usar un Mock, sino que lo mejor sea llamar directamente a la clase.
+
+3.1)// EJ de Unit-Testing con Mock 
+public void Deposito_InputMonto100MOQ_ReturnsTrue()
+{
+    // Creo la dependencia falsa mediante el Mock
+    var mock = new Mock<ILoggerGeneral>();
+    // Uso esa dependencia falsa
+    var cuentaBancaria = new CuentaBancaria(mock.Object);
+    var result = cuentaBancaria.Deposito(100);
+    Assert.That(result, Is.True);
+}
+
+3.2) // EJ de Unit-Testing con Mock, Usando Setup() para definir valores iniciales de las props del mock.
+[Test]
+public void GetPrecio_InputClientePremium_ReturnPrice80()
+{
+    Producto producto = new Producto { Precio = 100};
+
+    // Creo el Mock
+    var mockCliente = new Mock<ICliente>();
+    // Con Setup() puedo setear valores a las propiedades del objeto del mock
+    mockCliente.Setup(x => x.IsPremium).Returns(true);
+
+    var precioDescuento = producto.GetPrecio(mockCliente.Object);
+    Assert.That(precioDescuento, Is.EqualTo(80));
+}
+
+
+
+4) Configurar Metodos del Mock: En algunos casos la funcion a evaluar ejecutara metodos de dependencias, nosotros al usar Mocks no existira la logica de los metodos 
+de estas dependencias, por lo que haremos sera simular la ejecucion de ese metodo pasandole parametros y forzando returns arbitrarios, que simulen que el metodo 
+se ejecuto. Esto para trabajar con la respuesta del metodo en la funcion a evaluar.
+
+[Test]
+public void Retiro_Retiro100Balance200_ReturnsTrue()
+{
+    var mockLogger = new Mock<ILoggerGeneral>();
+    // Configuro la llamada de mi metodo LogDatabase(), pasandole como parametro 
+    // Cualquier String, tambien definimos que devuelve un true.
+    mockLogger.Setup(x => x.LogDatabase(It.IsAny<string>())).Returns(true);
+    // Con Setup() y Returns() simulamos la ejecucion del metodo de la dependencia, simulamos la
+    // ejecucion del metodo del Mock, Colocando arbitrariamente parametros y el resultado que esperamos
+    mockLogger.Setup(x => x.LogBalancePostRetiro(It.Is<int>(x => x>0))).Returns(true);
+    // Con It.Is<T>() puedo definir algunas condiciones del parametro de entrada, a diferencia de IsAny<T>()
+
+
+    var cuentaBancaria = new CuentaBancaria(mockLogger.Object);
+    cuentaBancaria.Balance = 200;
+    var result = cuentaBancaria.Retiro(100);
+    Assert.That(result, Is.True);
+}
+
+[Test]
+public void Retiro_Retiro300Balance200_ReturnsFalse()
+{
+    var mockLogger = new Mock<ILoggerGeneral>();
+    // IsInRange es otra forma de definir rango de valores.
+    mockLogger.Setup(x => x.LogBalancePostRetiro(It.IsInRange<int>(int.MinValue, -1, Moq.Range.Inclusive))).Returns(false);
+
+    var cuentaBancaria = new CuentaBancaria(mockLogger.Object);
+    cuentaBancaria.Balance = 200;
+    var result = cuentaBancaria.Retiro(300);
+    Assert.That(result, Is.False);
+}
+
+4.1) It.IsAny<T>(): simulara un valor del tipo generico que le pasemos, puede ser cualquier valor aceptado por le tipo de dato.
+4.2) It.Is<T>(x => x > 0): simulara un valor del tipo generico que le pasemos, a diferencia del IsAny() puedo darle condiciones a este valor.
+4.3) It.IsInRange<int>(int.MinValue, -1, Moq.Range.Inclusive): simulara un valor del tipo generico que le pasemos, al igual que el Is me permite definir un 
+rango de valores.
+
+
+5) Unit test Sobre Mocks: En algun momento quizas quiera realizar una prueba unitaria sobre un Mock, para ello definire sobre el metodo a evaluar una especie de logica 
+y el valor que retorne similar a la del objeto real, con esto podre llamar a la funcion del Mock y ejecutarla.
+
+[Test]
+public void CuentaBancariaLoggerGeneral_LogMocking_ReturnTrue()
+{
+    var loggerMock = new Mock<ILoggerGeneral>();
+    string textoPrueba = "Hola Soy Texto Prueba";
+
+    // Simulo la funcion, al llamarla desde el Mock se ejecutara lo logica que aca defini
+    loggerMock.Setup(x => x.MessageConReturnString(It.IsAny<string>())).Returns<string>(str => str.ToLower());
+
+    // Llamo la funcion, por defecto las funciones de los Mock no tiene logica, pero con Setup yo 
+    // Puedo simular una especie de logica
+    var result = loggerMock.Object.MessageConReturnString(textoPrueba);
+    Assert.That(result, Is.EqualTo(textoPrueba.ToLower()));
+}
+
+6) Mocking y Parametros Out: Como vimos aveces necesitare simular logica de funciones de un Mock, seteandole parametros genericos y Returns(). Ahora en el caso 
+de que tenga que trabajar con parametros de salida en Unit-Testing de Mocks.
+
+[Test]
+public void CuentaBancariaLoggerGeneral_LogMockingOutPut_ReturnTrue()
+{
+    string textoEsperado = "hola";
+    var loggerMock = new Mock<ILoggerGeneral>();
+    loggerMock.Setup(x => x.MessageConOutParametroReturnBool(It.IsAny<string>(), out textoEsperado)).Returns(true);
+
+    var outValue = "";
+    var result = loggerMock.Object.MessageConOutParametroReturnBool("Vaxi", out outValue);
+    Assert.That(result, Is.True);
+}
+
+
+7) Parametros de Referencia en Unit-Test:
+[Test]
+public void CuentaBancariaLoggerGeneral_LogMockingObjetoRef_ReturnTrue()
+{
+    var loggerMock = new Mock<ILoggerGeneral>();
+    Cliente cliente = new Cliente();
+    Cliente clienteNoUsado = new Cliente();
+
+    // Defino la referencia del objeto de la funcion, si yo le pasara luego otro objeto 
+    // daria un error. 
+    loggerMock.Setup(x => x.MessageConObjetoRefReturnBool(ref cliente)).Returns(true);
+    var result = loggerMock.Object.MessageConObjetoRefReturnBool(ref cliente);
+    Assert.That(result, Is.True);
+}
+
+
+8) Setear Propiedades con Mock: Al igual que las funciones, al hacer un Mock sobre una interfaz, ni los metodos, ni las propiedades estaran seteadas, de la siguiente 
+forma puedo setear los valores de las propiedades:
+
+[Test] // Seteo los valores de las propiedades de un Mock
+public void CuentaBancariaLoggerGeneral_LogMockingPropiedadPrioridadTipo_ReturnsTrue()
+{
+    var loggerMock = new Mock<ILoggerGeneral>();
+    // Setear valores a las propiedades de un Mock
+    loggerMock.Setup(x => x.TipoLogger).Returns("Warning");
+    loggerMock.Setup(x => x.PrioridadLogger).Returns(3);
+
+    // Este metodo SetupAllProperties() me permite setear manualmente valores, pero borrara los Setups 
+    // anteriormente creados, para evitar esto se recomienda colocarla luego de crear el Mock.
+    loggerMock.SetupAllProperties();
+    loggerMock.Object.PrioridadLogger = 1;
+    loggerMock.Object.TipoLogger = "Warning";
+
+    Assert.That(loggerMock.Object.TipoLogger, Is.EqualTo("Warning"));
+    Assert.That(loggerMock.Object.PrioridadLogger, Is.EqualTo(1));
+}
+
+
+9) Callback Mocking: Lo que hare con la funcion Callback() de los Mocking es realizar una accion, ejecutar "Funcion" una vez ejecutado el metodo/logica principal. 
+En este caso puedo capturar el valor de entrada, aunque no siempre sera necesario.
+
+// CALLBACKS
+string text = "Hola";
+loggerMock.Setup(x => x.LogDatabase(It.IsAny<string>()))
+    .Returns(true)
+    // Callback(), se encarga de ejecutar logica terminada la funcion principal. En este caso Capturara el parametro STRING de LogDatabase()
+    .Callback((string parameter) => text += parameter);
+loggerMock.Object.LogDatabase(", Soy una callback");
+Assert.That(text, Is.EqualTo("Hola, Soy una callback"));
+
+
+
+10) Verificacion de Mock: Me permite verificar cuantas veces se ejecuta un metodo o se cambia de valor una propiedad de un mock.
+
+[Test] 
+public void CuentaBancariaLoggerGeneral_VerifyMessgge3Times()
+{
+    var loggerMock = new Mock<ILoggerGeneral>();
+    var cuenta = new CuentaBancaria(loggerMock.Object);
+    cuenta.Deposito(100);
+    Assert.That(cuenta.GetBalance, Is.EqualTo(100));
+
+
+    // Verificar cuantas veces el mock llama al metodo Message() del ILoggerGeneral
+    loggerMock.Verify(x => x.Message(It.IsAny<string>()), Times.Exactly(3));
+    // AtLeastOnce() verifica que se haya ejecutado al menos una vez
+    loggerMock.Verify(x => x.Message(It.IsAny<string>()), Times.AtLeastOnce());
+
+    // Para las propiedades usare el metodo VerifySet(), Desde la version 4.0 esto es obsoleto
+    loggerMock.VerifySet(x => x.PrioridadLogger, Times.Exactly(1));
+    // Con esta propiedad verifico cuentas veces hago el Get sobre una propiedad
+    loggerMock.VerifyGet(x => x.PrioridadLogger, Times.Exactly(1));
+}
+
+                                                                              5) Framework XUnit
+
+1) Instalacion: Al no ser un proyecto por defecto necesitaremos instalar NPM: xunit, xunit.runner.visualstudio, Microsoft.NET.Test.Sdk y MOQ.
+
+2) Docs: En esta pagina puedo ver las diferencias entre XUnit, NUnit y MSTest: https://xunit.net/docs/comparisons
+
+3) Constructor: En XUnit no usamos el metodo SetUp para inicializar variables globales, sino el Constructor de la clase:
+
+public class OperacionXUnitTest
+{
+    private Operacion _operacion;
+    public OperacionXUnitTest()
+    {
+        _operacion = new Operacion();
+    }
+}
+
+
+4) Clases con XUnit:
+public class OperacionXUnitTest
+{
+    [Fact]
+    public void Sumar_InputDosNumeros_GetValorCorrecto()
+    {
+        // Arrange
+        var op = new Operacion();
+        int num1 = 4;
+        int num2 = 6;
+
+        // Act
+        var result = op.Sumar(num1, num2);
+
+        // Assert
+        Assert.Equal(10, result);
+    }
+
+    [Theory] // En caso de una funcion con parametros y Cases la definimos como Theory
+    [InlineData(2)] // Los InlineData() reemplazan a los TestCases
+    [InlineData(4)]
+    [InlineData(6)]
+    public void IsPar_InputNumeroPar_ReturnTrue(int num1)
+    {
+        var op = new Operacion();
+
+        var result = op.IsPar(num1);
+
+        Assert.True(result);
+    }
+
+    [Theory]
+    [InlineData(2, true)]
+    [InlineData(3, false)]
+    [InlineData(6, true)]
+    public void IsPar_InputNumeroPar_ReturnBool(int num1, bool expectedResult)
+    {
+        var op = new Operacion();
+        var result = op.IsPar(num1);
+        Assert.Equal(expectedResult, result);
+    }
+
+
+    [Theory]
+    [InlineData(2.5, 1.75)]
+    [InlineData(2.5, 1.85)]
+    public void SumarDecimales_InputDosNumeros_ReturnValorCorrecto(double num1, double num2)
+    {
+        var op = new Operacion();
+        var result = op.SumarDecimal(num1, num2);
+        // El cero redondeara los decimales del resultado
+        Assert.Equal(4.4, result, 0); 
+    }
+
+
+    [Fact]
+    public void GetListaNumerosImpares_InputMinValueMaxValue_ReturnListaImpar()
+    {
+        List<int> numerosEsperados = new List<int> { 1, 3, 5, 7, 9 };
+        var operacion = new Operacion();
+        operacion.GetListaNumerosImpares(1, 10);
+        // Equivalent me permitira comparar listas mas facilmente.
+        Assert.Equivalent(numerosEsperados, operacion.NumerosImpares);
+
+        // Evaluamos que la lista contenga X valor
+        Assert.Contains(1, operacion.NumerosImpares);
+
+        // Evaluamos que la lista no contenga X valor, ambas funcionan igual
+        Assert.DoesNotContain(2, operacion.NumerosImpares);
+
+        // Evaluaremos que la lista no este vacia
+        Assert.NotEmpty(operacion.NumerosImpares);
+
+        // Evaluaremos la cantidad de elementos
+        Assert.Equal(5, operacion.NumerosImpares.Count);
+
+        // Evaluaremos si estan ordenados ascendentemente
+        Assert.Equal(operacion.NumerosImpares.OrderBy(x => x), operacion.NumerosImpares);
+    }
+}
+
+public class ClienteXUnitTest
+{
+    [Fact]
+    public void CrearNombre_InputDosString_ReturnNombreCompleto()
+    {
+        var cliente = new Cliente();
+        var nombreCompleto = cliente.CrearNombre("Santino", "Boscatto");
+
+        Assert.Multiple(() =>
+        {
+            Assert.Contains("Santino", nombreCompleto);
+            Assert.StartsWith("S", nombreCompleto);
+            Assert.EndsWith("o", nombreCompleto);
+        });
+    }
+    [Fact]
+    public void ClientNombre_NoValues_ReturnNull()
+    {
+        var cliente = new Cliente();
+        Assert.Null(cliente.ClienteNombre);
+    }
+    [Fact]
+    public void DescuentoEvaluacion_DefaultCliente_ReturnsDescuentoIntervalo()
+    {
+        var cliente = new Cliente();
+        int descuento = cliente.Descuento;
+        Assert.InRange(descuento,5,24);
+    }
+    [Fact]
+    public void CrearNombre_InputNombreEmpty_ThrowException()
+    {
+        var cliente = new Cliente();
+        Assert.Throws<ArgumentException>(() => cliente.CrearNombre("", "Boscatto"));
+    }
+
+    [Fact]
+    public void GetClienteDetalle_CrearClienteMenos500OrderTotal_ReturnClienteBasico()
+    {
+        var cliente = new Cliente();
+        cliente.OrderTotal = 150;
+        var result = cliente.GetClienteDetalle();
+        Assert.IsType<ClienteBasico>(result);
+    }
+}
+
+X) DATO: Las palabras claves para realizar evaluaciones son IS, DOES, HAS
+
+
+                                                                            6) CQRS para unit Test
+
+1) CQRS: Command Query Responsability Separation, este patron de arquitectura indica que debo separar las operaciones de escritura de las operaciones de lectura. 
+Esto debido a que las consultas son mas frecuentes que la escritura de data, ademas el tiempo de escritura es mas tolerable que el de lectura (es decir un usuario 
+pretende que el tiempo de lectura de datos sea mas rapido que el de escritura.) Las operaciones de lectura se las define como CONSULTAS y las operaciones de escritura 
+como COMANDOS. Separar las consultas de los comandos permite optimizar cada una por separado, mejorando la escalabilidad y el rendimiento.
+
+Consultas: Son las operaciones que recuperan datos del sistema. Siguen el principio de "no modificar datos".
+Comandos: Son las operaciones que modifican el estado del sistema, como agregar, actualizar o eliminar datos. Siguen el principio de "no devolver datos".
+
+Paquetes a instalar: MediatR, FluentValidator y Automapper.
+
+
+2) Proyectos: Para aplicar CQRS tendremos varios proyectos: 1) Domain: Basicamente la capa de dominio, aqui iran mis entidades. Basicamente el Domain es crear las 
+clases del Modelo. 2) Persistence: Esta clase sera la encargada de mapear los datos de mis entidades a tablas de SQL, basicamente sera mi DbContext. 
+3) Application: Aqui sera la capa donde realicemos las consultas/comandos hacia la DB, tambien tendre una carpeta con la clase que definira las 
+reglas de mapeo. Tambien una carpeta que contendra los DTO 4) Controllers: Esta capa consumira a la de Application.
+
+
+3) EJ CQRS: 
+
+3.1) Lectura con CQRS:
+
+// Dentro de esta clase iran todos los CQRS de lectura
+public class GetCursoQuery
+{
+    // Esta clase representa los parametros que envia el cliente, en esta clase armaremos el query
+    // de la consulta. En este caso no requerimos que el cliente nos pasa ningun parametro
+    // List<Curso> es un parametro de salida
+    public class GetCursoQueryRequest : IRequest<List<CursoDTO>> // IRequest proviene del paquete MediatR
+    {
+
+    }
+
+    //  Esta clase clase Handler es la clase que se encarga de implementar la logica para pasarle el Query a la BD y que me retorne la data.
+    //  GetCursoQueryRequest sera un parametro de entrada y List<CursoDTO> sera un parametro de salida.
+    //  Este seria un CQRS de lectura.
+    public class GetCursoQueryHandler : IRequestHandler<GetCursoQueryRequest, List<CursoDTO>>
+    {
+        private readonly EducationDbContext dbContext;
+        private readonly IMapper mapper;
+
+        public GetCursoQueryHandler(EducationDbContext dbContext, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
+
+        // Esta funcion definira la logica con la BD
+        public async Task<List<CursoDTO>> Handle(GetCursoQueryRequest request, CancellationToken cancellationToken)
+        {
+            var curso = await dbContext.Cursos.ToListAsync();
+            var dtos = mapper.Map<List<CursoDTO>>(curso);
+            return dtos;
+        }
+    }
+}
+
+
+3.2) Insercion con CQRS:
+
+// Dentro de esta clase iran todos los CQRS de escritura
+public class CreateCursoCommand
+{
+    // Aca definire las propiedades que quiero cargar, defino los parametros que debera cargar el cliente para crear un objeto
+    public class CreateCursoCommandRequest : IRequest
+    {
+        public string Titulo { get; set; } = null!;
+        public string Descripcion { get; set; } = null!;
+        public DateTime FechaPublicacion { get; set; }
+        public decimal Precio { get; set; }
+    }
+
+    // Esta es la clase que definira la logica de insercion a BD
+    public class CreateCursoCommandHandler : IRequestHandler<CreateCursoCommandRequest>
+    {
+        private readonly EducationDbContext _context;
+        public CreateCursoCommandHandler(EducationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Handle(CreateCursoCommandRequest request, CancellationToken cancellationToken)
+        {
+            var curso = new Curso
+            {
+                CursoId = Guid.NewGuid(),
+                Titulo = request.Titulo,
+                Descripcion = request.Descripcion,
+                FechaPublicacion = request.FechaPublicacion,
+                FechaCreacion = DateTime.UtcNow,
+                Precio = request.Precio
+            };
+            _context.Add(curso);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public class CreateCursoCommandRequestValidation : AbstractValidator<CreateCursoCommandRequest> // Esta clase viene de FluentValidator
+    {
+        // Con FluentValidator puedo definir validaciones en un constructor
+        public CreateCursoCommandRequestValidation() 
+        {
+            RuleFor(x => x.Descripcion);
+            RuleFor(x => x.Titulo);
+        }
+    }
+}
+
+3.3) Lectura con CQRS con parametro:
+public class GetCursoByIdQuery 
+{
+    public class GetCursoByIdQueryRequest : IRequest<CursoDTO> 
+    {
+        public Guid id;
+    }
+
+    public class GetCursoByIdQueryHandler : IRequestHandler<GetCursoByIdQueryRequest, CursoDTO>
+    {
+        private readonly EducationDbContext _context;
+        private readonly IMapper _mapper;
+        public GetCursoByIdQueryHandler(EducationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<CursoDTO> Handle(GetCursoByIdQueryRequest request, CancellationToken cancellationToken)
+        {
+            var curso = await _context.Cursos.FirstOrDefaultAsync(x => x.CursoId == request.id);
+            return _mapper.Map<CursoDTO>(curso);
+        }
+    }
+}
+
+
+3.4) Controller Usando CQRS y MediatR:
+[Route("api/[controller]")]
+[ApiController]
+public class CursoController : ControllerBase
+{
+    private IMediator mediator;
+    public CursoController(IMediator mediator)
+    {
+        this.mediator = mediator;
+    }
+
+
+    [HttpGet]
+    public async Task<ActionResult<List<CursoDTO>>> Get()
+    {
+        return await mediator.Send(new GetCursoQuery.GetCursoQueryRequest());
+    }
+
+    [HttpPost]
+    public async Task Post(CreateCursoCommand.CreateCursoCommandRequest request)
+    {
+        await mediator.Send(request);
+    }
+}
+
+4) Add Migration: dotnet ef migrations add EducationMigracionInicial --project Education.Persistence
+4.1) Aplicar Migration: dotnet ef database update --project Education.Persistence 
+4.2) Actualizar Tools a la version del Framework en uso: dotnet tool update --global dotnet-ef
+
+
+                                                                        7) Unit-test con BD y CQRS
+
+1) Generalmente a la hora de hacer Unit-Test con un proyecto en CQRS, lo que hacemos es evaluar las clases de ka Capa Application, es decir la capa que se encarga de 
+realizar las transacciones con la base de datos. Con el patron repository pasa algo similar, nos encargariamos de evaluar el Repositorio que trasacciona con la BD. 
+Aunque tambienpuedo realizar evaluaciones sobre los controladores y la logica que aplica ahi.
+
+
+2) Paquetes a Instalar: Microsoft.EntityFrameworkCore.InMemory y AutoFixture (este generara data de prueba)
+
+
+3) Test-Unit a BD:
+
+[TestFixture]
+public class GetCursoQueryNUnitTests
+{
+    private GetCursoQuery.GetCursoQueryHandler handlerAllCursos = null!;
+
+    [SetUp]
+    public void Setup()
+    {
+        // 1. Emular el DbContext que representa la instancia de EF
+
+        // Este objeto sera el encargado de generar data de prueba
+        var fixture = new Fixture();
+        var cursoRecords = fixture.CreateMany<Curso>().ToList();
+        // Creo un curso con su Id vacio
+        cursoRecords.Add(fixture.Build<Curso>().With(x => x.CursoId, Guid.Empty).Create());
+
+        // Crearemos una BD en memoria
+        var options = new DbContextOptionsBuilder<EducationDbContext>()
+                     .UseInMemoryDatabase(databaseName: $"EducationDbContext-{Guid.NewGuid()}").Options;
+        var dbContextFake = new EducationDbContext(options);
+        // Cargo la data de esta BD en memoria
+        dbContextFake.Cursos.AddRange(cursoRecords);
+        dbContextFake.SaveChanges();
+
+        //2. Emular al MapperConfig
+
+        var mapConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(new MappingTest());
+        });
+        var mapper = mapConfig.CreateMapper();
+
+
+        //3. Instanciar un objeto de la clase GetCursoQuery.GetCursoQueryHandler y pasarle como parametro 
+
+        // los objetos dbContext y Mapper. Esta clase es la que tiene el metodo que trae la lista de cursos
+        handlerAllCursos = new GetCursoQuery.GetCursoQueryHandler(dbContextFake, mapper);
+    }
+
+    [Test]
+    public async Task GetCursoQueryHandler_ConsultaCursos_ReturnNotNull()
+    {
+        var request = new GetCursoQuery.GetCursoQueryRequest();
+        var resultados = await handlerAllCursos.Handle(request, new System.Threading.CancellationToken());
+        Assert.That(resultados, Is.Not.Null);
+    }
+}
+
+[TestFixture]
+public class CreateCursoCommandNUnitTests
+{
+    private CreateCursoCommand.CreateCursoCommandHandler handlerCreateCursos = null!;
+    [SetUp]
+    public void Setup()
+    {
+        // 1. Emular el DbContext que representa la instancia de EF
+
+        // Este objeto sera el encargado de generar data de prueba
+        var fixture = new Fixture();
+        var cursoRecords = fixture.CreateMany<Curso>().ToList();
+        // Creo un curso con su Id vacio
+        cursoRecords.Add(fixture.Build<Curso>().With(x => x.CursoId, Guid.Empty).Create());
+
+        // Crearemos una BD en memoria
+        var options = new DbContextOptionsBuilder<EducationDbContext>()
+                     .UseInMemoryDatabase(databaseName: $"EducationDbContext-{Guid.NewGuid()}").Options;
+        var dbContextFake = new EducationDbContext(options);
+        // Cargo la data de esta BD en memoria
+        dbContextFake.Cursos.AddRange(cursoRecords);
+        dbContextFake.SaveChanges();
+
+        //2. Instanciar un objeto de la clase GetCursoQuery.GetCursoQueryHandler y pasarle como parametro 
+
+        // los objetos dbContext y Mapper. Esta clase es la que tiene el metodo que trae la lista de cursos
+        handlerCreateCursos = new CreateCursoCommand.CreateCursoCommandHandler(dbContextFake);
+    }
+
+    [Test]
+    public async Task CreateCursoCommand_InputCursoRequest_ReturnsTrue()
+    {
+        CreateCursoCommand.CreateCursoCommandRequest request = new()
+        {
+            Descripcion = "",
+            FechaPublicacion = DateTime.Now,
+            Precio = 335,
+            Titulo = "Algo"
+        };
+        await handlerCreateCursos.Handle(request, new System.Threading.CancellationToken());
+    }
+}
+
+
+4) Test Driven Development: Su traduccion seria Desarrollo Basado en Pruebas. Esta metodologia se basa en Realizar antes los Test que la implementacion total del 
+codigo a la aplicacion. Una vez desarrollada la logica debo probarla antes de integrarla.
+
+
+                                                                              X) Testing en BD
+
+1) Revisar el curso de EF (Seccion 10, apartir del video 157) y API (Seccion 9, apartir del video 119). *1:05*
+
+
+x) Otros Datos:
+
+// Validation Attribute:
+public class DateInFutureAttribute : ValidationAttribute
+{
+    private readonly Func<DateTime> _dateTimeNowProvider;
+    public DateInFutureAttribute(): this(() => DateTime.Now) { }
+
+    public DateInFutureAttribute(Func<DateTime> dateTimeNowProvider)
+    {
+        _dateTimeNowProvider = dateTimeNowProvider;
+        ErrorMessage = "La fecha debe ser futura";
+    }
+
+    public override bool IsValid(object? value)
+    {
+        if (value == null) return true; 
+
+        if(value is DateTime dateTime) return dateTime > _dateTimeNowProvider();
+        return false;
+    }
+}

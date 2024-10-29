@@ -25,8 +25,6 @@ static void PruebaUnitariaString()
     if(Longitud != 4) throw new Exception; 
 }
 
-5) Mocks (Dobles de Prueba):
-
 
                                                                 2) NUnit
 
@@ -139,3 +137,5 @@ Valores alternativos al del camino feliz que puedan cumpli exitosamente mi prueb
 lo central es ver si X cosa se comporta/funciona como nosotros queremos. 3) Dobles de Prueba: En el caso de que mi Elemento A dependa de 
 B y a este no lo pueda testear o sea dificil lo que haremos sera usar un Doble de Prueba (Mocks), es decir una Copia del elemento B.
 4) Desarrollo Guiado Por Pruebas
+
+

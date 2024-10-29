@@ -29,12 +29,7 @@
 			headers[i] = table.rows[0].cells[i].innerHTML.toLowerCase().replace(/ /gi, '').replace(/↵/g, '');
 			if(headers[i].includes("driver")) headers[i] = "Piloto";
 			else if(headers[i].includes("pts")) headers[i] = "Puntos";
-			else if(headers[i].includes("Points")) headers[i] = "Puntos";
 			else if(headers[i].includes("#")) headers[i] = "Numero";
-			else if(headers[i].includes("qual")) headers[i] = "Qual";
-			else if(headers[i].includes("f")) headers[i] = "Finish";
-			else if(headers[i].includes("s") && headers[i].length < 6) headers[i] = "Start";
-
 			else headers[i] = headers[i].charAt(2).toUpperCase()+ headers[i].slice(3);
 		}
 		for (var i = 1; i < table.rows.length; i++) {
@@ -96,62 +91,12 @@
 		const htmlContent = e.target.result;
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(htmlContent, 'text/html');
-
-		//
-		const table = doc.querySelectorAll('table'); // Selecciona la primera tabla del HTML
-		let tableQualy;
-		let tableRace;
-		table.forEach((element, index) => {
-			if(index === 1) tableQualy = element;
-			else if(index === 3) tableRace = element;
-		});
-		let arrayCarreras = tableBodyToArray(tableRace);
-		let arrayQualy = tableBodyToArray(tableQualy);
-		arrayCarreras.forEach((row, index) => {
-			if(index === 0){
-				arrayCarreras[0].push("QUAL");
-			}
-			else{
-				for (const element of arrayQualy) {
-					if(element[2] === arrayCarreras[index][3])
-					{
-						arrayCarreras[index].push(element[3]);
-					}
-				}
-			}
-		})
-		
-		tableRace = arrayToTable(arrayCarreras);
-		let originalJSON = JSON.stringify(tableToJson(tableRace)).replace(/\\n\\t/g, '').replace(/\\n/g, '');
-
-
-
+		const table = doc.querySelector('table'); // Selecciona la primera tabla del HTML
+		let originalJSON = JSON.stringify(tableToJson(table)).replace(/\\n\\t/g, '').replace(/\\n/g, '');
 		downloadFile(originalJSON,'json', fileName);
 		};
 		
 		reader.readAsText(file);
-	}
-	function arrayToTable(array) {
-	const table = document.createElement('table');
-		array.forEach(rowData => {
-			const row = document.createElement('tr');
-			rowData.forEach(cellData => {
-			const cell = document.createElement('td');
-			cell.textContent = cellData;
-			row.appendChild(cell);
-			});
-			table.appendChild(row);
-		});
-		return table;
-	}
-	function tableBodyToArray(table) {
-		const tbody = table.querySelector("tbody");
-		const rows = Array.from(tbody.getElementsByTagName('tr'));
-		const dataArray = rows.map(row => {
-			const cells = Array.from(row.getElementsByTagName('td'));
-			return cells.map(cell => cell.textContent);
-		});
-		return dataArray;
 	}
 </script>
 

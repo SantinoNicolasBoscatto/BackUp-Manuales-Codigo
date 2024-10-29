@@ -1,0 +1,2981 @@
+                                                                                1) Introduccion
+
+1) Patrones de diseño: Son soluciones bien establecidas y probadas a problemas comunes en el desarrollo de software. Son guias que debo seguir a la hora de
+escribir mi codigo.
+
+2) Beneficios: 1) Aceleran el proceso de desarrollo, al usar un paradigma que esta constatado que funciona. 2) Ayuda a hacer al codigo mas legible y reutilizable.
+
+3) Tipos de patrones: 1) Creational: Estos se encargan de la creacion de objetos (Por EJ Singleton, que se encarga que solo exista una instancia de una clase) 
+2) Structural: Tratan la composicion de clases y objetos 3) Behavioral: Se encargan de la comunicacion entre objetos de un mismo sistema (Por EJ Observer, que 
+define/crear un mecanismo de subscripcion para notificar a varios objetos los cambios sobre el objeto observado). El objetivo de Behavioral es desacoplar las 
+clases entre si a la hora de su funcionamiento
+
+
+                                                                                2) Singleton
+
+1) El patron Singleton es un patron creacional, este se encarga que solo haya una instancia de una determinada clase en toda la aplicacion, y bridar un acceso global a 
+esa instancia. Es util cuando necesito que un objeto este disponible en todo mi programa (con el mismo estado) y que pueda compartirse entre diferentes partes del 
+codigo.
+Se lo suele utilizar para recursos compartidos (BD, archivos) y es mejor utilizar Singleton que variables globales ya que corremos el riesgo de que con una variable 
+global alguna parte del codigo sobrescriba la instancia de nuestra variable global, en cambio con Singleton esto nunca pasara.
+
+X) USO: Si necesito instanciar una clase solo una vez en toda mi aplicacion y que esta mantenga el estado le generare un patron Singleton.
+
+
+2) Ejemplo Basico de Singleton:
+
+// Creacion de Singleton
+public class MySingleton
+{
+    // El campo que se encargara de almacenar la instancia, privado asi no puede ser sobrescrito por fuera
+    private static MySingleton _instance;
+
+    // El Constructor debe ser privado asi nos aseguramos que no se pueda instanciar MySingleton desde otra clase. 
+    // Esto debido a que al declarar un constructor privado imposibilito crear instancias de esta clase fuera de la misma.
+    private MySingleton()
+    {
+
+    }
+
+    // Este metodo se encargara de devolver mi instancia, es el medio de acceso a mi instancia, pero solo para lectura.
+    // Ademas valido que si mi instancia no existe, genero una y devuelvo _instance
+    public static MySingleton GetInstance() 
+    {
+        if(_instance == null) _instance = new MySingleton();
+        return _instance;
+    }
+}
+
+// Uso de Singleton
+var singleton = MySingleton.GetInstance();
+
+
+3) Aplicacion real de Singleton: Crearemos a modo de Ejemplo un logger, ya que un logger nos combiene para que el registro de errores o mensajes queden centralizados
+en un solo lugar. Aunque haga varios GetInstance() siempre voy a estar trabajando con la misma instancia del Logger, manteniendo asi su estado.
+
+public class EventLogger
+{
+    // Campo que guardara la unica instancia de la clase, guardara el singleton
+    private static EventLogger? _instance;
+    // Una lista donde guardaremos Logs
+    private List<string>? _eventsLogs;
+
+    // Constructor privado para no poder instanciar la clase por fuera, ahi mismo inicializo la lista
+    private EventLogger() 
+    {
+        _eventsLogs = new List<string>();
+    }
+
+    // Funcion para obtener la instancia
+    public static EventLogger GetInstance()
+    {
+        if (_instance == null) _instance = new EventLogger();
+        return _instance;
+    }
+
+    // Funcion para guardar Logs
+    public void LogEvent(string msgEvent)
+    {
+        string timeStamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+        _eventsLogs!.Add($"{timeStamp}: {msgEvent}");
+    }
+
+    // Funcion para mostrar Logs
+    public void DisplayLogs()
+    {
+        foreach (var item in _eventsLogs!)
+        {
+            Console.WriteLine(item);
+        }
+    }
+}
+
+
+4) Singleton Thread Safe: Es una aplicacion mas robusta del patron Singleton, la que mayormente suele ser aplicada en los proyectos. Aunque, esta solucion no 
+es para usar en cualquier momento, se lo suele usar especialmente en 2 situaciones: 1) La primera es cuando nos preocupe la concurrencia (trabajar con Multi-Hilos), 
+en el caso de tener una APP que trabaje con multi-hilos y no tener la sincronizacion correcta podemos llegar a generar multiples instancias de mi Singleton.
+2) La segunda en casos de Lazy Initialitation (basicamente instanciar el Singleton recien cuando lo requiramos). 
+El problema de esta solucion es que pueda dar problemas de performance ya que los hilos muchas veces van a tener que esperar para acceder al Singleton. En caso de que 
+no tengamos una aplicacion Multi-hilos, o que la inicializacion del Singleton sea muy pesada conviene usar la forma anterior para crear un Singleton.
+
+public class SingletonThreadSafe
+{
+    private static SingletonThreadSafe? _instance;
+    private static readonly object _lock = new object();
+    private SingletonThreadSafe()
+    {}
+
+    public static SingletonThreadSafe GetInstance()
+    {
+        if (_instance == null)
+        {
+            // La palabra clave lock me permitira al trabajar con Multi-hilos hacer entrar a esta condicion un 
+            // Hilo a la vez, porque sino podrian entrar varios hilos a la vez y generar multiples instancias de un 
+            // singleton.
+            lock (_lock)
+            {
+                if(_instance == null)
+                {
+                    _instance = new SingletonThreadSafe();
+                }
+            }
+        }
+        return _instance;
+    }
+}
+
+
+
+
+
+                                                                                3) Builder
+
+1) El patron Builder es un patron de diseño de creacion que se utiliza para simplificar la construccion de objetos complejos. En vez de usar un constructor con muchos
+argumentos el patron Builder permite crear objetos paso a paso, separando la construccion del objeto de su representacion. Esto quiere decir que en vez de construir 
+el objeto directamente en su constructor, el patron Builder introducira un objeto del tipo BUILDER que se encargara de la construccion del objeto paso a paso. Ademas
+contaremos con un objeto director que guiara al BUILDER a la construccion del objeto.
+
+X) USO: Siempre que tenga una clase con muchos parametros en su constructor lo mejor sera crearle un Builder.
+
+RESUMEN:
+1.1) Director: Es la clase responsable de construir el objeto complejo, usando la interfaz del BUILDER. Define la construccion del objecto.
+
+1.2) Builder: Es la Interfaz que define que define los metodos para construir las partes del objeto. Estos metodos los implementaran las clases concretas
+
+1.3) Concrete Builder: Esta Clase implementara la interfaz del Builder y sus respectivos metodos para construir el objeto complejo.
+
+1.4) Producto/Objecto: Es la clase que representara al objeto complejo a construir.
+
+
+2) Ejemplo Paso a Paso de un Builder:
+
+2.1) // Creo Producto
+public class Robot
+{
+    public string? Head { get; set; }
+    public string? Body { get; set; }
+    public string? Arms { get; set; }
+    public string? Legs { get; set; }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine("Robot Info:");
+        Console.WriteLine($"Head: {Head}");
+        Console.WriteLine($"Body: {Body}");
+        Console.WriteLine($"Arms: {Arms}");
+        Console.WriteLine($"Legs: {Legs}");
+    }
+}
+
+2.2) // Creo y defino la interfaz del Builder
+public interface IRobotBuilder
+{
+    void BuildHead(string head);
+    void BuildBody(string body);
+    void BuildArms(string arms);
+    void BuildLegs(string legs);
+    Robot GetRobot();
+}
+
+2.3) // Creo un concrete Builder que Implemente el Builder
+public class RobotBuilder : IRobotBuilder
+{
+    // Creo un campo con una instancia del objeto a construir, luego en los metodos de la interfaz me encargare de 
+    // de llenar de data este objeto.
+    private Robot _robot = new Robot();
+
+    public void BuildArms(string arms)
+    {
+        _robot.Arms = arms;
+    }
+    public void BuildBody(string body)
+    {
+        _robot.Body = body;
+    }
+    public void BuildHead(string head)
+    {
+        _robot.Head = head;
+    }
+    public void BuildLegs(string legs)
+    {
+        _robot.Legs = legs;
+    }
+    public Robot GetRobot()
+    {
+        return _robot;
+    }
+}
+
+2.4) // Creo el Director
+public class RobotDirector
+{
+    // Genero un campo con la interfaz Builder, ya que el director podra aceptar cualquier Builder concreto que  
+    // implemente esta Interfaz de builder.
+    private IRobotBuilder _robotBuilder;
+
+    public RobotDirector(IRobotBuilder robotBuilder)
+    {
+        _robotBuilder = robotBuilder;
+    }
+
+    public void ConstructRobot()
+    {
+        _robotBuilder.BuildHead("Cabezon");
+        _robotBuilder.BuildBody("Normal");
+        _robotBuilder.BuildArms("Claws");
+        _robotBuilder.BuildLegs("None");
+    }
+}
+
+
+
+3) Ejemplo del Builder mas Realista:
+
+public class Burger
+{
+    public string? Bread { get; set; }
+    public string? Meat { get; set; }
+    public string? Cheese { get; set; }
+    public string? Dressing { get; set; }
+    public bool Tomato { get; set; }
+    public bool Lettuce { get; set; }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine("Burger order:");
+        Console.WriteLine($"Bread: {Bread}");
+        Console.WriteLine($"Meat: {Meat}");
+        Console.WriteLine($"Cheese: {Cheese}");
+        Console.WriteLine($"Dressing: {Dressing}");
+        Console.WriteLine($"Tomato: {Tomato}");
+        Console.WriteLine($"Lettuce: {Lettuce}");
+    }
+}
+public interface IBurgerBuilder
+{
+    void BuildBread();
+    void BuildMeat();
+    void BuildCheese();
+    void BuildDressing();
+    void BuildTomato();
+    void BuildLettuce();
+    Burger GetBurger();
+}
+
+// En este EJ los mismos Concrete-Builder son los que definen los datos del objeto y no el director, lo que se apega mas a la realidad.
+public class ClassicBurgerBuilder : IBurgerBuilder
+{
+    private Burger _burger = new Burger();
+    public void BuildTomato()
+    {
+        _burger.Tomato = true;
+    }
+    public void BuildLettuce()
+    {
+        _burger.Lettuce = false;
+    }
+    public void BuildBread()
+    {
+        _burger.Bread = "Common";
+    }
+    public void BuildCheese()
+    {
+        _burger.Cheese = "Chedar";
+    }
+    public void BuildDressing()
+    {
+        _burger.Dressing = "Ketchup";
+    }
+    public void BuildMeat()
+    {
+        _burger.Meat = "Res Meat";
+    }
+    public Burger GetBurger()
+    {
+       return _burger;
+    }
+}
+public class VeggieBurgerBuilder : IBurgerBuilder
+{
+    private Burger _burger = new Burger();
+
+    public void BuildTomato()
+    {
+        _burger.Tomato = true;
+    }
+    public void BuildLettuce()
+    {
+        _burger.Lettuce = true;
+    }
+    public void BuildBread()
+    {
+        _burger.Bread = "Veggie Bread";
+    }
+    public void BuildCheese()
+    {
+        _burger.Cheese = "None";
+    }
+    public void BuildDressing()
+    {
+        _burger.Dressing = "Mustard";
+    }
+    public void BuildMeat()
+    {
+        _burger.Meat = "Veggie Meat";
+    }
+    public Burger GetBurger()
+    {
+        return _burger;
+    }
+}
+
+// Otra manera y mas realista de implementar el director, donde este no define los datos, sino que el mismo constructor
+// Define los datos y el director solo da la orden de construccion
+public class BurgerDirector
+{
+    private IBurgerBuilder _burgerBuilder;
+    public BurgerDirector(IBurgerBuilder burgerBuilder)
+    {
+        _burgerBuilder = burgerBuilder;
+    }
+
+    public void MakeBurger()
+    {
+        _burgerBuilder.BuildBread();
+        _burgerBuilder.BuildMeat();
+        _burgerBuilder.BuildCheese();
+        _burgerBuilder.BuildDressing();
+        _burgerBuilder.BuildTomato();
+        _burgerBuilder.BuildLettuce();
+    }
+}
+
+
+// Implementacion
+IBurgerBuilder burgerBuilder = new ClassicBurgerBuilder();
+BurgerDirector burgerDirector = new BurgerDirector(burgerBuilder);
+burgerDirector.MakeBurger();
+Burger burger = burgerBuilder.GetBurger();
+burger.DisplayInfo();
+
+                                                                            4) Abstract Factory
+
+1) El Patron Abstract-Factory es un patron de diseño creacional que proporciona una interfaz para crear familias de objetos relacionados sin especificar sus clases 
+concretas. Este patron permite a un sistema ser independiente de como se crean, componen y representan sus objetos.
+
+Para entender esta explicacion hagamos un ejemplo: Supongamos que quiero implementar una app de escritorio para Windows y Mac, ambos tendran elementos comunes (Button,
+TextBox, DDL), pero quiero que estos no sean iguales para ambos sistemas, quiero que compartan algunas caracteristicas y otras no. Este es el problema que buscara 
+resolver Abstract Factory.
+Para solucionar esto lo que haremos sera definir una interfaz para cada elemento comun (IButton, ITextBox, IDropDownList), dentro de esta interfaz definiremos los 
+metodos comunes para los elementos, y propiedades si las necesitara. La interfaz IButton por EJ sera implemntada tanto por la clase WinButton como por MacButton.
+
+El siguiente paso para aplicar este patron es declarar/crear la Abstract-Factory (la fabrica abstracta), una interfaz con una lista de metodos de creacion de elementos,
+por EJ createButton() createTextBox(). Esta interfaz debera ser aplicada por una factoria de cada Sistema operativo, por ejemplo una clase que sea WinFactory y 
+MacFactory, que su trabajo sera el de crear los elementos. Estos metodos deben devolver metodos Abstractos (IButton, ITextBox)
+
+
+2) EJ de Abstract-Factory:
+
+2.1) // Primero Creo las abstracciones de mis elementos comunes.
+public interface IButton
+{
+    void Render();
+}
+public interface IDropDownList
+{
+    void Render();
+}
+public interface ItextBox
+{
+    void Render();
+}
+
+2.2) // Luego creo la interfaz de Factory, basicamente aca defino las funciones que deberan implementar las factorias que implementen IThemeFactory 
+    // (WinFactory, MacFactory)
+public interface IBaseFactory
+{
+    IButton CreateButton();
+    IDropDownList CreateDropDownList();
+    ItextBox CreateTextBox();
+}
+
+2.3) // Crearemos las clases concretas que implementaran las abstracciones (IButton, ITextBox)
+public class LinuxButton : IButton
+{
+    public void Render()
+    {
+        Console.WriteLine("Me renderizo Linux");
+    }
+}
+public class MacButton : IButton
+{
+    public void Render()
+    {
+        Console.WriteLine("Me renderizo Mac");
+    }
+}
+public class WindowsButton : IButton
+{
+    public void Render()
+    {
+        Console.WriteLine("Me renderizo Win");
+    }
+}
+
+
+2.4) Crearemos las Factorias que implementaran IBaseFactory
+
+public class WinFactory : IBaseFactory
+{
+    public IButton CreateButton()
+    {
+        return new WindowsButton();
+    }
+
+    public ITextBox CreateTextBox()
+    {
+        return new WindowsTextBox();
+    }
+
+    public IDropDownList CreateDropDownList()
+    {
+        return new WindowsDropDownList();
+    }
+}
+
+public class LinuxFactory : IBaseFactory
+{
+    public IButton CreateButton()
+    {
+        return new LinuxButton();
+    }
+
+    public IDropDownList CreateDropDownList()
+    {
+        return new LinuxDropDownList();
+    }
+
+    public ITextBox CreateTextBox()
+    {
+        return new LinuxTextBox();
+    }
+}
+
+2.5) Implementacion/Uso de la factoria
+IBaseFactory themeFactory = new LinuxFactory();
+var boton = themeFactory.CreateButton();
+boton.Render();
+
+
+3) EJ de la realidad:
+
+3.1) // Creo las abstracciones comunes entre mis elementos (Paypal y Stripe), en este caso el Payment y Logger:
+public interface IPaymentGateWay
+{
+    void PaymentGateway();
+}
+public interface ITransactionLogger
+{
+    void TransactionLogger();
+}
+
+3.2) // Implemento las abstraciones comunes en las clases concretas
+public class PaypalPaymentGateWay : IPaymentGateWay
+{
+    public void PaymentGateway()
+    {
+        Console.WriteLine("Pago paypal");
+    }       
+}
+public class PaypalTransactionLogger : ITransactionLogger
+{
+    public void TransactionLogger()
+    {
+        Console.WriteLine("Logueo paypal");
+    }
+}
+
+3.3) // Creo la factoria Base:
+public interface IBaseFactory
+{
+   IPaymentGateWay CreatePayment();
+   ITransactionLogger CreateTransactionLogger();
+}
+
+3.4) // Creamos las factorias que implementaran IBaseFactory
+public class PaypalFactory : IBaseFactory
+{
+    public IPaymentGateWay CreatePayment()
+    {
+        return new PaypalPaymentGateWay();
+    }
+
+    public ITransactionLogger CreateTransactionLogger()
+    {
+        return new PaypalTransactionLogger();
+    }
+}
+
+
+3.5) // Uso Avanzado:
+
+// Creo una clase service que reciba la factoria base por constructor, asi luego puedo pasarle cualquier clase que implemente esa factory
+public class PaymentService
+{
+    private readonly IPaymentGateWay _gateWay;
+    private readonly ITransactionLogger _transactionLogger;
+
+    public PaymentService(IPaymentgatewayFactory baseFactory)
+    {
+        _gateWay = baseFactory.CreatePayment();
+        _transactionLogger = baseFactory.CreateTransactionLogger();
+    }
+
+    public void ProcessPayment()
+    {
+        _gateWay.PaymentGateway();
+        _transactionLogger.TransactionLogger();
+    }
+}
+
+// En Program
+var paymentService = new PaymentService(new PaypalFactory());
+paymentService.ProcessPayment();
+
+
+RESUMEN: Abstract Factory crea fábricas que producen conjuntos de objetos relacionados sin especificar sus clases concretas. Es útil cuando necesitas crear familias 
+de productos que deben trabajar juntos.
+
+
+
+                                                                            5) Factory Method
+
+1) El Factory Method es un patron creacional que proporciona/brinda una interfaz para crear objetos en una superclase, mientras  permite a las subclases modificar
+el tipo de objetos que se crearan.  Para implentar este patron necesitare una clase abstracta o una interfaz, la eleccion radica si necesito desarrollar una logica 
+igual para todos los elementos que hereden, si quiero desarrollar una logica comun usare una clase abstracta, sino bastara con una interfaz.
+Lo que propone Factory Method es delegar la creacion de los productos(clases) de forma tal que en lugar de llamar al operador new para construir un objeto se 
+invoque directamente en un metodo fabrica que se encargue de crear los objetos segun corresponda. El objetivo del patron es que el crecimiento de la aplicacion sea
+predecible y repetitivo.
+
+USO: Se utiliza cuando queremos ocultar la logica de creacion de instancias y a la vez permitir la creacion de diferentes tipos de objetos, basicamente buscamos 
+instanciar clases mediante metodos y no mediante el constructor new, permitiendosno poder instanciar varias clases siempre y cuando implenten X interfaz.
+
+
+2) EJ Factory Method:
+
+2.1) // Primero defino mi Interfaz y los metodos a implementar
+public interface IVehicle
+{
+    void Start();
+    void Stop();
+}
+
+
+2.2) // Defino los Products/Concrete-Class, implementando la interfaz definida anteriormente
+public class Car : IVehicle
+{
+    public void Start()
+    {
+        Console.WriteLine("Brum");
+    }
+
+    public void Stop()
+    {
+        Console.WriteLine("Stop Car");
+    }
+}
+
+
+2.3) // Creo la Factoria base, esta estara basada sobre la primera interfaz creada, es decir sera la IVehicleFactory, tendra un metodo que devolvera un IVehicle.
+    // Este metodo nos permitira crear deforma flexible objetos.
+public interface IVehicleFactory
+{
+    IVehicle CreateVehicle();
+}
+
+
+2.4) // Creamos las otras factorias e implementamos la logica del metodo de la IVehicleFactory
+public class CarFactory : IVehicleFactory
+{
+    public IVehicle CreateVehicle()
+    {
+        return new Car();
+    }
+}
+
+
+2.5) // Uso:
+
+// Creo un servicio
+public static class FactoryService
+{
+    public static IVehicle Execute(IVehicleFactory vehicleFactory)
+    {
+        return vehicleFactory.CreateVehicle();
+    }
+}
+
+// Clase Program
+var vehiculo = FactoryService.Execute(new MotorbikeFactory());
+vehiculo.Start();
+Console.ReadKey();
+vehiculo.Stop();
+
+
+
+3) EJ Complejo:
+
+3.1) // Defino la interfaz
+public interface IMessage
+{
+    void Send(string msg);
+}
+
+3.2) // Implemento la interfaz en los Products
+public class Email : IMessage
+{
+    public void Send(string msg)
+    {
+        Console.WriteLine("Esto es un mensaje de Email: "+ msg);
+    }
+}
+
+
+3.3) // Creo la Factoria Base
+public interface IMessageFactory
+{
+    IMessage CreateMessage();
+}
+
+
+3.4) // Implemento la factoria base en mis factorias concretas
+public class EmailFactory : IMessageFactory
+{
+    public IMessage CreateMessage()
+    {
+        return new Email();
+    }
+}
+
+
+3.5) // Creo el servicio para consumir las factorias
+public class FactoryServiceInstance
+{
+    private IMessageFactory messageFactory;
+    public FactoryServiceInstance(IMessageFactory messageFactory)
+    {
+        this.messageFactory = messageFactory;
+    }
+
+    public IMessage CreateMsg()
+    {
+       return messageFactory.CreateMessage();
+    }
+}
+
+3.6) // Uso
+var factory = new FactoryServiceInstance(new SMSFactory());
+var msg = factory.CreateMsg("Te saludo Pepe");
+msg.ShowMessage();
+
+
+RESUMEN: Factory Method define un método por factoria para crear un solo objeto, permitiendo que las clases concretas definan el tipo de objetos que se crean.
+
+                                                                            6) Prototype
+
+1) Prototype es un patron de diseño creacional que me permite crear objetos duplicando un objeto existente, en lugar de crear una instancia de 0. Este patron es 
+muy util cuando el proceso de creacion de un objeto es muy costoso en terminos de recursos, o necesitamos una copia exacta del objeto original. Para implementarlo
+deberemos crear una interfaz que implemente un metodo de clonacion. Esta interfaz se la denomina Prototipo, ya que es la que declara los metodos de clonacion.
+Podemos agregar un nivel mas de abstraccion creando una clase con un metodo que utilicen las clases hijas, y esta clase sera la que implemente IClonable. Esta 
+clase hija se la conoce como Prototipo-Concreto, porque sera esta la clase que implemente el metodo de clonacion.
+
+
+2) EJ Prototype:
+
+
+2.1) Creo la interfaz IClonable:
+// Interfaz de clonacion, Interfaz Prototype
+public interface IClonable
+{
+    object Clone();
+}
+
+
+2.2) Creo la Clase abstracta, la Concrete-Prototype
+// Clase Concreta que implementa IClonable, Concrete-Prototype
+public abstract class Shape : IClonable
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+
+    public object Clone()
+    {
+        // Este metodo me permite crear una copia del objeto sobre el que estoy parado y retornarlo
+        return this.MemberwiseClone();
+    }
+    // Defino un metodo abstracto que despues debere implementar en las clases hijas
+    public abstract void Draw();
+}
+
+
+2.3) Implemento el Concrete-Prototype en una clase
+public class Circle : Shape
+{
+    public Circle() 
+    {
+        Name = "Circle";
+    }
+
+    public override void Draw()
+    {
+        Console.WriteLine("Dibujo Circulo, ID: "+Id);
+    }
+}
+
+
+
+3) EJ Complejo:
+
+3.1) Creo la interface IClonable
+public interface IClonable
+{
+    object Clone();
+}
+
+3.2) Creo la clase abstracta que implemente IClonable y un Metodo abstracto que implementaran mis Products
+public abstract class Monster : IClonable
+{
+    public int Id { get; set; }
+    public string MonsterName { get; set; } = null!;
+
+    public object Clone()
+    {
+        return this.MemberwiseClone();
+    }
+    public abstract void Atack();
+}
+
+
+3.3) Creo mis products e implemento la clase abstracta de monster:
+public class Vampire : Monster
+{
+    public int BloodLust { get; set; }
+    public Vampire()
+    {
+        MonsterName = "Vampire";
+    }
+
+    public override void Atack()
+    {
+        Console.WriteLine("Te ataca un " + MonsterName);
+    }
+}
+
+3.4) Uso:
+var vamp = new Vampire { BloodLust = 100};
+vamp.Atack();
+var vampClone = (Vampire)vamp.Clone();
+vampClone.BloodLust = 50;
+vampClone.Atack();
+
+
+                                                                            7) Adapter
+
+1) Adapter es un patron de diseño estructural que permite que las interfaces de dos clases incompatibles trabajen juntas. Es decir convierte la interfaz de una clase
+en otra interfaz que el cliente espera. Este patron es util cuando queremos que 2 clases con interfaces incompatibles colaboren, o cuando queremos reutilizar una 
+clase existente que no coincide con el diseño actual.
+
+
+2) EJ Adapter:
+
+2.1) // Creo la interfaz de target
+public interface ICommunication
+{
+    void Ask();
+    void Reply();
+}
+
+ 
+2.2) // Creo la clase concreta (Client) que implemente la interfaz de target/ICommunication
+public class EnglishSpeaker : ICommunication
+{
+    public void Ask(string question)
+    {
+    Console.WriteLine(question);
+    }
+
+    public void Reply(string answer)
+    {
+        Console.WriteLine(answer);
+    }
+}
+
+
+2.3) // Creo la clase concreta que necesitaremos adaptar (Adaptee)
+public class SpanishSpeaker
+{
+    public void Pregunta(string pregunta)
+    {
+        Console.WriteLine(pregunta);
+    }
+
+    public void Respuesta(string respuesta)
+    {
+        Console.WriteLine(respuesta);
+    }
+}
+
+
+2.4) // Creo el Adapter, este implementara la interfaz del Client y tambien tendra un campo con la clase/interfaz del Adaptee
+public class Translator : ICommunication
+{
+    // Campo del Adaptee
+    private readonly SpanishSpeaker spanishSpeaker;
+    public Translator(SpanishSpeaker spanishSpeaker)
+    {
+        this.spanishSpeaker = spanishSpeaker;
+    }
+
+    public void Ask(string question)
+    {
+        spanishSpeaker.Pregunta(question);
+    }
+    public void Reply(string answer)
+    {
+        spanishSpeaker.Respuesta(answer);
+    }
+}
+
+
+2.5) Implementacion:
+public class CommunicationSystem
+{
+    public void StartConversation(ICommunication communication, string q, string a)
+    {
+        communication.Ask(q);
+        communication.Reply(a);
+    }
+}
+
+
+2.6) Uso: 
+var system = new CommunicationSystem();
+system.StartConversation(new EnglishSpeaker(), "What are you doing?", "Nothing");
+system.StartConversation(new Translator(new SpanishSpeaker()), "que haces?", "nada");
+
+
+
+3) Ejemplo Complejo:
+
+3.1) // Creo la Interfaz Target:
+public interface ISaveDB
+{
+    void SaveDB();
+}
+
+3.2) // Implemento esta interfaz en nuestro client (el cual es una concrete class):
+public class LegacySystem : ISaveDB
+{
+    public void SaveDB()
+    {
+        Console.WriteLine("Soy legacy Guardo en la BD");
+    }
+}
+
+3.3) // Creo mi Clase-Concreta a adaptar, el Adaptee
+public class NewSystem
+{
+    public void SaveNewSystemBD()
+    {
+        Console.WriteLine("Saving in new Way");
+    }
+}
+
+
+3.4) // Creo el Translator que implementara la interfaz Target (ISaveBD en este caso), tambien contara con un campo private de la clase a adaptar, 
+es decir tendra un campo de Adaptee.
+
+public class TraslatorDB : ISaveDB
+{
+    private NewSystem newSystem;
+    public TraslatorDB(NewSystem newSystem)
+    {
+        this.newSystem = newSystem;
+    }
+    public void SaveDB()
+    {
+        newSystem.SaveNewSystemBD();
+    }
+}
+
+
+3.5) // Creo un service para el consumo, para ello recibire el target por el constructor, para acceder a los metodos de esa interfaz:
+public class SavingSystem
+{
+    private readonly ISaveDB saveBD;
+
+    public SavingSystem(ISaveDB saveBD)
+    {
+        this.saveBD = saveBD;
+    }
+
+    public void MakeSave()
+    {
+        saveBD.SaveDB();
+    }
+}
+
+
+3.6) Uso: 
+var system = new SavingSystem(new TraslatorDB(new NewSystem()));
+system.MakeSave();
+
+var systemLegacy = new SavingSystem(new LegacySystem());
+systemLegacy.MakeSave();
+
+
+4) Segunda Version de resolucion Practica:
+
+4.1) // Creo la interfaz Target
+public interface IDatabase
+{
+    void Add(string data);
+    string Retrieve();
+}
+
+
+4.2) // Creo la concrete-class CLIENT, pero en vez de implementar IDatabase la inyectamos como dependencia.
+public class NewSystem
+{
+    private IDatabase _database;
+    public NewSystem(IDatabase database)
+    {
+        _database = database;
+    }
+
+    public void SaveData(string data)
+    {
+        _database.Add(data);
+        Console.WriteLine("Saving the data: "+data);
+    }
+
+    public void LoadData()
+    {
+        string res = _database.Retrieve();
+        Console.WriteLine("Data Loaded in the new system: "+ res);
+    }
+}
+
+4.3) // Creo la concrete-class Adaptee
+public class LegacySystem
+{
+    public void InsertData(string data)
+    {
+        Console.WriteLine("Legacy data: "+ data);
+    }
+
+    public string GetData()
+    {
+        return "Data from legacy DB";
+    }
+}
+
+
+4.4) // Creo el Traslator
+public class DatabaseAdapter : IDatabase
+{
+    private LegacySystem _legacySystem;
+    public DatabaseAdapter(LegacySystem legacySystem)
+    {
+        _legacySystem = legacySystem;
+    }
+
+    public void Add(string data)
+    {
+        _legacySystem.InsertData(data);
+    }
+
+    public string Retrieve()
+    {
+        return _legacySystem.GetData();
+    }
+}
+
+
+4.5) Uso:
+DatabaseAdapter adapter = new DatabaseAdapter(new LegacySystem());
+NewSystem newSystem = new NewSystem(adapter);
+newSystem.SaveData("Saving");
+
+
+
+                                                                            8) Bridge
+
+1) Bridge es un patron estructural que se utiliza para desacoplar una abstraccion de su implementacion, de modo que los dos puedan variar de forma independiente.
+Es decir que nos permite dividir una clase grande, o un grupo de clases estrechamente relacionadas en dos jerarquias separadas: ABSTRACCION e IMPLEMENTACION, que 
+pueden desarrollarse independientemente.
+
+Un ejemlo seria si quiero desarrollar un reproductor de musica para distintos dispositivos (Desktop y Mobile) y quiero que ademas incorpore distintos formatos de 
+audio (MP3 y WAV). La forma para desarrollar un software que sea escalable, es decir que si quiero sumar un dispositivo o formatos de audio nuevo no sea un problema,
+utilizaremos el patron Bridge. En este caso para cada formato definiremos unas interfaz, y para los dispositivos definiremos una clase abstracta que defina 
+comportamiento comun y metodos a implementar. Esta clase abstracta de MusicPlayer (Abstraction) incorporara por constructor la interfaz IFormat (Implementation).
+
+ABSTRACCION: La abstraccion viene a ser la idea del que quiero hacer, que accion quiero realizar. En el ejemplo es el reproducir musica. Aca defino que quiero hacer,
+pero no el como lo quiero hacer.
+IMPLEMENTACION: Aca es donde defino el como quiero hacer la idea, en este caso como quiero llevar a cabo la reproduccion de musica, que acciones realizare para que 
+la pueda reproducir.
+
+Se lo suele usar al patron cuando quiero dividir y organizar una clase monolítica que tenga muchas variantes de una sola funcionalidad. En vez de crear una clase 
+de cada reproductor por cada formato directamente realizo una separacion del Formato del Reproductor, Siendo el IFormat la implementacion y el MusicPlayer la 
+abstraccion y permitiendo que los reproductores usen un IFormat.
+
+2) EJ de Bridge:
+
+2.1)
+// Esta interfaz es la IMPLEMENTATION
+public interface IFormat
+{
+    void Play(string path);
+}
+
+2.2) Creo la clase concreta que implemente la interfaz de Implementacion
+public class MP3 : IFormat
+{
+    public void Play(string path)
+    {
+        // Defino como quiero reproducir musica
+        Console.WriteLine("MP3");
+    }
+}
+
+2.3) Creamos la clase abstracta donde inyectamos la Implementation
+public abstract class MusicPlayer
+{
+    protected IFormat _format;
+
+    protected MusicPlayer(IFormat format)
+    {
+        this._format = format;
+    }
+
+    // Defino que quiero hacer, es decir quiero reproducir musica
+    public abstract void Play(string path);
+}
+
+
+2.4) // Creamos la AbstracionRefinada
+public class DesktopPlayer : MusicPlayer
+{
+    // Por constructor le paso a la clase MusicPlayer la interfaz que necesita para su construccion.
+    public DesktopPlayer(IFormat format) : base(format)
+    {}
+
+    // llamamos al _format y ejecutamos el metodo Play, que dependera del formato que le pasemos al constructor
+    public override void Play(string path)
+    {
+        Console.WriteLine("Using Desktop");
+        _format.Play(path);
+    }
+}
+
+
+2.5) Uso:
+var desk = new DesktopPlayer(new MP3());
+desk.Play("HastaLaProxima.mp3");
+
+En sintesis, bridge me permite separar la implementacion de la abstracion, Esto proporciona la flexibilidad de modificar la implementación de cada reproductor de 
+manera independiente, sin afectar las abstracciones ni otras implementaciones.
+
+
+
+3) Ejemplo Complejo: En este caso separamos Autos de Motores, para que cada implementacion de auto y motor sea individual y que al alterar alguna implementacion las
+otras no lo sufran.
+
+
+3.1) Creamos la interfaz (Implementation) que usaran las clases concretas:
+public interface IEngine
+{
+    void Start();
+    void Stop();
+}
+
+
+3.2) Creamos las clases concretas e implementaremos la interfaz anteriormente creada, recien aca realizamos la IMPLEMENTACION
+public class PetrolEngine : IEngine
+{
+    public void Start()
+    {
+        Console.WriteLine("BRUM");
+    }
+
+    public void Stop()
+    {
+        Console.WriteLine("Stop Petrol");
+    }
+}
+
+
+3.3) Una vez creada la implementacion crearemos la abstraccion mediante una clase abstracta. El BRIDGE se genera aca, mediante la inyeccion de la interfaz de 
+implementacion.
+public abstract class VehicleAbstraction
+{
+    // El puente de la Abstraccion hacia la implementacion
+    protected IEngine _engine;
+    public VehicleAbstraction(IEngine engine)
+    {
+        _engine = engine;
+    }
+    public abstract void Drive();
+}
+
+
+3.4) Por ultimo creamos la abstraccion refinada, donde implementamos el metodo definido en la abstraccion.
+public class SubaruImpreza : VehicleAbstraction
+{
+    public SubaruImpreza(IEngine engine) : base(engine)
+    {}
+
+    public override void Drive()
+    {
+        Console.WriteLine("Encendido de impreza");
+        _engine.Start();
+        Console.WriteLine("Apagado de impreza");
+        _engine.Stop();
+    }
+}
+
+
+
+3.5) Uso: A diferente de la primera forma de usarlo puedo llamar directamente a la abstraccion y pasarle un objeto que la herede.
+VehicleAbstraction petrol = new SubaruImpreza(new PetrolEngine());
+petrol.Drive();
+
+
+
+                                                                            9) Composite
+
+1) Composite es un patron de diseño estructural que permite componer objetos en Estructuras de Arbol, y trabajar con esas estructuras como si fueran objetos
+individuales.
+Un ejemplo lo tenemos en los directorios y archivos de la computadora. Dentro de una carpeta encontraremos archivos pero tambien carpetas y dentro de esa subcarpeta
+tambien encontraremos mas archivos y subcarpetas. Los archivos (AppFiles) seran un componente LEAF (hoja), es decir un componente que no tendra hijos, en cambio las 
+carpetas (folder) sera un COMPOSITE, es decir un componente que si tendra hijos, por lo que tendra una lista de la interfaz que implementa. Ambos implementaran una 
+interfaz, a la que llamaremos Component.
+Es util cuando trabajas con estructuras jerárquicas o en situaciones donde necesitas tratar objetos individuales y colecciones de manera uniforme.
+
+2) EJ de composite:
+ 
+2.1) Creo la interfaz (El Component)
+public interface IFileSystemItem
+{
+    void Display(string identacion = "");
+}
+
+
+2.2) Creo la clase concreta LEAF e implemento Component
+public class AppFile : IFileSystemItem
+{
+    private string _name;
+    public AppFile(string name)
+    {
+        _name = name;
+    }
+
+    public void Display(string identacion = "")
+    {
+        Console.WriteLine($"{identacion}- {this.GetType().Name}: {_name}.jpg");
+    }
+}
+
+
+2.3) Hacemos lo mismo para la clase concreta COMPOSITE, con la diferencia de que contara con una lista para almacenar los elementos dentro de esta.
+public class Folder : IFileSystemItem
+{
+    private string _name;
+    // Al poder tener archivos y carpetas dentro suyo le creamos que campo que almacene estos
+    private List<IFileSystemItem> _items;
+    public Folder(string name)
+    {
+        _name = name;
+        _items = new List<IFileSystemItem>();
+    }
+
+    public void Display(string identacion = "")
+    {
+        Console.WriteLine($"{identacion}- {this.GetType().Name}: {_name}.jpg");
+        foreach (IFileSystemItem item in _items)
+        {
+            item.Display(identacion + "  ");
+        }
+    }
+
+    public void AddItem(IFileSystemItem item)
+    {
+        _items.Add(item);
+    }
+}
+
+
+
+3) EJ Complejo:
+
+3.1) Interfaz Component:
+public interface IWorker
+{
+    void Display(string identar = "");
+}
+
+
+3.2) Concrete-Class LEAF:
+public class Employee : IWorker
+{
+    private string _name;
+    public Employee(string name)
+    {
+        _name = name;
+    }
+
+    public void Display(string identar = "")
+    {
+        Console.WriteLine($"{identar}- {_name}");
+    }
+}
+
+
+3.3) Concrete-Class COMPOSITE:
+public class Manager : IWorker
+{
+    private string _name;
+    private List<IWorker> _workers;
+    public Manager(string name)
+    {
+        _workers = new List<IWorker>();
+        _name = name;
+    }
+
+    public void Display(string identar = "")
+    {
+        Console.WriteLine($"{identar}- {_name}");
+        foreach (var worker in _workers)
+        {
+            worker.Display(identar + "  ");
+        }
+    }
+}
+
+
+3.4) Uso:
+var managerRoot = new Manager("Pepe");
+var managerSub = new Manager("Coqui");
+
+managerSub.Add(new Employee("Juan"));
+managerSub.Add(new Employee("Rivaldo"));
+managerRoot.Add(managerSub);
+
+managerRoot.Display();
+
+
+
+
+                                                                        10) Decorator/Wrapper
+
+1) Decorator es un patron de diseño estructural que permite agregar nuevos comportamientos o funcionalidades a objetos al colocar estos objetos dentro de otros.
+
+Para dividir este patron los hacemos de la siguiente forma: 1) Component, sera la interfaz base de mis clases (ICoffe). 2) ConcreteComponent, Seran las clases 
+concretas que implementen mi interfaz Component. 3) Decorator, una clase abstracta que inyectara e Implementara la interfaz IComponent y definira metodos abstractos a 
+implementar por clases hijas. 4) ConcreteDecorator, clases concretas que implementan la clase abstracta del decorador.
+
+
+2) EJ de Decorator
+
+2.1)// Defino la interfaz Component
+public interface ICoffee
+{
+    string GetDescription();
+    double GetCost();
+}
+
+
+2.2) Creo la clase concreta que implementara la interfaz Component
+public class SimpleCoffee : ICoffee
+{
+    public double GetCost()
+    {
+        return 1.0;
+    }
+
+    public string GetDescription()
+    {
+        return "Simple Coffee";
+    }
+}
+
+2.3) Creo mi decorator, una clase abstracta
+public abstract class CoffeeDecorator : ICoffee
+{
+    // Pido este parametro para tener una instancia base del cafe a decorar.
+    protected ICoffee _coffee;
+    public CoffeeDecorator(ICoffee coffee)
+    {
+        _coffee = coffee;
+    }
+
+    // La palabra reservada VIRTUAL me permite poder sobrescribir el metodo si lo requiero
+    public virtual double GetCost()
+    {
+       return _coffee.GetCost();
+    }
+
+    public virtual string GetDescription()
+    {
+       return _coffee.GetDescription();
+    }
+}
+
+
+2.4) Creo mis decoradores Concretos implementando el abstracto:
+public class MilkDecorator : CoffeeDecorator
+{
+    // Paso el cafe base por parametro 
+    public MilkDecorator(ICoffee coffee) : base(coffee)
+    {}
+
+    // Overraideo los metodos, tomo el valor original y le sumo un cambio, por ejemplo pido el valor base del cafe que 
+    // pedi pero ademas le hago un recargo, Lo mismo con la descripcion. De ahi viene el nombre de decorador, al 
+    // agregarle cosas a un elemento base, lo decora.
+    public override double GetCost()
+    {
+        return _coffee.GetCost() + 0.5;
+    }
+
+    public override string GetDescription()
+    {
+        return _coffee.GetDescription()+", With milk";
+    }
+}
+
+2.5) Uso:
+var coffeMilk = new MilkDecorator(new WhipedCreamDecorator(new SimpleCoffee()));
+Console.WriteLine(coffeMilk.GetDescription());
+
+
+
+3) EJ Complejo Decorator:
+
+
+3.1) Creo la interfaz component que implementara mi concrete-class
+public interface IBurger
+{
+    string getBurgerDescription();
+    double getBurgerCost();
+}
+
+
+3.2) Creo la concrete class e implemento la interfaz
+public class Burger : IBurger
+{
+    public double getBurgerCost()
+    {
+        return 5.5;
+    }
+
+    public string getBurgerDescription()
+    {
+        return "Simple Burger";
+    }
+}
+
+3.3) Creo el decorador, el cual implementara la interfaz component y la inyectara. La implementacion es para que todos los objetos que hereden sean considerados 
+como una concrete-class de IBurger, es decir que los decorator seran considerado IBurgers. La inyeccion tiene el fin de guardar la informacion de la Burger base a  
+la que estamos decorando y agregarle los datos del decorado. La definicion de los metodos es devolver los valores de la Burger Base, en caso de que no la hayamos 
+decorado, pero estos metodos podran ser Overraideados. Para aclarar, el decorador en si sera una Burger (al igual que sus decoradores), pero al cual se le pueden 
+sumar cosas.
+
+public abstract class BurgerDecorator : IBurger
+{
+    protected IBurger _burger;
+    protected BurgerDecorator(IBurger burger)
+    {
+        _burger = burger;
+    }
+    public virtual double getBurgerCost()
+    {
+        return _burger.getBurgerCost();
+    }
+    public virtual string getBurgerDescription()
+    {
+        return _burger.getBurgerDescription();
+    }
+}
+
+
+3.4) Creo los decoradores concretos, y overraideo los metodos con la info correspondiente:
+public class BaconDecorator : BurgerDecorator
+{
+    public BaconDecorator(IBurger burger) : base(burger)
+    {}
+
+    public override string getBurgerDescription()
+    {
+        return _burger.getBurgerDescription() + ", with bacon";
+    }
+
+    public override double getBurgerCost()
+    {
+        return _burger.getBurgerCost() + 1.0;
+    }
+}
+
+
+3.5) Uso:
+IBurger burger = new Burger();
+Console.WriteLine($"{burger.getBurgerDescription()}: ${burger.getBurgerCost()}");
+
+burger = new BaconDecorator(burger);
+Console.WriteLine($"{burger.getBurgerDescription()}: ${burger.getBurgerCost()}");
+
+burger = new ChesseDecorator(burger);
+Console.WriteLine($"{burger.getBurgerDescription()}: ${burger.getBurgerCost()}");
+
+
+
+                                                                            11) Facade    
+
+1) Facade es un patron estructural que proporciona una interfaz simplificada a un sistema de clases, biblioteca o framework. Lo que viene a hacer Facade es crear 
+un elemento que contenga a una serie de clases complejas y las unifique, para no tener que ejecutar individualmente componente por componente.
+
+En sintesis Facade busca que las clases del subsitema (DvdPlayer, Speakers, Projector) no tengan una relacion directa entre si, sino que su relacion se producira 
+mediante la clase Facade, esta inyectara las clases del subsistema y se encargara de utilizarlas. El objetivo de Facade es simplificar la interaccion de un 
+sistema complejo, proporcionando una interfaz unica y simple. Busca unificar elementos que no se conocen entre si.
+
+
+2) EJ Facade:
+
+2.1) Creo Mis concrete-class
+public class DvdPlayer
+{
+    public void On()
+    {
+        Console.WriteLine("Dvd Se prende");
+    }
+
+    public void Off()
+    {
+        Console.WriteLine("Dvd Se apaga");
+    }
+
+    public void PlayMovie(string movie)
+    {
+        Console.WriteLine($"Pongo peli: {movie}");
+    }
+}
+
+
+2.2) Creo Facade
+public class HomeTheaterFacade
+{
+    private DvdPlayer _dvdPlayer;
+    private Projector _projector;
+    private Speakers _speakers;
+    public HomeTheaterFacade(DvdPlayer dvdPlayer, Projector projector, Speakers speakers)
+    {
+        _dvdPlayer = dvdPlayer;
+        _projector = projector;
+        _speakers = speakers;
+    }
+
+    public void WatchMovie()
+    {
+        Console.WriteLine("Encendiendo Home");
+        _projector.On();
+        _speakers.On();
+        _dvdPlayer.On();
+        _dvdPlayer.PlayMovie("Cars 1");
+    }
+
+    public void EndMovie()
+    {
+        Console.WriteLine("Apagando Home");
+        _projector.Off();
+        _speakers.Off();
+        _dvdPlayer.Off();
+    }
+}
+
+
+2.3) Uso:
+var home = new HomeTheaterFacade(new DvdPlayer(), new Projector(), new Speakers());
+home.WatchMovie();
+Console.ReadKey();
+home.EndMovie();
+
+
+3) EJ Complejo:
+
+3.1) Creo Mis concrete-class
+public class FlightBooking
+{
+    public void BookFlight()
+    {
+        Console.WriteLine("Vuelo Reservado");
+    }
+}
+
+3.2) Creo Facade
+public class TravelFacade
+{
+    private FlightBooking flightBooking;
+    private HotelBooking hotelBooking;
+    private CarRental carRental;
+
+    public TravelFacade(FlightBooking flightBooking, HotelBooking hotelBooking, CarRental carRental)
+    {
+        this.flightBooking = flightBooking;
+        this.hotelBooking = hotelBooking;
+        this.carRental = carRental;
+    }
+
+    public void ArrangeTrip()
+    {
+        flightBooking.BookFlight();
+        hotelBooking.BookHotel();
+        carRental.RentCar();
+    }
+}
+
+
+3.3) Uso:
+var home = new TravelFacade(new FlightBooking(), new HotelBooking(), new CarRental());
+home.ArrangeTrip();
+
+
+                                                                            12) Proxy    
+
+1) Proxy es un patron de diseño estructural que me permite proporcionar un sustituto o un placeholder para otro objeto. Es decir el proxy controla el acceso al 
+objeto original, permitiendo realizar algo antes de que la accion llegue al objeto original. El proxy me permite añadirle un comportamiento adicional a un objeto,
+me permite realizar ciertas validaciones o evaluaciones sobre el objeto original, tambien lo puedo utilizar cuando quiero extender funcionalidades de un objeto sin 
+modificar el objeto base.
+
+Este patron se divide en: 1) Subject, la interfaz. 2) RealSubject, el objeto original. 3) Proxy, la copia del objeto original quien tambien implementara Subject.
+proxy sera el que interactue con el cliente.
+
+
+
+2)  EJ de Proxy:
+
+
+2.1) Creo la interfaz (Subject):
+public interface IBankAccount
+{
+    void Deposit(int amount);
+    bool Withdraw(int amount);
+    int GetBalance();
+}
+
+
+2.2) Creo la clase concreta que implementa esa interfaz (RealSubject)
+public class BankAccount : IBankAccount
+{
+    private int _balance;
+    public BankAccount(int balance)
+    {
+        _balance = balance;
+    }
+
+    public void Deposit(int amount)
+    {
+        _balance += amount;
+        Console.WriteLine("Se deposito: $" + amount);
+    }
+
+    public int GetBalance()
+    {
+        return _balance;
+    }
+
+    public bool Withdraw(int amount)
+    {
+        if(_balance >= amount)
+        {
+            _balance -= amount;
+            Console.WriteLine("Se retiro: $" + amount);
+            return true;
+        }
+        else Console.WriteLine("Saldo Insuficiente");
+        return false;
+    }
+}
+
+2.3) Creo el proxy, este tambien implementa la interfaz, tambien debera inyectar una referencia al BankAccount:
+public class ProxyBankAccount : IBankAccount
+{
+    private BankAccount bankAccount;
+    public ProxyBankAccount(BankAccount bankAccount)
+    {
+        this.bankAccount = bankAccount;
+    }
+
+    public void Deposit(int amount)
+    {
+        bankAccount.Deposit(amount);
+    }
+    public int GetBalance()
+    {
+       return bankAccount.GetBalance();
+    }
+
+    public bool Withdraw(int amount)
+    {
+       if(amount > 15000)
+       {
+           Console.WriteLine("Esta operacion necesita de aprobacion");
+           return false;
+       }
+       else
+       {
+           return bankAccount.Withdraw(amount);
+       }
+    }
+}
+
+
+
+2.4) Uso:
+var bankAccount = new BankAccount(14000);
+var proxy = new ProxyBankAccount(bankAccount);
+proxy.Withdraw(12500);
+
+
+
+3) EJ Complejo:
+
+
+3.1) Creo la interfaz, ademas para el ejemplo tambien crearemos un Enum
+public interface ISecurityCamera
+{
+    void DisplayCamera(int camera);
+}
+// Solo se aplica en este ejemplo para simular una lista
+public enum CameraNumbers
+{
+    Comedor = 1,
+    Cocina = 2, 
+    Frente = 3,
+    Patio = 4,
+    Habitacion = 5
+}
+
+
+
+3.2) Creamos la clase concreta de RealSubject
+public class SecurityCamera : ISecurityCamera
+{
+    public void DisplayCamera(int camera)
+    {
+        Console.WriteLine("Mostrando camara");
+    }
+}
+
+3.3) Creo el proxy donde extiendo la logica del metodo del objeto original. El objeto original lo tengo inyectado mediante constructor, ademas pido por constructor el 
+user, aunque tambien lo podria haber pedido en el RealSubject, no cambia nada.
+public class ProxySecurityCamera : ISecurityCamera
+{
+    private string _user;
+    private SecurityCamera _securityCamera;
+    public ProxySecurityCamera(SecurityCamera securityCamera, string user)
+    {
+        _securityCamera = securityCamera;
+        _user = user;
+    }
+
+    public void DisplayCamera(int camera)
+    {
+        if (camera == (int)CameraNumbers.Habitacion && _user != "Admin")
+        {
+            Console.WriteLine("Esta camara solo es accesible por el administrador");
+        }
+        else if (camera > (int)CameraNumbers.Habitacion)
+        {
+            Console.WriteLine("Esta camara no existe");
+        }
+        else
+        {
+            _securityCamera.DisplayCamera(camera);
+        }
+    }
+}
+
+
+3.4) Uso:
+var camera = new SecurityCamera();
+var proxy = new ProxySecurityCamera(camera, "Admin");
+proxy.DisplayCamera(5);
+
+
+
+                                                                            13) Command
+
+1) Command es un patron de diseño de comportamiento, que convierte una solicitud en un objeto que contiene toda la informacion sobre esa solicitud. Es decir que 
+utilizamos un objeto para encapsular toda la informacion necesaria para ejecutar una accion o evento. Este al ser un patron de comportamiento se centra en como los 
+objetos interactuan entre si.
+
+USO: 1) Guardar y ejecutar acciones más tarde: Al poder guardar las acciones en comandos me permite ejecutarlo cuando quiera, es decir puedo pedir un comando 
+y ejecutarlo mas tarde. 2) Encapsular tareas en objetos: Similar a lo anterior, cada comando sera guardado en una variable, sera guardada en un objeto que podre 
+utilizar. 
+
+El patron de diseño Command consta de varias partes: 1) Command, la interface que define un metodo de ejecucion.  2) Receiver, la clase concreta que tiene los metodos 
+implementados que quiero usar. 3) ConcreteCommand, son las clases concretas que implementa la interfaz command y a su vez inyectan la clase concrete de Receiver, 
+Segun la accion a realizar sera lo que definan en Execute(). 4) La clase concreta de Invoker, sera quien inyectara un objeto que implemente ICommand, es decir alguna 
+de las clases concretas de ConcreteCommand..
+
+
+2) EJ Command:
+
+2.1) Creo la interfaz de Command, generalmente solo consta del metodo Execute().
+public interface IComand
+{
+    void Execute();
+}
+
+
+2.2) Crearemos la clase concrete del Receiver, clase que sera quien implemente la logica de los metodos:
+public class Order
+{
+    public void Place()
+    {
+        Console.WriteLine("Orden Agregada");
+    }
+
+    public void Cancel()
+    {
+        Console.WriteLine("Orden Cancelada");
+    }
+}
+
+
+2.3) Por cada uno de los metodos de la clase Receiver creare un Concrete-Class de Command:
+public class PlaceConcreteCommand : IComand
+{
+    private Order order;
+    public PlaceConcreteCommand(Order order)
+    {
+        this.order = order;
+    }
+
+    public void Execute()
+    {
+        order.Place();
+    }
+}
+
+
+2.4) Creo el Invoker, este constara de una simple funcion que se encargara de llamar a los Concrete-Comanders:
+public class Waiter
+{
+    public void TakeCommand(ICommand command)
+    {
+        command.Execute();
+    }
+}
+
+
+
+2.5) Uso:
+Order order = new Order();
+IComand comandPlace = new PlaceConcreteCommand(order);
+IComand comandCancel = new CancelConcreteCommand(order);
+
+Waiter invoker = new Waiter();
+invoker.TakeCommand(comandPlace);
+invoker.TakeCommand(comandCancel);
+
+
+3) EJ Complejo:
+
+
+3.1) Creo la interfaz ICommand:
+public interface ICommand
+{
+    void Execute();
+}
+
+
+3.2) Creo el Receiver con su logica: 
+public class SmartTV
+{
+    public void AccessNetflix()
+    {
+        Console.WriteLine("Entrando a neflis");
+    }
+    public void AccessAmazon()
+    {
+        Console.WriteLine("Entrando a amazon");
+    }
+}
+
+
+3.3) Creo las concrete-command que implementaran ICommand e Inyectaran el Receiver
+public class AmazonConcreteCommand : ICommand
+{
+    private SmartTV smartTV;
+    public AmazonConcreteCommand(SmartTV smartTV)
+    {
+        this.smartTV = smartTV;
+    }
+
+    public void Execute()
+    {
+        smartTV.AccessAmazon();
+    }
+}
+
+
+3.4) Creo el invoker para llamar estos metodos, en este caso lo hacemos estatico para variar:
+public static class RemoteController
+{
+    public static void TakeCommand(ICommand command)
+    {
+        command.Execute();
+    }
+}
+
+
+3.5) Uso:
+var smartTV = new SmartTV();
+ICommand netflix = new NetfilxConcreteCommand(smartTV);
+ICommand amazon = new AmazonConcreteCommand(smartTV);
+
+RemoteController.TakeCommand(netflix);
+RemoteController.TakeCommand(amazon);
+
+
+
+                                                                            14) Iterator
+
+1) El patron Iterator proporciona una forma de accder a los elementos de una coleccion sin exponer su representacion subyacente. Esto es util para acceder a elementos 
+de colecciones que estan representadas de diferentes maneras (Listas, arrays, arboles, diccionarios). En sintesis: nos permite iterar colecciones sin imporatar el tipo 
+de la coleccion.  
+A diferencia de otros patrones este no busca solucionar un problema de arquitectura sino un problema pragmatico a la hora de hacer codigo. El objetivo de este patron
+es proporcionar una serie de metodos genericos para que se pueda trabajar de la misma manera con cualquier coleccion.
+
+
+Un Iterator cuenta con las siguientes partes: 1) IIterator: Es la interfaz que tiene los metodos HasNext() y Next(), el primer metodo verificara si existe otro
+elemento mas en la coleccion, si existe se ejecutara Next(). Para poder trabajar con cualquier coleccion trabajaremos con Genrics. 2) ConcreteIterator: Sera la clase 
+concreta que implemente la interfaz IIterator, sera quien implemente la logica de los metodos Next() y HasNext(). Tambien tendra 2 campo, un campo coleccion y 
+otro que guarde la posicion de la coleccion. 3) ICollection: Esta interfaz definira un metodo CreateIterator() y que devolvera un IIterator<T>. 
+4) ConcreteCollection: implementara ICollection, este se encargara de implementar el metodo CreateIterator(), basicamente instanciara al iterador.
+
+
+2) EJ de Iterator:
+
+
+2.1) Creo la interfaz IIterator, generica:
+public interface IIterator<T>
+{
+    T Next();
+    bool HasNext();
+}
+
+
+2.2) Creo la interfaz de ICollection, tambien generica:
+public interface ICollection<T>
+{
+    IIterator<T> CreateIterator();
+}
+
+
+2.3) Creo el ConcreteIterator, este recibira una lista por parametro, que sera la coleccion con la que trabajara:
+public class BookIterator : IIterator<Book>
+{
+    private int position = 0;
+    private List<Book> books;
+    public BookIterator(List<Book> books)
+    {
+        this.books = books;
+    }
+
+    public bool HasNext()
+    {
+        return position < books.Count;
+    }
+
+    public Book Next()
+    {
+        var book = books[position];
+        position++;
+        return book;
+    }
+}
+
+
+2.4) Creo el ConcreteCollection, este se encargara de devolverme un iterador listo para usar:
+public class Library : IColection<Book>
+{
+    private List<Book> _books;
+    public Library()
+    {
+        _books = new List<Book>
+        {
+            new Book("Pirates of Algibean","Juan"),
+            new Book("Pirates of Algibean 2: La venganza del perla","Juan"),
+            new Book("En busca por una 33","Nano"),
+        };
+    }
+
+    public IIterator<Book> CreateIterator()
+    {
+        return new BookIterator(_books);
+    }
+}
+
+
+2.5) Uso:
+var libreria = new Library();
+var iterator = libreria.CreateIterator();
+while (iterator.HasNext())
+{
+    var book = iterator.Next();
+    Console.WriteLine(book.Autor+" Escribio "+ book.Titulo);
+}
+
+
+
+3) Ejemplo Complejo:
+
+
+3.1) Creo la interfaz de IIterator, quien define los metodos Next() y HasNext()
+public interface IFacebookIterator<T>
+{
+    T Next();
+    bool HasNext();
+}
+
+
+3.2) Defino la interfaz ICollection, que define el metodo CreateIterator(), es decir el metodo que Invocara al Iterador.
+public interface IColection<T>
+{
+    IIterator<T> CreateIterator();
+}
+
+
+3.3) Creo la clase concreta que implementa la logica del iterador, esta implementa la interfaz de IIterator:
+public class UserIterator : IIterator<FacebookUser>
+{
+    private List<FacebookUser> _users;
+    private int position = 0;
+    public UserIterator(List<FacebookUser> users)
+    {
+        _users = users;
+    }
+
+    public bool HasNext()
+    {
+        return position < _users.Count;
+    }
+    public FacebookUser Next()
+    {
+        var user = _users[position];
+        position++;
+        return user;
+    }
+}
+
+
+
+3.4) Creo la clase concreta del Invoker, el que creara el iterador, este implementara la interfaz IColection:
+public class FacebookUsersDB : IColection<FacebookUser>
+{
+    private List<FacebookUser> _users;
+    public FacebookUsersDB()
+    {
+        _users = new List<FacebookUser>
+        {
+            new FacebookUser(1, "Pepe"),
+            new FacebookUser(2, "Jose"),
+            new FacebookUser(3, "Juan")
+        };
+    }
+
+    public IIterator<FacebookUser> CreateIterator()
+    {
+        return new UserIterator(_users);
+    }
+}
+
+
+3.5) Uso:
+var facebookBD = new FacebookUsersDB();
+var iterator = facebookBD.CreateIterator();
+while(iterator.HasNext())
+{
+    var user = iterator.Next();
+    Console.WriteLine($"Usuario: {user.Name} // Id: {user.Id}");
+}
+
+
+
+
+
+
+                                                                            15) Mediator
+
+1) El patron Mediator es un patron de Comportamiento que se utiliza para facilitar la comunicacion entre objetos de forma desacoplada. Este patron brinda un objeto 
+mediador que maneja todas las comunicaciones entre diferentes clases, y permite que el mantenimiento de la App sea mas sencillo, al minimizar las dependencias 
+directas entre las clases.
+La idea de este patron es establecer un mediador entre 2 o mas clases que no se conocen, pero que podrian necesitar comunicarse entre si. En C# Generalmente se suele 
+implementar este patron en la creacion de microservicios.
+
+El mediator esta compuesto Por: 1) IMediator: Una interfaz que define un metodo Notify(), este se utilizara para enviar mensajes entre los elementos que medie. 
+2) ConcreteMediator: Basicamente es la implementacion concreta del mediador, una clase concreta. Este mediador concreto tendra inyectado los componentes concretos, es 
+decir las clases que quiero mediar entre si. En nuestro EJ es la plataforma de Ecommerce. 3) Component: Seran clases concretas que necesitan tener un mediador para 
+comunicarse con otra clase, estas inyectaran un IMediator.
+
+2) EJ Mediator:
+
+
+2.1) Creo la interfaz Mediator:
+public interface IMediator
+{
+    void Notify(object sender, string eventCode);
+}
+
+
+2.2) Creo los componentes concretos que quiero comunicar, estas deben inyectar la interfaz IMediator:
+public class ShoppingCart
+{
+    private IMediator _mediator;
+    public ShoppingCart(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    // Esta funcion es auxiliar, porque en el caso de que al construir ShoppingCart debe pasar un Mediator NULL porque 
+    // no lo tengo todavia, con este metodo puedo cargarlo cuando lo necesite.
+    public void SetMediator(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    // Esta funcion sera el disparador de la notificacion
+    public void AddItem(string item)
+    {
+        _mediator.Notify(this, item);
+    }
+}
+
+2.3) Creo el Mediator Concreto que implementa la interfaz:
+public class ECommercePlataform : IMediator
+{
+    private ShoppingCart shoppingCart;
+    private InventorySystem inventorySystem;
+    public ECommercePlataform(ShoppingCart shoppingCart, InventorySystem inventorySystem)
+    {
+        this.shoppingCart = shoppingCart;
+        this.inventorySystem = inventorySystem;
+    }
+
+    public void Notify(object sender, string eventCode)
+    {
+        if(sender is ShoppingCart)
+        {
+            inventorySystem.CheckItemAvailability(eventCode);
+        }
+    }
+}
+
+
+2.4) Uso: 
+var inventory = new InventorySystem(null);
+var shoppingCart = new ShoppingCart(null);
+var commerce = new ECommercePlataform(shoppingCart, inventory);
+
+shoppingCart.SetMediator(commerce);
+inventory.SetMediator(commerce);
+shoppingCart.AddItem("Granola");
+
+
+3) Ejemplo Complejo, cambia la implementacion:
+
+3.1) Creo la interfaz IMediator
+public interface IMediatorTower
+{
+    void Notify(object sender, string eventCode);
+}
+
+
+3.2) Como voy a tener que comunicarme entre aviones y helicopteros lo mejor sera crear una clase abstracta que los represente a ambos y los que estos heredaran.
+public abstract class Aircraft
+{
+    // Inyecto aqui el Mediador directamente
+    protected IMediatorTower _tower;
+    protected string _name;
+
+    protected Aircraft(IMediatorTower tower, string name)
+    {
+        _tower = tower;
+        _name = name;
+        // Cada vez que creo un Elemento aereo lo registro en la torre de control
+        if(_tower is AerialTower concreteTower)
+            concreteTower.RegisterAircraft(this);
+    }
+
+    // Metodo disparador del mediador
+    public void SendMessage(string messge)
+    {
+        _tower.Notify(this, messge);
+    }
+
+    public void ReceiveMessage(string messge)
+    {
+        Console.WriteLine($"{_name} received message: {messge}");
+    }
+}
+
+
+3.3) Creo las clases concretas que heredaran de Aircraft:
+public class Helicopter : Aircraft
+{
+    public Helicopter(IMediatorTower tower, string name) : base(tower, name)
+    {}
+}
+
+
+3.4) Por ultimo defino el Concrete-Mediator:
+public class AerialTower : IMediatorTower
+{
+    private List<Aircraft> aircraftList = new List<Aircraft>();
+
+    // Esta funcion registra elementos aereos en una lista
+    public void RegisterAircraft(Aircraft aircraft)
+    {
+        if(!aircraftList.Contains(aircraft))
+        {
+            aircraftList.Add(aircraft);
+        }
+    }
+
+    public void Notify(Aircraft sender, string eventCode)
+    {
+        foreach (var item in aircraftList)
+        {
+            if(item != sender)
+                item.ReceiveMessage(eventCode);
+            else
+                item.SendMessage(eventCode);
+        }
+    }
+}
+
+
+
+3.5) Uso:
+var tower = new AerialTower();
+var avion = new Avion(tower, "Avion");
+var helicoptero = new Helicopter(tower, "Helicopter");
+avion.SendMessage("Despegando Avion");
+
+
+--REPASAR MEDIATOR 
+
+
+
+                                                                            16) Memento
+
+1) El patron Memento es un patron de comportamiento que tiene como objetivo guardar/salvar el estado de un objeto para poder restaurarlo mas tarde en algun momento.
+Esto es util cuando necesito volver a un estado anterior de un objeto en mi aplicacion, como el hacer-deshacer de las apps de edicion.
+
+El memento se component de: 1) Originator: Es quien tiene el metodo para crear el memento, con su estado. Tambien sera quien restaure el estado 
+2) Caretaker: Es el responsable de mantener el/los mementos. Este no lo modifica, pero puede solicitar un memento del Originator par guardar y devolverlo al 
+originator para solicitar una operacion de deshacer.3) State: Representa el estado que representa la estructura del estado interno del originator, que es el estado 
+que vamos a guardar. 4) Memento: Es el memento que almacena el estado del originator, este solo puede ser modificado por el originator.
+
+
+2) Ejemplo Memento:
+
+
+2.1) Primero crearemos el State:
+public class GameState
+{
+    public int Level { get; set; }
+    public int Health { get; set; }
+    public string? Weapon { get; set; }
+}
+
+
+2.2) Creamos el memento, el memento no deja de ser la copia de un estado especifico:
+// En todas las implementaciones no es necesario tener a Memento y a State, con una basta, pero tener ambas me permite
+// ocultar informacion, es decir el Caretaker no conocera que atributos maneja State, solo le interesa que sea un 
+// Memento
+public class GameMemento
+{
+    public GameState State { get; private set; }
+    public GameMemento(GameState state)
+    {
+        State = state;
+    }
+}
+
+
+2.3) Creamos el Originator:
+public class Game
+{
+    // Aca actualizaremos el estado actual.
+    public GameState? CurrentState { get; set; }
+
+    public GameMemento SaveGame()
+    {
+        return new GameMemento(CurrentState!);
+    }
+
+    public void LoadGame(GameMemento gameMemento)
+    {
+        CurrentState = gameMemento.State;
+    }
+}
+
+
+2.4) Creamos el Caretaker (El manager de mementos)
+public class GameSaveManager
+{
+    private List<GameMemento> _saves = new List<GameMemento>();
+
+    public void SaveGame(Game game)
+    {
+        var memento = game.SaveGame();
+        _saves.Add(memento);
+    }
+
+    public void LoadGame(Game game, int saveSlot)
+    {
+        game.LoadGame(_saves[saveSlot]);
+    }
+}
+
+
+2.5) Uso:
+Game game = new Game();
+GameSaveManager saveManager = new GameSaveManager();
+game.CurrentState = new GameState { Health = 100, Level = 1, Weapon = "Espada" };
+saveManager.SaveGame(game);
+Console.WriteLine("Level: " + game.CurrentState.Level);
+Console.WriteLine("Game Saved");
+game.CurrentState = new GameState { Health = 100, Level = 33, Weapon = "Guantes Magicos" };
+Console.WriteLine("Level: " + game.CurrentState.Level);
+saveManager.LoadGame(game, 0);
+Console.WriteLine("Level: " + game.CurrentState.Level);
+
+
+
+Sintesis: 1) Originator (Game): Este es el unico capaz de crear mementos, este tiene una propiedad que representa el State. Tambien tendra 2 metodos, el de Save()
+que mandara a crear un nuevo memento o el Load() que buscara cargar un memento. Estos metodos los reutilizara el saveManager, no nosotros directamente.
+2) State: Basicamente sera una clase con propiedades, las valores de estas propiedades representant un estado en si. 3) Memento: Es un objeto que guardara el estado,
+en si practicamente es lo mismo que es un estado, es una forma mas robusta de implementar el patron, este tendra una propiedad GameState (Solo de lectura) y que 
+tomara valor por el constructor. 4) SaveManager: Es aquel que guardara los mementos, es el administrador de mementos. Este tendra una lista de mementos y tendra 
+metodos para guardar y cargar mementos, este usara los metodos que le provee Originator.
+
+
+
+
+3) Ejemplo Complejo Memento:
+
+
+3.1) Creamos el State:
+public class GitState
+{
+    public string Tree { get; set; } = null!;
+    public string Code { get; set; } = null!;
+    public string Message { get; set; } = null!;
+}
+
+
+3.2) Creamos el Memento
+public class GitMemento
+{
+    public GitState GitState { get; private set; }
+    public GitMemento(GitState gitState)
+    {
+        GitState = gitState;
+    }
+}
+
+
+3.3) Creamos el Originator:
+public class Repository
+{
+    public GitState CurrentState { get; set; } = null!;
+
+    public GitMemento SaveState()
+    {
+        return new GitMemento(CurrentState);
+    }
+    public void Restore(GitMemento commit)
+    {
+        CurrentState = commit.GitState;
+    }
+}
+
+
+3.4) Creamos el Manager:
+public class GitCommitManager
+{
+    List<GitMemento> _gitMementoList = new List<GitMemento>();
+
+    public void SaveCommit(Repository repo)
+    {
+        _gitMementoList.Add(repo.SaveState());
+    }
+
+    public void RevertCommit(Repository repo, string tree)
+    {
+        var memento = _gitMementoList.Find(x => x.GitState.Tree == tree);
+        if (memento == null) return;
+        repo.Restore(memento);
+    }
+}
+
+
+3.5) Uso:
+Repository repository = new Repository();
+GitCommitManager commitManager = new GitCommitManager();
+
+repository.CurrentState = new GitState { Code = "codigo", Message = "Fix Bugs", Tree = "A92Fc4" };
+commitManager.SaveCommit(repository);
+repository.CurrentState = new GitState { Code = "codigo2", Message = "Fix Bugs2", Tree = "EZ5Tc0" };
+commitManager.SaveCommit(repository);
+Console.WriteLine(repository.CurrentState.Tree);
+commitManager.RevertCommit(repository, "A92Fc4");
+Console.WriteLine(repository.CurrentState.Tree);
+
+
+
+                                                                            17) Observer
+                                                                        
+1) Es un patron de comportamiento que permite a un objeto suscribirse a otro, y recibir actualizaciones del estado del objeto observado. Cuando el objeto observado 
+cambie de estado notificara al observers. El objeto al que se suscriben los observers se llaman Subjects.
+
+Este patron se compone de: 1) IObserver, una interfaz que implementa el metodo Update(). 2) Concrete-Observer, las clases concretas que implementan la interfaz.
+3) ISubject, la interfaz del Sujeto, definira los metodos del Subject. El metodo NotifyObservers() lo que hara sera llamar a los metodos Update() de los 
+Concrete-Observers. 4) Concrete-Subject
+
+
+2) EJ Observer:
+
+2.1) Creo el IObserver:
+public interface IObserver
+{
+    void Update(float temp, float humidity, float pressure);
+}
+
+
+2.2) Creo el ISubject:
+public interface ISubject
+{
+    // Todo elemento que quiera ser observado debe tener la capacidad de registrar y borrar un observador.
+    void RegisterObserver(IObserver observer);
+    void RemoveObserver(IObserver observer);
+
+    // Este metodo es la base del patron observer, es el que notificara los cambios del observado a los 
+    // Observadores.
+    void NotifyObservers();
+}
+
+
+
+2.3) Concrete-Observer:
+public class TV : IObserver
+{
+    private float _temp;
+    private float _humidity;
+    private float _pressure;
+    private string _name;
+
+    public TV(string name)
+    {
+        _name = name;
+    }
+
+    public void Update(float temp, float humidity, float pressure)
+    {
+         _temp = temp;
+        _humidity = humidity;
+        _pressure = pressure;
+        Display();
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"{_name} show temp: "+ _temp);
+    }
+}
+
+
+2.4) Concrete-Subject:
+public class WeatherStation : ISubject
+{
+    private List<IObserver> _observers = new List<IObserver>();
+    private float _temp;
+    private float _humidity;
+    private float _pressure;
+
+    public void SetData(float temp, float humidity, float pressure)
+    {
+        _temp = temp;
+        _humidity = humidity;
+        _pressure = pressure;
+        NotifyObservers();
+    }
+    public void NotifyObservers()
+    {
+        foreach (var item in _observers)
+        {
+            item.Update(_temp, _humidity, _pressure);
+        }
+    }
+    public void RegisterObserver(IObserver observer)
+    {
+        _observers.Add(observer);
+    }
+    public void RemoveObserver(IObserver observer)
+    {
+       _observers.Remove(observer);
+    }
+}
+
+
+2.5) Uso:
+var observerTV1 = new TV("Tv 1");
+var observerTV2 = new TV("Tv 2");
+
+var station = new WeatherStation();
+station.RegisterObserver(observerTV1);
+station.RegisterObserver(observerTV2);
+station.SetData(15, 5, 10);
+
+
+
+3) EJ Complejo:
+
+
+3.1) Creo el IObserver:
+public interface IObserverSubastas
+{
+    void Update(bool winning);
+}
+
+
+3.2) Creo el ISubject:
+public interface ISubjectSubasta
+{
+    void AddObserver(IObserverSubastas observer);
+    void RemoveObserver(IObserverSubastas observer);
+    void NotifyObservers(IObserverSubastas observer);
+    void PujarSubasta(IObserverSubastas pujador);
+}
+
+
+3.3) Creo el Concrete Observer:
+public class Customer : IObserverSubastas
+{
+    private bool _winning = false;
+    private string _name;
+    public Customer(string name)
+    {
+        _name = name;
+    }
+
+    public void Update(bool winning)
+    {
+        _winning = winning;
+        if(_winning) Display();
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"{_name} is winning");
+    }
+}
+
+
+3.4) Creo el concrete Subject:
+public class PlataformaSubastas : ISubjectSubasta
+{
+    private List<IObserverSubastas> _observerSubastas = new List<IObserverSubastas>();
+
+    public void AddObserver(IObserverSubastas observer)
+    {
+        _observerSubastas.Add(observer);
+    }
+    public void RemoveObserver(IObserverSubastas observer)
+    {
+        _observerSubastas.Remove(observer);
+    }
+
+    public void NotifyObservers(IObserverSubastas observer)
+    {
+        foreach (var obs in _observerSubastas)
+        {
+            if(obs == observer) obs.Update(true);
+            else obs.Update(false);
+        }
+    }
+
+    public void PujarSubaste(IObserverSubastas pujador)
+    {
+        NotifyObservers(pujador);
+    }   
+}
+
+
+3.5) Uso:
+var customer1 = new Customer("Juan");
+var customer2 = new Customer("Pepe");
+
+var subasta = new PlataformaSubastas();
+subasta.AddObserver(customer1);
+subasta.AddObserver(customer2);
+
+subasta.PujarSubaste(customer2);
+subasta.PujarSubaste(customer1);
+
+
+
+
+                                                                                18) State
+                                                                            
+1) El patron State se utiliza cuando el comportamientos de un objeto (algun metodo) debe cambiar en funcion de su estado interno. Es decir que el patron State 
+permite cambiar el comportamiento de un objeto cuando el estado del objeto cambia.
+
+USO: Se usa cuando quiero cambiar el comportamiento de un objeto segun su estado.
+
+Este patron se compone de: 1) Context: Es la clase que mantiene el estado actual y permite que se cambie su estado. 2) IState: Es una interfaz que implementan los 
+distintos estados concretos, este tendra un metodo Handle() que sera el cambia estados. 3) ConcreteState: Son clases concretas de IState. Cada concrete-state sera 
+responsable de cambiar el estado al siguiente en la funcion handle.
+
+
+2) EJ:
+
+2.1) Creo La interfaz de IState:
+public interface IState
+{
+    void Handle(StateContext state);
+}
+
+
+2.2) Creo la clase Context:
+public class StateContext
+{
+    public IState CurrentState { get; set; }
+    public StateContext(IState currentState)
+    {
+        CurrentState = currentState;
+    }
+
+    public void Request()
+    {
+        CurrentState.Handle(this);
+    }
+}
+
+
+2.3) Creo los estados concretos
+public class GreenState : IState.IState
+{
+    public void Handle(StateContext state)
+    {
+        Console.WriteLine("Green");
+        // Debo definir el estado siguiente, cada estado tiene esta responsabilidad
+        state.CurrentState = new YellowState();
+    }
+}
+
+
+
+2.4) Uso:
+StateContext context = new StateContext(new GreenState());
+for (int i = 0; i < 10; i++)
+{
+    context.Request();
+}
+
+
+3) EJ Complejo:
+
+
+3.1) Creo la interfaz IState:
+public interface IStateVending
+{
+    void Handle(StateVendingContext context);
+}
+
+
+3.2) Creo la clase Context:
+public class StateVendingContext
+{
+    public IStateVending CurrentState { get; set; }
+    public StateVendingContext(IStateVending currentState)
+    {
+        CurrentState = currentState;
+    }
+
+    public void SelectProduct()
+    {
+        if (CurrentState is WaitingSelectProduct)CurrentState.Handle(this);
+        else Console.WriteLine("Invalid Action");
+    }
+
+    public void InsertPayment()
+    {
+        if (CurrentState is WaitingPayProduct) CurrentState.Handle(this);
+        else Console.WriteLine("Invalid Action");
+    }
+
+    public void WaitRealese()
+    {
+        if (CurrentState is ReleasingProduct) CurrentState.Handle(this);
+        else Console.WriteLine("Invalid Action");
+    }
+}
+
+
+3.3) Creo los concrete-states:
+public class WaitingSelectProduct : IStateVending
+{
+    public void Handle(StateVendingContext context)
+    {
+        Console.WriteLine("Producto seleccionado");
+        context.CurrentState = new WaitingPayProduct();
+    }
+}
+
+public class WaitingPayProduct : IStateVending
+{
+    public void Handle(StateVendingContext context)
+    {
+        Console.WriteLine("Pago realizado");
+        context.CurrentState = new ReleasingProduct();
+    }
+}
+
+public class ReleasingProduct : IStateVending
+{
+    public void Handle(StateVendingContext context)
+    {
+        Console.WriteLine("Largando producto");
+        context.CurrentState = new WaitingSelectProduct();
+    }
+}
+
+
+3.4) Uso:
+var machine = new StateVendingContext(new WaitingSelectProduct());
+machine.SelectProduct();
+machine.InsertPayment();
+machine.WaitRealese();
+
+
+
+                                                                             19) Strategy
+
+1) El patron Strategy es un patron de comportamiento que permite seleccionar un algoritmo en tiempo de ejecucion. Es decir el Strategy permite tener una 
+seleccion de diferentes algoritmos que se pueden intercambiar libremente dentro de nuestro objeto. Esto es util cuando necesitamos cambiar dinamicamente el 
+comportamiento de nuestro objeto en tiempo de ejecucion.
+
+USO: Generalmente cuando tengo un Gran Switch-Case puedo implementar Strategy.
+
+
+Strategy se compone de: 1) Strategy: una interfaz que define una funcion. 2) Concrete-Clases: Clases concretas que implementan la interfaz Strategy. 
+3) Navigator: Es la clase que utiliza las estrategias concretas, a este se le inyecta un IStrategy, esta sera la clase clave del patron.
+
+
+2) EJ Strategy:
+
+
+2.1) Creo la interfaz Strategy:
+public interface IRouteStrategy
+{
+    string CalculateRoute(string A, string B);
+}
+
+
+2.2) Creo la clase Navigator:
+public class NavigatorContext
+{
+    private IRouteStrategy _routeStrategy;
+    public NavigatorContext(IRouteStrategy routeStrategy)
+    {
+        _routeStrategy = routeStrategy;
+    }
+
+    // Esto me permitira cambiar el Strategy en tiempo de ejecucion, esta es la base del patron 
+    // Strategy, cambiar de bloque de codigo, en este caso setear distintas clases concretas que 
+    // implementen IRouteStrategy, lo que me permitira ejecutar implementaciones unica, ya que
+    // estas Concrete-Class tendran el mismo metodo pero diferentemente implementado.
+    public void SetStrategy(IRouteStrategy strategy)
+    {
+        _routeStrategy = strategy;
+    }
+
+    // Este metodo llamara a las implementaciones de las clases concretas
+    public void Executetrategy(string A, string B)
+    {
+        var result = _routeStrategy.CalculateRoute(A, B);
+        Console.WriteLine(result);
+    }
+}
+
+
+2.3) Defino las clases concretas:
+public class ShortRouteStrategy : IRouteStrategy
+{
+    public string CalculateRoute(string A, string B)
+    {
+        return "La ruta mas corta es...";
+    }
+}
+
+
+2.4) Uso:
+var navigator = new NavigatorContext(new FastRouteStrategy());
+navigator.Executetrategy("", "");
+
+navigator.SetStrategy(new ShortRouteStrategy());
+navigator.Executetrategy("", "");
+
+
+
+3) Ejemplo Complejo:
+
+
+3.1) Declaro la IStrategy interfaz:
+public interface ITransportStrategy
+{
+    void GoToWork();
+}
+
+
+3.2) Creo la clase context:
+public class ContextCommute 
+{
+    private ITransportStrategy _transportStrategy;
+    public ContextCommute(ITransportStrategy transportStrategy)
+    {
+        _transportStrategy = transportStrategy;
+    }
+
+    public void SetStrategy(ITransportStrategy transportStrategy)
+    {
+        _transportStrategy = transportStrategy;
+    }
+
+    public void ExecuteStrategy()
+    {
+        _transportStrategy.GoToWork();
+    }
+}
+
+
+3.3) Creo las Strategys concretas:
+public class BikeStrategy : ITransportStrategy
+{
+    public void GoToWork()
+    {
+        Console.WriteLine("Yendo en bicicleta");
+    }
+}
+
+
+3.4) Uso:
+var commute = new ContextCommute(new CarStrategy());
+commute.ExecuteStrategy();
+
+commute.SetStrategy(new BusStrategy());
+commute.ExecuteStrategy();
+
+
+En resumen, State se enfoca en transiciones entre estados y Strategy en la selección de algoritmos o comportamientos. Ambos permiten la flexibilidad 
+de cambiar comportamiento, pero con enfoques ligeramente diferentes.
+
+                                                                            20) Templete Method
+
+1) Templete Method es un patron de comportamiento que define el esqueleto de un algoritmo en la superclase, pero permite a las subclases de esta superclase 
+anular o modificar ciertos pasos de este algoritmo sin cambiar la estructura. Es decir las subclases pueden modificar ciertas partes del algoritmo sin cambiar 
+su estructura.
+
+USO: Se lo usa cuando quiero modificar los pasos del algoritmo de una funcion.
+
+Templete Method se compone de: 1) Abstract-Class: Una clase abstracta que definira metodos genericos (metodos a implementar en las clases que hereden) y un metodo 
+que se encargara de ejecutar cada uno de los metodos abstractos de la clase (Template-Method). 2) Concrete-Class: La clase concreta que implementa la abstracta, 
+en caso de que yo no quiera usar alguno de los metodos definidos en Abstract-Class lo unico que tengo que hacer es haber definido ese metodo como virtual en la 
+abstract class
+
+2) EJ de Template-Method
+
+
+2.1) Creo la clase abstracta:
+// Este es basicamente este es el patron 
+public abstract class HiringProcess
+{
+    // Si quiero que alguno de estos metodos sea opcional en la implementacion los vuelvo
+    // virtuales, si quiero que su implementacion se obligatoria los declaro abstract.
+    public abstract void ReceiveCV();
+    public abstract void ConductInterview();
+    public virtual void ConductSkillTest() { }
+    public virtual void IssueOffer() { }
+
+    public void HireCandidate()
+    {
+        ReceiveCV();
+        ConductInterview();
+        ConductSkillTest();
+        IssueOffer();
+    }
+}
+
+
+2.2) Clase-Concreta, en esta caso no usamos la funcion ConductSkillTest() al ser opcional de implementar.
+public class Bank : HiringProcess
+{
+    public override void ConductInterview()
+    {
+        Console.WriteLine("Entrevistando");
+    }
+
+    public override void IssueOffer()
+    {
+        Console.WriteLine("Entrevistando");
+    }
+
+    public override void ReceiveCV()
+    {
+        Console.WriteLine("Recibiendo CV");
+    }
+}
+
+
+2.3) Uso:
+var bank = new Bank();
+bank.HireCandidate();
+
+                                                                             21) Visitor
+
+1) Visitor es un patron de comportamiento que permite agregar nuevas operaciones a objetos existentes sin modificar su estructura. Este patron es util cuando 
+necesito realizar operaciones diferentes y no relacionadas en un conjunto de objetos que tienen diferentes interfaces, pero necesitas evitar la contaminacion de 
+su interfaz con metodos especificos a estas operaciones.
+
+
+Composicion: 1) Visitor: Una interfaz que declara todos los metodos para los elementos visitables. 2) ConcreteVisitors: Es el que se encarga de implementar la logica 
+de los metodos de Visitor. 3) Element: Una interfaz utilizada para definir un metodo Accept(vistor: Visitor), esta recibira un Visitor como parametro. 
+4) Concrete Element: Son las clases concretas que implementan los metodos de Element.
+
+
+2) EJ Visitor:
+
+
+2.1) Creo la interfaz Element:
+public interface IAnimal
+{
+    // Cada animal debo poder aceptar una Operation, que seran las acciones que ejecutaran, segun las 
+    // defina en el Concrete-Visitor. De esta forma definimos dinamicamente las operaciones que realizara 
+    // un animal.
+    void Accept(IAnimalOperation operation);
+}
+
+2.2) Creo los Concrete-Elements:
+// Esta interfaz va a tener metodos de visita, segun los Concrete-Elements que tengamos
+public interface IAnimalOperation
+{
+    void VisitLion(Lion lion);
+    void VisitMonkey(Monkey monkey);
+}
+
+2.3) Creo la interfaz de Visitor:
+public class Lion : IAnimal
+{
+    public void Accept(IAnimalOperation operation)
+    {
+        operation.VisitLion(this);
+    }
+}
+
+
+2.4) Creo las Concrete Visitor:
+public class Feed : IAnimalOperation
+{
+    public void VisitLion(Lion lion)
+    {
+        Console.WriteLine("Alimento leon");
+    }
+
+    public void VisitMonkey(Monkey monkey)
+    {
+        Console.WriteLine("Alimento mono");
+    }
+}
+
+
+2.5) Uso:
+var animals = new List<IAnimal>
+{
+    new Lion(),
+    new Monkey()
+};
+
+var operations = new List<IAnimalOperation>
+{
+    new MedicalCheck(),
+    new Feed()
+};
+
+foreach (var animal in animals)
+{
+    foreach (var operation in operations)
+    {
+        animal.Accept(operation);
+    }
+}
+
+
+3) EJ Complejo:
+
+
+3.1) Creo la interfaz Element:
+public interface IElectronic
+{
+    void Accept(IElectronicOperation operation);
+}
+
+
+3.2) Creo la interfaz de Visitor:
+public interface IElectronicOperation
+{
+    void Visit(Laptop pc);
+    void Visit(Mobile phone);
+}
+
+
+3.3) Creo las Concrete-Class de element:
+public class Laptop : IElectronic
+{
+    public void Accept(IElectronicOperation operation)
+    {
+        operation.Visit(this);
+    }
+}
+
+
+3.4) Creo las Concrete-Class de Visitor:
+public class Repair : IElectronicOperation
+{
+    public void Laptop(Laptop pc)
+    {
+        Console.WriteLine("Reparando Laptop");
+    }
+
+    public void Mobile(Mobile phone)
+    {
+        Console.WriteLine("Reparando Mobile");
+    }
+}
+
+                                                                            22) Repository
+
+

@@ -1,0 +1,217 @@
+
+1) Singleton - Uso: Se usa para cuando quiero tener una instancia unica de un objeto en mi aplicacion, y que sea accesible globalmente.
+
+Estructura: 1) Concrete-Class: Esta sera mi Singleton, esta debe tener un constructor privado, para que no se pueda instanciar por fuera de esa clase, y
+una funcion static que nos permite obtener la instancia.
+
+
+2) Builder - Uso: Se usa cuando tengo una clase que tiene un constructor muy complejo, en esto casos usamos Builder. 
+
+Estructura: 1) Concrete-Product: Es el objeto complejo que quiero construir. 2) Builder: Sera una interfaz que definira los metodos que deben implementarse
+para construir el objeto. 3) Concrete-Builder: La clase que implementara los metodos del Builder, definire los datos del objeto a construir, si quiero 
+construir el mismo objeto con distinta data o de distintas formas puedo crear varios Concrete-Builder. 4) Director: Esta sera una clase concreta que recibira
+un Builder por inyeccion y sera el encargado de ejecutar todos los metodos de construccion del objeto.
+
+
+3) Abstract Factory - Uso: Se usa para crear Factorys que creen objetos relacionados, es decir creo una Factory que instancia muchos objetos.
+
+Estructura: 1) Abstract-Product: Creo las interfaces que implementaran mis Concrete-Proudcts, estas definiran metodos comunes para mis elementos.
+2) Concrete-Products: Implementa Abstract-Product. 3) AbstractFactory: Sera la interfaz principal, se encargara de definir los metodos que tendra una 
+factoria, estos metodos devolveran las interfaces Abstract-Product. 4) Concrete-Factory: Aca implemento los metodos de AbstractFactory, que basicamente es 
+devolver un objeto, ya que ese es el objetivo de las factorias, el crear objetos.
+
+
+
+4) Factory Method - Uso: Es similar a AbstractFactory, busca instanciar objetos mediante metodos ocultando el uso del constructor. La diferencia con 
+AbstractFactory es que este por cada Factoria instanciara un objeto, no un conjunto de objetos.
+
+Estructura:  1) Abstract-Product: Creo la interfaz que implementaran mis Concrete-Proudcts, estas definiran metodos. 2) Concrete-Products: Implementa 
+Abstract-Product. 3) Factory: Esta sera la interfaz principal, esta definira un solo metodo que devolvera la instancia del objeto a crear, el tipo de dato 
+a devolver es la interfaz de Abstract-Product. 4) Concrete-Factory: Implementara el metodo definido en factory, la funcion sera la de devolver el objeto que 
+quiero instanciar.
+
+
+5) Prototype - Uso: Se usa para realizar la copia de otro objeto, es util cuando necesito creo un objeto y la creacion de este consume muchos recursos, por 
+ello decidimos clonar y adaptar uno existente.
+
+
+Estructura: 1) IClonable: Sera una interfaz que declare el metodo Clone(), este devolvera un object. 2) Abstract-Product: Voy a crear una clase abstracta
+que luego implementaran mis Concrete-Products, esta clase sera la que implemente el metodo IClonable. 3) Concrete-Product: La clase concreta que 
+implementara la clase abstracta.
+
+
+6) Adapter - Uso: Se usa para volver compatible la comunicacion entre 2 objetos que no comparten la misma interfaz. Con comunicacion nos referimos a poder 
+ejecutar los metodos de un objeto en la implentacion de la interfaz target.
+
+Estructura: 1) Target: La interfaz principal, definira los metodos que implementara mi Concrete-Class Client. 2) Client: Concrete-Class que implementa los 
+metodos de target. 3) Adaptee: Esta es la clase concreta que queremos adaptar, la clase que no tiene la interfaz de Client y por ende no se pueden comunicar.
+Esta tendra sus propios metodos. 4) Adapter: esta clase concreta sera el que adapte la clase/objeto Adaptee, implementara target e inyectara Adaptee. Dentro 
+de los metodos definidos por Target, ejecutaremos los metodos de Adaptee.
+
+
+7) Bridge - Uso: Se utiliza para desacoplar una abstraccion de su implementacion, de modo que los dos puedan variar de forma independiente. Esta luego 
+crea un puente entre ambas para conectarlas. La Abstraccion define que quiero hacer y la Implementacion como lo quiero hacer.
+
+Estructura: 1) Implementation: Es una interfaz que definira los metodos de la Implementation. 2) Concrete-Implementation: Es una clase que implementara los 
+metodos de la interfaz Implementation. 3) Abstraction: Una clase abstracta que inyectara por constructor la interfaz de Implementation, este es el BRIDGE,
+y metodos que usemos en la abstraccion-refinada. 4) Abstraccion-Refinada: Es la clase concreta que implementara la clase abstracta e implementara los 
+metodos abstractos definidos.
+
+
+8) Composite - Uso: Se utiliza cuando necesito manejar de igual forma objetos indivuales y colecciones o cuando trabajamos con estructuras jerarquicas.
+
+Estructura: 1) Component: Creo la interfaz que define metodos. 2) Leaf: una clase concreta que implementa Component, esta sera un objeto individual.
+3) Composite: tambien una clase concreta que implementa Component, pero este tendra una List<IComponent> para almacenar los elementos que contiene, ademas 
+de implementar Component se le definira un metodo Add() y Remove() para manejar su lista.
+
+
+9) Decorator - Uso: Se utiliza para extender la funcionalidades de un objeto, sin alterar su clase original.
+
+Estructura: 1) Component: una interfaz que define metodos. 2) Concrete-Component: La clase concreta que implementara los metodos definidos en la interfaz.
+
+
+
+10) Facade - Uso: Se utiliza para simplificar la interaccion con un sistema de clases, bibliotecas o frameworks. Lo que hace que hace es inyectar las 
+clases en el y crear un metodo donde se ejecuten varios metodos relacionados de las clases que inyecta.
+
+Estructura: 1) Concrete-Class: Clases concretas que tendran sus metodos. 2) Facade: Una clase concreta que inyectara las clases y ejecutara sus metodos 
+en los metodos definido en Facade.
+
+
+11) Proxy - Uso: Se utiliza para extender la funcionalidad de un objeto, especialmente relacionadas con la seguridad. Es basicamente un envoltorio de 
+objeto, que me permite extender las funcionalidades como realizar validaciones y verificaciones, todo esto sin alterar a la clase original.
+
+Estructura: 1) Subject: La interfaz que define los metodos. 2) RealSubject: El objeto original, con los metodos definidos por Subject implementados.
+3) Proxy: Al igual que RealSubject implementa Subject, pero ademas proxy inyecta una referencia a un objeto RealSubject para ejecutar su implementacion.
+
+
+
+12) Command - Uso: 1) Guardar y ejecutar acciones más tarde: Al poder guardar las acciones en comandos(objetos) me permite ejecutarlo cuando quiera, 
+es decir puedo pedir un comando y ejecutarlo mas tarde. 2) Encapsular tareas en objetos: Similar a lo anterior, cada comando sera guardado en una variable, 
+sera guardada en un objeto que podre utilizar. 
+
+Estructura: 1) Command: Es la interfaz que define el metodo Execute(). 2) Receiver: Una clase que tendra metodos con logica implementada, el objetivo sera 
+ejecutar esos metodos atraves de comandos. 3) Concrete-Comand: Implementaremos la interfaz Command, e inyectaremos el Receiver. Dentro del metodo Execute()
+defino por la interfaz implementaremos un metodo de receiver. Tendre tantos Concrete-Comand como metodos tenga Receiver. 4) Invoker: Sera una simple 
+clase que tendra un metodo que ejecutara los comandos.
+
+
+13) Mediator - Uso: Se utiliza para facilitar la comunicacion entre objetos de forma desacoplada. Este patron establece un mediador entre 2 o mas 
+clases que no se conocen pero que necesitan comunicarse.
+
+Estructura: 1) Mediator: es la interfaz que define el metodo Notify(object sender), generalmente pasamos por parametro el objeto que realiza la notificacion. 
+2) Concrete-Mediator: una clase concreta que implementara la interfaz, la logica de Notify suele variar. Este inyectara las Concrete-Class que defina, ya 
+que, generalmente si recibo la notificacion de un objeto, el otro realizara una accion, por eso es que los inyectare. 3) Concrete-Class: las clases que 
+quiero comunicar.
+
+
+14) Memento - Uso: Se utiliza para guardar el STATE de un objeto y poder recuperarlo en algun momento.
+
+Estructura: 1) State: Es basicamente un objeto con propiedades, los diferentes valores que estas propiedades tomen seran los diferentes estados.
+2) Memento: El memento viene a encapsular el State en una propiedad, por eso es opcional, no es indispensable. 3) Originator: Es quien tiene una propiedad
+(La propiedad de Tipo State) que sera la que persista el estado actual, este tendra metodos para guardar y cargar el estado, aunque no lo ejecutaremos 
+directamente desde el originator. 4) Caretaker/Manager: Es el que guarda y carga los mementos, este tendra una lista de mementos para almacenarlos. Este 
+tendra un metodo de guardar y cargar, ambos recibiran un Originator por parametro y ahi utilizaremos los metodos auxiliares del originator para guardar y 
+cargar un memento.
+
+
+15) Observer - Uso: Se utiliza para permitir a objetos suscribirse a otros objetos, y recibir notificaciones de cuando el objeto observado se haya 
+modificado o haya experimentado un cambio.
+
+Estructura: 1) IObserver: Es una interfaz que implementara un metodo Update(), esta interfaz la implementaran los observadores. 2) ISubject: Esta 
+interfaz la implementaran los observados, tendra 3 metodos: RegisterObserver(IObserver observer), RemoveObserver(IObserver observer) y  NotifyObservers(), 
+si necesito mas metodos puedo incorporarlos a la interfaz sin problemas. 3) Concrete-Observer: una clase concreta que implementara la interfaz IObserver. 
+4) Concrete-Subject: clase concreta que implementar ISubject, ademas tendra un lista de IObserver, para persistir los objetos que la observan.
+
+
+16) State - Uso: Se utiliza cuando quiero cambiar el comportamiento de un objeto segun su estado.
+
+Estructura: 1) IState: es una interfaz que define el metodo Handle(Contenxt state), esta interfaz sera implementada por los estados concretos.
+2) Context: Es una clase concreta que tendra una propiedad publica (tipo IState) que representara el CurrentState, esta clase tendra un metodo que 
+ejecutara el Handle(Contenxt state), mediante el CurrentState. 3) Concrete-State: Implementaran la interfaz IState, dentro del metodo Handle(Contenxt state) 
+ejecutaremos una logica, y al terminar actualizaremos el CurrentState al siguiente estado.
+
+
+17) Strategy - Uso: Se utiliza para cambiar el comportamiento de un objeto en tiempo de ejecucion segun la Concrete-Strategy implementada.
+
+Estructura: 1) Strategy: una interfaz que define una funcion. 2) Concrete-Strategy: Clases concretas que implementan la interfaz Strategy.
+3) Context: Clase concreta, esta inyectara la interfaz IStrategy en el campo _strategy y tendra 2 metodos (minimo): 3.1) SetStrategy(IStrategy strategy), 
+que sera el metodo que me permitira cambiar la Concrete-Strategy del campo _strategy, esto la base del patron, ya que al cambiar de Concrete-Strategy 
+cambiare el comportamiento de la misma funcion, al implementar distinta logica los Concrete-Strategy. 3.2) ExecuteStrategy().
+
+
+18) Template-Method - Uso: Se lo utiliza cuando una subclase (que hereda de una superclase) quiero modificar u omitir los pasos del algoritmo de una 
+funcion. 
+
+Estructura: 1) Abstract-Class: Una clase abstracta que definira metodos genericos (metodos a implementar en las clases que hereden) y un metodo 
+que se encargara de ejecutar cada uno de los metodos abstractos de la clase (Template-Method). Aquellos metodos que quiero que no sean obligatorios 
+de implementar los definire como VIRTUAL, los obligatorios como Abstract. 2) Concrete-Class: La clase concreta que implementa la abstracta.
+
+
+19) Visitor - Uso: Se utiliza cuando quiero definir métodos para clases relacionadas sin contaminar sus interfaces con esos métodos.
+
+Estructura: 1) Element: Una interfaz utilizada para definir un metodo Accept(vistor: Visitor), esta recibira un Visitor como parametro. Sera la interfaz de las clases 
+relacionadas. 2) Concrete Element: Son las clases concretas que implementan los metodos de Element. 3) Visitor: Una interfaz que declara todos los metodos para los 
+elementos visitables, metodos que en vez de definirlos en la interfaz element lo definimos en esta interfaz para no modificar el objeto original. Aca basicamente 
+defino operaciones comunes. 4) ConcreteVisitors: Es el que se encarga de implementar la logica de los metodos de Visitor.
+
+
+20) Repository: El patrón Repository se utiliza para gestionar el acceso a la base de datos, separando la Lógica de acceso BD de la lógica de negocio (Logica del 
+funcionamiento de la app). Funciona como un intermediario entre la aplicación y la base de datos. La ventaja de esto es tener la logica de acceso BD centraliza y 
+no dispersa por el codigo.
+
+Estructura: 1) Interface: Una interfaz que defina los metodos para transaccionar con la BD. 2) Concrete-Class: La clase concreta que implementa la interfaz, define 
+la logica de como acceder a la BD. 3) Negocio: En el negocio de mi app llamare a la Concrete-Class para acceder a la BD, antes debere inyectarlo como dependencia.
+
+
+21) Unit of work: Se utiliza cuando quiero controlar transacciones de una BD, es decir que quiero verificar que todos los pasos se realicen correctamente antes de 
+aplicar los cambios, si realice cambios pero un paso falla voy a volver todos los cambios a su estado inicial. Es basicamente el Trasaction que usamos en SQL, 
+con el RollBack y el Commit. Para implementar este patron debemos evitar guardar los cambios de la BD directamente en el Repository, la accion de guardar la 
+haremos en el UnitOfWork.
+En sintesis se utilizara cuando necesitemos modificar mas de una tabla en la BD, y es por eso que en vez de guardar cada transaccion con Repository el guardado 
+lo terminara realizando UnitOfWork, porque si hay un error en el proceso se encargara de que no se realiace ninguna modificacion en la BD.
+
+
+1) // Creo Interfaz
+public interface IUnitOfWork : IDisposable
+{
+    public IUserRepository UserRepository {get;}
+    Task<int> Save();
+}
+
+
+2) // Implemento Interfaz
+public class UnitOfWork : IUnitOfWork
+{
+    private readonly Negocio _negocio;
+    public IUserRepository UserRepository {get;}
+
+    public UnitOfWork(Negocio negocio, IUserRepository userRepo){
+        _negocio = negocio;
+        UserRepository = userRepo;
+    }
+
+    public async Task<int> Save() => await _negocio.SaveChangesAsync();
+    public void Dispose()
+    {
+        _negocio.Dispose();
+    }
+}
+
+
+3) // Uso:
+public class MyClass
+{
+    private readonly IUnitOfWork _unitOfWork;
+    public MyClass (IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task Execute(int id)
+    {
+        User user = new User {Emai = "Email", UserId = id}
+        await _unitOfWork.UserRepository.Insert(user);
+        await _unitOfWork.Save();
+    }
+}
