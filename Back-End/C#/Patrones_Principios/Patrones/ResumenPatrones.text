@@ -215,3 +215,43 @@ public class MyClass
         await _unitOfWork.Save();
     }
 }
+
+
+22) Result Pattern: Es un patron funcional, el cual se lo usa para tener un manejo de los valores de las operaciones que se realizan. Nos ofrece la alternativa de 
+evaluar si se hizo con exito la operacion, y si no fue asi que error especifico tuvo. Estos son mucho mas rapidos que los Try-Catch, por ello son mejor alternativa.
+Librerias: FluentResults, LanguageExt.Core, ErrorOr
+
+
+1) // Clase Base del patron Result
+public class Result<T>
+{
+    public T Value {get;}
+    public bool IsSuccess {get;}
+    public string Error {get;}
+
+    private Result(T value, bool isSuccess, string error)
+    {
+        Value = value;
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+
+    // Este metodo lo llamare a ejecucion en el caso de que verifique de que todo se ejecuto correctamente
+    public static Result<T> Success(T value) => new Result<T>(value, true, null);
+
+    // Este metodo lo llamare a ejecucion en el caso de que verifique de que ocurrio un error en la ejecucion
+    public static Result<T> Failure(string error) => new Result<T>(default, false, error);
+}
+
+2) // Implementacion:
+
+Result<int> Divide(int numerator, int denominator)
+{
+    if(denominator <= 0) return Result<int>.Failure("El denominador no puede ser 0 o menor");
+    return Result<int>.Success(numerator/denominator);
+}
+
+3) // Uso:
+var result = Divide(10,0);
+if(result.IsSuccess) Console.WriteLine(result.Value);
+else Console.WriteLine(result.Error);

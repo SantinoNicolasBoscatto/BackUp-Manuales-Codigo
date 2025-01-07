@@ -520,6 +520,15 @@ builder.HasOne(pa => pa.Pelicula).WithMany(a => a.PeliculasActores).ForeignKey(p
 4) Relacion Muchos a Muchos sin Entidad Intermedia (Skip Navigation):
 builder.HasMany(p => p.Generos).WithMany(p => p.Peliculas).UsingEntity(j => j.ToTable("GenerosPelicula"))
 
+4.1) MUCHOS A MUCHOS:
+modelBuilder.Entity<VideosActores>().HasKey(va => new { va.ActorId, va.VideoId });
+
+// Configurar relación de muchos a uno entre Actor y VideosActores
+modelBuilder.Entity<VideosActores>().HasOne(va => va.Actor).WithMany(a => a.ListVideo).HasForeignKey(va => va.ActorId);
+
+// Configurar relación de muchos a uno entre Video y VideosActores
+modelBuilder.Entity<VideosActores>().HasOne(va => va.Video).WithMany(v => v.ListActores).HasForeignKey(va => va.VideoId);
+
 5) OnDelete(): builder.HasMany(p => p.Generos).WithMany(p => p.Peliculas).OnDelete(DeleteBehavior.Restrict);
 
 
@@ -1150,7 +1159,69 @@ public class SingletonPrueba
 cambiar el AddDbContext() por AddDbContextFactory();
 Luego cuando lo quiera instanciar manualmente debo implementar la interfaz IDbContextFactory<Negocio>
 
+                                                                                    25) EXTRAS
+                                                                                    
+1) LogTo(): Esta funcion permitira imprimir por consola todas las transacciones que realicemos con la BD:
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder.UseSqlServer(@"Data Source=.\; Initial Catalog= Streamer; User= sa; Password= Admin123;")
+    .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)//LogTo() permite que se impriman las transacciones con la BD.
+    .EnableSensitiveDataLogging();
+}
 
+
+2) EF.Functions: Este objeto me permitira ejecutar acciones similares a la sintaxis de SQL, lo cual en algunas ocaciones resulta util:
+void QueryStreaming()
+{
+    var list = dbContext.Streamers!.Where(x => EF.Functions.Like(x.Nombre, "%fli%")).ToList();
+    foreach (var item in list)
+    {
+        Console.WriteLine(item.Nombre);
+    }
+}
+
+
+2.1) Buscar por PK en EF: puedo buscarlo con el metodo FindAsync(), a priori esta tendra una mayor performance que FirstOrDefaultAsync(). Cuando busque un elemento 
+por su PK se recomienda usar FindAsync(), si quiero agregarle mas filtros usaremos FirstOrDefaultAsync().
+
+var stream = await dbContext.Streamers.FindAsync(1);
+
+
+2.2) Consulta LINQ en C#: 
+var streamers = await (from S in dbContext.Streamers
+                where S.Nombre != "Apple" && S.Id > 0
+                select new {S.Nombre, S.Id}).ToListAsync();
+
+
+
+2.3) Configurar Muchos a Muchos:
+modelBuilder.Entity<VideosActores>().HasKey(va => new { va.ActorId, va.VideoId });
+// Configurar relación de muchos a uno entre Actor y VideosActores
+modelBuilder.Entity<VideosActores>().HasOne(va => va.Actor).WithMany(a => a.ListVideo).HasForeignKey(va => va.ActorId);
+// Configurar relación de muchos a uno entre Video y VideosActores
+modelBuilder.Entity<VideosActores>().HasOne(va => va.Video).WithMany(v => v.ListActores).HasForeignKey(va => va.VideoId);
+
+Explicacion: en EF Core, para configurar una relación muchos a muchos usando una tabla intermedia personalizada, debemos configurar dos relaciones de uno a muchos 
+entre cada entidad principal (en este caso, Actor y Video) y la entidad de unión (en este caso, VideosActores). Es decir VideosActores Configurara 2 Relaciones 
+uno a muchos, uno con Actor y otro con video.
+
+2.4) Uso de Select de LINQ: 
+async Task Query()
+{
+    var videoWithDirector = await dbContext.Videos!.Where(x => x.Director != null).Include(x => x.Director).Select(x => new
+                            {
+                                Director_Nombre_Completo = $"{x.Director!.Nombre} {x.Director!.Apellido}",
+                                Movie = x.Nombre
+                            }).ToListAsync();
+    foreach (var item in videoWithDirector)
+    {
+        Console.WriteLine(item.Director_Nombre_Completo+" ----------- "+item.Movie);
+    }
+}
+
+
+
+ 
                                                  25) Manual de Sintaxis de Consultas
 
 Entry() => Viene a represetar el registro de un consulta SQL o Una Entidad.

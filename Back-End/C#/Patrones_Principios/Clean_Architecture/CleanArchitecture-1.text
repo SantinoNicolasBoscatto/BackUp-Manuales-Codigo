@@ -1,0 +1,1094 @@
+                                                                1) Domain Driven Design y Clean Architecture
+
+1) DDD: Es una metodología de desarrollo de software centrada en el dominio del problema que se quiere resolver: 1) Enfoque en el Dominio: El dominio es el área de 
+conocimiento o actividad alrededor del cual se desarrolla tu aplicación. Por ejemplo, en una app bancaria, el dominio incluye conceptos como cuentas, transacciones y 
+clientes. 2) Colaboración con Expertos en el Dominio: Trabajar estrechamente con personas que entienden bien el dominio (los expertos del negocio) para capturar todos 
+los detalles y reglas del dominio. 3) Modelado del Dominio: Crear modelos de software que representen el dominio fielmente. Esto incluye definir entidades, valores, 
+agregados y servicios que reflejan los conceptos y comportamientos del dominio. 4) Lenguaje Ubicuo: Desarrollar un lenguaje común entre desarrolladores y expertos 
+en el dominio. Este lenguaje debe ser utilizado en el código y en las conversaciones, garantizando que todos entiendan lo mismo.
+
+En resumen DDD es una forma de pensar y diseñar sistemas de software que coloca al dominio del negocio en el centro del proceso de desarrollo, garantizando que el 
+software cumpla con los requisitos del negocio de manera efectiva y eficiente. Responde la pregunta de ¿Que quieres?
+
+
+2) Clean Architecture: Son un conjunto de principios y patrones de diseño de software, este se maneja atraves de una modalidad de capas. Caracteristicas:
+1) Independencia del Framework: Esto quiere decir que la arquietectura de la APP esta desacoplada de cualquier framework externo o libreria. 2) Testeable: dentro de 
+esta arquitectura es facil escribir tests unitarios. 3) Independencia del UI. 4) Independencia de la BD. 5) External Agency Independency: Las reglas de negocio de la 
+App estan bien aisladas y no conocen el mundo exterior
+
+3) Clean Architecture Capas: 
+3.1) Domain-Model/Entities: Basicamente la capa de dominio, aqui iran mis entidades. Representa el modelo de dominio y contiene las reglas de negocio esenciales. Esta 
+no debe tener dependencias a otras capas, Esta capa es construida usando las reglas de DDD. 
+
+3.2) Application/Uses Cases: Esta capa definira interfaces para la persistencia (BD) y otros servicios externos, pero no implementarlos directamente. La implementación 
+de estas interfaces vendrá en la capa Infraestructura. Aqui sera la capa donde realicemos los Query/Command hacia la DB (Implementaremos aqui CQRS). DTOs, Mapeos, 
+Validaciones y Excepciones seran definidas en esta capa
+
+3.3) Infrastructure: La capa de Infrastructure maneja todos los detalles técnicos de integración con servicios externos, es aquella que se encarga de integrar servicios 
+externos (BD, Servicios de Cache, Acceso al sistema de archivos, Servicios de Autenticacion y Autorizacion). Dentro de esta configuraremos el DbContext y tambien 
+implementaremos los repositorios definidos por las interfaces de application
+
+3.4) Presentation: Esta capa consumira a la de Application, aqui sera la capa donde crearemos los metodos POST, GET, UPDATE y DELETE.
+
+
+
+
+                                                                                    2) CQRS
+
+1) CQRS: Command Query Responsability Separation, este patron de arquitectura indica que debo separar las operaciones de escritura de las operaciones de lectura. 
+Esto debido a que las consultas son mas frecuentes que la escritura de data, ademas el tiempo de escritura es mas tolerable que el de lectura (es decir un usuario 
+pretende que el tiempo de lectura de datos sea mas rapido que el de escritura.) Las operaciones de lectura se las define como CONSULTAS y las operaciones de escritura 
+como COMANDOS. Separar las consultas de los comandos permite optimizar cada una por separado, mejorando la escalabilidad y el rendimiento.
+
+1.1) Consultas (Querys): Son las operaciones que recuperan datos del sistema. Siguen el principio de "no modificar datos". Generalmente las clases estas tendran
+por nombre la funcion a ejecutar y terminando con la palabra QUERY.
+1.2) Comandos (Command): Son las operaciones que modifican el estado del sistema, como agregar, actualizar o eliminar datos. Siguen el principio de "no devolver datos".
+1.3) Beneficios de separar Acciones de lectura y escritura: 1) Escabilidad. 2) Perfomance. 3) Simplicidad de mantenimiento.
+
+
+2) EJ CQRS:
+
+2.1) Lectura:
+// Esta clase sera la encargada de pedir parametros al usuario, basicamente cargaremos la data que nos manda el usuario
+public class GetVideosListQuery : IRequest<List<Video>>
+{
+    public GetVideosListQuery(string username)
+    {
+        Username = username ?? throw new ArgumentNullException(nameof(username));
+    }
+    public string? Username { get; set; }
+}
+
+// Aqui definimos de que clase viene el request (GetVideosListQuery) y que valor devolveremos
+public class GetVideosListQueryHandler : IRequestHandler<GetVideosListQuery, List<Video>>
+{
+    // Instanciamos un objeto que implemente IVideoRepository
+    private readonly IVideoRepository _repository;
+    public GetVideosListQueryHandler(IVideoRepository repository)
+    {
+        _repository = repository;
+    }
+
+    // Ejecutamos el Query de lectura
+    public async Task<List<Video>> Handle(GetVideosListQuery request, CancellationToken cancellationToken)
+    {
+        var list = await _repository.GetVideoByUsername(request.Username!);
+        return list.ToList();
+    }
+}
+
+2.2) Command ADD:
+
+// REQUEST
+public class AddStreamerCommand : IRequest<int>
+{
+    public string Nombre { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+}
+
+// HANDLER
+public class AddStreamerCommandHandler : IRequestHandler<AddStreamerCommand, int>
+{
+    private readonly IAsyncRepository<Streamer> _repository;
+    private readonly ILogger<AddStreamerCommandHandler> _logger;
+    private readonly IMapper _mapper;
+    public AddStreamerCommandHandler(IAsyncRepository<Streamer> repository, ILogger<AddStreamerCommandHandler> logger, IMapper mapper)
+    {
+        _repository = repository;
+        _logger = logger;
+        _mapper = mapper;
+    }
+
+    public async Task<int> Handle(AddStreamerCommand request, CancellationToken cancellationToken)
+    {
+        var streamer = _mapper.Map<Streamer>(request);
+        var result = await _repository.AddAsync(streamer);
+        _logger.LogInformation("Streamer creado con exito, Id: " + result.Id);
+        return result.Id;
+    }
+}
+
+
+2.3) Command UPDATE:
+public class UpdateStreamerCommand : IRequest
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+}
+
+public class UpdateStreamerCommandHandler : IRequestHandler<UpdateStreamerCommand>
+{
+    private readonly IAsyncRepository<Streamer> _streamerRepository;
+    private readonly IMapper _mapper;
+    public UpdateStreamerCommandHandler(IAsyncRepository<Streamer> streamerRepository, IMapper mapper)
+    {
+        _streamerRepository = streamerRepository;
+        _mapper = mapper;
+    }
+
+    public async Task<Unit> Handle(UpdateStreamerCommand request, CancellationToken cancellationToken)
+    {
+        var streamerBD = await _streamerRepository.GetByIdAsync(request.Id);
+        if (streamerBD == null) throw new NotFoundException(nameof(Streamer), request);
+
+        // Otra forma de usar el mapper es definir los Types que estoy seteando.
+        _mapper.Map(request, streamerBD, typeof(UpdateStreamerCommand), typeof(Streamer));
+        await _streamerRepository.UpdateAsync(streamerBD);
+        return Unit.Value;
+    }
+}
+
+
+2.4) Command DELETE:
+
+// REQUEST
+public class DeleteStreamerCommand : IRequest
+{
+    public int Id { get; set; }
+}
+
+// HANDLER
+public class DeleteStreamerCommandHandler : IRequestHandler<DeleteStreamerCommand>
+{
+    private readonly IAsyncRepository<Streamer> repository;
+    public DeleteStreamerCommandHandler(IAsyncRepository<Streamer> repository)
+    {
+        this.repository = repository;
+    }
+
+    public async Task<Unit> Handle(DeleteStreamerCommand request, CancellationToken cancellationToken)
+    {
+        var streamerDelete = await repository.GetByIdAsync(request.Id);
+        if (streamerDelete == null) throw new NotFoundException(nameof(Streamer), request);
+
+        await repository.DeleteAsync(streamerDelete);
+
+        return Unit.Value;
+    }
+}
+
+
+3) Otros EJ CQRS:
+
+3.1) Lectura con CQRS:
+// Dentro de esta clase iran todos los CQRS de lectura
+public class GetCursoQuery
+{
+    // Esta clase representa los parametros que envia el cliente, en esta clase armaremos el query
+    // de la consulta. En este caso no requerimos que el cliente nos pasa ningun parametro
+    // List<Curso> es un parametro de salida
+    public class GetCursoQueryRequest : IRequest<List<CursoDTO>> // IRequest proviene del paquete MediatR
+    {
+
+    }
+
+    //  Esta clase clase Handler es la clase que se encarga de implementar la logica para pasarle el Query a la BD y que me retorne la data.
+    //  GetCursoQueryRequest sera un parametro de entrada y List<CursoDTO> sera un parametro de salida.
+    //  Este seria un CQRS de lectura.
+    public class GetCursoQueryHandler : IRequestHandler<GetCursoQueryRequest, List<CursoDTO>>
+    {
+        private readonly EducationDbContext dbContext;
+        private readonly IMapper mapper;
+
+        public GetCursoQueryHandler(EducationDbContext dbContext, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
+
+        // Esta funcion definira la logica con la BD
+        public async Task<List<CursoDTO>> Handle(GetCursoQueryRequest request, CancellationToken cancellationToken)
+        {
+            var curso = await dbContext.Cursos.ToListAsync();
+            var dtos = mapper.Map<List<CursoDTO>>(curso);
+            return dtos;
+        }
+    }
+}
+3.2) Insercion con CQRS:
+// Dentro de esta clase iran todos los CQRS de escritura
+public class CreateCursoCommand
+{
+    // Aca definire las propiedades que quiero cargar, defino los parametros que debera cargar el cliente para crear un objeto
+    public class CreateCursoCommandRequest : IRequest
+    {
+        public string Titulo { get; set; } = null!;
+        public string Descripcion { get; set; } = null!;
+        public DateTime FechaPublicacion { get; set; }
+        public decimal Precio { get; set; }
+    }
+
+    // Esta es la clase que definira la logica de insercion a BD
+    public class CreateCursoCommandHandler : IRequestHandler<CreateCursoCommandRequest>
+    {
+        private readonly EducationDbContext _context;
+        public CreateCursoCommandHandler(EducationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Handle(CreateCursoCommandRequest request, CancellationToken cancellationToken)
+        {
+            var curso = new Curso
+            {
+                CursoId = Guid.NewGuid(),
+                Titulo = request.Titulo,
+                Descripcion = request.Descripcion,
+                FechaPublicacion = request.FechaPublicacion,
+                FechaCreacion = DateTime.UtcNow,
+                Precio = request.Precio
+            };
+            _context.Add(curso);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public class CreateCursoCommandRequestValidation : AbstractValidator<CreateCursoCommandRequest> // Esta clase viene de FluentValidator
+    {
+        // Con FluentValidator puedo definir validaciones en un constructor
+        public CreateCursoCommandRequestValidation() 
+        {
+            RuleFor(x => x.Descripcion);
+            RuleFor(x => x.Titulo);
+        }
+    }
+}
+3.3) Lectura con CQRS con parametro:
+public class GetCursoByIdQuery 
+{
+    public class GetCursoByIdQueryRequest : IRequest<CursoDTO> 
+    {
+        public Guid id;
+    }
+
+    public class GetCursoByIdQueryHandler : IRequestHandler<GetCursoByIdQueryRequest, CursoDTO>
+    {
+        private readonly EducationDbContext _context;
+        private readonly IMapper _mapper;
+        public GetCursoByIdQueryHandler(EducationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<CursoDTO> Handle(GetCursoByIdQueryRequest request, CancellationToken cancellationToken)
+        {
+            var curso = await _context.Cursos.FirstOrDefaultAsync(x => x.CursoId == request.id);
+            return _mapper.Map<CursoDTO>(curso);
+        }
+    }
+}
+3.4) Controller Usando CQRS y MediatR:
+[Route("api/[controller]")]
+[ApiController]
+public class CursoController : ControllerBase
+{
+    private IMediator mediator;
+    public CursoController(IMediator mediator)
+    {
+        this.mediator = mediator;
+    }
+
+
+    [HttpGet]
+    public async Task<ActionResult<List<CursoDTO>>> Get()
+    {
+        return await mediator.Send(new GetCursoQuery.GetCursoQueryRequest());
+    }
+
+    [HttpPost]
+    public async Task Post(CreateCursoCommand.CreateCursoCommandRequest request)
+    {
+        await mediator.Send(request);
+    }
+}
+
+
+4) FluentValidation con CQRS:
+// AbstractValidator viene de FluentValidation
+public class AddStreamerCommandValidator : AbstractValidator<AddStreamerCommand> // Indico la clase a validar
+{
+    public AddStreamerCommandValidator()
+    {
+        RuleFor(x => x.Nombre).NotEmpty().WithMessage("No puede estar el campo vacio")
+                    .NotNull().WithMessage("El campo no puede estar vacio")
+                    .MaximumLength(50).WithMessage("El Nombre no debe exceder los 50 Caracteres");
+    }
+}
+
+5) Excepciones Personalizadas CQRS:
+public class ValidationException : ApplicationException
+{
+    public ValidationException():base("Se presentaron uno o mas errores de validacion")
+    {
+        Errores = new Dictionary<string, string[]>();
+    }
+
+    public ValidationException(IEnumerable<ValidationFailure> failures) : this()
+    {
+        Errores = failures.GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+            .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+    }
+
+    public IDictionary<string, string[]>? Errores { get; }
+}
+
+                                                                            3) Estructurar Proyectos
+
+1) Arquitectura Empresarial: El proyecto se dividira en 3 carpetas: 1) SRC: donde iran las capas del proyecto. 2) Test: Donde estara el proyecto de testing. 
+3) Doc: donde se encontrara la documentacion del proyecto.
+
+2) SRC: Dentro de esta carpeta crearemos 3 Sub-Carpetas: 1) Core: Aqui iran mi proyecto de Domain y Application. 2) Infrastructure: Ira mi proyecto de Infrastructure.
+3) Presentation: El proyecto que consumira a Application, comunmente una API.
+
+3) Dentro del Proyecto Application crearemos 3 Carpetas: 1) Contracts: Dentro de esta carpeta definiremos las interfaces, Es decir definiremos las interfaces de los 
+Repositorios. 2) Features: aqui aplicaremos el patron de CQRS, para manejar los casos de uso. 3) Behaviours: Este se aplicara durante la implementacion del caso de uso.
+4) Mapping: El mapeo de entidades, es decir los DTO.
+
+3.1) Contracts: Dentro de contracts definiremos la siguiente interfaz
+
+// Esta interfaz definira los metodos que deberan implementar mi entidades, Basicamente es una interfaz de un RepositoryBase
+public interface IAsyncRepository<T> where T : BaseDomainModel
+{
+    Task<IReadOnlyList<T>> GetAllAsync();
+
+    // GetAsync devolvera una lista, pero esta lista tendra la codicion que definamos en su parametro Expression
+    Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate);
+
+    // GetAsync devolvera una lista, esta tendra varias condiciones a modificar para cambiar como devulve la lista
+    Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, 
+                                    Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+                                    string? includeString = null, bool disableTracking = true);
+
+    // GetAsync devolvera una lista, se le agrega una list<Expression> para agregar los cruces con entidades, mediante el Include()
+    Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null,
+                                    Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+                                    string? includeString = null, bool disableTracking = true,
+                                    List<Expression<Func<T, object>>>? includes = null);
+
+    Task<T> GetByIdAsync(int id);
+
+    Task<T> AddAsync(T entity);
+    Task<T> UpdateAsync(T entity);
+    Task DeleteAsync(T entity);
+}
+Es el Caso de que tenga que crear metodos mas especializados para alguna entidad lo que haremos sera crearle un repositorioio aparte que herede de IAsyncRepository
+
+3.2) Features: Dentro de esta carpeta estara la implementacion del CQRS, para cada entidad que tengamos crearemos una carpeta y dentro de esta 2 carpetas: Queries y 
+Commands.
+
+3.3) Behaviours: MediatR utiliza su propio Pipeline para manejar la comunicacion entre Queries y Commands, a este Pipeline se lo denomina MediatR Behaviours. 
+En este caso lo que haremos sera realizar validaciones sobre los REQUEST antes de que lleguen a las Queries y Commands, en el caso de encontrar un error de 
+validacion tirariamos un throw exception. Lo que mas se suele implementar en este PipeLine son procesos de validaciones y login.
+// Pipeline de MediatR
+public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+{
+    // Voy a crear una lista que guarde todas las validaciones de FluentValidator, y la vamos a inyectar por constructor.
+    private readonly IEnumerable<IValidator<TRequest>> validators;
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+    {
+        this.validators = validators;
+    }
+
+    // TRequest viene a representar la solucitud HTTP del cliente y todos sus datos
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    {
+        if(validators.Any())
+        {
+            var context = new ValidationContext<TRequest>(request);
+
+            // Creo una lista que recibira todos los resultados de las validaciones, esta ejecuta todas las
+            // validaciones de nuestra APP. Estas se ejecutan en el Pipeline-Behaviuor.
+            var validationResults = await Task.WhenAll(validators.Select(x => x.ValidateAsync(context, cancellationToken)));
+
+            // verifico si alguno de esos resultados devuelve un error
+            var errors = validationResults.SelectMany(x => x.Errors).Where(x => x != null).ToList();
+
+            // Si tengo errores tirare una excepcion y cortare la ejecucion del Pipeline
+            if(errors.Any()) throw new ValidationException(errors);
+        }
+        return await next();
+    }
+}
+
+3.4) Pasos para registrar los Behaviours: Para poder ejecutar este Pipeline de MediatR debo: 1) Registrar MediatR en program. 2) registrar cada uno de los Behaviours.
+3) Registrar los validadores de FluentValidation.
+
+EJ:
+// Registrar MediatR .
+builder.Services.AddMediatR(typeof(Program).Assembly); 
+
+// Registrar los behaviors, esto puedo hacerlo manualmente 
+por cada Behaviuor o sino automatizado con SCAN()
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>)); 
+
+// Registrar los validadores de FluentValidation 
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+
+4) MediatR: Es una libreria que se encarga de almacenar la logica del patron de diseño Mediator. En este caso ncesitaremos comunicar las Clases Command o Query con sus 
+clases Handler.
+
+
+5) Pipeline: cuando se realiza una peticion HTTP esta realmente no pasa directamente al controlador, sino que pasa por un "Tuberia HTTP". Esta Tuberia de 
+peticiones es el conjunto de procesos conectados, que reciben una peticion HTTP y la procesan para devolver algun resultado. Esta tuberia de procesos es el 
+Pipeline, su propósito es procesar, modificar o interceptar la petición y la respuesta. El interceptar el request me permite realizar con mayor rapidez validaciones
+sobre el request.
+5.1) Middleware: Los Middleware vendrian siendo cada uno de estos procesos del PipeLine. Tenemos varios Middleware como: Autorizacion, StaticFiles, Controladores, etc.
+
+Crear un Middleware:
+public class CustomMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public CustomMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // Lógica antes de pasar al siguiente middleware
+        await context.Response.WriteAsync("Middleware Custom - Antes\r\n");
+
+        // Llamar al siguiente middleware en la cadena
+        await _next(context);
+
+        // Lógica después de pasar al siguiente middleware
+        await context.Response.WriteAsync("Middleware Custom - Después\r\n");
+    }
+}
+Ejecutar Middleware:
+app.UseMiddleware<CustomMiddleware>();
+
+
+Crear ExceptionMiddleware:
+// El objetivo de este Middleware es capturar una excepcion en el procesamiento del Pipeline y castear la data de error para que esta sea 
+// mas legible para el usuario.
+public class ExceptionMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly IHostEnvironment _environment;
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
+    {
+        _next = next;
+        _logger = logger;
+        _environment = environment;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+
+            // Definimos que nuestra respuesta de error sera devuelta como JSON
+            context.Response.ContentType = "application/json";
+            // Defino el StatusCode del Error
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            // Aca dare una respuesta mas larga o acotada segun el Enviroment en el que me encuentre
+            var response = _environment.IsDevelopment() ?
+                new CodeErrorException(context.Response.StatusCode, ex.Message, ex.StackTrace) :
+                new CodeErrorException(context.Response.StatusCode);
+
+            // Configuro y devuelvo el JSON
+            var opt = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var json = JsonSerializer.Serialize(response, opt);
+            await context.Response.WriteAsync(json);
+        }
+    }
+}
+
+// Clase CodeErrorException y CodeResponse
+public class CodeErrorResponse
+{
+    public CodeErrorResponse(int statusCode, string? msg = null)
+    {
+        StatusCode = statusCode;
+        Msg = msg == null? GetDefaultMessageStatusCode(statusCode);
+    }
+
+    public int StatusCode { get; set; }
+    public string? Msg { get; set; };
+
+    private string GetDefaultMessageStatusCode(int statusCode)
+    {
+        return statusCode switch
+        {
+            400 => "El Request enviado tiene errores",
+            401 => "No tienes authorizacion para este recurso",
+            404 => "No se encontro el recurso solicitado",
+            500 => "Se produjo errores en el servidor",
+            _ => string.Empty
+        };
+    }
+}
+public class CodeErrorException : CodeErrorResponse
+{
+    public string? Details { get; set; }
+
+    public CodeErrorException(int statusCode, string? msg = null, string? details = null) : base(statusCode, msg)
+    {
+        Details = details;
+    }
+}
+
+
+5.2) Variante del Mismo Exception Middleware:
+public async Task InvokeAsync(HttpContext context)
+{
+    try
+    {
+        await _next(context);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, ex.Message);
+
+        // Definimos que nuestra respuesta de error sera devuelta como JSON
+        context.Response.ContentType = "application/json";
+        // Datos genericos de error
+        var statusCode = (int)HttpStatusCode.InternalServerError;
+        var result = string.Empty;
+
+        // Verifico que tipo de excepcion estoy teniendo, segun eso le definire sus datos.
+        switch (ex)
+        {
+            case NotFoundException notFoundException:
+                statusCode = (int)HttpStatusCode.NotFound;
+                break;
+            case ValidationException validationException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                var validationJson = JsonConvert.SerializeObject(validationException.Errores);
+                result = JsonConvert.SerializeObject(new CodeErrorException(statusCode, ex.Message, validationJson));
+                break;
+            default:
+                break;
+        }
+
+        if (string.IsNullOrEmpty(result)) result = JsonConvert.SerializeObject(new CodeErrorException(statusCode, ex.Message, ex.StackTrace));
+
+        context.Response.StatusCode = statusCode;
+        await context.Response.WriteAsync(result);
+    }
+}
+
+6) Inyectar Dependencias: Normalmente inyectamos las dependencias en la clase Programa de nuestra capa de presentacion, pero al trabajar con Clean-Architecture 
+crearemos una clase en la capa Application que se encargue de esto y luego referenciar esa clase en program.
+
+public static class ApplicationServiceRegistration
+{
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        return services;
+    }
+}
+
+
+6.1) Referenciar las Inyecciones en Program:
+builder.Services.AddApplicationServices();
+
+
+
+                                                                          4) Capa Infraestructura
+
+1) Implementar interfaces: En application nosotros crearemos las interfaces que se encargaran de comunicarse con la BD e implementaremos los metodos CQRS que 
+seran aquellos encargados de ser consumidos por la capa de presentacion, seria el medio de acceso para transaccionar con la BD, lo que resta es definir la logica 
+de las interfaces. Para ello crearemos dentro de Infrastructure una carpeta llamada repository que sera donde creemos los repositorios concretos.
+
+public class RepositoryBase<T> : IAsyncRepository<T> where T : BaseDomainModel
+{
+    private readonly StreamerDbContext _context;
+    public RepositoryBase(StreamerDbContext context)
+    {
+        _context = context;
+    }
+
+    
+    public async Task<IReadOnlyList<T>> GetAllAsync()
+    {
+        return await _context.Set<T>().ToListAsync();
+    }
+    public async Task<T> GetByIdAsync(int id)
+    {
+        var entidad = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+        if (entidad == null) throw new Exception();
+        return entidad;
+    }
+    public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
+        string? includeString = null, bool disableTracking = true)
+    {
+        IQueryable<T> query = _context.Set<T>();
+        if(disableTracking) query = query.AsNoTracking();
+        if(!string.IsNullOrWhiteSpace(includeString)) query = query.Include(includeString); // includeString es para incluir a una entidad relacionada
+        if(predicate != null) query = query.Where(predicate);
+        if (orderBy != null) return await orderBy(query).ToListAsync();
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
+        bool disableTracking = true, List<Expression<Func<T, object>>>? includes = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
+        if (disableTracking) query = query.AsNoTracking();
+        if (includes != null) query = includes.Aggregate(query, (current, include) => current.Include(include));
+        if (predicate != null) query = query.Where(predicate);
+        if (orderBy != null) return await orderBy(query).ToListAsync();
+        return await query.ToListAsync();
+    }
+
+
+    public async Task<T> AddAsync(T entity)
+    {
+        _context.Set<T>().Add(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task UpdateAsync(T entity)
+    {
+        _context.Set<T>().Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(T entity)
+    {
+        _context.Set<T>().Remove(entity);
+        await _context.SaveChangesAsync();
+    }      
+}
+
+public class VideoRepository : RepositoryBase<Video>, IVideoRepository
+{
+    private readonly StreamerDbContext context;
+
+    // Inyectamos el DbContext mediante el padre
+    public VideoRepository(StreamerDbContext context) : base(context)
+    {
+        this.context = context;
+    }
+
+
+    public async Task<Video> GetVideoByName(string name)
+    {
+        return await context.Videos!.FirstAsync(x => x.Nombre == name);
+    }
+
+    public async Task<IEnumerable<Video>> GetVideoByUsername(string username)
+    {
+        return await context.Videos!.Where(x => x.Nombre == username).ToListAsync();
+    }
+}
+
+
+
+2) Setear Propiedades de auditoria: La clase BaseDomainModel se la conoce como clase de auditoria, una clase que tendran todas mis entidades y que tiene el
+objetivo de guardar datos de cuando y quienes modificaron o crearon X registro, de la siguiente forma podemos setear siempre de forma global los valores de 
+esta clase base:
+
+// Al sobrescribir SaveChangesAsync() puedo setear globalmente los valores de BaseDomainModel de mis entidades
+// De esta forma puedo definir acciones que se ejecuten al guardar los cambios
+public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+{
+    foreach (var entry in ChangeTracker.Entries<BaseDomainModel>())
+    {
+        switch (entry.State)
+        {
+            case EntityState.Modified:
+                entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                entry.Entity.LastModifiedBy = "system";
+                break;
+            case EntityState.Added:
+                entry.Entity.CreateDate = DateTime.UtcNow;
+                entry.Entity.CreatedBy = "system";
+                break;
+            default:
+                break;
+        }
+    }
+    return base.SaveChangesAsync(cancellationToken);
+}
+
+
+3) Configurar Identity: Como dato, las interfaces seran definidas en application, pero la implementacion la haremos en un proyecto aparte de Infrastructure, este estara
+en la misma carpeta que Infrastructure. Al tenerlo separa de la DbContext me da la posibilidad de crear un nuevo DbContext. Separa la logica de negocio con la de 
+usuarios puede ser beneficiosa. Las interfaces que defina Application con respecto a las funciones de Login y Register se implementaran en el proyecto Identity, en 
+una carpeta llamada service.
+
+Si necesito crear customClaims, lo mejor seria crear Constantes publicas en una clase estica con los nombres de estos Claims, para mantener la consistencia.
+
+*Video 57 al 63*
+
+
+                                                                                5) Unit Of Work
+
+1) Unit Of Work: Su objetivo es mantener una lista de objetos que generaran cambios contra la BD y ejecutar estas transacciones a la vez solucionando los problemas 
+de concurrencia. Es decir UnitOfWork Mantiene una lista de objetos que realizaran operaciones contra la BD y este ejecutara estas operaciones desde una sola 
+transaccion.
+Concretamente UnitOfWork Factoriza(Instancia) las Interfaces/Repositorios definidos en un solo componente(Es decir nuesra clase UnitOfWork), lo que hara que en caso 
+de que necesitemos usar algun repositorio en vez de instanciar el repositorio lo que hagamos sea instanciar a UnitOfWork.
+
+UnitOfWork Representa en su abstraccion a todas las intefaces que se encarguen de transacionar con la BD.
+
+1.1) EJ UnitOfWork:
+public interface IUnitOfWork : IDisposable
+{
+    IAsyncRepository<TEntity> Repository<TEntity>() where TEntity : BaseDomainModel;
+    Task<int> Complete();
+}
+
+public class UnitOfWork : IUnitOfWork
+{
+    private Hashtable? _repositories;  
+    private readonly StreamerDbContext _dbContext;
+
+    public UnitOfWork(StreamerDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    // Esta funcion se encarga de realizar el guardado de todas las transacciones
+    public async Task<int> Complete()
+    {
+        return await _dbContext.SaveChangesAsync();
+    }
+
+    // Esta funcion se encarga de borrar y destruir la instancia del DbContext que usamos
+    public void Dispose()
+    {
+        _dbContext.Dispose();
+    }
+
+    public IAsyncRepository<TEntity> Repository<TEntity>() where TEntity : BaseDomainModel
+    {
+        if(_repositories == null) _repositories = new Hashtable();
+
+        var type = typeof(TEntity).Name;
+        if (!_repositories.ContainsKey(type))
+        {
+            // Lo que hacemos en esta linea es tener el TYPE del Repositorio Base, e Instanciarlo pero como el objeto generico TEntity
+            // Luego Agrego este a la list de repositories.
+            var repositoryType = typeof(RepositoryBase<>);
+            var instance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _dbContext);
+            _repositories.Add(type, instance);
+        }
+        return (IAsyncRepository<TEntity>)_repositories[type]!;
+    }
+}
+
+1.2) Uso de UnitOfWork con CQRS:
+public class CreateDirectorCommand : IRequest<int>
+{
+    public string Nombre { get; set; } = string.Empty;
+    public string Apellido { get; set; } = string.Empty;
+    public int VideoId { get; set; }
+}
+
+public class CreateDirectorCommandHandler : IRequestHandler<CreateDirectorCommand, int>
+{
+    private readonly IUnitOfWork unitOfWork;
+    private readonly IMapper mapper;
+    public CreateDirectorCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        this.unitOfWork = unitOfWork;
+        this.mapper = mapper;
+    }
+
+    public async Task<int> Handle(CreateDirectorCommand request, CancellationToken cancellationToken)
+    {
+        var director = mapper.Map<Director>(request);
+        var repository = unitOfWork.Repository<Director>();
+
+        repository.AddEntity(director);
+        var result = await unitOfWork.Complete();
+        unitOfWork.Dispose();
+
+        if (result <= 0) throw new Exception("Error al insertar Record");
+
+        return director.Id;
+    }
+}
+
+
+1.3) Registrar UnitOfWork como servicio:
+services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+2) UnitOfWork Para CustomRepositories: En algunos casos quizas tengamos entidades que deban implementar mas metodos que los que define el RepositorioBase, por ello 
+implementara su propia interfaz heredando de IAsyncRepository<>, a esto llamaremos CustomRepositories. Para estos casos crearemos Campos para cada uno de estos 
+CustomRepositories y una propiedad publica que Setee el valor del campo
+
+2.1) Agregar en interfaz IUnitOfWork:
+IVideoRepository VideoRepository { get; }
+
+2.2) Agregar en clase UnitOfWork:
+private IVideoRepository? _videoRepository;
+public IVideoRepository VideoRepository => _videoRepository ??= new VideoRepository(_dbContext);
+
+
+2.3) Utilizacion en CQRS:
+public class CreateVideoCommandHandler : IRequestHandler<CreateVideoCommand, int>
+{
+    private readonly IMapper mapper;
+    private readonly IUnitOfWork unitOfWork;
+
+    public CreateVideoCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
+    {
+        this.mapper = mapper;
+        this.unitOfWork = unitOfWork;
+    }
+
+    public async Task<int> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
+    {
+        var video = mapper.Map<Video>(request);
+        unitOfWork.VideoRepository.AddEntity(video);
+        var result = await unitOfWork.Complete();
+        if (result <= 0) throw new Exception("Error");
+        return video.Id;
+    }
+}
+
+*Video 71 resto de ejemplos*
+
+
+                                                                        6) Unit-Tests CleanArchitecture
+
+1) Cuando realicemos UnitTests sobre un proyecto deberemos replicar la estructura original de carpetas para los Tests.
+
+
+2) Mocks: En algun momento si necesitamos crear varias veces un mismo Mock, quizas lo optimo sea Crear una funcion que los instancie e inicialice, mediante una clase 
+y metodo estatico. La siguiente Forma es la mejor para configurar los Mocks y la Instanciacion de la DbContextFake centralizadamente:
+
+public static class MockUnitOfWork
+{
+    public static Mock<UnitOfWork> GetUnitOfWork()
+    {
+        // Creo la BD en Memoria y me aseguro de que este vacia
+        Guid Id = Guid.NewGuid();
+        var options = new DbContextOptionsBuilder<StreamerDbContext>().UseInMemoryDatabase(databaseName: $"DbContext-{Guid.NewGuid()}").Options;
+        var dbContextFake = new StreamerDbContext(options);
+
+               
+        // Al tener un Mock del OBJETO UnitOfWork tendre acceso tambien a los metodos de VideoRepository y StreamerRepository
+        var mockUnitOfWork = new Mock<UnitOfWork>(dbContextFake);
+        return mockUnitOfWork;
+    }
+}
+
+// Mock Instanciador de data
+public static class MockVideoRepository
+{
+    public static void AddVideoRepository(StreamerDbContext context)
+    {
+        var fixture = new Fixture();
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        var videos = fixture.CreateMany<Video>().ToList();
+        context.AddRange(videos);
+        context.SaveChanges();
+    }
+}
+
+// Mock Instanciador de data
+public static class MockStreamerRepository
+{
+    public static void AddStreamerRepository(StreamerDbContext context)
+    {
+        var fixture = new Fixture();
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        var streamers = fixture.CreateMany<Streamer>().ToList();
+        
+        // Crearemos un record Streamers pero con su propiedad hija null
+        streamers.Add(fixture.Build<Streamer>().With(x => x.Id, 8001).Without(x => x.ListaVideos).Create());
+
+        context.AddRange(streamers);
+        context.SaveChanges();
+    }
+}
+
+
+3) Unit-Test CQRS:
+
+// Testearemos la Clase GetVideosListQueryHandler
+public class GetVideosListQueryHandlerXUnitTests
+{
+    private readonly IMapper mapper;
+    private readonly Mock<UnitOfWork> unitOfWork;
+
+    public GetVideosListQueryHandlerXUnitTests()
+    {
+        unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        mapper = mapperConfing.CreateMapper();
+
+        // Agrego data a la BD en memoria
+        MockVideoRepository.AddVideoRepository(unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task GetVideoListTest_ReturnsNotNull()
+    {
+        var handler = new GetVideosListQueryHandler(unitOfWork.Object.VideoRepository);
+        var list = await handler.Handle(new GetVideosListQuery("Username"), new CancellationToken());
+        Assert.NotNull(list);
+        Assert.IsType<List<Video>>(list);
+    }
+}
+
+// Unit-Tests POST
+public class CreateStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+    private IMapper _mapper;
+    private readonly Mock<ILogger<CreateStreamerCommandHandler>> logger;
+
+    public CreateStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        _mapper = mapperConfing.CreateMapper();
+        logger = new Mock<ILogger<CreateStreamerCommandHandler>>();
+
+        // Agrego data a la BD en memoria
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task CreateStreamer_InputCreateStreamerCommand_ReturnsNotNull()
+    {
+        var handle = new CreateStreamerCommandHandler(_unitOfWork.Object.StreamerRepository, logger.Object, _mapper);
+        var id = await handle.Handle(new CreateStreamerCommand { Nombre = "Pepo-San", Url ="NoUrl"}, new CancellationToken());
+        var entity = await _unitOfWork.Object.StreamerRepository.GetByIdAsync(id);
+        Assert.NotNull(entity);
+    }
+}
+
+
+// Unit-Tests UPDATE
+public class UpdateStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+    private IMapper _mapper;
+
+    public UpdateStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        _mapper = mapperConfing.CreateMapper();
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task UpdateStreamer_InputUpdateStreamerCommand_ReturnsUnit()
+    {
+        var handle = new UpdateStreamerCommandHandler(_unitOfWork.Object.StreamerRepository, _mapper);
+        var result = await handle.Handle(new UpdateStreamerCommand { Id = 8001, Nombre = "Santino", Url = "Nothng" }, new CancellationToken());
+        var entity = await _unitOfWork.Object.StreamerRepository.GetByIdAsync(8001);
+        Assert.Equivalent("Santino", entity.Nombre);
+    }
+}
+
+
+// Unit-Tests DELETE
+public class DeleteStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+
+    public DeleteStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task DeleteStreamer_InputDeleteStreamerCommand_ReturnsNull()
+    {
+        var handler = new DeleteStreamerCommandHandler(_unitOfWork.Object.StreamerRepository);
+        var result = await handler.Handle(new DeleteStreamerCommand { Id = 8001}, CancellationToken.None);
+        await Assert.ThrowsAsync<Exception>(async () => await _unitOfWork.Object.StreamerRepository.GetByIdAsync(8001));
+    }
+}
+                                                                                X) EXTRAS
+
+1) FUNC<T, out>: Las Func<T> se suele utilizar para filtrar dentro de una Coleccion en memoria (IEnumerable y los que la implementen), estas dentro de la funcion where 
+piden como parametro un Func<T,boolOut>. Un FUNC<T, out> basicamente es un delegado, guarda la ejecucion de una funcion para luego llamarla.
+A la hora de la implementacion los haremos con Lambda.
+
+// Guardo dentro del Delegate una funcion
+Func<Video, string> selector = video => "Pelicula: " + video.Nombre;
+
+// Ejecuto el select sobre videos y le paso el Delegate selector
+IEnumerable<string> videoTitulos = videos.Select(selector);
+
+2) Expression<Func<T, out>>: Se suele utilizar cuando quiero filtrar en un IQueryable, dentro de la funcion where necesitare enviar un Expression<Func<T>> por 
+parametro. Estas me permiten representar las condiciones logicas de mi futuro query, que se transformaran en sintaxis SQL. Esta forma de escribir condiciones dinamicas 
+y variables, por ende me permite sera mas flexible a la hora de crear consultas complejas. 
+
+// Declaro la condicion logica
+Expression<Func<Video, bool>> expression = u => u.Nombre == "matrix";
+
+// Ejecutamos la lectura a la BD.
+var videos = DbContext.Videos.Where(expression).Select(u => u).ToList();
+
+
+SINTESIS: En el caso de que yo quiera trabajar con colecciones que estan en memoria debo utilizar Func<T, out> y si quiero trabajar con colecciones en BD debo utilizar,
+Expression<Func<T, out>> ya que estas se van a poder traducir a SQL, en cambio Func<T, out> no se pueden traducir a SQL y tendremos una Excepcion
+
+3) Delegate: Me permite pasar por parametro una funcion, es decir me permite almacenar la ejecucion de un metodo en una variable.
+
+4) Value-Object: es un tipo inmutable que solo es distinguido por el valor de sus propiedades (estado).
+
+5) Crear una Excepcion Personalizada:
+// Crear una excepcion personalizada
+public class NotFoundException : ApplicationException
+{
+    public NotFoundException(string name, object key) : base($"Entity \"{name}\" ({key}) no fue encontrado")
+    {
+    }
+}
+
+Excepcion Personalizada 2:
+public class ValidationException : ApplicationException
+{
+    public ValidationException():base("Se presentaron uno o mas errores de validacion")
+    {
+        Errores = new Dictionary<string, string[]>();
+    }
+
+    public ValidationException(IEnumerable<ValidationFailure> failures) : this()
+    {
+        Errores = failures.GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+            .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+    }
+
+    public IDictionary<string, string[]>? Errores { get; }
+}
+

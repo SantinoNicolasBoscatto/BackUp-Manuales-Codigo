@@ -619,9 +619,9 @@ public static class EndpointUsuarios
 
 6) Administrar JWT: Primero crearemos manualmente nuestro JWT, para la llave la podemos generar en: https://generate.plus/es/base64
 {
-  "Id": "fb000000",
-  "Issuer": "MyApp",
-  "Value": "A693s8yVuWYo/fWlOGCVDlclMIe6lULr14Ayg9j/bGQ=",
+  "Id": "Admin",
+  "Issuer": "NotesAppAdmin",
+  "Value": "P4Dqr1FjT5vY03zuBFWF_-L5Cn9uuHsw6KMu4lH8XLE",
   "Length": 32
 }
 

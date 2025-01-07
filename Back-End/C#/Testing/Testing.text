@@ -43,7 +43,7 @@ public class OperacionMSTest
 
 1) A diferencia de MStest debo instalar manualmente la libreria NUnit mediante un NugetPackage. Instalaremos: 1) NUnit. 2) NUnit3TestAdapter. 3) Microsoft.Net.Test.Sdk
 
-2) Configuracion Proyecto NUnit: -Ver Video 7
+2) Configuracion Proyecto NUnit: -Ver Video 8
 
 3) Estructura basica de un test NUnit:
 
@@ -602,15 +602,9 @@ Comandos: Son las operaciones que modifican el estado del sistema, como agregar,
 Paquetes a instalar: MediatR, FluentValidator y Automapper.
 
 
-2) Proyectos: Para aplicar CQRS tendremos varios proyectos: 1) Domain: Basicamente la capa de dominio, aqui iran mis entidades. Basicamente el Domain es crear las 
-clases del Modelo. 2) Persistence: Esta clase sera la encargada de mapear los datos de mis entidades a tablas de SQL, basicamente sera mi DbContext. 
-3) Application: Aqui sera la capa donde realicemos las consultas/comandos hacia la DB, tambien tendre una carpeta con la clase que definira las 
-reglas de mapeo. Tambien una carpeta que contendra los DTO 4) Controllers: Esta capa consumira a la de Application.
+2) EJ CQRS: 
 
-
-3) EJ CQRS: 
-
-3.1) Lectura con CQRS:
+2.1) Lectura con CQRS:
 
 // Dentro de esta clase iran todos los CQRS de lectura
 public class GetCursoQuery
@@ -648,7 +642,7 @@ public class GetCursoQuery
 }
 
 
-3.2) Insercion con CQRS:
+2.2) Insercion con CQRS:
 
 // Dentro de esta clase iran todos los CQRS de escritura
 public class CreateCursoCommand
@@ -698,7 +692,7 @@ public class CreateCursoCommand
     }
 }
 
-3.3) Lectura con CQRS con parametro:
+2.3) Lectura con CQRS con parametro:
 public class GetCursoByIdQuery 
 {
     public class GetCursoByIdQueryRequest : IRequest<CursoDTO> 
@@ -725,7 +719,7 @@ public class GetCursoByIdQuery
 }
 
 
-3.4) Controller Usando CQRS y MediatR:
+2.4) Controller Usando CQRS y MediatR:
 [Route("api/[controller]")]
 [ApiController]
 public class CursoController : ControllerBase
@@ -750,9 +744,9 @@ public class CursoController : ControllerBase
     }
 }
 
-4) Add Migration: dotnet ef migrations add EducationMigracionInicial --project Education.Persistence
-4.1) Aplicar Migration: dotnet ef database update --project Education.Persistence 
-4.2) Actualizar Tools a la version del Framework en uso: dotnet tool update --global dotnet-ef
+3) Add Migration: dotnet ef migrations add EducationMigracionInicial --project Education.Persistence
+3.1) Aplicar Migration: dotnet ef database update --project Education.Persistence 
+3.2) Actualizar Tools a la version del Framework en uso: dotnet tool update --global dotnet-ef
 
 
                                                                         7) Unit-test con BD y CQRS

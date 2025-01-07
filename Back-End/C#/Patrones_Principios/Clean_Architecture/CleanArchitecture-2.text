@@ -1,0 +1,679 @@
+                                                        0) Paradigma Funcional
+
+1) Es un paradigma que se basa en funciones puras. Una funcion pura es una funcion que siempre que le mandas un valor de entrada te
+regresara el mismo valor de salida (Determinismo), es decir que si yo mando por parametro 5 y 3 a mi funcion sumar esta siempre da 8. 
+Las funciones puras tampoco modifica el entorno fuera de la funcion, es decir no modifica elementos externos.
+
+EJ Funcion NO pura:
+// Esta funcion no es pura debido a que ante el mismo parametro (ninguno en este caso) devolvera distintos valores.
+DateTime Tomorrow() => DateTime.Now.AddDays(1);
+
+
+// Esta funcion NO sera pura debido que modificara al objeto beer y por ende modifica un objeto externo. En este caso modifica a beer y 
+// No una copia de él
+Beer ToUpperBeer(Beer beer)
+{
+    beer.Name = beer.Name.ToUpper();
+    return beer;
+}
+
+
+EJ Funcion Pura:
+// Es pura porque siempre que le pase los mismos parametros esta devolvera el mismo valor siempre.
+DateTime TommorrowPure(DateTime date) => date.AddDays();
+
+// Pura porque no modifico elementos externos
+Beer ToUpperBeer(Beer beer)
+{
+    var beer2 = new Beer()
+    {
+        Name = beer.Name!.ToUpper()
+    };
+    return beer2;
+}
+
+
+
+2) Funciones de primera clase: Son funciones que pueden ser tratadas como una variable, al guardar una funcion en una variable esta 
+variable se vuelve un FUNC.
+
+// El primer generico es el parametro de entrada y el segundo el de salida. 
+Func<Beer,Beer> funcionPrimeraClase = ToUpperBeer; // Al llamar una funcion sin su parantesis la guardo y no la ejecuto
+Console.WriteLine(funcionPrimeraClase(new Beer() { Name = "Quilmes" }));
+
+
+
+3) Funciones de Orden Superior: Estas funciones pueden recibir funciones como parametros, y tambien pueden retornar una funcion 
+como resultado.
+
+// Recibe una funcion por parametro
+List<int> Filter(List<int> list, Func<int, bool> condition)
+{
+    var results = new List<int>();
+
+    foreach (var item in list)
+    {
+        if(condition(item)) results.Add(item);
+    }
+
+    return results;
+}
+
+// Ejecucion de la funcion
+List<int> ints = new List<int> { 1,2,3,4,5};
+var pares = Filter(ints, x => x % 2 == 0);
+
+4) Delegates: En ellos podremos definir que parametros de entrada y valores de salida tendra una funcion. Dentro de ellos puedo 
+guardar una funcion que cumpla la firma definida por el delegado 
+
+OperacionMatetica operacion = Add; => le paso la funcion al delegado
+operacion(1,2); => ejecuto la funcion
+int Add(int a, int b) =>  a + b; => Declaro la funcion
+public delegate int OperacionMatetica(int a, int b); => Declaro el delegado
+
+
+5) Action: Basicamente es un delegado que recibe parametros genericos pero que no devuelve nada, es decir es un delegado que en su 
+firma es de tipo void.
+
+Action<string> action = a =>  Console.WriteLine(a);
+action("Hola Mundo");
+
+
+6) Func<>: Tambien es un delegado, pero a diferencia de Action este siempre devuelve algo, el ultimo generico que defina va a ser 
+el valor de salida.
+
+Func<int, int, string> sumarString = (a,b) => (a+b).ToString();
+var val = sumarString(17, 16);
+Console.WriteLine(val);
+
+
+7) Predicate<>: Es un delegado al igual que Func<> y Action pero tiene la particularidad de que recibe solo un generico y siempre devuelve un BOOL.
+
+
+
+                                                                            1) Componentes
+
+1) Componente: Un componente es una pieza que se compone por un conjunto de funcionalidades relacionadas con un objetivo en comun. Un Componente sirve para 
+hacer desarrollos enfocandonos en especifico en ciertas funcionalidades, todas estas funcionalidades que desarrollemos seran encapsuladas en el componente.
+En las arquitecturas de software se busca que los Componentes tengan un bajo acoplamiento y una alta cohesion, esto nos permitira tener un software mas 
+mantenible.
+
+Un componente es una pieza que encapsula clases (o es una) con datos (propiedades) como comportamiento (métodos) para resolver un problema específico o 
+realizar una función particular. Estos componentes se diseñan con el objetivo de ser reutilizables y modulares, lo que facilita su integración en múltiples proyectos. 
+Ademas nos permiten sustituir unos componentes por otros sin generar problemas en mi proyecto, lo que genera que tengamos un software mas escalable.
+
+
+2) Cohesion: La cohesion es el grado en que los elementos dentro de un componente estan relacionados entre si, una cohesion baja es cuando los elementos de un 
+componente estan poco relacionados y alta cuando tienen mucha relacion. Cuando hablamos de relacion nos referimos a la problemática que el componente busca resolver. 
+Si un componente tiene varios metodos que resuelven diferentes problematicas diferentes es un componente de baja cohesion, pero si es un componente con varios 
+metodos que se encargan de resolver una misma problemtica es un componente de alta cohesion.
+
+
+3) Acoplamiento: El acoplamiento es el grado de dependencia entre los módulos, clases, o componentes de un sistema de software. En otras palabras, mide cuánto un 
+módulo depende de otro para funcionar correctamente.
+
+3) Principios de Cohesion de Componentes:
+
+3.1) Equivalencia de Reuso y Liberacion (REP): Este principio define que para que un componente/modulo pueda ser reutilizado de manera consistente y fiable, 
+debe: 1) Tener un estado de liberación claro: Esto implica que debe estar empaquetado, documentado, y versionado, de forma que los consumidores de este componente 
+sepan exactamente qué esperar y como utilizar el componente. 2) Ser tratado como una unidad liberada: Esto incluye definir cómo se distribuye, mantiene y actualiza 
+el módulo para otros desarrolladores o proyectos.
+
+3.1.1) Versionado: Cada módulo o paquete debe tener versiones claras, indicando qué cambios se han hecho (por ejemplo, a través de un control de versiones semántico).
+3.1.2) Documentación: Los módulos deben incluir guías o descripciones sobre cómo usarlos, qué funcionalidades ofrecen y qué limitaciones tienen.
+3.1.3) Control de dependencias: Los módulos liberados deben especificar sus dependencias externas de manera precisa.
+3.1.4) Aislación de cambios: Una nueva versión del módulo debe permitir a los usuarios del software actualizar o permanecer en la versión anterior sin romper 
+funcionalidades existentes.
+
+En sintesis REP conecta el concepto de reutilizacion de codigo con un modelo que asegure que el código reutilizable esté bien definido y controlado.
+
+
+3.2) Cierre Comun (CCP): Este principio define que un Componente debe contener todas las clases que tienden a ser modificadas juntas por las mismas razones.
+El término "cierre" significa que el Componente está protegido contra ciertos tipos de cambios. Si las clases dentro del Componente tienden a modificarse juntas, 
+están "cerradas" en un solo lugar, lo que simplifica las actualizaciones. Las clases en un Componente deben estar relacionadas por el motivo de cambio, si diferentes 
+clases cambian por razones distintas, deben estar en Componentes separados.
+
+El objetivo del CCP es reducir la carga de mantenimiento del software, al permitir que los cambios de un aspecto del sistema no se propaguen a otros componentes, y 
+que al trabajar en modulos Aislados los cambios tengan impactos predecibles.
+
+
+3.3) Reutilizacion Comun (CRP): Este principio define que al agregar un componente a mi proyecto yo deberia usar todas (o la mayoria) de las clases de mi componente. 
+En resumen no deberia depender de cosas que no voy a utilizar, es decir no tener clases en mi componente que no voy a utilizar. Esto es similar al concepto de 
+segregacion de interfaces de SOLID. En el caso de que yo utilice una de esas clases de todas las del componente, lo mejor seria separarla en un componente aparte, 
+ya que ademas esto indicaria una baja Cohesion de la clase con respecto a otras del componente.
+
+
+
+4) Principios de Acoplamiento entre Componentes:
+
+
+4.1) Dependencias Aciclicas: Este principio viene a resolver el problema de las dependencias ciclicas entre componentes (A => B, B => C, C => A). Una de las formas 
+para romper este ciclo es utilizar Interfaces para depender de abstracciones y no de implementaciones (A => B, B => C, C => IA), en este ejemplo C deja de 
+depender de A, sino depende de la interfaz IA y A es solo una implementacion de esa interfaz.
+
+EJ de Dependencias Ciclicas:
+public class A // Componente A
+{
+    private readonly B _b;
+    public A(B b)
+    {
+        _b = b;
+    }
+}
+public class B // Componente B
+{
+    private readonly C _c;
+    public B(C c)
+    {
+        _c = c;
+    }
+}
+public class C // Componente C
+{
+    private readonly A _a;
+    public C(A a)
+    {
+        _a = a;
+    }
+}
+
+
+EJ de Dependencias Aciclicas:
+public class A : IA // Componente A
+{
+    private readonly B _b;
+    public A(B b)
+    {
+        _b = b;
+    }
+}
+
+public class B // Componente B
+{
+    private readonly C _c;
+    public B(C c)
+    {
+        _c = c;
+    }
+}
+
+public class C // Componente C
+{
+    private readonly IA _a;
+    public C(IA a)
+    {
+        _a = a;
+    }
+}
+
+public interface IA
+{}
+
+El Principio de Dependencias Acíclicas asegura que las dependencias en un sistema de software sean claras, predecibles y fáciles de mantener. Al eliminar ciclos
+los componentes se pueden mantener y probar de forma independiente y se facilita la escalabilidad y extensibilidad del sistema.
+
+
+4.2) Dependencias Estables: este principio define que aquellos componentes que no van a cambiar o que van cambiar poco deben depender de otros componentes que sean 
+mas estables que ellos, es decir componentes que no cambien practicamente. Es decir que los componentes ESTATICOS no deberian depender de componentes VOLATILES, 
+esto debido a que si cambio algo en mi componente debo modificar todos los componentes que dependan de el. Para esto lo que se suele aplicar es el principio de 
+Inversion de Inyeccion de Dependencias, en este caso una clase ESTATICA de mi componente no dependera de una clase que pueda ser flexible, sino que dependera de una 
+Interfaz, la cual podra tener distintas implementaciones.
+
+El Principio de Dependencias Estables asegura que los cambios en un sistema de software no generen efectos colaterales innecesarios, promoviendo un diseño jerárquico 
+donde los componentes estables sirven como base confiable del sistema.
+
+
+4.3) Abstracciones Estables: Este principio define que los componentes que son mas estables deberian ser mas abstractos, ya que en ellos solo definiriamos que 
+se va a hacer, pero no como. A su vez este principio indica que los componentes mas VOLATILES deberia ser mas concretos, ya que en ellos definimos como se va 
+a hacer algo y esto es mas propenso al cambio.
+
+En sintesis define que los Componentes sean ESTATICOS deberian estar conformado en su mayoria por interfaces, y aquellos Componentes VOLATILES deberian estar 
+compuestos por clases en su mayoria.
+
+
+
+                                                                    2) Arquitectura de Software
+
+1) Arquitectura de Software: es una estructura que le vamos a dar a nuestro sistema, sus propositos son detectar donde se realiza cada tarea, las 
+resposabilidades de cada componente y como se relacionan entre si. Esta arquitectura facilita el desarrollo y mantenimiento del sistema, además de permitir 
+una detección más ágil de errores y su resolución eficiente.
+
+En sintesis una arquitectura basicamente es un mapa en el cual voy a definir la organizacion conceptual de mi codigo.
+
+
+2) Composicion de un Sistema: 1) Politicas: Representan la logica de negocio, reglas del sistema (que es lo que hace mi aplicacion, su proposito). Gracias a 
+estas reglas se define que es lo que hace mi programa, estas reglas son las que les dan valor a mi sistema. Estas reglas son independiente de las tecnologias
+(BD, Frameworks). 2) Detalles: Son los que permiten que el sistema sea utilizado, son las BD, Frameworks, APIs, UI. Estos elementos pueden ser reemplazados 
+sin afectar las reglas de negocio.
+
+En sintesis las Politicas son las reglas que definen que hace mi programa y los detalles es la implementacion en codigo de esta Politicas, es decir, 
+cómo se llevan a cabo esas reglas en un contexto técnico específico.
+
+
+3) Relacion entre Componentes: Dentro de nuestra applicacion tendremos capas de trabajo, en unas generalmente desarrollaremos las reglas de negocio (politicas) y
+en otras los detalles. Generalmente si yo modifico mis Politicas debere modificar mis detalles para que se ajusten a las nuevas reglas, pero no al reves, en 
+orden jerarquico las reglas de negocio se encuentran por encima de los detalles. Los detalles deberan conocer mis reglas de negocio (Politicas), pero mis Politicas 
+no deben tener conocimiento de las implementaciones concretas de los detalles.
+
+Puedo desarrollar la logica de negocio sin necesidad de crear los detalles. La ventaja de la programacion mediante componentes es que puedo sustituir un 
+componente por otro con nuevas funcionalidades sin alterar la logica del negocio.
+
+4) Inyeccion de Dependencias: *Video 54*
+
+
+5) Componentes bajo nivel: Los componentes de bajo nivel son aquellos componentes que suelen sufrir cambios, son aquellos componentes que estan mas 
+de la interacción directa con el usuario o de las tecnologías específicas utilizadas para implementar el sistema. Estos componentes son más propensos a cambios 
+debido a requisitos del cliente, actualizaciones tecnológicas o ajustes en la interfaz. Basicamente los componentes de bajo nivel son los detalles.
+
+
+5.1) Componentes de Alto Nivel: Los componentes de alto nivel son los que contienen las reglas de negocio (Politicas), los casos de uso, el modelo de dominio.
+Basicamente contienen las reglas que de mi aplicacion que hace que se diferencie del resto de aplicaciones.
+
+Para identificar un componente de mayor nivel solo debo ver cual esta mas lejano de la Entrada/Salida de informacion.
+
+
+5.2) Capa: Una capa es un conjunto de componentes, los cuales comparten resposabilidades. Una Capa contendra componentes, las capas tendran el fin de 
+solucionar una problematica determinada. Las problematicas se separaran en capas.
+
+ 
+                                                                    3) Clean Architecture
+
+1) La base de CleanArchitecture Consistira en separar la applicacion en 4 Capas: 1) Entities-Domain: Lógica de negocio empresarial, aqui definimos las entidades de 
+nuestro negocio. 2) UseCases-Application: Lógica de negocio específica de la aplicación, definen el que debe hacer la Aplicacion, mas no como. Implementara DTOs, 
+Mapeos, Validaciones, Excepciones y CQRS. 3) Interface_Adapters-Infraestructure: La capa de Infrastructure maneja todos los detalles técnicos de integración con 
+servicios externos, es aquella que se encarga de integrar servicios externos (BD, Servicios de Cache, Acceso al sistema de archivos, Servicios de Autenticacion y 
+Autorizacion). Dentro de esta configuraremos el DbContext y tambien implementaremos los repositorios definidos por las interfaces de application
+4) Frameworks_Drivers-Presentation: Sera la capa donde crearemos los metodos POST, GET, UPDATE y DELETE, interectuara directamente con la salida y entrada de 
+datos
+
+2) Reglas de Dependencias: Las capas de la arquitectura podran depender de una capa mas interna a ella pero nunca a una capa mas externa. Por ejemplo Application 
+puede depender de Entities, una capa mas interna que el, pero Application nunca debera depender de Infrastructure o Presentation, ya que son capas mas externas que 
+el. La regla de Dependencia es de afuera hacia adentro.
+
+
+3) Excepciones: Hay veces que la CleanArchitecture no se cumple a raja-tabla pero se sigue aplicando su objetivo y proposito, EJ: 1) Fusion de Capa Entities y 
+Use Cases. 2) Utilizancion de Infrastructure en Interface_Adapters y Presentation en Frameworks_Drivers.
+Siempre y cuando se respete el principio de separacion de responsabilidades en capas y que las dependencias sean de afuera hacia dentro, se considerara 
+CleanArchitecture, independientemente de que use mas o menos capas.
+
+
+4) Capas:
+
+4.1) Entities-Domain: Esta capa es la que tiene las entidades del negocio, es la que contiene la logica y reglas de negocio. Tambien se la conoce como la capa de 
+Entrerpise Layer o Entrerpise Business Rules. Entities nos referimos a las clases que definen nuestra logica de negocio, estan tendran propiedades y raramente
+pequeñas funcionalidades, pero estas funcionalidades deben ser funciones que no se modificaquen casi nunca.
+
+
+4.2) UseCases-Application: Representa acciones de mi sistema, que es lo que va a hacer mi aplicacion (Logueo, registro, agregar/modificar/eliminar Datos, leer 
+datos, etc). Aunque no define el ¿Como?, solo define el ¿Que?, es decir aqui definiremos las interfaces. Tambien definira reglas de validacion, Crearemos DTOs, 
+los Mapeos, Excepciones y CQRS. 
+Dentro de esta capa ejecutaremos los metodos las interfaces definidas, tendremos una clase (o varias para cada UseCase) donde llamaremos a la ejecucion de los 
+metodos de nuestras interfaces. Esto es basicamente lo que hacemos con MediatR y CQRS, definir primero las interfaces de los repositorios y ejecutar los 
+metodos (no implementados todavia) con CQRS. Es decir CQRS suelen ser los UseCases.
+
+Un UseCase es un flujo de funcionalidad el cual tiene reglas las cuales se deben de cumplir para ser exitoso. Este UseCase es ejecutado por un Actor (Usuario, 
+App de terceros). En Sintesis los UsesCases es el flujo de ejecucion de una funcion de nuestra aplicacion, el CQRS en si es un UseCase.
+
+
+4.3) Interface_Adapters-Infrastructure: Su funcion es transformar la informacion del exterior para que esta pueda ser leida por los UseCases y viceversa.  
+En el caso de tener un ORM sera aqui donde lo creeemos y configuraremos, tambien esta capa sera la encargada de implementar las Interfaces definidas en Application.
+
+Esta capa al tener varias resposabilidades (Configurar ORM, implementar interfaces) se puede divir esta capa en varias subcapas segun lo necesitemos. Por Ejemplo 
+la configuracion del ORM puede ir en una SubCapa llamada DATA (ahi crearemos el DbContext) y la implementacion de nuestras interfaces en una SubCapa REPOSITORY.
+
+
+4.4) Frameworks_Drivers-Presentation: Es la capa donde se realizan la entrada y salida de informacion, es lo que esta mas sujeto a modificaciones de toda nuestra 
+aplicacion. Sus cambios no modificaran a las reglas de negocio.
+
+
+
+5) Models: En vez de utilizar directamente a los Entities para la BD, generalmente es mejor utilizar Models, ya que estas clases tendran la funcion de ser 
+las clases que representen las tablas de la BD. Con los Entities tambien podemos hacer esto, pero su objetivo es tener logica y reglas de negocio, en caso de que 
+necesitemos agregarle datos para tener mas columnas en nuestra tabla seria una mala practica. Este problema lo vienen a resolver Models, que seran clases que 
+repliquen y agreguen propiedades que lo necesiten y representaran las tablas de la BD. Estos Models se definiran en la capa de Infrastructure.
+
+En SINTESIS, los Models tienen la funcion de servir como representaciones de las tablas de la BD, lo que nos permitira Modificar esa tabla sin tener que modificar 
+mis Entities y por ende la logica de negocio. Esto tambien liberara a los Entities de las resposabilidades con la BD, la unica resposabilidad de los Entities debe 
+ser definir la logica de negocio.
+
+
+5.1) Problemas con Models: Al crear Models en Infrastructure surge un problema, mi IRepository de UsesCases-Application no puede trabajar con estos Models, 
+debido que la Capa de Application no debe conocer nada de capas mas externas. Esto se soluciona usando GENERICS en la capa Application, reemplazando clases 
+concretas por GENERICS.
+
+
+6) ¿Regresar Entities o Models en el Repository?: Generalmente salvo excepciones/necesidades se recomienda devolver Entities (O sus DTOs) desde el componente 
+repository.
+
+public interface IRepository<TModel> where TModel : class
+{
+    Task<TModel> GetByIdAsync(int id);
+    Task<IEnumerable<TModel>> GeAllAsync();
+    Task AddAsync(Beer beer);
+}
+
+// Implementando IRepository con el Generic de la Entities BEER, Configuramos los metodos para que devuelva BEER, realizando los mapeos correspondientes.
+public class Repository : IRepository<Beer>
+{
+    private readonly AppDbContext _appDbContext;
+    public Repository(AppDbContext appDbContext)
+    {
+        _appDbContext = appDbContext;
+    }
+
+    public async Task AddAsync(Beer beer)
+    {
+        var model = new BeerModel()
+        {
+            Id = beer.Id,
+            Name = beer.Name,
+            Alcohol = beer.Alcohol,
+            Style = beer.Style
+        };
+        await _appDbContext.Beers.AddAsync(model);
+        await _appDbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Beer>> GeAllAsync()
+    {
+        return await _appDbContext.Beers.Select(x => new Beer()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Alcohol = x.Alcohol,
+            Style = x.Style
+        }).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<Beer> GetByIdAsync(int id)
+    {
+        return await _appDbContext.Beers.Select(x => new Beer
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Alcohol = x.Alcohol,
+            Style = x.Style
+        }).AsNoTracking().FirstAsync(x => x.Id == id);
+    }
+}
+
+// USE CASE, Entra una Entity y Sale un ViewModel generalmente.
+public class GetBeerUseCase<TEntity, TOut> where TEntity : class
+{
+    private readonly IRepository<TEntity> repository;
+    private readonly IPresenter<TEntity, TOut> presenter;
+
+    public GetBeerUseCase(IRepository<TEntity> repository, IPresenter<TEntity, TOut> presenter)
+    {
+        this.repository = repository;
+        this.presenter = presenter;
+    }
+
+    public async Task<IEnumerable<TOut>> ExecuteAsync()
+    {
+        var entities = await repository.GeAllAsync();
+        return presenter.Present(entities);
+    }
+}
+
+
+7) Presenters: Son componentes que nos ayudaran a formatear la informacion de los Entities, y esta informacion Formateada sera la que reciba la API. La clase 
+de Presenters La crearemos en Infrastructure, pero su interfaz se definira en la capa de Application, dentro de un UseCases. Presenters recibira un Entity y 
+este transformara el Entity en un ViewModel.
+
+// Defino IPresenter en Application
+public interface IPresenter<TIn, TOut>
+{
+    public IEnumerable<TOut> Present(IEnumerable<TIn> data);
+}
+
+// La implementacion de Presenter, El metodo se encargara de formatear la Entity a ViewModel.
+public class BeerPresenter : IPresenter<Beer, BeerViewModel>
+{
+    // Los formateos de informacion lo haremos aqui
+    public IEnumerable<BeerViewModel> Present(IEnumerable<Beer> data)
+    {
+        return data.Select(x => new BeerViewModel()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Alcohol = x.Alcohol + "%"
+        });
+    }
+}
+
+
+
+8) DTOs: Data Transfer Object, basicamente un objeto que tiene la tarea de transferir datos, se lo puede usar como una entrada de datos desde el API y pasar 
+esta data a la capa de Infrastructure y que esta Mapee los datos a otro objeto. El encargado de realizar estos mapeos sera una entidad llamada Mapper.
+
+
+
+9) Excepciones: Generalmente las excepciones las crearemos en nuestra capa de Application-UseCases, y si es algo muy critico podriamos declarar algunas excepciones 
+en la capa del Domain-Entities.
+
+public class ValidationException : Exception
+{
+    public ValidationException() : base("Error de validacion") {}
+    public ValidationException(string error) : base(error) { }
+}
+
+
+
+10) Middlewares: Son basicamente procesos que se ejecutan en el Pipeline HTTP, que verifican y validan informacion sobre un Request entrante, antes de que 
+llega a los Endpoints. En el caso de tener una excepcion podremos capturarla con un Middleware y formatear su Mensaje en un JSON para devolverla a la Vista 
+que consuma la API, de esta forma pasando un error legible. Estos se crean en la capa de presentacion
+
+public class ExceptionMiddleware
+{
+    private readonly RequestDelegate _next;
+    public ExceptionMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (ValidationException ex)
+        {
+            await HandleExceptionAsync(context, ex);
+        }
+    }
+
+
+    private static async Task HandleExceptionAsync(HttpContext context, ValidationException validationException)
+    {
+        // Capturo la Respuesta del HttpContext, y la formateo a JSON
+        var response = context.Response;
+        response.ContentType = "application/json";
+
+        // Genero el StatusCode y se lo coloco a la respuesta
+        var statusCode = HttpStatusCode.InternalServerError;
+        response.StatusCode = (int)statusCode;
+
+        // Creo un objeto anonimo de error y lo formateo a JSON
+        var result = JsonSerializer.Serialize(new
+        {
+            error = validationException.Message,
+            detail = validationException.InnerException?.Message,
+        });
+        await response.WriteAsync(result);
+    }
+}
+
+
+
+11) Validaciones En Presentation: En el caso de que tengamos validaciones que no son intrinsecas del negocio debemos ponerlo en la capa de presentacion. Un ejemplo 
+es definir validaciones para los DTOs, si bien esto lo podriamos hacer con DataAnnotations, una mejor opcion es con FluentValidation. Para esto crearemos una 
+carpeta en Presentations que contenga a mis validadores.
+
+// Inyectar los validadores
+builder.Services.AddValidatorsFromAssemblyContaining<BeerValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+
+
+// Uso en Minimal API
+app.MapPost("/beer", async (AddBeerUseCase<BeerResquestDTO> useCase, BeerResquestDTO dto, IValidator<BeerResquestDTO> validator) =>
+{
+    var result = await validator.ValidateAsync(dto);
+    if (!result.IsValid) return Results.ValidationProblem(result.ToDictionary());
+
+    await useCase.ExecuteAsync(dto);
+    return Results.Created();
+}).WithName("AddBeer").WithOpenApi();
+
+
+
+12) Logica de Presentacion: Esto nos ayudara a poder analizar dependiendo las cirscunstancias modificar cierta logica de nuestro ViewModel (Poner un color, texto).
+*Video 83*
+
+
+13) Uso de Servicios de Terceros: *Video del 84 al 90*
+
+13.1) // Sera un adaptador que convertira la informacion que viene de servicios de terceros a Entities - Capa Application
+public interface IExternalServiceAdapter<T>
+{
+    Task<IEnumerable<T>> GetDataAsync();
+}
+
+
+13.2) // UsesCase que devolvera los Posts Formateado como entities - Capa Application
+public class GetPostUseCase
+{
+    private readonly IExternalServiceAdapter<Post> _adapter;
+    public GetPostUseCase(IExternalServiceAdapter<Post> adapter)
+    {
+        _adapter = adapter;
+    }
+
+    public async Task<IEnumerable<Post>> ExecuteAsync()
+    {
+        return await _adapter.GetDataAsync();
+    }
+}
+
+
+13.3) // Definira que se debe recibir la informacion, se implementara en la capa de presentacion - Capa Infraestructure 
+public interface IExternalService<T>
+{
+    public Task<IEnumerable<T>> GetContentAsync();
+}
+
+
+13.4) // Esta clase sera el Concrete-Adapter - Capa Infraestructure 
+public class PostExternalServiceAdapters : IExternalServiceAdapter<Post>
+{
+    private readonly IExternalService<PostServiceDTO> _service;
+    public PostExternalServiceAdapters(IExternalService<PostServiceDTO> service)
+    {
+        _service = service;
+    }
+
+    public async Task<IEnumerable<Post>> GetDataAsync()
+    {
+        var postsDTO = await _service.GetContentAsync();
+        var list = postsDTO.Select(x => new Post()
+        { 
+            Body = x.Body,
+            Id = x.Id,
+            Title = x.Title
+        });
+        return list;
+    }
+}
+
+
+13.5) // La solicitud HTTP al servicio de terceros, seria El Concrete ExternalService
+public class PostService : IExternalService<PostServiceDTO>
+{
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    public PostService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+    }
+
+    public async Task<IEnumerable<PostServiceDTO>> GetContentAsync()
+    {
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
+        response.EnsureSuccessStatusCode();
+        var data = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<IEnumerable<PostServiceDTO>>(data, _jsonSerializerOptions)!;
+    }
+}
+
+
+13.6) // Inyeccion de  servicios
+builder.Services.AddScoped<IExternalServiceAdapter<Post>, PostExternalServiceAdapters>();
+builder.Services.AddScoped<IExternalService<PostServiceDTO>, PostService>();
+builder.Services.AddScoped<GetPostUseCase>();
+
+// Configurar la inyeccion del HttpClient
+builder.Services.AddHttpClient<IExternalService<PostServiceDTO>, PostService>(x =>
+{
+    x.BaseAddress = new Uri(builder.Configuration["BaseUrl"]!);
+});
+
+
+
+14) Programacion Funcional en interfaces:
+
+// Creo un metodo que recibira una expresion que servira como filtrado dinamico
+public interface IRepositorySearch<TModel, TEntity>
+{
+    Task<IEnumerable<TEntity>> GetFiltrado(Expression<Func<TModel, bool>> predicate);
+}
+
+
+// UseCase de esta busqueda filtrada flexible
+public class GetSalesSearchUseCases<TModel>
+{
+    private readonly IRepositorySearch<TModel, Sale> repository;
+    public GetSalesSearchUseCases(IRepositorySearch<TModel, Sale> repository)
+    {
+        this.repository = repository;
+    }
+
+    public async Task<IEnumerable<Sale>> ExecuteAsync(Expression<Func<TModel, bool>> predicate)
+    {
+       return await repository.GetFiltrado(predicate);
+    }
+}
+
+
+// Concrete RepositorySearch
+public async Task<IEnumerable<Sale>> GetFiltrado(Expression<Func<SaleModel, bool>> predicate)
+{
+    var salesModel= await _appDbContext.Sales.Include(x => x.Concepts).Where(predicate).ToListAsync();
+
+    var sales = new List<Sale>();
+
+    foreach (var saleModel in salesModel)
+    {
+        var concepts = new List<Concept>();
+        foreach (var item in saleModel.Concepts)
+        {
+            concepts.Add(new Concept(item.IdBeer, item.Quantity, item.UnitPrice));
+        }
+        sales.Add(new Sale(DateTime.Now, concepts));
+    }
+
+    return sales;
+}
+
+
+// Uso en API
+app.MapGet("/salessearch/{total}", async (GetSalesSearchUseCases<SaleModel> useCase, int total) =>
+{
+    return await useCase.ExecuteAsync(s => s.Total > total);
+}).WithName("Filtrado").WithOpenApi();

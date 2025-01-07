@@ -505,7 +505,7 @@ export class CrearGenerosComponent {
    });
 
    guardarCambios(){
-      console.log(this.form.value.nombre);
+      console.log(this.form.value.nombre); 
    }
 }
 
@@ -1639,7 +1639,7 @@ peticiones de nuestra servidor. - Video 147
                                                                     7) Seguridad
 
 1) RouteGuards: Aveces necesitaremos realizar acciones en el momento en que el usuario esta por entrar, o salir de una ruta. Para esto existen los RouteGuards:
-1.1) CanActivate: Define si un usuario debe entrar a una ruta especifica. 1.2) CanActivateChild: Define si un usuario debe entrar a una hija ruta especifica
+1.1) CanActivate: Define si un usuario puede entrar a una ruta especifica. 1.2) CanActivateChild: Define si un usuario puede entrar a una hija ruta especifica
 1.3) CanDeactivate: Define si un usuario puede salir de una ruta. 1.4) Resolve: Permite obtener data antes de la activacion de la ruta. 1.5) CanMatch: Me permite 
 tener distintos componentes para una misma ruta, el componente a mostrar sera bajo una condicion dada. 1.6) CanLoad.
 
@@ -1647,7 +1647,6 @@ tener distintos componentes para una misma ruta, el componente a mostrar sera ba
 2) Crear un RouteGuard: "ng g guard compartidos/guards/es-admin --skip-tests" => luego me dejara elegir que tipo de RouteGuard quiero crear.
 
 3) Usar CanActivate:
-
 // Componente RouteGuard-CanActivate
 export const esAdminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
@@ -1687,13 +1686,13 @@ private readonly llaveExpiracion = 'token-expiracion';
 registrar(credenciales: CredencialesUsuarioDTO): Observable<RespuestaAutenticacionDTO>{
   return this.httpClient.post(`${this.urlBase}/registrar`, credenciales)
   .pipe(
-    tap(respuestaAutenticacion => this.guardarCambios(respuestaAutenticacion))
+    tap(respuestaAutenticacion => this.guardarToken(respuestaAutenticacion))
   );
 }
 login(credenciales: CredencialesUsuarioDTO): Observable<RespuestaAutenticacionDTO>{
   return this.httpClient.post(`${this.urlBase}/login`, credenciales)
   .pipe(
-    tap(respuestaAutenticacion => this.guardarCambios(respuestaAutenticacion))
+    tap(respuestaAutenticacion => this.guardarToken(respuestaAutenticacion))
   );
 }
 // Aca voy a crear la funcion para guardar mi token en el LocalStorage del navegador.
@@ -1721,6 +1720,7 @@ estaLogueado() : boolean{
   }
   return true;
 }
+
 logOut(){
   localStorage.removeItem(this.llaveToken);
   localStorage.removeItem(this.llaveExpiracion);

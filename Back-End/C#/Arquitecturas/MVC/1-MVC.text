@@ -679,7 +679,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 CreateMap<CuentaDTO, CuentaViewModel>();
 
 3.1) Mapeo
-var modelo = mapper.Map<CuentaViewModel>(Cuenta);
+var modelo = mapper.Map<CuentaViewModel>(Cuenta); 
 
 4.1) Manual Mappeo
 CreateMap<ClaseMapeadora, ClaseAMapear>().ForMembers(d=> d.Atributo, o=> o.MapFrom(s=> s.atributo));

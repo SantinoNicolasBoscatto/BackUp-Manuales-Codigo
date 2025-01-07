@@ -1,0 +1,105 @@
+                                                                      1) Objetivos de Solid
+
+1) Los objetivos de SOLID son: 1) crear un software eficaz, que cumpla con su cometido y sea robusto y estable. 2) Codigo Limpio y flexible, que me
+permita modificarlo facilmente segun las necesidades. Es decir escribir codigo reutilizable y mantenible. 3) Escalabilidad, es decir que pueda ser 
+ampliable en sus funciones.
+
+                                                                         
+                                                                         2) Principios Solid
+
+1) Responsabilidad Unica: Este principio dice que las clases deben tener una unica responsabilidad a realizar, y no contar con varias a la vez, por 
+ello las clases deben tener una unica responsabilidad. Por ejemplo, los controladores en las APIs, estos no deben realizar las configuraciones de la BD,
+abrir su conexion, y realizar sus transacciones, solo se limita a recibir y servir las peticiones HTTP del cliente, tampoco realiza validaciones (en
+su mayoria). Si una clase tiene mas de una responsabilidad lo ideal seria crear otra clase que se encargue de esto.
+
+2) Abierto/Cerrado: Este principio define que una clase debe ser capaz de extender su comportamiento (agregar nuevos comportamientos), pero sin modificar 
+la logica de la clase existente, es decir sin tener que modificar el metodo para extender su funcionamiento.  Es decir que una clase deberia estar abierta 
+a extender/agregar comportamiento pero sin modificar la logica de la funcionalidad. Esto se logra generalmente por abstracciones, teniendo una interfaz que 
+defina que debo hacer pero sin especificar el como.
+
+2.1) EJ Incumplimiento: En este caso cada vez que agregue una figura geometrica voy a tener que modificar la funcion CalculateArea de la clase AreaCalculator, 
+rompiendo asi el principio de que una clase debe estar cerrada para su modificacion.
+
+public class AreaCalculator
+{
+    public double CalculateArea(object shape)
+    {
+        if (shape is Circle)
+        {
+            Circle circle = (Circle)shape;
+            return Math.PI * circle.Radius * circle.Radius;
+        }
+        else if (shape is Rectangle)
+        {
+            Rectangle rectangle = (Rectangle)shape;
+            return rectangle.Width * rectangle.Height;
+        }
+        else
+        {
+            throw new ArgumentException("Unknown shape");
+        }
+    }
+}
+
+
+2.2) Correccion: En este caso definiremos una Interfaz que obligue el Calculo del radio, pero la implementacion quedara a cargo de cada figura geometrica, de 
+esta forma AreaCalculator no va a necesitar modificarse por agregar una nueva figura geometrica
+
+public class AreaCalculator
+{
+    public double CalculateArea(IShape shape)
+    {
+        return shape.CalculateArea();
+    }
+}
+
+public interface IShape
+{
+    double CalculateArea();
+}
+// Cada Clase que implemente IShape es una extension del comportamiento sin modificar el metodo CalculateArea
+public class Circle : IShape
+{
+    public double Radius { get; set; }
+
+    public double CalculateArea()
+    {
+        return Math.PI * Radius * Radius;
+    }
+}
+public class Rectangle : IShape
+{
+    public double Width { get; set; }
+    public double Height { get; set; }
+
+    public double CalculateArea()
+    {
+        return Width * Height;
+    }
+}
+
+
+SINTESIS: El objetivo de este patron es agregarle comportamiento al metodo una clase sin modificar ese metodo, esto lo consigo usando las interfaces, ya que estas 
+definiran un metodo, mas no su implementacion. De esta forma cada vez que quiera extender el comportamiento solo debo crear una clase que implemente nuestra 
+interfaz, de esta forma extenderemos el comportamiento sin modificar nuestra clase.
+
+
+3) Sustitucion de Liskov: Este principio establece que las clases derivadas deben poder sustituirse por sus clases base. Es decir que en los lugares
+en que implemente mis clases bases/Padres, las puedo sustituir por sus clases hijas sin alterer su comportamiento o funcionamiento. Si esto llegara a 
+causar errores entonces es sintoma de un mal diseño de software. Para solucionar esto lo que se suele hacer es evitar la herencia y usar la composicion, 
+es decir inyectar la clase que necesito como una dependencia.
+
+
+4) Segregacion de Interfaces: Este principio establece que es mejor crear muchas interfaces de pocos metodos (una interfaz de una finalidad concreta),
+que crear pocas interfaces pero de muchos metodos que muchas veces no seran implementados.
+
+
+5) Inversion de Inyeccion de dependencias: El cambio que hace la Inversion de Inyeccion de dependencias es que en vez de utilizar tipos concretos 
+para las dependencias (es decir usar clases), busca que se usen tipos abstractos (interfaces o clases abstractas). Esto nos dara mas flexibilidad a la
+hora de construir nuestro software debido a que ya no dependemos de una clase, sino de una interfaz la cual puede ser implementada en una clase. Es decir 
+con este principio ya no dependemos de clases concretas sino de abstracciones.
+
+
+5.1) Inyeccion de Dependencias: El principio de inyeccion de dependencias consiste en declarar de forma centralizada las dependencias de las
+clases. Ademas se busca que estas dependencias sean de un acople bajo (es decir que la dependencia no se construyan y declaran dentro de los metodos 
+de una clase, sino mediante un constructor).
