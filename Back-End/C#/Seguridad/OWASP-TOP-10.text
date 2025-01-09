@@ -1,0 +1,108 @@
+
+                                                                    1) Introduccion
+
+1) OWASP TOP 10: es una lista de las diez principales vulnerabilidades de seguridad en aplicaciones web, publicada por la Open Web 
+Application Security Project (OWASP). Su objetivo es concienciar a desarrolladores y organizaciones sobre las amenazas más comunes 
+y cómo prevenirlas.
+
+
+                                                                     2) TOP 10
+
+1) Falsificacion de Solicitudes del Lado del Servidor (SSRF): Es una forma en la que el atacante puede acceder a contenido de la 
+red local del servidor mediante solicitudes HTTP, La solicitud realizada por el servidor puede dirigirse a un recurso interno que 
+normalmente estaría inaccesible desde el exterior (como bases de datos internas o servicios de administración). El atacante puede 
+utilizar esta vulnerabilidad para obtener información sensible, escanear la red interna del servidor, o incluso ejecutar comandos 
+de forma remota.
+
+EJ: Nuestro programa funciona de la siguiente forma, nuestro cliente hace una peticion por URL, la cual siempre llevara el parametro
+A, que nos direccionara a la carpeta A de nuestro servidor, el cliente nunca tendra acceso a otra carpeta de este servidor. Un 
+Atacante lo que podria hacer seria cambiar ese parametro A por B para tener acceso a carpetas del servidor.
+
+1.2) Soluciones: 1) Restricciones de Acceso: Implementar controles de acceso a nivel de servidor para asegurar que los clientes solo 
+puedan acceder a las carpetas permitidas. 2) Validar URLs: Validar que la URL con el parametro que se le paso sea una URL valida, solo 
+la URL con el parametro esperado deberia ser valida. 3) Informacion Cruda: No devolver la informacion cruda desde el servidor, lo 
+recomendable es hacerlo acotadamente y formateada.
+
+
+2) Fallas en el Registro y Monitoreo: El registro y monitoreo de un sistema te va a apoyar a saber que es lo que esta pasando en tu 
+sistema (Quienes iniciaron sesion, quienes no, cuanto tiempo estuvo el usuario, que tareas realizo). Es decir puedo rastrear y 
+registrar a los clientes, y esto es util para registrar rapidamente a un atacante. Para esto configuraremos limites y umbrales, 
+es decir especificar el maximo de veces que se ejecute un determinado proceso en X cantidad de tiempo, en caso de superar este 
+limite se nos creara una alerta.
+
+2.2) Soluciones: Tener un sistema de Logs y Monitoreo, con sus limites y umbrales configurados y un sistema de notificacion en caso 
+de que estos limites sean sobrepasados. 
+
+
+3) Fallas en el Software y en la Integridad de los Datos: Estas fallas ocurren cuando el código o la infraestructura no protegen 
+contra violaciones de integridad.
+
+EJ: Dependencia de complementos, bibliotecas, módulos, repositorios o redes de entrega de contenido (CDN) no confiables, que no 
+pertenecen a una comunidad grande y confiable, por eso hay que tener cuidado en la instalaciones de bibliotecas de terceros.
+
+
+3.2) Soluciones: Asegurarse que las bibliotecas y dependencias se utilizan desde repositorios confiables, Utilizar una herramienta 
+de análisis de componentes de terceros.
+
+
+4) Fallas de Identificacion y Autenticacion: 1) No colocar una limitante de intentos fallidos a la hora de realizar el Login, lo 
+que abre la puerta a que un atacante pueda intentar loguearse por fuerza bruta o mediante un diccionario de correos y passwords 
+comunes. 2) Guardar las contraseñas con texto plano en la BD tambien se considera mala practica. 3) Colocar el Id del usuario 
+autenticado en la URL, ya que abre lugar a vulnerar el sistema. 4) Permitir Passwords debiles. 5) Procesos debiles de 
+recuperacion de contraseñas, como preguntas secretas, las cuales facilitan los ataques por fuerza bruta.
+
+4.1) Soluciones: 1) Inicio de sesion Multifactor. 2) No dejar usuarios de desarrollo en la BD. 3) Poner reglas en la construccion 
+de contraseñas. 4) Guardar las contraselas cifradas en la BD y no como texto plano.
+
+
+5) Componentes Vulnerables y Desactualizados: No usar programas o sistemas que este fuera de soporte, porque estos son mas propensos 
+a ser vulnerables, siempre en lo posible actualizar estos. Tampoco instalar programas de terceros poco confiables dentro del entorno 
+de produccion
+
+5.1) Soluciones: 1) Mantener Actualizados los Componentes: Asegurarse de que todos los componentes de software utilizados están 
+actualizados con los últimos parches y actualizaciones de seguridad. 2) Evitar el Uso de Software Fuera de Soporte: No utilizar 
+programas o sistemas que ya no reciben soporte del proveedor. 3) Verificar la Confiabilidad de Terceros: Evaluar cuidadosamente 
+la confiabilidad y seguridad de los programas de terceros antes de integrarlos en el entorno de producción.
+
+
+6) Configuracion de Seguridad Incorrecta: 1) Usuarios y contraseñas inseguras que nos permiten ingresar al ambiente de produccion 
+2) Tener puertos abiertos en el ambiente de produccion los cuales son inecesarios. 3) Si dentro de una misma BD tenemos varios 
+sistemas resulta peligroso que esto sea solo administrado por un solo usuario, deberia ser un usuario por cada sistema de la BD.
+
+6.1) Soluciones: 1) Contraseñas seguras. 2) Cerrar puertos no utilizados. 3) Limitar los accesos desde determinas IPs. 
+4) Crear un usuario en BD para cada sistema.
+
+
+7) Diseño Inseguro: Esta vulnerabilidad esta ligada a la Arquitectura de Software y al analisis de los requerimientos, una mala 
+Arquitectura de software desde el inicio puede derivar en vulnerabilidades. Las vulnerabilidades tambien pueden surgir en el 
+mantenimiento o expansion de mi software.
+
+7.1) Soluciones: 1) Conocer buenas practicas de codificacion. 2) Utilizacion de Patrones de diseño. 3) Crear Pruebas Unitarias
+sobre el bloqueo de vulnerabilidades. 4) Siempre definir validaciones y limitantes desde el Backend
+
+
+8) Inyeccion: Esta vulnerabilidad refiere a la inyeccion de elementos que una no espera de la request, la mas comun es la inyeccion 
+SQL. Tambien existe la inyeccion de comandos mediante parametros.
+
+8.1) Soluciones: C# Permite especificar el tipado del elemento que quiero recibir, de esta forma puedo evitar la inyeccion de SQL.
+Tambien ayudaria usar EF Core con LINQ ya que estos permiten construir consultas seguras.
+
+
+9) Fallas Criptograficas: Esta vulnerabilidad se refiere a no encriptar data sensible, tampoco es recomendable encriptarla con 
+metodos de encriptacion desfasados.
+
+
+10) Perdida de control de acceso: Esta vulnerabilidad se refiere a cuando los mecanismos de control de acceso de una aplicación 
+no funcionan correctamente, permitiendo a los usuarios acceder a recursos o realizar acciones que no deberían estar autorizados 
+a hacer.
+
+Ejemplos: 1) Un usuario regular obtiene privilegios de administrador al explotar fallos en el control de acceso. 2) Atacantes 
+acceden o manipulan datos modificando parámetros en las solicitudes (por ejemplo, cambiando el ID de usuario en una URL)
+3) Usuarios no privilegiados pueden realizar acciones reservadas para usuarios con más privilegios, como acceder a paneles de 
+administración o datos sensibles
+
+10.1) Soluciones: 1) Siempre en la consulta SQL verificar que la parte a la que quiera acceder pertenezca al usuario que esta 
+autenticado en ese momento. Por ejemplo, quiero acceder a modificar el perfil de otro usuario cambiando el Id de la URL, para 
+evitar esto al hacer la consulta deberemos verificar que el Id de la URL coincida con el Id del usuario que ahora esta 
+autenticado. 2) Utilizando Middlewares y Filters tambien nos permitiran la proteger el acceso de usuarios no privilegiados a 
+determinados permisos. 3) Poner tokens que caduquen, para evitar que te los roben y lo usen para iniciar sesion con tu cuenta.

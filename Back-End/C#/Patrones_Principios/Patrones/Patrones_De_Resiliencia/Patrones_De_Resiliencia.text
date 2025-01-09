@@ -1,0 +1,80 @@
+
+1) Resiliencia: Es la capacidad de que el software se pueda recuperar cuando falla.
+
+2) Polly: Es un proyecto de codigo abierto diseñado para que nuestras aplicaciones .NET sean mas robustas y sean capaces de 
+resolver por si mismas problemas comunes, especialmente cuando se integran con aplicaciones externas, microservicios u otras
+APIs. Para poder implementar los patrones de Resiliencia en C# se recomienda el uso de la biblioteca Polly.
+
+
+3) Patron Retry: Cuando una operación falla, en lugar de rendirse inmediatamente y tirar un error, se reintenta la operación 
+después de un breve intervalo de tiempo. Esto es especialmente útil cuando los fallos son transitorios, como en los casos de:
+1) Problemas de red temporales. 2) Servicios sobrecargados momentáneamente. 3) Interrupciones intermitentes.
+
+Implementacion: 1) Número de Reintentos. 2) Intervalo entre Reintentos. 3) Manejo de Excepciones: Determinar qué tipos de 
+errores dispararán un reintento. No todos los errores son transitorios; algunos pueden indicar fallos permanentes que no se 
+resolverán con reintentos.
+
+EJ: 
+try
+{
+    var number = 0;
+    await Policy.Handle<Exception>()
+    .RetryAsync(3, (ex, retry) => Console.WriteLine("Intento: "+ retry))
+    .ExecuteAsync(async () =>
+    {
+        if (number == 3) Console.WriteLine("Todo OK");
+        else
+        {
+            number++;
+            throw new Exception();
+        }
+    });
+}
+catch (Exception)
+{
+    Console.WriteLine("Fallo todo");
+}
+
+
+EJ: Utilizamos WaitAndRetry con una ejecución exponencial y ExecuteAndCaptureAsync que capturara la ultima excepcion tirada, ademas 
+de agregar el patron Result en el manejo de errores.
+
+var number = 0;
+var policyResult = await Policy.Handle<Exception>()
+.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(1, retryAttempt)),
+(ex, retryTime, intento, context) => Console.WriteLine("Se va a Ejecutar el Intento: " + intento))
+.ExecuteAndCaptureAsync(async () =>
+{
+    if (number != 4)
+    {
+        number++;
+        throw new Exception("Error masivo");
+    }
+});
+if (policyResult.FinalException != null) Console.WriteLine("Hubo un error: " + policyResult.FinalException.Message);
+else Console.WriteLine("Todo OK");
+
+
+4) Patron Timeout: Este patrón establece un límite de tiempo (timeout) para la ejecución de una operación, de modo que si la operación 
+no se completa dentro de ese tiempo, se aborta y se maneja como un error. Su objetivo es evitar que el sistema quede bloqueado 
+esperando una respuesta indefinida de una operación. Esto es especialmente útil en entornos de red y sistemas distribuidos, donde 
+los retrasos y fallos pueden ocurrir frecuentemente.
+
+Implementacion: 1) Establecer el Tiempo Máximo de Espera: 2) Abortar la Operación si se excede el tiempo maximo. 3) Manejo de Errores: 
+Manejar adecuadamente el error resultante del timeout, ya sea reintentando la operación o tomando alguna otra acción de contingencia.
+
+
+try
+{
+    await Policy.TimeoutAsync(TimeSpan.FromMilliseconds(500), TimeoutStrategy.Pessimistic).ExecuteAsync(async () =>
+    {
+        var client = new HttpClient();
+        var resp = await client.GetAsync("https://jsonplaceholder.typicode.com/todos/1");
+        var content = await resp.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+    });
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}

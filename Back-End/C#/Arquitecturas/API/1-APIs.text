@@ -2104,17 +2104,16 @@ builder.Services.AddOutputCache(opt=>
 {
     opt.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
 })
-
 // Middleware
 app.UseOutputCache();
 
-// Usar el DataAnnotations en la accion de un controlador
+// Usar el DataAnnotations en la accion de un controlador, con el tag lo podre Identificar para borrarlo manualmente
 [OutPutCache(Tags = ["generos"])]
 
 
 8.1) Limpiar Cache Manualmente:
 
-// Configurar antes el campo de IOuputCacheStore
+// Configurar antes el campo de IOuputCacheStore, es decir inyectamos la interfaz
 [HttpPost]
 public async Task<IActionResult> Post([FromBody] Genero genero)
 {
@@ -2123,8 +2122,8 @@ public async Task<IActionResult> Post([FromBody] Genero genero)
 }
 
 
-9) PipeLine: Es el conjunto de procesos conectados que reciben una solicitud HTTP y la procesan devolviendo un resultado. Los Middleware vendrian 
-siendo cada uno de estos procesos del PipeLine. Tenemos variaos Middleware como: Autorizacion, StaticFiles, Controladores, etc.
+9) PipeLine: Es el conjunto de procesos conectados que reciben una solicitud HTTP y la procesan devolviendo un resultado. Los Middleware 
+vendrian siendo cada uno de estos procesos del PipeLine. Tenemos varios Middleware como: Autorizacion, StaticFiles, Controladores, etc.
 
 
 10) Model Binding: Consiste en mapear datos de una peticion HTTP a paramatros de una accion.

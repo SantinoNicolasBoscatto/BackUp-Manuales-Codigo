@@ -1,0 +1,40 @@
+
+                                                                    1) Memory Cache
+
+1) OutputCache: Este es un servicio que nos brinda ASP que nos permite manejar el cache en memoria, lo que hara esta sera guardar en 
+memoria del servidor una consulta HTTP para que si el cliente la vuelva a solicitar se le devuelva la Data en Cache.
+
+Configuracion del servicio: 
+builder.Services.AddOutputCache(opt=> 
+{
+    opt.DefaultExpirationTimeSpan = TimeSpan.FromHours(1);
+})
+// Middleware
+app.UseOutputCache();
+
+
+2) Uso en API:
+
+private readonly IOuputCacheStore _outputCache;
+public MyController(IOuputCacheStore outputCacheStore){
+    _outputCache = outputCacheStore;
+}
+
+// Usar el DataAnnotations en la accion de un controlador, con el tag lo podre Identificar para borrarlo manualmente
+[HttpGet]
+[OutPutCache(Tags = ["generos"])]
+public async ActionResult MyEndpointGet()
+{}
+
+[HttpPost]
+public async ActionResult MyEndpointPost()
+{
+    // De esta forma limpiamos el cache manualmente:
+    await _outputCache.EvictByTagAsync("generos", default);
+}
+
+
+
+                                                                2) Cache Distribuido
+
+1)

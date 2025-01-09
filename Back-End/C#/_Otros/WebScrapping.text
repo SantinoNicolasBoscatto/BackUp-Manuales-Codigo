@@ -1,0 +1,61 @@
+
+1) Webscrapping: es una técnica utilizada para extraer información de sitios web, mediante un software (scrapers/crawlers) accedemos 
+a paginas web y extraemos datos especificos que se encuentren en ellas.
+
+Usos: 1) Análisis de precios: Monitorear precios de productos en diferentes sitios. 2) Recolección de datos: Obtener información para 
+investigación, análisis de mercado, o creación de bases de datos. 3) Monitorización de cambios: Seguir cambios en sitios web de interés, 
+como noticias, blogs, o sitios de competencia.
+
+
+2) Webscrapping con PuppeteerSharp:
+
+// Guardamos la URL a consultar y la ubicacion de nuestro navegador
+string url = "https://www.promiedos.com.ar/";
+string chromePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+
+// Configuramos el navegador que usara Puppeter para realizar las consultas a las URL
+var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+{
+    Headless = true,
+    ExecutablePath = chromePath,
+});
+
+
+// Creamos la pagina que realizara la consulta desde el navegador y Realizamos la navegacion
+var page = await browser.NewPageAsync();
+await page.GoToAsync(url);
+
+// Aqui ejecutaremos codigo JS para seleccionar la data que necesitemos de la pagina
+var result = await page.EvaluateFunctionAsync(@"()=> 
+    {
+        const titles = document.querySelectorAll('.command_title__sMlhS');
+        const titleArray = [];
+        for(let i=0; i < titles.length; i++)
+        {
+            titleArray.push(titles[i].innerHTML);
+        } 
+        return titleArray;
+    }");
+
+for (int i = 0; i < result.Value.GetArrayLength(); i++)
+{
+    Console.WriteLine(result.Value[i]);
+}
+
+
+
+3) Webscrapping con Selenium: Necesitaremos los siguientes paquetes: 1) Selenium.WebDriver 2) Selenium.WebDriver.ChromeDriver
+3) Selenium.Support (Opcional)
+
+
+// Esto lo que hara sera ejecutar y abrir el navegador. Luego ponemos la URL a la que queremos ir
+IWebDriver driver = new ChromeDriver();
+await driver.Navigate().GoToUrlAsync("https://www.promiedos.com.ar/");
+
+// Busco los elementos que quiero capturar
+var result = driver.FindElements(By.ClassName("command_title__sMlhS"));
+
+foreach (var element in result)
+{
+    Console.WriteLine(element.Text);
+}
