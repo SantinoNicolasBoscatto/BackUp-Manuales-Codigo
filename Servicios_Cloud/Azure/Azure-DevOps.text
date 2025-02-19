@@ -1,0 +1,226 @@
+                                                                                
+                                                                                1) Introduccion
+
+1) Azure DevOps: Es un conjunto de herramientas que ofrece microsoft para cubrir las practicas mas comunes de DevOps.
+
+2) Azure Repos: Es un Repositorio de git privado, dondew generalmente tendremos nuestro codigo subido, pudiendo trabajar de forma colaborativa. La herramienta 
+Azure Repos sera la que se encargue de crear los repositorios que necesitemos, y estos repos seran de tipo git.
+
+3) Azure Pipelines: Con esta herramienta crearemos y administraremos la Integracion y Entrega continua (CI/CD). Aqui Definiremos Secuencias de trabajos, de tareas 
+y demas que se van a llevar a cabo cuando se dispare algun evento que definimos. Generalmente los eventos seran PUSH o COMMITS de una rama de Azure-Repos,
+Azure-Pipelines lo que hara sera descargar ese codigo, compilarlo y ejecutar unos tests para verificar que todo funcione OK y luego realiza el despliegue en los 
+servidores.
+
+4) Azure Artifacts: Azure Artifacts es un repositorio de codigo compilado listo para su ejecucion. Un uso muy comun de esta herramienta guardar librerias ya 
+compiladas y posteriormente desde este lugar integrarlas a nuestro proyecto.
+Un artefecto en Azure son paquetes de código compilado, como bibliotecas y herramientas que los desarrolladores utilizan en sus proyectos.
+
+5) Azure Boards: Esta herramienta nos permite definir un listado de tareas para hacerles seguimiento, es una herramienta mas organizacional.
+
+6) Azure Test Plan: Aqui definiremos las pruebas que se realizaran sobre nuestro proyecto, los resultados esperados, los pasos de esas pruebas. Tambien crear 
+reportes sobre problemas o defectos del codigo.
+
+
+
+                                                        2) Configurar el entorno Azure DevOps: Grupos, permisos y usuarios
+
+1) Agregar Usuarios a la organizacion: Deberemos ir a las configuraciones del proyecto, en "USERS" y "Add Users", ahi colocaremos el correo del usuario y le 
+enviaremos una invitacion a ese usuario. Si estamos utilizando Active Directory, se nos facilitara esta tarea ya que nos sugerira los usuario que queramos 
+agregar a la organizacion de DevOps. Desde este mismo panel tambien podemos eliminar o modificar el acceso del usuario.
+
+2) Agregar y Administrar permisos y grupos nivel organizacion: Deberemos ir a las configuraciones del proyecto, "Permissions" y veremos los permisos por grupo 
+por defecto, estos grupos no se pueden modificar, solo agregar o quitar miembros. Desde la misma pestaña podemos crear un grupo personalizado, y ahi si podremos 
+editar los permisos de ese grupo.
+
+3) Crear Equipos dentro de los proyectos, agregar usuarios y restricciones: Deberemos ir al proyecto y a la opcion "Teams", por defecto tendremos un grupo donde 
+estaran los usuarios del proyecto (ahi puedo agregar nuevos usuarios), pero tambien puedo crear mas grupos. Para Administrar los permisos deberemos ir a la 
+pestaña "Permissions" y ahi tendremos grupos por defecto que definen los permisos. La gestion es muy similar a manejar grupos de organizacion, aunque los grupos
+por defecto si son editables.
+
+4) Administrar Seguridad de Repositorios: Debere ir al Proyecto, a la parte de Azure-Repos y en la parte superior estara la opcion de Manage repositories. Hay 
+tendremos 2 pestañas importantes, Policies y Security. Dentro de Security puedo seleccionar un Grupo de permisos de mi repositorio y editar los permisos que
+estos tienen respecto a los Repositorios, permiso mas generales se los aplica en la pestaña de "Permissions" del proyecto.
+
+5) Documentacion Oficial: https://learn.microsoft.com/es-es/azure/devops/organizations/security/?view=azure-devops
+
+
+
+                                                                        3) Gitflow y Trunk-Based
+
+1) Los repositorios en general se pueden trabajar con 2 metodologias: 1) Gitflow. 2) Trunk-Based.
+
+1.1) Gitflow: La metodologia Gitflow recomienda tener 5 branchs: 1) Main: Rama principal, el codigo de esta Rama sera el de produccion 2) Develop: Esta es una
+rama que deriva de Main, sera la rama de integracion, aca los Devs iran integrando su codigo. 3) Features: Seran ramas de Develop, aca ira cada una de las 
+nuevas funciones del codigo, que una vez terminado se integrara en la rama Develop. En general cada desarrollador creara una rama Feature ya que cada elemento 
+nuevo sera un feature.4) Release: Sera una rama de Develop que se encargara de preparar el codigo para integrarlo a la rama Main. 5) Hotfix: Sera una rama de 
+Main, que buscara arreglar pequeños errores que se hayan producido.
+
+Esta metodologia es recomendable cuando: 1) Hay una alta rotacion y predominan desarrolladores Junior, el codigo de produccion no se ve afectado durante los 
+procesos de desarrollo al estar el desarrollo en una Branch paralela. 2) Equipos grandes y colaboracion con terceros. 3) Cuando tenemos un release fijo 
+calendarizado y no integracion continua. 4) Recomendable con Software monolitico.
+
+Documentacion: https://nvie.com/posts/a-successful-git-branching-model/
+
+1.2) Trunk-Based: Es una metodologia mas sencilla y que trabaja con una menor cantidad de ramas a diferencia de Gitflow. Esta metodologia trabaja con solo 
+2 ramas: 1) Master: Es la rama principal, donde se integrara el codigo en produccion. 2) Feature: Son las ramas que van creando los desarrolladores al 
+extender las funciones del Software.
+
+Esta metodologia es recomendable cuando: 1) Se desea utilizar un sistema de Integracion Continua y Despliegue Continuo, ya que de esta forma tendremos 
+Pipelines mucho menos complejos. 2) Baja rotacion y Devs seniors, para que alla menos probabilidad de error, ya que esto repercutiria directamente en 
+produccion. 3) Administracion impulsada por el equipo, es decir que se tenga la responsabilidad de subir codigo sin errores y bien testeado. 
+4) Recomendable con Software que implemente Microservicios y Aplicaciones distribuidas. 5) Pocas ramas paralelas a Master.
+
+Documentacion: https://trunkbaseddevelopment.com/
+
+
+2) Inicializar Repositorio con rama Main: Para ello iremos al Azure-Repos, inicializaremos el repositorio con el Boton Initilitialize. Ahi abremos generado el 
+repositorio y su rama main, para generar una rama alterna debo buscar el menu desplegable y la opcion new Branch, eligiremos basarnos en la Rama Main y 
+crearemos la rama Develop.
+
+Para fusionar la rama Develop debo ir al History del Repositorio y solicitar un Pull-Request, seleccionaremos de que Branch y hacia que Branch queremos 
+realizar el Merge. Si tenemos los permisos podremos verificar los Pull Request dentro del menu de Azure-Repos y verificar si aprobar o no los merges
+solicitados y Ejecutar el Merge.
+
+
+3) Crear Personal-Access-Token en Azure DevOps: Este token sera necesario para poder trabajar sobre el repositorio de Azure desde nuestra pc mediante la consola
+de git. Para esto buscaremos en la barra superior la opcion de "User Settings" y seleccionar la opcion de "Personal access tokens". Hay elegimos crear un 
+nuevo token, seleccionaremos un nombre para ese token, su expiracion y los permisos (es decir que comandos git podre ejecutar).
+
+Ez5wYOZVUDKRjFLa03K1V3Oa7Bd8enEIGqA4OFCBxaviKHiDH0xCJQQJ99BAACAAAAAAAAAAAAASAZDODI8D
+
+
+4) Clonar Repositorio y Configurar Autenticacion del cliente git con el token: Para poder conectar el repositorio al cliente de git primero deberemos loguearnos 
+hacia Azure desde la terminal de git, primero configuramos nuestro nombre, luego email, que guarde la data en cache y por ultimo copiaremos la URL del repositorio
+y ejecutaremos git clone
+
+git config --global user.name ""
+git config --global user.email ""
+git config --global credential.helper cache
+git clone https://SantinoBoscatto@dev.azure.com/SantinoBoscatto/Primer-Proyecto/_git/Primer-Proyecto
+
+
+5) Proceso Para Inicializar un Repositorio:
+git init 
+git add .
+git commit -m ""
+Creamos el Repositorio en Azure
+git remote add origin https://
+git push -u origin --all
+
+                                                                            4) Pipelines con Gitflow
+
+1) Pipelines: Los Pipelines son tuberias basicamente, en este caso el codigo que quiera ser actualizado en un repositorio debera pasar por procesos que se 
+encuentren en este Pipeline. Es decir que el Pipeline es el conjunto de verificaciones y Checkeos que se le realiza al codigo fuente que quiero subir.
+
+2) Crear un Pipeline: iremos a Pipelines, crearemos un nuevo pipeline, 1) le indicaremos donde esta nuestro codigo (En este caso Azure-Repos, aunque pueden ser otros 
+repositorios git). 2) Seleccionaremos sobre que repositorio de Azure-Repos queremos vincular el Pipeline. 3) Elegimos la configuracion del Pipeline, por defecto vienen 
+varias, Starter Pipeline sera un pipeline en blanco practicamente el cual configuraremos, otra opcion es un YAML con las indicaciones de que debe estar configurado en 
+el pipeline y luego segun el lenguaje y framework que usemos nos brindara una opcion por defecto. Todas estas opciones nos generaran un archivo YAML que define la 
+configuracion del Pipeline, posteriormente correremos y probaremos el pipeline.
+
+// El trigger define el disparador para la ejecucion del Pipeline, en este caso si hay alguna modificacion/alteracion en la rama MASTER se ejecuta el Pipeline
+trigger:
+- master
+
+// La VM donde se ejecuta el Pipeline
+pool:
+  vmImage: ubuntu-latest
+
+// Las reglas para aceptar o no los cambios, generalmente descarga el codigo nuevo y lo compila, verificando que todo este OK.
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+
+
+
+3) Implementar Gitflow: Crearemos la rama Develop y basada en esta crearemos nuestra primera rama Feature. Estas ramas feature para diferenciarlas se le suele poner 
+"feature/apellido-codigo" de esta forma se identifica que tarea hizo y quien la hizo.
+
+git branch feature/boscatto-2045 develop
+git push -u origin --all
+
+
+4) Conflictos GIT: Si quiero unificar 2 Ramas que editaron un Mismo archivo esto entrara en conflicto a la hora del Merge. Para resolver esto primero debo descargar 
+con git Pull la ultima version del codigo en el local, luego cambiare la rama que quiero normalizar y la mergeare con la rama principal.
+
+
+git pull => rama-primaria
+git checkout rama-secundaria 
+git Pull => rama-secundaria
+git merge rama-primara
+*Verificare los cambio*
+git add .
+git commit 
+git push
+
+(Si falla)
+git Pull
+*Me quedo con cambios actuales*
+
+
+
+5) Flujo Git de Trabajo: 1) Cada vez que tenga que crear mi feature lo hare usando de base la rama Develop. 2) Una vez probado mi codigo, antes de subirlo al 
+repositorio debere volver a hacer un Pull al Develop. 3) Una vez revisado los cambios haremos el push.
+
+Pasos:
+
+1) Creo Feature sobre develop y Subo ese Repo al remoto :          git branch feature/boscatto-2045 develop // git push -u origin --all
+2) Cambio a la rama Feature y luego trabajo sobre el codigo:       git checkout feature/boscatto-2045        
+3) Termino mi codigo y hago un Add y Commit antes del ultimo PULL: git add . // git commit -m "Update" 
+4) Hago el PULL desde Develop para optener la ultima version:      git pull origin develop
+5) Opcional, si es necesario hare un push sobre el feature:        git push
+6) Cambio a la rama develop y hacer un merge con la feature:       git checkout develop
+7) Realizo el Merge:                                               git merge feature/boscatto-2045
+8) Por ultimo si es necesario Realizo add, commit y push.
+9) Borrar Rama Remota y Local: git push origin --delete nombre-de-la-rama // git branch -D nombre-de-la-rama
+
+
+4* y 7*) Si surgen inconvenientes y no se realiza un Fast-Foward del PULL debere revisar manualmente los cambios.
+
+
+6) Crear Branch Realese: Una vez creada la Branch de realese y hecho las correcciones de codigo, integraremos esta en develop, y posteriormente esta hacia
+main. Antes aprobar los cambios podemos colocarle una tag al Pull Request para volver atras en caso de que algo haya salido mal.
+
+
+
+                                                                              5) Azure Artifacts
+
+1) Feeds: Vienen a ser repositorios pero para el codigo compilado, al iniciar crearemos un nuevo feed. Generalmente sera visible para toda la orgazacion pero su 
+Scope sera limitado al proyecto. Luego seleccionaremos el tipo de paqueta que quiero crear (Nuget, dotnet, maven, npm). 
+Para este proyecto configuraremos que cada ejecucion del Pipeline genere una libreria que se guarde compilada en Azure-Artifacts, Para esto deberemos hacer unas 
+reconfiguraciones al pipeline (archivo YAML) y el archivo de configuraciones del proyecto.
+
+2) Usar libreria de Artifacts: Lo que necesitaremos sera copiar el codigo XML de la dependencia en el archivo de la configuracion del proyecto y luego las
+mismas configuraciones que anteriormente hicimos.
+
+- Clase 34
+
+
+
+                                                                              6) Azure-Pipelines
+
+1) Trigger Pipeline: Es el elemento que provocara el disparo del Pipeline, generalmente suele ser la actualizacion de nueva rama la que dispare el Pipeline.
+
+2) Stages Pipeline: Son una forma de organizar y estructurar el proceso de CI/CD (Integración Continua y Despliegue Continuo). Cada stage representa una fase 
+distinta del pipeline y puede contener múltiples jobs (tareas) que se ejecutan en paralelo o en secuencia. Podrías tener etapas como "Build", "Test" y "Deploy". 
+Cada etapa puede ejecutarse en diferentes entornos y puede tener condiciones específicas para su ejecución. Un Stage puede tener multiples Agents (Virtual Machines).
+
+3) Jobs (Tareas): Dentro de cada stage, puedes definir uno o más jobs. Cada job es una unidad de trabajo que se ejecuta en un agente (VM). Los jobs dentro de una 
+etapa pueden ejecutarse en paralelo o en secuencia, según lo que necesites.
+
+4) Steps (Pasos): Dentro de cada job, puedes definir una serie de steps. Cada step es una acción individual, como ejecutar un script, compilar código, ejecutar 
+pruebas, etc.
+
+X) Documentacion: 
+https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=java%2Cbrowser
+https://docs.microsoft.com/en-us/azure/devops/pipelines/customize-pipeline
+https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/
+Tasks: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/?view=azure-pipelines&viewFallbackFrom=azure-devops

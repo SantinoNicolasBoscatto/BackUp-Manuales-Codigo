@@ -1,0 +1,194 @@
+                                                                        
+                                                                        1) Conceptos
+
+1) Docker: Es una plataforma que nos permite construir, testear y desplegar aplicaciones mas rapidamente. Docker empaqueta el 
+software en contenedores que estan preparados con las dependencias necesarias para ejecutar la aplicacion.
+
+1.2) Imagen de Docker: Una imagen es la plantilla que contara con las librerias y herramientas necesarias para correr el software, 
+es el que se encargara de la instalacion de las dependencias de nuestro software para que pueda correr. La imagen por si sola 
+no hara nada ya que es una definicion (al igual que las clases en POO). Esta imagen se crea mediante un DockerFile, que contendra 
+las indicaciones necesarias para crear la imagen.
+
+1.3) Contendor de Docker: Es la instancia de una imagen (Seria como un objeto de POO) en donde se ejecuta una Aplicacion empaquetada. 
+Lo bueno de los contendores es que estan totalmente aislados lo que les permite funcionar independientemente de otros contenedores.
+Estos contenedores al tener todo la app empaquetada les da la oportunidad de ser portables y por ende ser compartidos.
+
+
+2) Docker vs VM: Aunque sean conceptos parecidos las VM para correr necesitan instalar los sistemas operativos de 0, es decir que 
+si quiero ejecutar mi aplicacion una VM de windows si o si debera tener una imagen limpia de windows, esto genera mucho consumo de 
+espacio y recursos. En cambio si quiero ejecutar desde docker lo unico que tengo que hacer es tener El motor de Docker en mi SO, 
+desde ahi podre levantar cualquier software sin tener que instalar varios SO. Este motor de Docker ocupara mucho menos espacio al 
+ahorrarse el SO, solo instalar los paquetes y dependencias necesarios para correr las aplicaciones. Docker no necesita instalar 
+el SO debido a que utiliza (virtualiza) el SO donde esta instalado, es decir el servidor.
+
+
+2.1) Beneficios de Docker: 1) Mantiene el sistema operativo original limpio. 2) Funciona en distintos entornos y SO.
+
+
+3) Docker Desktop: Es una VM que corre linux y permite ejecutar docker-containers. Tambien permite acceder al sistema de archivos.
+Para que corra de forma nativa en windows necesita de WSL2.
+
+
+4) Port Mapping: Es el proceso de hacer accesibles los puertos de tu contenedor a través de los puertos del host 
+(tu máquina local o servidor). Cuando ejecutas un contenedor, puedes mapear un puerto del host a un puerto del contenedor.
+El puerto externo se lo llama host_port y al del container container_port.
+
+
+5) Comunicacion entre contenedores: De primeras los contendores de docker no se pueden comunicar entre si, estos estan aislados.
+Para poder hacer que se comuniquen debemos agrupar estos contenedores, mediante una red interna de docker
+
+
+6) Docker Compose: es una herramienta que te permite definir y ejecutar aplicaciones Docker multi-contenedor. Utiliza un archivo de 
+configuración, comúnmente llamado docker-compose.yml, donde puedes describir los servicios, redes y volúmenes que tu aplicación 
+necesita. Con un solo comando, puedes iniciar y gestionar todos estos contenedores de manera coordinada. En sintesis, desde 
+Docker Compose puedo definir todos los contenedores que voy a crear con sus respectivas configuraciones mas facilmente, ademas 
+los contenedores que esten en la configuracion docker automaticamente los relacionara mediante una network.
+
+EJ: 
+version: "3.9"
+services: # => Definire los contenedores que quiero crear
+  web-app:
+    build: . # => busco el Dockerfile para construir la imagen
+    ports: 
+      - "8080:8080" # => Defino los puertos del contenedor
+    links:
+      - # => Aca definire los contenedores que consumira mi contenedor
+  db-app:
+    image: mongo # Defino la imagen, en este caso es una imagen de un repositorio publico 
+    ports: 
+      - "27017:27017"
+    enviroment:
+      - MONGO_INITDB_ROO_USERNAME=nico
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes: # Aca referencio que volumes usa este container
+      - mongo-data:/data/db # defino la ruta donde se guarda la data
+      - .:/data/db2
+
+volumes: # Definire los volumes aqui
+  mongo-data: #coloco el nombre del volumes
+
+
+7) Volumes: este me permite montar el sistema de archivos de docker en el anfitrion (host), lo que me permitira que al eliminar 
+un contenedor la data se mantenga a pesar de borrar el contenedor. Esto es util en las fases de desarrollo o cuando monte una 
+BD en docker.
+
+7.1) Tipos de Volumes: 1) Anonimo: solo tengo que indicar la ruta donde quiero montar el sistema de archivos de docker en el host. Esta 
+ruta tendra como raiz C:\ProgramData\Docker\volumes\. El problema de estos es que no los podemos referenciar para que lo utilice otro 
+contenedor. 2) De anfitrion o Host: Decido que carpeta de docker llevare al HOST y en que lugar del host. 3) Nombrado: es similar al 
+anonimo, solo con la diferencia de que si puede ser referenciado desde otros contenedores
+
+
+                                                            2) Comandos Docker
+
+1) Docker build -t my-image .: Esta buscara en el directorio que le indiquemos un Dockerfile que le indique como debe crear una 
+imagen, por ende su funcion es la de crear imagenes.
+
+2) Docker image ls: Nos dara un listado de todas las imagenes.
+
+3) Docker tag my-image new-name-my-image: Renombra una imagen
+
+4) Docker rmi my-image: Elimina una imagen.
+
+5) Docker run --name my-container -p (puertoExterno):(puertoInterno) my-image: Creamos y ejecutamos un contenedor en base a una imagen.
+
+6) Docker rm my-container: Elimina un contenedor.
+
+7) Docker container ls: Nos dara un listado de todos los containers en ejecucion.
+
+8) Docker container stop: Detendra la ejecucion de un container.
+
+9) Docker Inspect: nos permite obtener la informacion de bajo nivel de un contenedor o imagen.
+
+10) Docker Logs my-container: Esto nos permitira acceder a la consola/terminal interna del contendor.
+
+10.1) Docker Logs --follow my-container: Este estara constantemente escuchando logs e ira actualizando los registros
+
+11) Docker Pull: Este comando permite descargar imagenes bases que seran utilizadas
+
+12) Docker Create my-image: Este comando me permitira crear un contenedor sobre una imagen existente, la diferencia con docker run 
+es que este no se ejecuta directamente.
+
+12.1) Docker Create -p8080:8080 --name my-container my-image: Creo un contenedor con los puertos definidos.
+
+13) Docker Start my-container: Se usa para iniciar un container
+
+14) Docker Stop my-container: Se usa para parar un container.
+
+15) Docker ps: Nos da una lista de los contenedores que se estan ejecutando
+
+15.1) Docker ps -a: Nos da una lista de los contenedores, tanto en ejecucion como parados.
+
+16) Docker network ls: listara todas las redes que tiene Docker configuradas.
+
+17) Docker network create mi-red: Comando para crear una red.
+
+18) Docker network rm mi-red: Comando para eliminar una red.
+
+19) Docker create -p8080:8080 --name my-container --network mi-red my-image: Crea un contenedor asociado a una red interna de docker
+
+20) Docker Compose Up: Utilizara el archivo docker-compose.yml para crear y configurar contenedores. Si vuelvo a ejecutar este
+comando con la misma configuracion no creara nuevos contenedores, solamente levantara los existentes.
+
+21) Docker Compose Down: Se encarga de borrar todo lo que hizo Docker Compose Up
+
+22) docker compose -f docker-compose-personalizado.yml
+
+                                                                3) Comandos DockerFile
+
+1) FROM: Primer comando de un DockerFile, especifica la imagen base que se debe usar.
+
+2) EXPOSE: Especifica el puerto en el que se esta expuesto el contenedor.
+
+3) ENV: Asignacion de variables de entorno
+
+4) WORKDIR: Especifica el directorio de trabajo dentro del container, en especial el trabajo del CMD/Entrypoint
+
+5) COPY: Se utiliza para copiar archivos del HOST al container.
+
+6) RUN: Ejecuta una serie de comandos o instrucciones necesarias para la compilacion de nuestra imagen. Ejecuta comandos 
+en una nueva capa y crea una nueva imagen, se utiliza a menudo para instalar paquetes de software.
+
+7) CMD: se utiliza para ejecutar un script al momento de levantar al contenedor.
+
+8) Entrypoint: Especifica el comando que se ejecutara prmero al iniciar el contenedor. Es el que ejecuta el archivo 
+para correr la aplicacion (DLL).
+
+
+
+                                                            4) Dockerfile Hot Reloading
+
+1) Dockerfile:
+# Usa la imagen oficial de SDK de .NET 8.0 para desarrollo
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
+
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /source
+
+# Copia el archivo de proyecto y restaura las dependencias
+COPY *.csproj .
+RUN dotnet restore
+
+# Copia el resto de los archivos al contenedor
+COPY . .
+
+# Exponer el puerto 80 para que sea accesible
+EXPOSE 80
+
+# Instala herramientas adicionales si es necesario (por ejemplo, para hot-reload)
+RUN dotnet watch --project webApp.dll
+
+# Define el punto de entrada para ejecutar la aplicación con hot-reloading
+ENTRYPOINT ["dotnet", "watch", "run", "--no-launch-profile"]
+
+
+2) Docker-Compose:
+version: "3.9"
+services:
+  web-app:
+    build: .
+    ports:
+      - "8080:8080" # Define los puertos del contenedor
+    volumes:
+      - .:/source # Monta el directorio actual para hot-reloading
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

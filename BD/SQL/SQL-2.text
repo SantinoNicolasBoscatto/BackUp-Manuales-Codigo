@@ -14,6 +14,27 @@
                                  idMotor int IDENTITY(1,1) PRIMARY KEY,
                                 )
 
+0.4) Cambiar el Tipo de CONSTRAINT: Por defecto en las tablas se usan las CONSTRAINT de RESTRICT para conservar la integridad de los datos. Las 
+otras varientes son: 1) CASCADE: al eliminar el registro padre eliminan los registros hijos. 2) SET NULL: Eliminar el registro padre volvera al 
+campo FK NULL. 3) SET DEFAULT: Igual que el anterior solo que deja un valor por defecto segun el tipo de dato del campo.
+
+// TABLA PRIMARIA
+CREATE TABLE lenguajes (
+    lenguaje_id INT,
+    lenguaje VARCHAR(30) NOT NULL, 
+    CONSTRAINT PK_idPrimary Key (lenguaje_id)
+)
+
+
+// TABLA HIJA
+CREATE TABLE frameworks (
+    framework_id INT,
+    framework VARCHAR(30) NOT NULL,
+    lenguaje INT,
+    CONSTRAINT PK_frameworkId Key (framework_id),
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
 
 
 1) UNIQUE: Es similar al PK ya que no permite repetir un valor de una columna, pero a diferencia de PK estas si permiten alojar valores 
@@ -44,24 +65,32 @@ DEFAULT deberemos colocar como valor la palabra default en el values.
 
 4) Index: Son estructuras utilizadas  para mejorar el rendimiento en las consultas de nuestras BD. Se crean en columnas o en conjunto 
 de columnas para que sea mas rapido el acceso y recuperacion de datos. Existen 2 Tipos de indices: 1) Clustered y 2) Nonclustered.
-1.1) Los Indices Clustered definen el orden de los datos. 2.1) Los Non_Clustered crean una estructura de datos separada que 
-contiene las claves de los indices. Los Non_Clustered son utiles para Acelerar la consulta cuando queremos buscar por 
-columnas especificas.
+1.1) Los Indices Clustered definen el orden de los datos. Los registros de la tabla se almacenan en el disco en el mismo orden que el índice. 
+Generalmente, la clave primaria de una tabla se convierte en el índice clustered por defecto.
+2.1) Los Non_Clustered crean una estructura de datos separada que contiene las claves de los indices. Los Non_Clustered son utiles para Acelerar 
+la consulta cuando queremos buscar por columnas especificas. Estos son Indices ordinarios ya que permiten NULLS y valores repetidos
 
 1.2) CREATE CLUSTERED INDEX I_Autos 
-     ON Autos (Auto_id)
+     ON Autos (Nombre)
+
+2.2) CREATE NONCLUSTERED INDEX I_Autos 
+     ON Autos (Nombre)
+
+2.3) CREATE NONCLUSTERED INDEX I_Autos 
+     ON Autos (Nombre, Marca)
 
 Cuando Vayamos a utilizar una Condicion en WHERE es conveniente agregarle un indice a esta ya que las consultas las realizara mas rapido,
 tambien mejora el rendimiento en JOINS, ORDER BY y GROUP BY debido a que la tabla no manejara valores para filtrar, agrupar o unir sino
 que utilizara los indices que genero.
 
-3) INDICES ORDINARIOS: Estos indices aceptan NULL y pueden repetirse ya que permite campos duplicados. Son para cuando 
-queremos mejorar el rendimiento de una columna sin que nos importe que clase de datos entran.
 
 3.1) Indices UNIQUE: Son Indices que mejoran la velocidad y que ademas restrigen valores NULL o Repetidos, es  decir que 
-                     Ese campo tendra valores Unicos.
+                     Ese campo tendra valores Unicos. Puede ser tanto CLUSTERED como NONCLUSTERED
                      ALTER TABLE Autos
-                     ADD CONSTRAINT nombre_unique UNIQUE (nombre); 
+                     ADD CONSTRAINT nombre_unique UNIQUE CLUSTERED (nombre); 
+
+                     ALTER TABLE Autos
+                     ADD CONSTRAINT nombre_unique UNIQUE NONCLUSTERED (nombre); 
 
 3.2) CREAR INDICE UNIQUE COMPUESTO: Create Table Motores(
                                     Id int PRIMARY KEY IDENTITY(1,1),
@@ -69,7 +98,7 @@ queremos mejorar el rendimiento de una columna sin que nos importe que clase de 
                                     Nombre Varchar(25),
                                     Hp int,
                                     Kg int,
-                                    CONSTRAINT U_Motor UNIQUE (Codigo, Nombre);
+                                    CONSTRAINT U_Motor UNIQUE (Codigo, Nombre));
 
 3.3) Create PK Compuesta: CREATE Table Motores(
                           Codigo VarChar(8),
@@ -79,7 +108,42 @@ queremos mejorar el rendimiento de una columna sin que nos importe que clase de 
                           CONSTRAINT PK_Motor PRIMARY KEY (Codigo, Nombre)
 )
 
-4) COMO SE QUE COLUMNAS DEBEN TENER INDEX: Se los debe colocar a campos que usamos normalmente para busqueda o filtrado.
+
+4.1) Indices FULLTEXT: se crea un indice a partir de varios campos y apartir de ahi podemos hacer un select especial, en el cual podamos 
+hacer una busqueda hacia varios campos a la vez. El problema de esta tecnica es que demandara mas al motor SQL y puede tardar mas la 
+consulta. En SQL Server, no es necesario referenciar explícitamente el catálogo FULLTEXT en la consulta SELECT. Una vez que has creado el 
+catálogo y el índice FULLTEXT, puedes realizar búsquedas de texto completo sin mencionarlo en la consulta.
+
+
+1) Crear una tabla:
+        CREATE TABLE Articulos (
+            Id INT PRIMARY KEY,
+            Titulo NVARCHAR(100),
+            Contenido NVARCHAR(MAX)
+        );
+
+
+2) Poblar la tabla con datos:
+        INSERT INTO Articulos (Id, Titulo, Contenido)
+        VALUES
+        (1, 'Introducción a SQL Server', 'SQL Server es un sistema de gestión de bases de datos relacional.'),
+        (2, 'Búsquedas FULLTEXT', 'Las búsquedas FULLTEXT permiten realizar consultas de texto completo en SQL Server.'),
+        (3, 'Funciones de SQL Server', 'SQL Server ofrece una variedad de funciones para manejar datos.');
+
+
+3) Crear un índice FULLTEXT:
+        CREATE FULLTEXT CATALOG MiCatalogoFT;
+        CREATE FULLTEXT INDEX ON Articulos(Titulo ,Contenido)
+            KEY INDEX PK_Articulos
+            ON MiCatalogoFT;
+
+4) Realizar una búsqueda FULLTEXT:
+        SELECT * FROM Articulos
+        WHERE CONTAINS((Titulo, Contenido), 'SQL Server')
+
+
+
+4.2) COMO SE QUE COLUMNAS DEBEN TENER INDEX: Se los debe colocar a campos que usamos normalmente para busqueda o filtrado.
 Tambien a Todos los Foreign KEY deberian tener indices, independientemente de que estos este en una PK compuesta.
 
 
@@ -174,7 +238,112 @@ WITH CTE_Nombre(Nombre) as (
 Select Nombre From CTE_Nombre
 
 
+11) Vistas: En SQL una vista es una Tabla Virtual, que deriva de una o varias tablas existentes. Una vista no va a almacenar fisicamente los 
+datos, sino es una consulta predefinida de otras tablas. Es Basicamente un acceso rapido a un SELECT predefinido. Las vistas son útiles para 
+simplificar consultas complejas, mejorar la seguridad al restringir el acceso a ciertos datos y proporcionar una capa de abstracción sobre 
+las tablas subyacentes.
 
+Ventajas: 1) Simplicidad: Las vistas pueden simplificar consultas complejas. 2) Reutilización: Al definir una vista, puedes reutilizarla en 
+múltiples consultas sin tener que reescribir la lógica compleja. 3) Optimización: SQL Server puede optimizar las consultas que utilizan vistas, 
+especialmente si se utilizan índices adecuados en las tablas subyacentes.
+
+
+11.1) Crear Vista:
+                    CREATE VIEW VistaAutos AS
+                    SELECT a.Nombre, m.Nombre
+                    FROM Autos a, Marca m where m.id = a.marcaId;
+
+11.2) Uso: 
+          SELECT * FROM VistaAutos;
+
+
+
+12) LIMIT: Nos permite traer una cantidad limitada de registros de mi consulta, y me permite elegir desde que registro quiero empezar a contar. 
+SQL SERVER no existe esta clausula, pero si una variante llamada TOP:
+
+SELECT TOP 3 Id, Nombre, Precio
+FROM Productos
+ORDER BY Precio DESC;
+
+12.1) Pero si necesito un comportamiento mas parecido a limit para definir el registro del cual quiero empezar usaremos OFFSET y FETCH. OFFSET 
+definira cuantos registros omitira y FETCH cuantos registros recuperara.
+
+SELECT Id, Nombre, Precio
+FROM Productos
+ORDER BY Precio DESC
+OFFSET 0 ROWS FETCH NEXT 3 ROWS ONLY;
+
+
+
+13) Store-Procedure: 
+CREATE PROCEDURE My_SP 
+(@Param1 INT, @Param2 VarChar(30))
+AS 
+*Acciones SQL*
+
+13.1) Store-Procedure con Parametros de Salida:
+
+CREATE PROCEDURE My_SP 
+@Param1 INT, @Param2 VarChar(30), @ParamOut INT OUTPUT
+AS 
+*Acciones SQL*
+
+DECLARE @RecibirSalida INT;
+EXEC ObtenerPrecioProducto @Param1 = 1, @Param2 = "Dummy", @ParamOut = @RecibirSalida OUTPUT;
+SELECT @RecibirSalida AS Parametro_De_Salida;
+
+
+
+14) Triggers: Son objetos de base de datos que se ejecutan automáticamente en respuesta a ciertos eventos en una tabla. Similar a los 
+EventHandler de JS, si ocurre un evento en cierta tabla se dispara el trigger. Estos Trigger se pueden disparar por un INSERT, UPDATE o DELETE, 
+nunca por un Select.
+
+Existen Palabras claves en los triggers que nos permite referenciar al elemento o registro que fue alterado. Depende la accion que se haya 
+realizado lo podemos referenciar como: INSERTED, UPDATED o DELETED.
+
+EJ 1:
+CREATE TRIGGER trg_AfterInsert
+ON Productos
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @Id int;
+    SELECT @Id = I.Id
+    FROM INSERTED I;
+    PRINT 'El Id nuevo es: CAST(@Id AS NVARCHAR(10))'
+END;
+
+
+EJ 2:
+CREATE TRIGGER trg_AfterDelete
+ON Productos
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @Name Varchar(30);
+    SELECT @Name = d.Name
+    FROM DELETED d;
+    PRINT 'El Producto eliminado es: CAST(@Name AS VARCHAR(30))'
+END;
+
+
+EJ 3:
+CREATE TRIGGER trg_AfterUpdate
+ON Productos
+AFTER UPDATE
+AS
+BEGIN
+    DECLARE @OldPrecio DECIMAL(10, 2);
+    DECLARE @NewPrecio DECIMAL(10, 2);
+
+    SELECT @OldPrecio = d.Precio
+    FROM DELETED d;
+
+    SELECT @NewPrecio = i.Precio
+    FROM INSERTED i;
+
+    PRINT 'El precio ha cambiado de ' + CAST(@OldPrecio AS NVARCHAR(10)) + ' a ' + CAST(@NewPrecio AS NVARCHAR(10));
+END;
 
 
 

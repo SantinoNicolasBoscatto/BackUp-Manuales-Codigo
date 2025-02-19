@@ -1,0 +1,207 @@
+                                                                                    1) Introduccion
+
+1) NO SQL: Significa Not Only SQL, estos gestores de BD se los utiliza para manejar grandes volumenes de datos y con la posibilidad de que estos 
+datos no tengan la misma estructuras (columnas). Este tipo de BD es menos estructurada que una SQL (sin relaciones y sin tablas), esto le da la 
+ventaja de poder realizar lecturasde grandes volumenes de datos mucho mas rapido que una BD SQL.
+
+2) Ventajas NO-SQL: 1) Escalabilidad: Mi BD podra crecer sin degradar el trafico de datos ni su rendimiento. 2) Flexibilidad en el modelo de 
+datos: No necesitamos una estructura exactamente igual para cada registros, sino que cada registro pueda variar segun la data que guarde, a 
+diferencia de una tabla en SQL. 3) Velocidad: Estan diseñadas para manejar grandes volumenes de data a altas velocidades, pero eso si, 
+sacrificando la integridad referencial y el manejo de relaciones entre entidades. 4) Disponibilidad: están diseñadas para ser altamente disponibles 
+y capaces de seguir funcionando sin interrupciones, incluso si hay errores o problemas en una parte del sistema. En sintesis son resilientes a fallos  
+5) Manejo de grandes volumenes de datos no estructurados. 6) Servicios en la nube: Muchas BD NO-SQL son desplegadas en servicio de la nube, esto es 
+posible debido a la gran velocidad y Flexibilidad de las BD no sql.
+
+
+3) Cuando usar NO-SQL: 1) Cuando tengaamos que hacer un gran analisis de informacion (Big Data). 2) Cuando tengamos la carga de trabajo distribuida
+(cuando mi aplicacion implemente microservicios, en donde generalmente tendre varias BD y la mayoria de estas no tendran tablas relacionadas).
+
+Para decidir muchas veces si conviene una BD NO-SQL debemos saber y entender que arquitectura se va a aplicar en la aplicacion, y como funciona el 
+negocio.
+
+
+
+                                                                    2) Sistemas Gestores Base de Datos NO-SQL
+
+1) Tipos de SGBD NO-SQL:  
+
+1.1) Column-Family: Van a almacenar los registros en Columnas y no filas como tradicionalmente se hace. Este tipo de BD NO-SQL se lo suele usar 
+en aplicaciones que requieran analisis y muchas funciones de agregacion rapidas (suma, resta, Promedio, Porcentaje), su trabajo en columnas permite 
+una eficiente compresion en los datos, lo que se traduce en mayor velocidad. EJ de esta Apache Casandra. 
+
+1.2) Key-Value: Guardan los datos en forma de key-value, cada key es un identificador unico, cada registro tiene un solo valor. Son BD utiles para 
+almacenar datos simples de forma rapida, no tendra relaciones ni jerarquias complejas. EJ de esta REDIS. 
+
+1.3) Documentales: Guardan los datos en forma de documentos, que tienen una sintaxis de objeto JS, cada registro es un objeto con sus campos. Las tablas 
+de SQL aca se llaman colecciones, un conjunto de registros pertenecen a una coleccion. Los documentos de una misma coleccion pueden tener distintos 
+campos, lo que da lugar a la Flexibilidad. Generalmente no tendremos relaciones entre las colecciones o entre los documentos, lo maximo es crear 
+relaciones conceptuales, como por ejemplo guardando el ID de un documento en otro. EJ MongoDB y FireBase
+
+1.4) Graph: Un grafo es una estructura matemática compuesta por nodos (o vértices) y aristas (o enlaces). Los nodos representan entidades y las aristas 
+representan las relaciones entre esas entidades. Por ejemplo, en una red social, los usuarios serían los nodos y las amistades entre ellos serían las aristas.
+Las bases de datos de grafos están optimizadas para almacenar y consultar información en forma de grafos. Son especialmente útiles para aplicaciones que 
+requieren manejar relaciones complejas y profundamente interconectadas, algo que en SQL no se podria debido a la rigidez en las relaciones entre tablas.
+EJ Neo4j y ArangoDB.
+
+
+
+2) Key-Value con Redis:
+
+2.1) HSET: Los Hash son una especie de arreglo, dentro de este arreglo yo puedo definir multiples key-value. 
+
+EJ: HSET user:1 name "John Doe" age 30 location "New York"
+    HSET user:2 name "Jane Doe" age 25 location "London"
+    
+
+2.2) Update con HSET: Este mismo comando nos permitira actualizar un registro ya existente. Para agregar data a un registro antes debo 
+referenciarlo, por ejemplo con post:1001 le digo que busque ese registro y le agregue la data que yo le especifico. En caso de no existir ese registro 
+creara uno.
+
+EJ: HSET post:1001 content "Hola" created_at "2023" likes 10
+    HSET post:1002 content "Hola que tal" created_at "2024" likes 20
+    HSET post:2001 content "Gran dia" created_at "2023" likes 15
+
+
+2.3) LPUSH/RPUSH: Este comando me permite agregar un nuevo elemento a una Lista, la diferencia entre LPUSH y RPUSH es que uno lo insertara al principio y 
+el otro al final de la Lista. Para poder realizar el inserte debo referenciar al Hash mediante la Key y luego insertar los Key-Value dentro del Hash.
+
+EJ: LPUSH user:1:post 1001
+    LPUSH user:1:post 1002
+    LPUSH user:2:post 2001
+
+
+2.4) HGETALL/HGET: Con este comando realizare lecturas de la BD, con HGETALL sera parecido a hacer un SELECT * FROM, ya que me traera toda la data. En cambio 
+HGET me permitira discriminar que llaves/campo quiero traer.
+
+EJ: HGETALL user:1
+    HGET user:1 name
+
+
+2.5) DEL: Este comando servira para borrar algun elemento de la BD, lo unico que tengo que hacer es referenciar con la Key-Value el elemento a borrar.
+
+EJ: DEL user:2
+    DEL post:1002
+
+
+2.6) LRANGE: En el caso que quiera ver las listas que asocie a mis HASH lo hago con LRANGE.
+
+EJ: LRANGE user:1:post 0 -1
+
+2.7) Comandos Redis: https://redis.io/docs/latest/commands/
+
+2.8) Clients Redis: https://redis.io/resources/clients/
+
+
+
+3) Column-Family con Apache Casandra: Casandra tiene la caracteristica de que utiliza un lenguaje bastante similar al de SQL, con algunas variaciones.
+El lenguaje es CQL (Casandra Query Language), es muy similar al SQL.
+
+
+
+4) Graph con Neo4j:
+
+4.1) Create: Con este comando podre crear los nodos, el ":User" define la creacion de un nodo. Cada User que cree sera un nodo con la informacion
+del usuario, lo mismo con Movie.
+
+EJ: CREATE (:User {name: 'John', age: 25})
+    CREATE (:Movie {Title: 'BTTF', genre: "Sci-Fi"})
+
+
+4.2) Match: Con este comando podre generar relaciones entre nodos, es decir crear la arista/enlace. HAS_SEEN es un tipo de relacion en los grafos, 
+no una palabra reservada como tal.
+
+EJ: MATCH (u:User {name: 'John'}), (m:Movie {title: 'BTTF'})
+    CREATE (u)-[:HAS_SEEN]->(m)
+
+
+4.3) GET: 
+    Create(:User {name:'example', age: 25})
+    MATCH(u:User {name:'example'})
+    RETURN u;
+
+
+4.4) UPDATE:
+    MATCH(u:User: {name: 'example'})
+    SET u.age = 30
+
+4.5) DELETE:
+    MATCH(u:User {name:'example'})
+    DETACH DELETE u
+
+
+
+5) Documentales con MongoDB:
+
+5.1) Crear BD: =>  USE Library
+
+5.2) Documentos: Crearemos una coleccion para cada tipo de documento, en el caso de que yo quiero hacer una relacion entre documentos, lo podremos 
+hacer de forma conceptual viculando los ID de los objetos a relacionar. En este caso George Orwell le colocamos los IDs de los libros que son suyos, 
+creando una especie de relacion entre ambos (aunque realmente no la hay, solo tengo un valor que en teoria referencia al documento).
+
+// COLECCION DE LIBROS 
+{
+  _id: ObjectId("6152f6d15e91ab001c3ce338"),
+  title: "1984",
+  author: "George Orwell",
+  publishedYear: 1949,
+  genres: ["Ficción", "Distopía"],
+  price: 9.99
+},
+
+// COLECCION DE AUTORES
+{
+  _id: ObjectId("6152f6d15e91ab001c3ce33b"),
+  name: "George Orwell",
+  nationality: "Británico",
+  birthDate: ISODate("1903-06-25"),
+  books: [
+    ObjectId("6152f6d15e91ab001c3ce338")
+  ]
+},
+
+
+5.3) INSERT: Aqui crearemos los documentos de una coleccion, primero colocaremos la palabra clave "db", y luego el nombre de la coleccion en la 
+cual quiero guardar el documento, luego llamaremos a la funcion insertOne() que recibira como parametro el documento. Si quiero insertar mas 
+de un documento usare insertMany().
+
+db.books.insertOne({
+    title: "Nuevo Libro",
+    author: "Autor Desconocido",
+    publishedYear: 2023,
+    genres: ["Ficción", "Misterio"],
+    price: 14.99
+});
+
+db.books.insertMany([
+    {
+        title: "Nuevo Libro",
+        author: "Autor Desconocido",
+        publishedYear: 2023,
+        genres: ["Ficción", "Misterio"],
+        price: 14.99
+    },
+    {
+        title: "Nuevo Libro 2",
+        author: "Autor Desconocido",
+        publishedYear: 2023,
+        genres: ["Ficción", "Misterio"],
+        price: 14.99
+    }
+]);
+
+
+5.4) FIND: Esta funcion me permitira buscar todos los registros de una coleccion. Si quiero un solo registro usare el findOne() y el criterio de busqueda
+
+EJ: db.books.find()
+    db.books.findOne({title: "Nuevo Libro"})
+
+
+5.5) UPDATE: Esta funcion realizara un update a un objeto, el primer parametro sera el criterio de busqueda del elemento a actualizar, y el segundo objeto 
+la data que quiero actualizar.
+
+EJ: db.books.updateOne({title: "Nuevo Libro"}, {$set: {price: 12}})
+
+
+5.6) DELETE: Esta funcion realizara un delete a un objeto, si quiero borrar solo un registro usare deleteOne().
+
+EJ: db.books.deleteOne({title: "Nuevo Libro"})

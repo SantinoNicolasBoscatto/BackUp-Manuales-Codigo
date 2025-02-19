@@ -1,0 +1,202 @@
+
+                                                                    1) Introduccion y Datos Utiles
+
+1) Identificador GUID: La data que creemos en los microservicios generalmente la deberemos usar en otros ambientes, por lo que es recomendable ponerle 
+un identificador unico a esta data, por ejemplo un Identificador tipo GUID o string de GUID. Este identificador va a ser un valor universal cuando 
+quiera darle seguimiento a este registro desde otro microservicio.
+
+2) Comando para actualizar el Migration: dotnet tool install --global dotnet-ef --version 8.0.13
+
+3) Registrar MediatR: builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+4) Registrar FluentValidation.ASP.NET:
+builder.Services.AddValidatorsFromAssemblyContaining<AnyValidator>(); 
+builder.Services.AddFluentValidationAutoValidation(); 
+builder.Services.AddFluentValidationClientsideAdapters();
+
+5) SQL Trasaction con EF Core:
+
+public async Task Handle(Ejecuta request, CancellationToken cancellationToken)
+{
+    using (var transaction = await contexto.Database.BeginTransactionAsync())
+    {
+        try
+        {
+            var carritoSesion = new CarritoSesion
+            {
+                FechaCreacion = request.FechaCreacionSesion,
+            };
+            await contexto.CarritoSesion.AddAsync(carritoSesion);
+            var val = await contexto.SaveChangesAsync();
+            if (val != 1) throw new Exception("error en la creacion del Carrito Sesion");
+
+            int id = carritoSesion.CarritoSesionId;
+            foreach (var item in request.ProductoLista!)
+            {
+                await contexto.CarritoSesionDetalle.AddAsync(new CarritoSesionDetalle
+                {
+                    CarritoSesionId = id,
+                    FechaCreacion = DateTime.Now,
+                    ProductoSeleccionado = item
+                });
+            }
+            var result = await contexto.SaveChangesAsync();
+            if (result != request.ProductoLista.Count) throw new Exception("Error al insertar productos");
+
+            // Commit the transaction
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+}
+
+
+
+                                                                2) Comunicacion entre Microservicios
+
+1) Una de las grandes ventajas de las MS frente a los monoliticos es que puedo escalar cada Microservicio sin afectar a otro, lo que me permite 
+escalar mi app de forma mas sencilla, al no existir una dependencia tecnica entre ellas. En un escenario ideal las MS no deberian depende
+entre si, pero esto termina sucediendo, es aca cuando entra la comunicacion entre MS
+
+2) A Tener en Cuenta: 1) Para poder comunicar MS entre si debere hacerlo mediante el protocolo HTTP o gRPC. 2) Estas solicitudes a otros MS seran almacenados en un DTO que 
+creemos para ese proposito. 3) La MS que consulta a otras debera tener registrado los Endpoints a los que va a consultar la data, estos los definiremos en el 
+appSetings.json.
+
+3) Comunicar MicroServicios: 1) Primero deberemos agregar en Program el Service de HttpClient. 2) Crearemos clases RemoteModel para recibir la data desde los otros
+MS, la data que recibire sera en formato JSON y luego debere transformar esta en una clase, en este caso transformaremos el JSON en esta clase Remote.
+3) Crearemos un Service que se encargara de realizar las consultas hacia otros MS, Primero crearemos una interface de esta y posteriormente sus implementaciones.
+
+3.1) // El primer parametro sera el nombre de mi HttpClient y en el Callback le indicaremos el endpoint
+builder.Services.AddHttpClient("Libros", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["Services:Libros"]!);
+});
+
+
+3.2) Remote Models:
+public class LibroRemote
+{
+    public string? LibreriaMaterialId { get; set; }
+    public string? Titulo { get; set; }
+    public DateTime? FechaPublicacion { get; set; }
+
+    public Guid? AutorLibro { get; set; }
+}
+
+
+3.3) Service:
+
+// INTERFACE
+public interface ILibrosService
+{
+    Task<(bool result, LibroRemote libro, string? error)> GetLibro(Guid LibroId);
+}
+
+// IMPLEMENTACION
+public class LibrosService : ILibrosService
+{
+    private readonly IHttpClientFactory httpClient;
+    private readonly ILogger<LibrosService> logger;
+
+    public LibrosService(IHttpClientFactory httpClient, ILogger<LibrosService> logger)
+    {
+        this.httpClient = httpClient;
+        this.logger = logger;
+    }
+
+    public async Task<(bool result, LibroRemote? libro, string? error)> GetLibro(Guid LibroId)
+    {
+        try
+        {
+            // El Nombre del HttpClient debera ser el que definimos en program
+            var client = httpClient.CreateClient("Libros");
+            // Aqui consultaremos al Client, le pasaremos la ruta completa del endpoint con los parametros.
+            // Esto nos devolvera un HttpResponse que contendra un JSON
+            var httpResponse = await client.GetAsync($"api/LibroMaterial/{LibroId}");
+
+            if(httpResponse.IsSuccessStatusCode)
+            {
+                // Si el resultado fue exitoso entonces guardo el Content como un Jsonstring
+                var content = await httpResponse.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+
+                // Aqui casteo mi JSON a mi Clase LibroRemote
+                var result = JsonSerializer.Deserialize<LibroRemote>(content, options);
+                return (true, result, null);
+            }
+            return (false, null, httpResponse.ReasonPhrase);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return (false, null, ex.Message);
+        }
+    }
+}
+
+// INYECCION
+builder.Services.AddTransient<ILibrosService, LibrosService>();
+
+
+
+3.4) Uso del Service en CQRS:
+
+public class Manejador : IRequestHandler<Ejecuta, CarritoDTO>
+{
+    private readonly ILibrosService librosService;
+    private readonly CarritoContexto carritoContexto;
+    public Manejador(ILibrosService librosService, CarritoContexto carritoContexto)
+    {
+        this.librosService = librosService;
+        this.carritoContexto = carritoContexto;
+    }
+
+    public async Task<CarritoDTO> Handle(Ejecuta request, CancellationToken cancellationToken)
+    {
+        var carritoSesion = await carritoContexto.CarritoSesion.Include(x => x.ListaDetalle)
+            .FirstOrDefaultAsync(x => x.CarritoSesionId == request.CarritoSesionId);
+        if (carritoSesion == null) throw new Exception("Carrito Null");
+
+
+        var carroDto = new CarritoDTO()
+        {
+            CarritoId = request.CarritoSesionId,
+            FechaCreacionSesion = carritoSesion.FechaCreacion   
+        };
+        foreach (var item in carritoSesion!.ListaDetalle!)
+        {
+            var libro = await librosService.GetLibro(new Guid(item.ProductoSeleccionado!));
+            if(!libro.result) throw new Exception("Error en el Service");
+
+            var detalle = new CarritoDetalleDTO
+            {
+                AutorLibro = libro!.libro!.AutorLibro.ToString(),
+                FechaPublicacion = libro.libro.FechaPublicacion,
+                TituloLibro = libro.libro.Titulo,
+                LibroId = new Guid(libro.libro.LibreriaMaterialId!)
+            };
+            carroDto.ListaProductos!.Add(detalle);
+        }
+        return carroDto;
+    }
+}
+
+
+3.5) Controller:
+[HttpGet("{id:int}")]
+public async Task<ActionResult<CarritoDTO>> GetCarrito(int id)
+{
+    return await mediator.Send(new Consulta.Ejecuta { CarritoSesionId = id });
+}
+
+
+
+                                                                                        3) Docker
+
+1)
+
+

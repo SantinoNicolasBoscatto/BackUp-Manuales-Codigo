@@ -60,7 +60,7 @@ la funcion que trae a todos los generos, todo esto seria el EndPoint.
 1) REST: Transferencia de Estado Representacional, es una Arquitectura diseñada para Apps que usan el protocolo HTTP. REST tambien exige 
 una serie de principios para diseñar nuestro Web API: 1) Separacion de Cliente-Servidor, es decir que la interfaz de usuario deberia 
 estar separada de nuestra logica de negocio. No se relaciona ni interfiere con la Interfaz de Usuario, solo se limita a manejar datos y 
-aplicar logicas de negocio. 2) Sin Estado: Es decr que no se deben recordar (guardar en memoria) nada acerca de peticiones anteriores,
+aplicar logicas de negocio. 2) Sin Estado: Es decir que no se deben recordar (guardar en memoria) nada acerca de peticiones anteriores,
 esto nos permitira que nos Web API sea mas rapido. 3) Uso de Cache: Siempre que se pueda se debera usar el cache ya que esto optimizara 
 la velocidad. El Cache es guardar datos en un lugar que sea de acceso rapido. 4) Sistema en Capas:  5) Interfaz Uniforme: Se refiere a 
 seguir un estandar en la creacion de mi API: 5.1) Identificador de recursos: Utilizar URLs claras y consistentes para identificar 

@@ -1,0 +1,181 @@
+
+                                                                         1) Introduccion
+
+1) Arquitectura de Software: En terminos simples es la forma en la que se organizan y se comunican los componentes de un Software y las 
+responsabilidades que cumple cada uno.
+
+2) Servicio: es una pieza de Software que provee una funcionalidad especifica. En el caso del desarrollo web las Apis vienen a ser 
+servicios Web, es decir cada API nos provee una serie de funcionalidades especificas.
+
+3) Microservicios: Son simplemente servicios pequeños con una funcion super especifica, en vez de tener un servicio monolito en el cual 
+desarrollo el negocio y logica de todas mis entidades, lo que hacemos es crear un microservicio por cada entidad. Si la llevamos al ejemplo
+de la Nascar-API, una forma de implementar esto seria que cada entidad del negocio tuviera su propio servicio de consumo.
+
+Los problemas de los monolitos que resuelven los microservicios son: 1) Alta Demanda, es decir soportar muchos usuarios a la vez sin perdida
+de rendimiento. 2) Alta Disponibilidad, Ante la gran demanda evitar la caida del servicio. Rastraer que parte produce la caida de la pagina 
+con monolitos se puede hacer muy dificil, con Microservicios esto es mucho mas facil. 3) Alta Complejidad, al estar aislados los Microservicios
+entre si, son mucho mas faciles de extender y escalar.
+
+
+3.1) Composicion de un Microservicios: 1) Controller, la capa mas externa, esta recibira peticiones y devolvera una respuesta. 
+2) Validator, esta capa se encarga de revisar los datos y formatos de la peticion, para verificar que estos sean correctos y 
+poder devolver la respuesta. 3) Microservicio: En esta capa estara la logica del negocio (Entities y Use Cases) y el acceso 
+a la data de una BD
+
+3.2) Reglas de un Microservicio: 1) Cumplir una sola funcion. 2) Ser Autonomo, es decir no dependan de otros MS para funcionar 
+garantizando el desacoplamiento. 3) Estar Aislados, deben correr en entornos separados y cada uno con su propia BD.
+
+
+4) API Gateway: uno de los retos de los microservicios es gestionar la cantidad de endpoints de cada MS. Para esto usamos una API Gateway, un 
+enrutador, donde administra los endpoints internamente y expone hacia afuera un unico Endpoint para consumo.
+
+
+5) Modulos de Microservicios: 1) API: Tener controladores y funciones de una API. 2) Storage: Manejar una BD. 3) Memory: Implementar el uso de cache. 
+4) WebSockets: Crea una conexión permanente y bidireccional entre tu dispositivo y un servidor, permitiendo que ambos intercambien información en tiempo 
+real sin interrupciones. Piensa en las solicitudes HTTP tradicionales como enviar cartas por correo: cada mensaje requiere su propio sobre y viaje. Con 
+WebSockets, es como tener una llamada telefónica continua, donde la información fluye libremente en ambas direcciones. 
+5) Background-Service: Tareas secundarias. 6) Publish/Suscribe: Disparadores de eventos. 7) Health-Checks.
+
+
+
+                                                                    2) Microservicios VS Monolitos
+
+1) Desventajas Monolitos: 1) Se debe actualizar toda la aplicacion al tener nuevas caracteristicas o soluciones de bugs. 2) Se debe desplegar en todos los 
+servidores, siempre estando pendiente del fallo. 3) Dificil y complejo de realizar pruebas unitarias, integrales y de carga. 4) Con el tiempo existen
+fuertes dependencias entre modulos a medida que crece la aplicacion. 5) El monolito contendra a todos los modulos de nuestra aplicacion.
+
+2) Microservicios: A diferencia de los monolitos cada modulo sera un microservicio, una vez desarrollado el MS lo publicaremos y lo subiremos a un Docker
+container. Luego pasaremos los docker a un Registry (Azure o DockerHub) e indicaremos al Cluster de Kubernetes que descarguen y ejecuten estas imagenes de 
+docker.
+
+2.1) Desventajas: 1) Altos consumos de memoria. 2) Inversion de tiempo inicial (crear todo un SDK para trabajar con MS). 3) Complejidad en la gestion por 
+la cantidad de microservicios con lo que se trabaja. 
+
+3) Comunicacion entre MS: A diferencia de las APPs monoliticas, cada modulo tendra su propia DB, lo que causara problemas al tener identidades relacionadas
+coceptualmente, ya que no podremos generar relaciones entre tablas al estar en DBs distintas. Para esta solucion se implementa la consistencia eventual,
+mediante el Event Bus, mediante el protocolo HTTP.
+
+3.1) Event Bus: Cuando un microservicio quiere notificar que algo ha sucedido, publica un evento en el bus. Otros microservicios que estén interesados en ese 
+tipo de evento se han suscrito previamente y reaccionarán cuando lo reciban. Esto reduce el acoplamiento entre servicios, ya que no necesitan conocer la 
+existencia de los demás. En lugar de que cada microservicio se comunique directamente con otro, envían y reciben mensajes a través del Event Bus.
+
+Por ejemplo, si tienes un servicio que procesa órdenes y otro que envía notificaciones, el servicio de órdenes puede publicar un evento "OrdenProcesada". 
+El servicio de notificaciones, al estar suscrito a ese evento, enviará un correo electrónico al cliente sin que el servicio de órdenes tenga que decirle 
+explícitamente qué hacer.
+
+
+                                                    3) Construir un Patron Repositorio generico para Microservicios 
+
+1) Clase e Interfaz IRepository:
+
+public interface IRepository
+{
+    Task<bool> ChangeStateAsync<TEntity, TKey>(TKey id, EntityState state, CancellationToken cancellation = default) where TEntity : class;
+    Task<TEntity> CreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;
+    Task<List<TEntity>> CreateRangeAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class;
+    Task<bool> DeleteAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) where TEntity : class;
+    Task<bool> DeleteAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class;
+    TContext GetContext<TContext>() where TContext : DbContext;
+    DbSet<TEntity> GetEntity<TEntity>() where TEntity : class;
+    Task<TResult> TransactionAsync<TResult>(Func<DbContext, Task<TResult>> process, IsolationLevel isolation = IsolationLevel.ReadUncommitted, CancellationToken cancellation = default);
+    Task<bool> UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class;
+    Task<bool> UpdateRangeAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class;
+}
+
+public abstract class Repository : IRepository
+{
+    protected readonly DbContext context;
+    public Repository(DbContext context)
+    {
+        this.context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public TContext GetContext<TContext>() where TContext : DbContext => (TContext)this.context;
+
+    public DbSet<TEntity> GetEntity<TEntity>() where TEntity : class // , IEntityBase<TKey, TUserKey>
+        => this.context.Set<TEntity>();
+
+    public async Task<TEntity> CreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+        await this.context.AddAsync(entity, cancellationToken);
+        await this.context.SaveChangesAsync(cancellationToken);
+        return entity;
+    }
+    public async Task<bool> UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+        this.context.Set<TEntity>().Update(entity);
+        var result = await this.context.SaveChangesAsync(cancellationToken) > 0;
+        return result;
+    }
+    public async Task<bool> DeleteAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+        var entity = await this.context.Set<TEntity>().Where(predicate).FirstOrDefaultAsync(cancellationToken);
+        if (entity != null)
+        {
+            this.context.Remove(entity);
+            return await this.context.SaveChangesAsync(cancellationToken) > 0;
+        }
+        return false;
+    }
+
+    public async Task<List<TEntity>> CreateRangeAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        if (!entities.Any()) return entities;
+        await this.context.Set<TEntity>().AddRangeAsync(entities);
+        await this.context.SaveChangesAsync(cancellationToken);
+        return entities;
+    }
+
+    public async Task<bool> UpdateRangeAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        if (!entities.Any()) return false;
+        this.context.Set<TEntity>().UpdateRange(entities);
+        return await this.context.SaveChangesAsync(cancellationToken) == entities.Count;
+    }
+
+    public async Task<bool> DeleteAsync<TEntity>(List<TEntity> entities, CancellationToken cancellationToken = default)
+       where TEntity : class
+    {    
+        if (!entities.Any()) return false;
+
+        this.context.RemoveRange(entities);
+        return await this.context.SaveChangesAsync(cancellationToken) == entities.Count;
+    }
+
+    public async Task<bool> ChangeStateAsync<TEntity, TKey>(TKey id, EntityState state, CancellationToken cancellation = default)
+        where TEntity : class
+    {
+        var entity = await this.context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        if (entity != null)
+        {
+            entity.State = state;
+            return await this.context.SaveChangesAsync(cancellation) > 0;
+        }
+        return false;
+    }
+
+
+    public async Task<TResult> TransactionAsync<TResult>(Func<DbContext, Task<TResult>> process, IsolationLevel isolation = IsolationLevel.ReadUncommitted
+        , CancellationToken cancellation = default)
+    {
+        var strategy = this.context.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync(async (cancellation) =>
+        {
+            using var transaction = await this.context.Database.BeginTransactionAsync(isolation,cancellation);
+            var result = await process(this.context);
+            await transaction.CommitAsync();
+            return result;
+        }, cancellation);
+    }
+}
+
+

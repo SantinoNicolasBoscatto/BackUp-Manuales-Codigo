@@ -1,0 +1,63 @@
+
+1) gRPC (Google Remote Procedure Call): Es una nueva forma de crear servicios, mejora la velocidad de transferencia de datos comparado con otros metodos como REST. 
+Es util en servicios de alta demanda en los que debo priorizar la velocidad de envio de datos.
+
+Dentro del proyecto veremos 2 entidades principales: 1) Protos: Es un nuevo formato (como JSON) que se guarda en texto plano en un archivo de extencion .proto.
+En el archivo definiremos un servicio y dentro de este defineremos un metodo que recibira parametros y devolvera una respuesta. Los mensajes a enviar y recibir 
+tambien los definiremos en el documento, y cada propiedad de estos mensajes les colocaremos un numero como identificador unico. Toda esta información se relacionara
+con un archivo de .NET del mismo nombre en la carpeta services. 2) Services: El service estara ligado a alguno de mis protos, la clase de la que heredara sera el 
+nombre de mi proto + protoBase. Aqui definire la logico del metodo que defini en proto, debere utilizar OVERRIDE para escribir los metodos definidos en el 
+.proto.
+
+1.1) Protocole Buffer:
+
+service Beers {
+  rpc GetBeers (BeersRequest) returns (BeersReply);
+}
+
+message BeersRequest {}
+message BeersReply {
+  repeated string beers = 1;
+}
+
+
+1.2) Services:
+public class BeersService : Beers.BeersBase
+{
+    private readonly ILogger<BeersService> _logger;
+    public BeersService(ILogger<BeersService> logger)
+    {
+        _logger = logger;
+    }
+
+    // ServerCallContext tendra informacion sobre el contexto del servicio (Dominio, Puerto)
+    public override Task<BeersReply> GetBeers(BeersRequest request, ServerCallContext context)
+    {
+        var reply = new BeersReply();
+        reply.Beers.AddRange(new List<string>()
+        {
+            "A", "B", "C"
+        });
+        return Task.FromResult(reply);
+    }
+}
+
+2) Cliente: gRPC solo puede ser accesible mediante clientes gRPC, debido a que su funcion es intercomunicar servicios entre si. Este Cliente debera tener el mismo 
+proto que definimos en el servidor, debido a que de esta forma el cliente sabe que objeto espera recibir, luego deberemos declararlo como cliente en la configuracion 
+del proyecto, luego solo ejecutaremos la funcion de nuestro ProtoService.
+
+// Configuracion
+<Protobuf Include="Protos\beers.proto" GrpcServices="Client" />
+
+// Consumo del servicio gRPC
+using (var channel = GrpcChannel.ForAddress("https://localhost:7097"))
+{
+    var client = new Beers.BeersClient(channel);
+    var reply = await client.GetBeersAsync(new BeersRequest { });
+    foreach (var item in reply.Beers)
+    {
+        Console.WriteLine(item);
+    }
+}
+
+2.1) Dependencias del cliente para trabajar con gRPC: Google.ProtoBuf, Grpc.Net.Client y Grpc.Tools

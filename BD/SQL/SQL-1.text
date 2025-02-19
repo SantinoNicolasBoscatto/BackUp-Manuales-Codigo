@@ -566,9 +566,7 @@ registros que encuentra.
                                              27) Funciones definidas por el usuario
 
 1) Funciones Escalares: Son Funciones que nos permiten recibir uno o mas parametros y devolver un  valor de tipo especifico.
-Create Function VerPais(
-	@idpaciente paciente
-	)
+Create Function VerPais(@idpaciente paciente)
 RETURNS VARCHAR(50)
 as
 BEGIN
@@ -917,7 +915,8 @@ Esto Cortara en el Primer Caracter, Eliminara Un caracter desde la posicion del 
                     END   
                     select * from @turnos 
 
-48) TRIGGERS: CREATE TRIGGER *Nombre Trigger* ON *La tabla sobre la cual se dispara el Trigger* 
+48) TRIGGERS: CREATE TRIGGER *Nombre Trigger* 
+              ON *La tabla sobre la cual se dispara el Trigger* 
               AFTER INSERT AS
               IF (SELECT idPais FROM Inserted) = 'ARG'
                  Insert into PacienteLog (Idpais, idpaciente, fechaAlta)

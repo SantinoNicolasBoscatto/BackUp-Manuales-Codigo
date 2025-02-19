@@ -552,3 +552,217 @@ using(var db = new AppVentaLibrosContext())
         db.SaveChanges();
     }
 }
+
+
+
+
+
+                                                    17) Scoped VS Transient
+
+1) Durante una Peticion HTTP los servicios de tipo Scoped mantendran su valor hasta el final de la peticion, pudiendo manipularlos y revisarlos 
+en los middlewares de los pipelines. En cambio en Transient el servicio no mantendra nunca su estado por lo cual no podra recuperarse un valor 
+en especifico de este. Generalmente los Transient son usados por servicios super pequeños que tienen una tarea simple de calcular o formatear data, 
+o funciones simples por el estilo, en cambio Scoped son para aquellos servicios en los que necesite mantener el estado de mi servicio durante toda la 
+peticion HTTP.
+
+Esto funciona de la siguiente forma: 
+
+1.1) Scoped: Cuando una clase solicita un objeto con una vida útil scoped, .NET crea una única instancia de ese objeto para cada solicitud HTTP. Si el objeto 
+aún no existe, se creará una instancia nueva. Todos los servicios que requieran este objeto durante la misma solicitud HTTP utilizarán la misma instancia, 
+manteniendo el estado.
+
+1.2) Transient: Para los objetos con una vida útil transient, .NET crea una nueva instancia cada vez que algún servicio lo solicita. Esto significa que no 
+se comparte el estado entre solicitudes.
+
+
+
+                                        18) Buenas Practicas en la Inyeccion de dependencias
+
+1) Constructor Injection: Esto refiere a que todas las depenencias de un servicio deben estar definidas en el constructor de la clase y no 
+en otra parte del codigo, esta ayuda a reducir el acoplamiento con las dependencias. Ademas esta dependencia debera ser consumida por un 
+campo privado con el modificador readonly.
+
+2) Property Injection: La Inyeccion de dependencias .NET las resuelve sobre el constructor por lo cual no puedo inyectar una dependencia directamente 
+en una propiedad. En el caso que lo necesitemos deberemos usar el patron Null Object. En caso de que nuestro objeto no sea compatible deberemos 
+validarlo manualmente si es o no null.
+
+public ILogger<BestPractice> Logger {get; set;}
+public BestPractice (){
+    this.Logger = NullLogger<BestPractice>.Instance; // Este NullLogger nos generara una instancia de nuestro objeto.
+}
+
+3) Service Locator: Esta practica consistira en inyectar y usar el IServiceProvider, esta interfaz nos permitira obtener de forma manual cualquier 
+servicio que nosotros queramos. Tenemos 2 funciones para esto: 1) GetRequieredServices<T>(): Esta funcion buscara el servicio y si no lo encuentra
+tirara una excepcion. 2) GetService<T>(): Esta funcion buscara un servicio que si no encuentra arrojara un NULL.
+Este patron debe aplicarse cuando no conozco los servicios a implementar en Runtime.
+
+private readonly ITypeDocumentsRepository _repository;
+private readonly ILogger<BestPractice> _logger;
+
+public BestPractice(IServiceProvider serviceProvider){
+    this._repository = serviceProvider.GetRequieredServices<ITypeDocumentsRepository>();
+    this._logger = serviceProvider.GetService<ILogger<BestPractice>>() ?? NullLogger<BestPractice>.Instance;
+}
+
+
+4) Resolve in Service Method: Esto se utiliza para crear un servicio en un metodo e instanciarlo.
+
+private readonly IServiceProvider _serviceProvider;
+public BestPractice(IServiceProvider serviceProvider)
+{
+    this._serviceProvider = serviceProvider;
+}
+
+public async Task<int> CreateAsync<TEntity, TRepository>(TEntity data)
+where TEntity : Class
+where TRepository : IBaseRepository
+{
+    using var scope = this._serviceProvider.CreateScope();
+    var repo = scope.serviceProvider.GetRequieredServices<TRepository>();
+    var id = await repository.CreateAsync(data);
+    return id;
+}
+
+
+                                                                19) Options
+
+1) Options viene a ser una forma en la que podemos acceder a los archivos de configuracion, para esto deberemos definir un objeto con las propiedades 
+a extraer del archivo de configuracion. Si la propiedad que quiero copiar es un objeto debere crear una clase con las propiedades de ese objeto.
+Luego deberemos ir al program y con el objeto Configuration deberemos utilizar GetSection("MySectionName").
+
+var section = builder.Services.Configuration.GetSection("MySectionName");
+Services.Configure<RedisOptions>(Section);
+
+public class RedisOptions
+{
+    public bool ResolveDns {get; set;}
+    public string EndPoints {get; set;}
+    public int ConnectRetry {get; set;}
+    public int ConnectTimeout {get; set;}
+    public int SyncTimeout {get; set;}
+}
+
+
+2.1) IOptions: Para poder acceder desde algun servicio a estas configuraciones utilizaremos la interfaz IOptions. La limitacion de este es que una vez iniciada 
+la aplicacion solo podra leer la primera version del archivo, si lo modifico mientras la aplicacion esta en ejecucion no podre ver dichos cambios, la solucion 
+a esto es usar IOptionsSnapshot.
+
+2.2) IOptionsSnapshot: Es muy similar a la otra interfaz salvo que esta tiene la capacidad de mostrar los cambios que le ocurren al archivo de configuracion 
+durante el ejecucion de la aplicacion, refrescara la data de la configuracion cada vez que se haga una peticion.
+
+2.3) IOptionsMonitor: Monitor siempre te va a cargar la ultima informacion del archivo, algo que snapshot puede no hacer ya que snapshot se maneja por scoped, 
+y puede ser que la data/estado que maneje en la peticion este desactualizado. Monitor si o si devolvera el ultimo estado del archivo de configuraciones.
+Ademas cuenta con una funcion llamada OnChanger(()=> {}) que podremos suscribirnos y se ejecutara cada vez que se modifique el archivo de configuraciones.
+
+public class HomeController : ControllerBase
+{
+    private readonly IOptions<RedisOptions> _options;
+    private readonly IOptionsSnapshot<RedisOptions> _optionsSnapshot;
+    private readonly IOptionsMonitor<RedisOptions> _monitor;
+    public HomeController(IOptions<RedisOptions> options, IOptionsSnapshot<RedisOptions> optionsSnapshot, IOptionsMonitor<RedisOptions> _monitor)
+    {
+        this._options = options;
+        this._optionsSnapshot = optionsSnapshot;
+        this._monitor = monitor;
+    }
+
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return OK(this._options.Value);
+        return OK(this._optionsSnapshot.Value);
+        return OK(this._monitor.CurrentValue);
+    }
+}
+this.monitor.OnChange(redisOptions => {
+    // Hace Algo
+});
+
+
+3) Validar Options con DataAnotations: Para validar los datos de mi archivo de configuracion puedo definidar DataAnotations en la clase que copiara la data de los 
+archivos de configuraciones, en este caso el RedisOptions. Lo que si deberemos declarar el servicio de la siguiente forma:
+
+builder.Service
+.AddOptions<RedisOptions>()
+.Bind(builder.Services.Configuration.GetSection("MySectionName"))
+.ValidateDataAnnotations();
+
+
+4) Validar Options con Delegates: En caso de necesitar validaciones mas complejas podremos emplear delegates/callback.
+
+builder.Service
+.AddOptions<RedisOptions>()
+.Bind(builder.Services.Configuration.GetSection("MySectionName"))
+.ValidateDataAnnotations()
+.Validate(config =>{
+    if(config.ConnectRetry > 3)
+        return config.ConnectTimeout > 5000;
+    return true;
+}, "Un Error Ocurrio");
+
+
+5) IValidateOptions: Esta interfaz me permitira crear en una clase aparte las validaciones que necesite, lo cual sera mas organizado que definir 
+delegates en program.
+
+public RedisValidation : IValidateOptions<RedisOptions>
+{
+    public ValidateOptionsResult Validate(string name, RedisOptions options)
+    {
+        string failures = null;
+        if(options.ConnectRetry > 3 && options.ConnectTimeOut <= 500)
+            failures = "Error";
+        if(!string.IsNullOrEmpty(failures))
+            return ValidateOptionsResult.Fail(failures);
+        return ValidateOptionsResult.Success;
+    }
+}
+
+// Configuracion en program
+builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<RedisOptions>, RedisValidation>);
+
+
+                                                                20) IEnumerable y Enumerable
+
+1) IEnumerable es una interfaz que define un único método llamado GetEnumerator(), este método devuelve un IEnumerator<T>, que permite iterar sobre una colección.
+
+2) Enumerable: es una clase estática que proporciona una serie de métodos de extensión para objetos que implementan IEnumerable<T>. Estos métodos son la base de 
+LINQ y permiten realizar operaciones como filtros, proyecciones, agregaciones.
+
+
+                                                                    21) ORM
+                                                                
+1) ORM: Significa Object Relational Mapper, Es un modelo de programacion que permite Mapear tablas de BD a clases de un Lenguaje de programacion. Tambien 
+se encargara de transformar las consultas en codigo hacia lenguaje T-SQL.
+
+2) Context: El contexto es el que se encarga de administrar las sesiones contra la BD. Cada Context es una Sesion abierta en la BD.
+
+
+                                                                22) TDD
+
+1) TDD: Test Drive Development, es decir desarrollo guiado por pruebas. En vez de crear una funcion y luego testearla directamente creo su testeo para ver 
+si funciona correctamente su logica.
+
+                                                            23) Delegates Avanzados
+                                                                    
+1) Delegates: Un delegado se encarga de encapsular una funcion en una variable. Dentro de ellos puedo guardar una funcion que cumpla la firma definida 
+por el delegado 
+
+OperacionMatetica operacion = Add; => le paso la funcion al delegado
+operacion(1,2); => ejecuto la funcion
+int Add(int a, int b) =>  a + b; => Declaro la funcion
+public delegate int OperacionMatetica(int a, int b); => Declaro el delegado
+
+
+2) Action: Basicamente es un delegado que recibe parametros genericos pero que no devuelve nada, es decir es un delegado que en su 
+firma es de tipo void.
+
+Action<string> action = a =>  Console.WriteLine(a);
+action("Hola Mundo");
+
+
+3) Func<>: Tambien es un delegado, pero a diferencia de Action este siempre devuelve algo, el ultimo generico que defina va a ser 
+el valor de salida.
+
+Func<int, int, string> sumarString = (a,b) => (a+b).ToString();
+var val = sumarString(17, 16);
+Console.WriteLine(val);

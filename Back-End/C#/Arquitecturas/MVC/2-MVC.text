@@ -278,6 +278,28 @@ lo haremos de la siguiente forma:
 public MiClase () : this(arg1,arg2)
 {}
 
+                                                            12.1) Metodos de extension
+
+1) Metodos de extension: C# nos permite agregar funciones a clases ya compiladas, por ejemplo si tengo una libreria compilada en un DLL y quiero agregar 
+una funcion a una de sus clases ya compiladas. Para poder crear un metodo de extension debo crear una clase y metodo STATIC y el primer parametro debe
+referenciar a la clase a la cual quiero extender funcionalidades. Para usarlo si o si debo implementar el NameSpace de mi Clase de extension.
+
+1.1) Creacion de la clase y metodo de extension:
+
+public static class StringExtension
+{
+    public static string Saludo(this String s) => "Hola";
+}
+
+1.2) Uso:
+
+static void Main(string[] args)
+{
+    String cadena = "text";
+    cadena.Saludo();
+}
+
+
                                                           13) Reflection
 
 1) Reflection: Esta herramienta me permite obtener/acceder la informacion de un tipo: sus campos, metodos, propiedades e Interfaces 

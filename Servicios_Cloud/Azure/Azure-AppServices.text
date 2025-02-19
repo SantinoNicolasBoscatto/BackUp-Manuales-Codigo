@@ -1,0 +1,62 @@
+                                                                                
+                                                                                  1) Introduccion
+
+1) Azure: es como un conjunto de herramientas y servicios que puedes usar en línea para construir y gestionar aplicaciones sin tener que preocuparte por 
+la infraestructura física. Es ideal para empresas que buscan flexibilidad, escalabilidad y eficiencia en sus operaciones tecnológicas. Esto evita tener 
+que tener hardware fisico propio, Azure se encarga de toda la infraestructura, y accedes a los recursos a través de la virtualización.
+
+2) PaaS: Platform as a Services, es una categoria de servicios cloud que proporciona una plataforma (Azure en este caso) y un entorno que permiten a los
+desarrolladores crear aplicaciones y servicios que funcionen a través de internet. Los servicios PaaS se alojan en la nube y los usuarios pueden acceder 
+a ellos simplemente a través de navegador.
+
+3) Suscripcion: En Azure, una suscripción es una unidad de organización que agrupa recursos y servicios. Cada suscripción tiene límites y cuotas específicos, 
+y se utiliza para gestionar y facturar los recursos de Azure.
+                                                                                  2) App Services
+
+1) App Services: En estos podremos montar nuestras aplicaciones web y APIs, sin necesidad de infraestructuras ni hostings. 
+
+1.1) Instance: una instancia es una una máquina virtual (VM) que ejecuta la aplicación Cuando creas un App Service Plan, defines el número de instancias que deseas 
+utilizar. Cada instancia proporciona recursos de cómputo, como CPU y memoria, para ejecutar tu aplicación. En sintesis cada Instance sera un servidor que ejecutara
+tu aplicacion, cada uno de estos servidores tendran las caracteristicas definidas por tu App-Service-Plan.
+
+2) Crear Sitio Web: Para crear un Sitio Web con APP-SERVICE iriamos a algun grupo de recurso y a agregar y seleccionamos Aplicacion-Web o Aplicacion-Web-SQL 
+si la queremos con BD. Luego seleccionariamos el nombre de la APP, la suscripcion, el grupo de recursos, el Sistema Operativo en donde se alojara, si 
+publicaremos el codigo o una imagen de docker y el App-Service-Plan que tenemos, si no tenemos ninguno deberemos crear uno.
+
+3) App-Service-Plan: El App Service Plan define el tipo de servidor y los recursos que tendrás disponibles para tu aplicación. Dependiendo del plan que elijas, 
+tendrás diferentes capacidades en términos de memoria, almacenamiento, número de instancias y características adicionales. Generalmente para sitios web de prueba 
+usaremos Planes de Desarrollo y prueba
+
+3.1) Escalar Verticalmente: Esta opcion nos permite cambiar el App-Service-Plan de alguno de nuestro App-Service de forma manual. Quizas es util cuando sepamos 
+que en un rango de fechas nuestra pagina va a ser muy demandada, y por ende deberemos aumentar el servicio.
+
+3.2) Escalar Horizontalmente: Sera un escalado en el cual definire unas reglas, si esas reglas se cumplen se realizara un cambio de plan automatico. Es basicamente 
+un escalado automatico en base a reglas.
+
+4) Publicar Sitio Web: Dentro de nuestro Siteo-Web (App-Service) tendremos una opcion que es "Obtener perfil de publicacion", este nos descargara un archivo el 
+cual deberemos guardar en la raiz de nuestro proyecto. Luego haremos el proceso de publicar nuestro proyecto, eligiremos la opcion de publicar en un APP-SERVICE
+y eligeremos importar un App-Service Profile, que sera el archivo descargado. Por ultimo damos click en Publish.
+
+5) Metricas y Alertas: Desde el dashbord de mi App-Site tendremos diferentes metricas como: 1) Errores 5XX. 2) Datos de entrada. 3) Datos Salientes. 4) Cantidad
+de solicitudes. 5) Tiempo medio de respuesta. Si accedemos a cada uno de estos paneles podemos ver detalladamente datos, dentro de este panel tambien estara
+el acceso a configurar alertas.
+
+6) Bloqueo/Acceso por IP: Esta funcion nos puede servir en el caso de que queramos tener nuestro APP-SERVICE en un dominio pero que sea inaccesible por fuera 
+de este, o bloquear IPs maliciosas que nos esten realizando ataques. Desde mi App-Service debere ir al sub-menu de REDES, y luego a configurar restricciones de IP.
+
+7) Certificado SSL: Un certificado SSL (Secure Sockets Layer) es un archivo de datos que se instala en un servidor web para habilitar conexiones seguras entre el 
+servidor y los navegadores de los usuarios.
+
+8) Copias de seguridad automaticas: Iremos a la opcion de copias de seguridad, ahi encontraremos 2 formas de hacer Copias: 1) Instantanes: estas crean automaticamente
+puntos  de restautacion eriodicos de la Aplicacion, pero requiere un servicio premium. 2) Copia Seguridad Manual: Configuraremos manualmente cada cuanto y sobre que 
+haremos las copias de seguridad.
+
+9) Editor App-Service: Este modulo nos permitira editar el codigo de nuestra aplicacion directamente, aunque no es muy recomendable en algun caso extremo lo
+podriamos usar para editar algun elemento. Cabe decir que lo unico que podremos editar seran archivos front-end o archivos de configuracion, ninguno del Back, 
+ya que estos ya se encuentran compilados.
+
+10) Pruebas de Carga: Desde Azure podemos configurar Tests que simulan conexiones hacia nuestro APP-SERVICE y asi ver temas de rendimiento o problemas que se puedan
+generar. Para crear una dentro de nuestro App-Service buscaremos la opcion pruebas de carga e iremos a crear una.
+
+11) Autenticacion/Autorizacion: Podremos configurar de forma simple la Autenticacion y Autorizacion con otras apps, es decir autenticarse con Google, Facebook, 
+Microsoft, ETC.

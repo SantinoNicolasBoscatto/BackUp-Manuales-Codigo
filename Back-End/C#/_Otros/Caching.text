@@ -1,7 +1,11 @@
 
-                                                                    1) Memory Cache
+                                                                1) Cache en Memoria
 
-1) OutputCache: Este es un servicio que nos brinda ASP que nos permite manejar el cache en memoria, lo que hara esta sera guardar en 
+1) Cache en Memoria: Es una técnica utilizada para almacenar datos en la memoria RAM de un único servidor o instancia. Es ideal para acelerar 
+el acceso a datos que son frecuentemente solicitados por una aplicación específica. La caché en memoria es eficiente para aplicaciones de un 
+solo servicio o cuando todos los datos pueden ser almacenados y accesibles desde una única instancia.
+
+2) OutputCache: Este es un servicio que nos brinda ASP que nos permite manejar el cache en memoria, lo que hara esta sera guardar en 
 memoria del servidor una consulta HTTP para que si el cliente la vuelva a solicitar se le devuelva la Data en Cache.
 
 Configuracion del servicio: 
@@ -13,7 +17,7 @@ builder.Services.AddOutputCache(opt=>
 app.UseOutputCache();
 
 
-2) Uso en API:
+2.2) Uso en API:
 
 private readonly IOuputCacheStore _outputCache;
 public MyController(IOuputCacheStore outputCacheStore){
@@ -34,7 +38,151 @@ public async ActionResult MyEndpointPost()
 }
 
 
+3) MemoryCache: Otra variante de guardar Cache en memoria, este metodo varia un poco al anterior, es mas funcional aunque mas 
+complejo a la hora de plasmarlo en codigo. La forma de usarlo es preguntando si se encuentra algun valor guardado en Cache, si 
+no existe se realiza una consulta HTTP, si existe se devuelve lo almacenado en la Cache. Para acceder a la cache se hace mediante 
+Key, similar a los diccionarios.
+
+Configuracion del servicio: 
+dotnet add package Microsoft.Extensions.Caching.Memory
+builder.Services.AddMemoryCache();
+
+3.2) Uso:
+private void btnGet_Click(object sender, EventArgs e)
+{
+    ObjectCache cache = new MemoryCache(new MemoryCacheOptions());
+    string fileContents = cache["filecontents"] as string;
+
+    if (fileContents == null)
+    {
+        List<string> filePaths = new List<string>();
+        filePaths.Add("c:\\cache\\example.txt");
+
+        fileContents = File.ReadAllText("c:\\cache\\example.txt");
+        cache.Set("filecontents", fileContents);
+    }
+    Label1.Text = fileContents;
+}
+
+3.3) Uso en un Controlador:
+public class HomeController : Controller
+{
+    private readonly IMemoryCache _memoryCache;
+
+    public HomeController(IMemoryCache memoryCache)
+    {
+        _memoryCache = memoryCache;
+    }
+
+    public IActionResult Index()
+    {
+        var cacheKey = "currentTime";
+        if (!_memoryCache.TryGetValue(cacheKey, out DateTime currentTime))
+        {
+            // Si no está en la caché, obtenemos el valor y lo agregamos a la caché
+            currentTime = DateTime.Now;
+
+            // Establecemos las opciones de la caché
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+            // Guardamos el valor en la caché
+            _memoryCache.Set(cacheKey, currentTime, cacheEntryOptions);
+        }
+
+        ViewBag.CurrentTime = currentTime;
+        return View();
+    }
+}
+
+
+4) Uso: La cache en memoria es util cuando quiero guardar cache de solo un servicio, si quiero guardar la cache de multiples servicios los 
+mejor es usar cache distribuida.
 
                                                                 2) Cache Distribuido
 
-1)
+1) Cache Distribuida: esta tecnica de Cache se suele utilizar cuando Multiples microservicios que acceden a una misma cache. Para esto 
+necesitamos un servidor de cache distribuida, por ejemplo Redis.
+
+2) Redis: Es una tecnologia de codigo abierto que permite guardar datos en memoria, Con ella implementaremos nuestra logica de 
+cache distribuido. Es basicamente una BD que en vez de almacenarce en un disco se almacena en la memoria RAM, lo cual tiene como 
+ventaja una mayor velocidad en la obtencion y escritura de datos.
+
+Para usar Redis tenemos 2 opciones: 1) Crear un Servidor local de Redis. 2) Crear un servidor de Redis en Azure. Para usarlo necesitamos 
+la libreria Microsoft.Extensions.Caching.Redis o StackExchange.Redis
+
+
+3) EJ: El ejemplo de uso es igual al de MemoryCache, solo que en vez de usar el objeto MemoryCache usamos IDistributedCache, el resto de 
+la logica es muy similar, consultamos si existe esos datos en la cache, si no existen los pedimos HTTP y luego los agregamos a la cache, y 
+si existen transformamos el formato de byte[] a nuestro tipo de dato y lo devolvemos
+
+public class HomeController : Controller
+{
+    private readonly IDistributedCache _distributedCache;
+
+    public HomeController(IDistributedCache distributedCache)
+    {
+        _distributedCache = distributedCache;
+    }
+
+    public IActionResult Index()
+    {
+        var cacheKey = "currentTime";
+        byte[] value = await _distributedCache.GetAsync(cacheKey);
+        if (value == null)
+        {
+            // Si no está en la caché, obtenemos el valor y lo agregamos a la caché
+            currentTime = DateTime.Now;
+
+            // Guardamos el valor en la caché
+            await AddToCache(currentTime);
+
+            ViewBag.CurrentTime = currentTime;
+        }
+        else{
+            ViewBag.CurrentTime = FromByteArray(value);
+        }
+        return View();
+    }
+
+    private DateTime FromByteArray(byte[] data)
+    {
+        return JsonSerializer.Deserialize<DateTime>(data);
+    }
+}
+
+                                                                    3) Sintesis
+
+1) A la hora de trabajar con microservicios lo mejor es combinar ambas formas, guardar tanto en memoria como en Redis, si no esta en memoria 
+ni en Redis lo que haremos sera cargar el cache en Redis, que este lo cargue en memoria y devolvemos la data, Redis sera el encargado De
+cargar la cache en memoria
+
+Explicacion detallada, minuto 18: https://www.youtube.com/watch?v=ofbEXb2B18o&t=1097s
+
+
+                                                                        
+                                                                4) Crear BD de Redis
+
+
+// Esta clase se encargara de crear y conectarse a la BD de redis
+public class RedisBD
+{
+    // Se usa para cuando se sabe que la creacion/generacion de un objeto tardara mucho
+    private static Lazy<ConnectionMultiplexer> _lazyConnection;
+    public static ConnectionMultiplexer Connection {get { return _lazyConnection.Value; }}
+
+    static RedisBD()
+    {
+        _lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+            ConnectionMultiplexer.Connect("localhost")
+        );
+    }
+}
+
+// Obtengo la BD
+var redisDB = RedisBD.Connection.GetDatabase();
+redisDB.StringSet("1", "Dato1"); // Guardo un valor
+
+var value = redisDB.StringGet("1");
+Console.WriteLine(value);
+redisDB.KeyDelete("1");

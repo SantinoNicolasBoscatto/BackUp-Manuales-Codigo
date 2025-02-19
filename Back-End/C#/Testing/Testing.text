@@ -861,6 +861,165 @@ codigo a la aplicacion. Una vez desarrollada la logica debo probarla antes de in
 
 1) Revisar el curso de EF (Seccion 10, apartir del video 157) y API (Seccion 9, apartir del video 119). *1:05*
 
+2) Unit Tests Con UnitOfWork y CQRS:
+
+public static class MockUnitOfWork
+{
+    public static Mock<UnitOfWork> GetUnitOfWork()
+    {
+        // Creo la BD en Memoria y me aseguro de que este vacia
+        Guid Id = Guid.NewGuid();
+        var options = new DbContextOptionsBuilder<StreamerDbContext>().UseInMemoryDatabase(databaseName: $"DbContext-{Guid.NewGuid()}").Options;
+        var dbContextFake = new StreamerDbContext(options);
+
+               
+        // Al tener un Mock del OBJETO UnitOfWork tendre acceso tambien a los metodos de VideoRepository y StreamerRepository
+        var mockUnitOfWork = new Mock<UnitOfWork>(dbContextFake);
+        return mockUnitOfWork;
+    }
+}
+
+// Mock Instanciador de data
+public static class MockVideoRepository
+{
+    public static void AddVideoRepository(StreamerDbContext context)
+    {
+        var fixture = new Fixture();
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        var videos = fixture.CreateMany<Video>().ToList();
+        context.AddRange(videos);
+        context.SaveChanges();
+    }
+}
+
+// Mock Instanciador de data
+public static class MockStreamerRepository
+{
+    public static void AddStreamerRepository(StreamerDbContext context)
+    {
+        var fixture = new Fixture();
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        var streamers = fixture.CreateMany<Streamer>().ToList();
+        
+        // Crearemos un record Streamers pero con su propiedad hija null
+        streamers.Add(fixture.Build<Streamer>().With(x => x.Id, 8001).Without(x => x.ListaVideos).Create());
+
+        context.AddRange(streamers);
+        context.SaveChanges();
+    }
+}
+
+
+) Unit-Test CQRS:
+
+// Testearemos la Clase GetVideosListQueryHandler
+public class GetVideosListQueryHandlerXUnitTests
+{
+    private readonly IMapper mapper;
+    private readonly Mock<UnitOfWork> unitOfWork;
+
+    public GetVideosListQueryHandlerXUnitTests()
+    {
+        unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        mapper = mapperConfing.CreateMapper();
+
+        // Agrego data a la BD en memoria
+        MockVideoRepository.AddVideoRepository(unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task GetVideoListTest_ReturnsNotNull()
+    {
+        var handler = new GetVideosListQueryHandler(unitOfWork.Object.VideoRepository);
+        var list = await handler.Handle(new GetVideosListQuery("Username"), new CancellationToken());
+        Assert.NotNull(list);
+        Assert.IsType<List<Video>>(list);
+    }
+}
+
+// Unit-Tests POST
+public class CreateStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+    private IMapper _mapper;
+    private readonly Mock<ILogger<CreateStreamerCommandHandler>> logger;
+
+    public CreateStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        _mapper = mapperConfing.CreateMapper();
+        logger = new Mock<ILogger<CreateStreamerCommandHandler>>();
+
+        // Agrego data a la BD en memoria
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task CreateStreamer_InputCreateStreamerCommand_ReturnsNotNull()
+    {
+        var handle = new CreateStreamerCommandHandler(_unitOfWork.Object.StreamerRepository, logger.Object, _mapper);
+        var id = await handle.Handle(new CreateStreamerCommand { Nombre = "Pepo-San", Url ="NoUrl"}, new CancellationToken());
+        var entity = await _unitOfWork.Object.StreamerRepository.GetByIdAsync(id);
+        Assert.NotNull(entity);
+    }
+}
+
+
+// Unit-Tests UPDATE
+public class UpdateStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+    private IMapper _mapper;
+
+    public UpdateStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        var mapperConfing = new MapperConfiguration(x =>
+        {
+            x.AddProfile<MapperProfile>();
+        });
+        _mapper = mapperConfing.CreateMapper();
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task UpdateStreamer_InputUpdateStreamerCommand_ReturnsUnit()
+    {
+        var handle = new UpdateStreamerCommandHandler(_unitOfWork.Object.StreamerRepository, _mapper);
+        var result = await handle.Handle(new UpdateStreamerCommand { Id = 8001, Nombre = "Santino", Url = "Nothng" }, new CancellationToken());
+        var entity = await _unitOfWork.Object.StreamerRepository.GetByIdAsync(8001);
+        Assert.Equivalent("Santino", entity.Nombre);
+    }
+}
+
+
+// Unit-Tests DELETE
+public class DeleteStreamerCommandHandlerXUnitTests
+{
+    private Mock<UnitOfWork> _unitOfWork;
+
+    public DeleteStreamerCommandHandlerXUnitTests()
+    {
+        _unitOfWork = MockUnitOfWork.GetUnitOfWork();
+        MockStreamerRepository.AddStreamerRepository(_unitOfWork.Object.StreamerDbContext);
+    }
+
+    [Fact]
+    public async Task DeleteStreamer_InputDeleteStreamerCommand_ReturnsNull()
+    {
+        var handler = new DeleteStreamerCommandHandler(_unitOfWork.Object.StreamerRepository);
+        var result = await handler.Handle(new DeleteStreamerCommand { Id = 8001}, CancellationToken.None);
+        await Assert.ThrowsAsync<Exception>(async () => await _unitOfWork.Object.StreamerRepository.GetByIdAsync(8001));
+    }
+}
 
 x) Otros Datos:
 
