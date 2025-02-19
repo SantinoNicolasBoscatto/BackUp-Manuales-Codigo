@@ -35,7 +35,10 @@ El puerto externo se lo llama host_port y al del container container_port.
 
 
 5) Comunicacion entre contenedores: De primeras los contendores de docker no se pueden comunicar entre si, estos estan aislados.
-Para poder hacer que se comuniquen debemos agrupar estos contenedores, mediante una red interna de docker
+Para poder hacer que se comuniquen debemos agrupar estos contenedores, mediante una red interna de docker. 
+
+Cuando un cliente se quiere comunicar con un container los hace mediante el LocalHost y un puerto. Pero cuando un container se quiere comunicar con 
+otro lo hara por el nombre.
 
 
 6) Docker Compose: es una herramienta que te permite definir y ejecutar aplicaciones Docker multi-contenedor. Utiliza un archivo de 
@@ -124,14 +127,19 @@ es que este no se ejecuta directamente.
 
 18) Docker network rm mi-red: Comando para eliminar una red.
 
-19) Docker create -p8080:8080 --name my-container --network mi-red my-image: Crea un contenedor asociado a una red interna de docker
+19) docker network connect mi-red my-container: Conectar a una red un container existente.
 
-20) Docker Compose Up: Utilizara el archivo docker-compose.yml para crear y configurar contenedores. Si vuelvo a ejecutar este
+19.1) docker network inspect microservice-red: Me permite ver los containers de mi red
+
+20) Docker create -p8080:8080 --name my-container --network mi-red my-image: Crea un contenedor asociado a una red interna de docker
+
+21) Docker-compose up --build -d: Utilizara el archivo docker-compose.yml para crear y configurar contenedores. Si vuelvo a ejecutar este
 comando con la misma configuracion no creara nuevos contenedores, solamente levantara los existentes.
 
-21) Docker Compose Down: Se encarga de borrar todo lo que hizo Docker Compose Up
+22) Docker compose down: Se encarga de borrar todo lo que hizo Docker Compose Up
 
-22) docker compose -f docker-compose-personalizado.yml
+23) docker compose -f docker-compose-personalizado.yml
+
 
                                                                 3) Comandos DockerFile
 
@@ -150,7 +158,7 @@ en una nueva capa y crea una nueva imagen, se utiliza a menudo para instalar paq
 
 7) CMD: se utiliza para ejecutar un script al momento de levantar al contenedor.
 
-8) Entrypoint: Especifica el comando que se ejecutara prmero al iniciar el contenedor. Es el que ejecuta el archivo 
+8) Entrypoint: Especifica el comando que se ejecutara primero al iniciar el contenedor. Es el que ejecuta el archivo 
 para correr la aplicacion (DLL).
 
 
@@ -158,27 +166,60 @@ para correr la aplicacion (DLL).
                                                             4) Dockerfile Hot Reloading
 
 1) Dockerfile:
-# Usa la imagen oficial de SDK de .NET 8.0 para desarrollo
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
+# Utiliza una imagen base de .NET SDK 8
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Establece el directorio de trabajo en el contenedor
-WORKDIR /source
+# Establece el directorio de trabajo en /app
+WORKDIR /app
 
 # Copia el archivo de proyecto y restaura las dependencias
-COPY *.csproj .
+COPY *.csproj ./
 RUN dotnet restore
 
-# Copia el resto de los archivos al contenedor
-COPY . .
+# Copia el resto de los archivos
+COPY . ./
 
-# Exponer el puerto 80 para que sea accesible
+# Excluye la carpeta bin y obj para optimizar el volumen de sincronización
+RUN dotnet publish -c Release -o out
+
+# Utiliza una imagen base de ASP.NET Runtime 8 para la etapa de ejecución
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Establece el directorio de trabajo en /app
+WORKDIR /app
+
+# Copia los archivos compilados desde la etapa de compilación
+COPY --from=build /app/out .
+
+# Expone el puerto 80
 EXPOSE 80
 
-# Instala herramientas adicionales si es necesario (por ejemplo, para hot-reload)
-RUN dotnet watch --project webApp.dll
+# Instala herramientas necesarias para hot reload
+RUN apt-get update \
+    && apt-get install -y inotify-tools \
+    && apt-get clean
 
-# Define el punto de entrada para ejecutar la aplicación con hot-reloading
-ENTRYPOINT ["dotnet", "watch", "run", "--no-launch-profile"]
+# Copia los archivos fuente para soportar hot reload
+COPY --from=build /app /app
+
+# Define el punto de entrada de la aplicación para hot reload
+CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:80"]
+
+
+version: '3.4'
+services:
+  tuaplicacion:
+    image: tuaplicacion:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app:delegated
+      - /app/bin
+      - /app/obj
+
 
 
 2) Docker-Compose:

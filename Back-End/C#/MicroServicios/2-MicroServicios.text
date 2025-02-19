@@ -195,8 +195,3 @@ public async Task<ActionResult<CarritoDTO>> GetCarrito(int id)
 
 
 
-                                                                                        3) Docker
-
-1)
-
-
