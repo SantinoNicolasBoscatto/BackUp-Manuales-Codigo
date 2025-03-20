@@ -278,7 +278,7 @@ solucionar una problematica determinada. Las problematicas se separaran en capas
  
                                                                     3) Clean Architecture
 
-1) La base de CleanArchitecture Consistira en separar la applicacion en 4 Capas: 1) Entities-Domain: Lógica de negocio empresarial, aqui definimos las entidades de 
+1) La base de CleanArchitecture Consistira en separar la aplicacion en 4 Capas: 1) Entities-Domain: Lógica de negocio empresarial, aqui definimos las entidades de 
 nuestro negocio. 2) UseCases-Application: Lógica de negocio específica de la aplicación, definen el que debe hacer la Aplicacion, mas no como. Implementara DTOs, 
 Mapeos, Validaciones, Excepciones y CQRS. 3) Interface_Adapters-Infraestructure: La capa de Infrastructure maneja todos los detalles técnicos de integración con 
 servicios externos, es aquella que se encarga de integrar servicios externos (BD, Servicios de Cache, Acceso al sistema de archivos, Servicios de Autenticacion y 

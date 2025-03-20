@@ -11,7 +11,8 @@ En resumen DDD es una forma de pensar y diseñar sistemas de software que coloca
 software cumpla con los requisitos del negocio de manera efectiva y eficiente. Responde la pregunta de ¿Que quieres?
 
 
-2) Clean Architecture: Son un conjunto de principios y patrones de diseño de software, este se maneja atraves de una modalidad de capas. Caracteristicas:
+2) Clean Architecture: Son un conjunto de principios y patrones de diseño de software que tiene como objetivo facilitar el proceso de construccion y mantenimiento de software. 
+Este se maneja atraves de una modalidad de capas. Caracteristicas:
 1) Independencia del Framework: Esto quiere decir que la arquietectura de la APP esta desacoplada de cualquier framework externo o libreria. 2) Testeable: dentro de 
 esta arquitectura es facil escribir tests unitarios. 3) Independencia del UI. 4) Independencia de la BD. 5) External Agency Independency: Las reglas de negocio de la 
 App estan bien aisladas y no conocen el mundo exterior

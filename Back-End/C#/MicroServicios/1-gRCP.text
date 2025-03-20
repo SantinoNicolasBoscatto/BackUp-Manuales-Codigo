@@ -1,6 +1,7 @@
 
 1) gRPC (Google Remote Procedure Call): Es una nueva forma de crear servicios, mejora la velocidad de transferencia de datos comparado con otros metodos como REST. 
-Es util en servicios de alta demanda en los que debo priorizar la velocidad de envio de datos.
+Es util en servicios de alta demanda en los que debo priorizar la velocidad de envio de datos. Utiliza HTTP/2 para el transporte y Protobuf como el lenguaje de 
+descripcion de interfaces.
 
 Dentro del proyecto veremos 2 entidades principales: 1) Protos: Es un nuevo formato (como JSON) que se guarda en texto plano en un archivo de extencion .proto.
 En el archivo definiremos un servicio y dentro de este defineremos un metodo que recibira parametros y devolvera una respuesta. Los mensajes a enviar y recibir 

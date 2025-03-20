@@ -250,6 +250,17 @@ tener relaciones entre Entidades si yo en la Configuracion de Automaper ya las d
 y la carga de Data, ProjectTo() aplicare las reglas y las relaciones sin necesidad de usar los Includes(). Todo cambio que quiera hacer
 en como se me trae una lista lo debere hacer desde el Config de Automaper.
 
+var orders = await context.Orders
+                    .ProjectTo<GetAllOrderResponseDTO>(mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+4) Mapper(): Esta forma de mapeo me permite Mapear solo las propiedades existentes de un objeto, las que no existen no las sobrescribira como NULL, sino que 
+mantedra los valores del objeto original.
+
+// Mapea solo las propiedades que existen en UpdateOrderCommand
+    mapper.Map(request, order);
+
+
                                               10) Modelo Conectado Vs Modelo Desconectado
 
 1) Cuando No Utilizamos el AsNoTracking() en el EF el o los objetos que capturemos tendran seguimiento, por lo que si realizamos cambios
@@ -1159,7 +1170,89 @@ public class SingletonPrueba
 cambiar el AddDbContext() por AddDbContextFactory();
 Luego cuando lo quiera instanciar manualmente debo implementar la interfaz IDbContextFactory<Negocio>
 
-                                                                                    25) EXTRAS
+
+
+
+                                                                           25) Interceptores
+
+1) Interceptores: Los interceptores de EF Core permiten interceptar, modificar o suprimir operaciones. Los interceptores utilizan una tecnica de programacion 
+que la podemos definir como orientada a aspectos, esta permite interceptar en puntos especificos de ejecucion en nuestra apliaciones, permitiendo introducir 
+funcionalidad adicional sin modificar el codigo existente.
+
+
+1.1) DbCommandInterceptor: Permite interceptar las operaciones de ejecucion de comandos SQL (Operaciones de lectura y escritura)
+
+1.2) DbConnectionInterceptor: Permite interceptar la conexion a la BD, es decir cuando se abre la conexion o se cierra.
+
+1.3) DbTransactionInterceptor: Permite interceptar las operaciones de Transacciones, util para saber cuando inicia, confirma o se hace un rollback de una 
+transaccion.
+
+1.4) SaveChangesInterceptor: Permite agregar comportamiento antes o despues de guardar los cambios.
+
+// Crear Interceptor 
+public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
+{
+    public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    {
+        UpdateEntities(eventData.Context!);
+        return base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+    {
+        UpdateEntities(eventData.Context!);
+        return base.SavedChanges(eventData, result);
+    }
+
+    private void UpdateEntities(DbContext context)
+    {
+        if(context is null) return;
+
+        foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
+        {
+            if(entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedBy = "System";
+                entry.Entity.Created = DateTime.Now;
+            }
+            else if(entry.State == EntityState.Modified)
+            {
+                entry.Entity.LastModifiedBy = "System";
+                entry.Entity.LastModified = DateTime.Now;
+            }
+        }
+    }
+}
+
+// Agregar interceptores al DbContext:
+
+private readonly AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor;
+public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) :base(options)
+{
+    this.auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+}
+
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
+    optionsBuilder.EnableSensitiveDataLogging();
+}
+
+// Inyectar Servicios desde otra capa:
+public static class PersistenceServices
+{
+    public static IServiceCollection AddPersistenceService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+        return services;
+    }
+}
+
+
+
+
+                                                                                    26) EXTRAS
                                                                                     
 1) LogTo(): Esta funcion permitira imprimir por consola todas las transacciones que realicemos con la BD:
 protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

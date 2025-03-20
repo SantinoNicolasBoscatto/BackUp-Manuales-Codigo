@@ -1,0 +1,1724 @@
+                                                                         0) Introduccion
+
+1) Arquitectura de Software: En terminos simples es la forma en la que se organizan y se comunican los componentes de un Software y las 
+responsabilidades que cumple cada uno.
+
+2) Servicio: es una pieza de Software que provee una funcionalidad especifica. En el caso del desarrollo web las Apis vienen a ser 
+servicios Web, es decir cada API nos provee una serie de funcionalidades especificas.
+
+3) Microservicios: Son simplemente servicios pequeños con una funcion super especifica, en vez de tener un servicio monolito en el cual 
+desarrollo el negocio y logica de todas mis entidades, lo que hacemos es crear un microservicio por cada entidad. Si la llevamos al ejemplo
+de la Nascar-API, una forma de implementar esto seria que cada entidad del negocio tuviera su propio servicio de consumo.
+
+Los problemas de los monolitos que resuelven los microservicios son: 1) Alta Demanda, es decir soportar muchos usuarios a la vez sin perdida
+de rendimiento. 2) Alta Disponibilidad, Ante la gran demanda evitar la caida del servicio. Rastraer que parte produce la caida de la pagina 
+con monolitos se puede hacer muy dificil, con Microservicios esto es mucho mas facil. 3) Alta Complejidad, al estar aislados los Microservicios
+entre si, son mucho mas faciles de extender y escalar.
+
+
+3.1) Composicion de un Microservicios: 1) Controller, la capa mas externa, esta recibira peticiones y devolvera una respuesta. 
+2) Validator, esta capa se encarga de revisar los datos y formatos de la peticion, para verificar que estos sean correctos y 
+poder devolver la respuesta. 3) Microservicio: En esta capa estara la logica del negocio (Entities y Use Cases) y el acceso 
+a la data de una BD
+
+3.2) Reglas de un Microservicio: 1) Cumplir una sola funcion. 2) Ser Autonomo, es decir no dependan de otros MS para funcionar 
+garantizando el desacoplamiento. 3) Estar Aislados, deben correr en entornos separados y cada uno con su propia BD.
+
+
+4) API Gateway: uno de los retos de los microservicios es gestionar la cantidad de endpoints de cada MS. Para esto usamos una API Gateway, un 
+enrutador, donde administra los endpoints internamente y expone hacia afuera un unico Endpoint para consumo.
+
+
+5) Modulos de Microservicios: 1) API: Tener controladores y funciones de una API. 2) Storage: Manejar una BD. 3) Memory: Implementar el uso de cache. 
+4) WebSockets: Crea una conexión permanente y bidireccional entre tu dispositivo y un servidor, permitiendo que ambos intercambien información en tiempo 
+real sin interrupciones. Piensa en las solicitudes HTTP tradicionales como enviar cartas por correo: cada mensaje requiere su propio sobre y viaje. Con 
+WebSockets, es como tener una llamada telefónica continua, donde la información fluye libremente en ambas direcciones. 
+5) Background-Service: Tareas secundarias. 6) Publish/Suscribe: Disparadores de eventos. 7) Health-Checks.
+
+
+6) Desventajas Monolitos: 1) Se debe actualizar toda la aplicacion al tener nuevas caracteristicas o soluciones de bugs. 2) Se debe desplegar en todos los 
+servidores, siempre estando pendiente del fallo. 3) Dificil y complejo de realizar pruebas unitarias, integrales y de carga. 4) Con el tiempo existen
+fuertes dependencias entre modulos a medida que crece la aplicacion. 5) El monolito contendra a todos los modulos de nuestra aplicacion.
+
+7) Microservicios: A diferencia de los monolitos cada modulo sera un microservicio, una vez desarrollado el MS lo publicaremos y lo subiremos a un Docker
+container. Luego pasaremos los docker a un Registry (Azure o DockerHub) e indicaremos al Cluster de Kubernetes que descarguen y ejecuten estas imagenes de 
+docker.
+
+7.1) Desventajas: 1) Altos consumos de memoria. 2) Inversion de tiempo inicial (crear todo un SDK para trabajar con MS). 3) Complejidad en la gestion por 
+la cantidad de microservicios con lo que se trabaja. 
+
+8) Comunicacion entre MS: A diferencia de las APPs monoliticas, cada modulo tendra su propia DB, lo que causara problemas al tener identidades relacionadas
+coceptualmente, ya que no podremos generar relaciones entre tablas al estar en DBs distintas. Para esta solucion se implementa la consistencia eventual,
+mediante el Event Bus, mediante el protocolo HTTP.
+
+8.1) Event Bus: Cuando un microservicio quiere notificar que algo ha sucedido, publica un evento en el bus. Otros microservicios que estén interesados en ese 
+tipo de evento se han suscrito previamente y reaccionarán cuando lo reciban. Esto reduce el acoplamiento entre servicios, ya que no necesitan conocer la 
+existencia de los demás. En lugar de que cada microservicio se comunique directamente con otro, envían y reciben mensajes a través del Event Bus.
+
+Por ejemplo, si tienes un servicio que procesa órdenes y otro que envía notificaciones, el servicio de órdenes puede publicar un evento "OrdenProcesada". 
+El servicio de notificaciones, al estar suscrito a ese evento, enviará un correo electrónico al cliente sin que el servicio de órdenes tenga que decirle 
+explícitamente qué hacer.
+
+
+                                                                    1)  Datos Utiles
+
+1) Identificador GUID: La data que creemos en los microservicios generalmente la deberemos usar en otros ambientes, por lo que es recomendable ponerle 
+un identificador unico a esta data, por ejemplo un Identificador tipo GUID o string de GUID. Este identificador va a ser un valor universal cuando 
+quiera darle seguimiento a este registro desde otro microservicio.
+
+2) Comando para actualizar el Migration: dotnet tool install --global dotnet-ef --version 8.0.13
+
+3) Registrar MediatR: builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+4) Registrar FluentValidation.ASP.NET:
+builder.Services.AddValidatorsFromAssemblyContaining<AnyValidator>(); 
+builder.Services.AddFluentValidationAutoValidation(); 
+builder.Services.AddFluentValidationClientsideAdapters();
+
+5) SQL Trasaction con EF Core:
+
+public async Task Handle(Ejecuta request, CancellationToken cancellationToken)
+{
+    using (var transaction = await contexto.Database.BeginTransactionAsync())
+    {
+        try
+        {
+            var carritoSesion = new CarritoSesion
+            {
+                FechaCreacion = request.FechaCreacionSesion,
+            };
+            await contexto.CarritoSesion.AddAsync(carritoSesion);
+            var val = await contexto.SaveChangesAsync();
+            if (val != 1) throw new Exception("error en la creacion del Carrito Sesion");
+
+            int id = carritoSesion.CarritoSesionId;
+            foreach (var item in request.ProductoLista!)
+            {
+                await contexto.CarritoSesionDetalle.AddAsync(new CarritoSesionDetalle
+                {
+                    CarritoSesionId = id,
+                    FechaCreacion = DateTime.Now,
+                    ProductoSeleccionado = item
+                });
+            }
+            var result = await contexto.SaveChangesAsync();
+            if (result != request.ProductoLista.Count) throw new Exception("Error al insertar productos");
+
+            // Commit the transaction
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+}
+
+
+
+                                                                2) Comunicacion entre Microservicios
+
+1) Una de las grandes ventajas de las MS frente a los monoliticos es que puedo escalar cada Microservicio sin afectar a otro, lo que me permite 
+escalar mi app de forma mas sencilla, al no existir una dependencia tecnica entre ellas. En un escenario ideal las MS no deberian depende
+entre si, pero esto termina sucediendo, es aca cuando entra la comunicacion entre MS
+
+2) A Tener en Cuenta: 1) Para poder comunicar MS entre si debere hacerlo mediante el protocolo HTTP o gRPC. 2) Estas solicitudes a otros MS seran almacenados en un DTO que 
+creemos para ese proposito. 3) La MS que consulta a otras debera tener registrado los Endpoints a los que va a consultar la data, estos los definiremos en el 
+appSetings.json.
+
+3) Comunicar MicroServicios: 1) Primero deberemos agregar en Program el Service de HttpClient. 2) Crearemos clases RemoteModel para recibir la data desde los otros
+MS, la data que recibire sera en formato JSON y luego debere transformar esta en una clase, en este caso transformaremos el JSON en esta clase Remote.
+3) Crearemos un Service que se encargara de realizar las consultas hacia otros MS, Primero crearemos una interface de esta y posteriormente sus implementaciones.
+
+3.1) // El primer parametro sera el nombre de mi HttpClient y en el Callback le indicaremos el endpoint
+builder.Services.AddHttpClient("Libros", config =>
+{
+    config.BaseAddress = new Uri(builder.Configuration["Services:Libros"]!);
+});
+
+
+3.2) Remote Models:
+public class LibroRemote
+{
+    public string? LibreriaMaterialId { get; set; }
+    public string? Titulo { get; set; }
+    public DateTime? FechaPublicacion { get; set; }
+
+    public Guid? AutorLibro { get; set; }
+}
+
+
+3.3) Service:
+
+// INTERFACE
+public interface ILibrosService
+{
+    Task<(bool result, LibroRemote libro, string? error)> GetLibro(Guid LibroId);
+}
+
+// IMPLEMENTACION
+public class LibrosService : ILibrosService
+{
+    private readonly IHttpClientFactory httpClient;
+    private readonly ILogger<LibrosService> logger;
+
+    public LibrosService(IHttpClientFactory httpClient, ILogger<LibrosService> logger)
+    {
+        this.httpClient = httpClient;
+        this.logger = logger;
+    }
+
+    public async Task<(bool result, LibroRemote? libro, string? error)> GetLibro(Guid LibroId)
+    {
+        try
+        {
+            // El Nombre del HttpClient debera ser el que definimos en program
+            var client = httpClient.CreateClient("Libros");
+            // Aqui consultaremos al Client, le pasaremos la ruta completa del endpoint con los parametros.
+            // Esto nos devolvera un HttpResponse que contendra un JSON
+            var httpResponse = await client.GetAsync($"api/LibroMaterial/{LibroId}");
+
+            if(httpResponse.IsSuccessStatusCode)
+            {
+                // Si el resultado fue exitoso entonces guardo el Content como un Jsonstring
+                var content = await httpResponse.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+
+                // Aqui casteo mi JSON a mi Clase LibroRemote
+                var result = JsonSerializer.Deserialize<LibroRemote>(content, options);
+                return (true, result, null);
+            }
+            return (false, null, httpResponse.ReasonPhrase);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return (false, null, ex.Message);
+        }
+    }
+}
+
+// INYECCION
+builder.Services.AddTransient<ILibrosService, LibrosService>();
+
+
+
+3.4) Uso del Service en CQRS:
+
+public class Manejador : IRequestHandler<Ejecuta, CarritoDTO>
+{
+    private readonly ILibrosService librosService;
+    private readonly CarritoContexto carritoContexto;
+    public Manejador(ILibrosService librosService, CarritoContexto carritoContexto)
+    {
+        this.librosService = librosService;
+        this.carritoContexto = carritoContexto;
+    }
+
+    public async Task<CarritoDTO> Handle(Ejecuta request, CancellationToken cancellationToken)
+    {
+        var carritoSesion = await carritoContexto.CarritoSesion.Include(x => x.ListaDetalle)
+            .FirstOrDefaultAsync(x => x.CarritoSesionId == request.CarritoSesionId);
+        if (carritoSesion == null) throw new Exception("Carrito Null");
+
+
+        var carroDto = new CarritoDTO()
+        {
+            CarritoId = request.CarritoSesionId,
+            FechaCreacionSesion = carritoSesion.FechaCreacion   
+        };
+        foreach (var item in carritoSesion!.ListaDetalle!)
+        {
+            var libro = await librosService.GetLibro(new Guid(item.ProductoSeleccionado!));
+            if(!libro.result) throw new Exception("Error en el Service");
+
+            var detalle = new CarritoDetalleDTO
+            {
+                AutorLibro = libro!.libro!.AutorLibro.ToString(),
+                FechaPublicacion = libro.libro.FechaPublicacion,
+                TituloLibro = libro.libro.Titulo,
+                LibroId = new Guid(libro.libro.LibreriaMaterialId!)
+            };
+            carroDto.ListaProductos!.Add(detalle);
+        }
+        return carroDto;
+    }
+}
+
+
+3.5) Controller:
+[HttpGet("{id:int}")]
+public async Task<ActionResult<CarritoDTO>> GetCarrito(int id)
+{
+    return await mediator.Send(new Consulta.Ejecuta { CarritoSesionId = id });
+}
+
+                                                                                    3) API Gateway
+
+1) A la hora de trabajar con microservicios deberemos crear un punto de acceso unico a nuestras APIs y que luego este la redireccione a la API 
+correspondiente. El punto de acceso unificado de se llama API Gateway.
+
+2) Caracteristicas API Gateway: 1) Routing: Es la capacidad de recibir un request y redireccionarlo al MS correspondiente, segun la logicad definida en el 
+API Gateway. 2) Composition: Es la capacidad de consumir e implementar logica sobre las MS. 3) Security: Si no fuera por el API Gateway deberiamos implementar
+Identity en todas nuestros MS, pero gracias al API Gateway podemos centralizarla aqui.
+
+3) Funcionamiento: Un cliente hara una peticion HTTP hacia nuestra API Gateway, por ejemplo a apiGateway/Libros, el trabajo de routing sera segun esa URL
+determinar a que MS debo llamar y hacer la peticion. Es decir hay 2 instancias en el Routing, la solicitud externa (del cliente al Gateway) e interna (cuando 
+el Gateway le solicita a un MS).
+
+4) Configuracion de Ocelot:
+
+builder.Services.AddOcelot();
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+await app.UseOcelot();
+
+
+4.1) Routing Ocelot:
+// Crearemos un ocelot.json y lo configuramos. Esto es el proceso de ROUTING
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/LibroMaterial", // Este es la ruta interna de la API
+      "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tiendaservicios-libro-1", // Configuro el host base (tiendaservicios-libro-1)
+          "Port": 8081 // Defino el puerto
+        }
+      ],
+      "UpstreamPathTemplate": "/Libro", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ], // Los metodos HTTP que se pueden utilizar
+      "RequestIdKey": "LibroTotal"
+    },
+    {
+      "DownstreamPathTemplate": "/api/LibroMaterial/{id}", // Este es la ruta interna de la API
+      "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tiendaservicios-libro-1", // Configuro el host base (tiendaservicios-libro-1)
+          "Port": 8081 // Defino el puerto
+        }
+      ],
+      "UpstreamPathTemplate": "/Libro/{id}", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+      "UpstreamHttpMethod": [ "GET", "DELETE" ] // Los metodos HTTP que se pueden utilizar
+    },
+    {
+      "DownstreamPathTemplate": "/api/Autor", // Este es la ruta interna de la API
+      "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tiendaservicios-autor-1", // Configuro el host base (tiendaservicios-autor-1)
+          "Port": 8080 // Defino el puerto
+        }
+      ],
+      "UpstreamPathTemplate": "/Autor", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT" ], // Los metodos HTTP que se pueden utilizar
+      "RequestIdKey": "AutorTotal"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Autor/{id}", // Este es la ruta interna de la API
+      "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tiendaservicios-autor-1", // Configuro el host base (tiendaservicios-libro-1)
+          "Port": 8081 // Defino el puerto
+        }
+      ],
+      "UpstreamPathTemplate": "/Autor/{id}", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+      "UpstreamHttpMethod": [ "GET", "DELETE" ] // Los metodos HTTP que se pueden utilizar
+    },
+    {
+      "DownstreamPathTemplate": "/api/CarritoCompras/{id}", // Este es la ruta interna de la API
+      "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tiendaservicios-carrito-1", // Configuro el host base (tiendaservicios-autor-1)
+          "Port": 8082 // Defino el puerto
+        }
+      ],
+      "UpstreamPathTemplate": "/CarritoCompras/{id}", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+      "UpstreamHttpMethod": [ "GET", "DELETE" ] // Los metodos HTTP que se pueden utilizar
+    }
+  ]
+}
+
+
+4.2) Aggregates Ocelot: Con la composicion de ocelot podre unificar peticiones HTTP en una sola, en vez de llamar a /Libro y /Autor podre realizar una 
+llama a /LibroAutor, de esta forma llamando a los 2 MS en una sola request. Para ello debere ponerle un identificador unico a cada MS, mediante el 
+atributo "Key" o "RequestIdKey" en la declaracion del routing. Luego configuraremos el Endpoint unificado en el apartado de Aggregates. Estas funciones 
+de agregacion solo se pueden usar en GET.
+
+{
+    "Routes"[
+        // Definimos Routing
+    ],
+    "Aggregates": [
+        {
+            "UpstreamPathTemplate": "/LibroAutor",
+            "RouteKeys": [ "AutorTotal", "LibroTotal" ]
+        }
+    ]
+}
+
+
+4.3) Http-Message Handlers: Este se encargara de interceptar los mensajes entre el cliente y el API Gateway, interceptara tanto al REQUEST como al RESPONSE.
+
+1) EJ: Si pido la data de un libro y este devuelve solo el ID del autor pero necesito la data entera esto funcionara asi: 1) El cliente envia el Request, pasa 
+por el Http-Message-Handler, llega al Gateway y hace la solicitud. 2) El Gateway manda el RESPONSE y el Http-Message-Handler lo intercepta, y sera el quien 
+realice la consulta al autor con su ID para obtener sus datos, formatearlos y asi devolverlos. Para poder manipular el response debera convertir su resultado
+de JSON a un C#-Object.
+
+En este caso haremos un procedimiento muy similar al que hicimos fuera del Gateway, obteniendo convirtiendo el resultado a un ModelRemote y luego llamando 
+al HttpClient para que llame al MS del cual necesito data pasandole un parametro.
+
+1.1) Model Remote Class:
+
+public class LibroModelRemote
+{
+    public Guid? LibroMaterialId { get; set; }
+    public string? Titulo { get; set; }
+    public DateTime? FechaPublicacion { get; set; }
+    public Guid? AutorLibro { get; set; }
+    public AutorModelRemote? AutorModelRemote { get; set; } = null;
+}
+
+public class AutorModelRemote
+{
+    public Guid? AutorLibroId { get; set; }
+    public string? Nombre { get; set; }
+    public string? Apellido { get; set; }
+    public DateTime? FechaNacimiento { get; set; }
+}
+
+
+1.2) Interface e Implementacion de IAutorRemote: Estos son metodos auxiliares, son los que se encargaran de consultar a otros Endpoints para traer data y complementar 
+mi data principal.
+
+public interface IAutorRemote
+{
+    Task<(bool resultado, AutorModelRemote autor, string ErrorMessage)> GetAutor(Guid AutorId);
+}
+
+public class AutorRemote : IAutorRemote
+{
+    private readonly IHttpClientFactory _httpClient;
+    private readonly ILogger<AutorRemote> _logger;
+    public AutorRemote(IHttpClientFactory httpClient, ILogger<AutorRemote> logger)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+    }
+
+    public async Task<(bool resultado, AutorModelRemote? autor, string? ErrorMessage)> GetAutor(Guid AutorId)
+    {
+        try
+        {
+            var cliente = _httpClient.CreateClient("AutorService");
+            var response = await cliente.GetAsync($"/Autor/{AutorId}");
+            if(response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var resultado = JsonSerializer.Deserialize<AutorModelRemote>(content, options);
+                return (true, resultado, null);
+            }
+            return (false, null, response.ReasonPhrase);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            return (false, null, ex.Message);
+
+        }
+    }
+}
+
+// Al ejecutarse en un Middleware como Http-Message-Handler, se debe registrar como Singleton, Si se hace como Scoped, se generará un error.
+builder.Services.AddSingleton<IAutorRemote, AutorRemote>();
+
+
+1.3) Configurar el HTTPCLIENT
+builder.Services.AddHttpClient("AutorService", cfg =>
+{
+    cfg.BaseAddress = new Uri(builder.Configuration["Services:Autores"]!);
+});
+
+
+1.4) Http-Message-Handler:
+
+public class LibroHandler : DelegatingHandler
+{
+    private readonly ILogger<LibroHandler> _logger;
+    private readonly IAutorRemote _autorRemote;
+    public LibroHandler(ILogger<LibroHandler> logger, IAutorRemote autorRemote)
+    {
+        _logger = logger;
+        _autorRemote = autorRemote;
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var time = Stopwatch.StartNew();
+        _logger.LogInformation("Inicia Libro Request");
+        var response = await base.SendAsync(request, cancellationToken);
+
+        if (response.IsSuccessStatusCode) {
+
+            var content = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var libroResult = JsonSerializer.Deserialize<LibroModelRemote>(content, options);
+            var responseAutor = await _autorRemote.GetAutor(libroResult!.AutorLibro ?? Guid.Empty);
+
+            if(responseAutor.resultado)
+            {
+                libroResult.AutorModelRemote = responseAutor.autor;
+                var resultString = JsonSerializer.Serialize(libroResult);
+                response.Content = new StringContent(resultString, Encoding.UTF8, "application/json");
+            }
+        }
+
+
+        _logger.LogInformation("Respuesta finaliza en: " + time.ElapsedMilliseconds + "ms");
+        return response;
+    }
+}
+
+
+// Inicializacion del Handler
+builder.Services.AddOcelot().AddDelegatingHandler<LibroHandler>();
+
+// Configurar el handler para que se ejecute en determina URL:
+{
+  "DownstreamPathTemplate": "/api/LibroMaterial/{id}", // Este es la ruta interna de la API
+  "DownstreamScheme": "http", // Aqui Configuro el Protocolo
+  "DownstreamHostAndPorts": [
+    {
+      "Host": "tiendaservicios-libro-1", // Configuro el host base (tiendaservicios-libro-1)
+      "Port": 8081 // Defino el puerto
+    }
+  ],
+  "UpstreamPathTemplate": "/Libro/{id}", // Esta es la ruta que colocara el cliente para comunicarse con el Gateway
+  "UpstreamHttpMethod": [ "GET", "DELETE" ], // Los metodos HTTP que se pueden utilizar
+  "DelegatingHandlers": [ "LibroHandler" ]
+},
+
+
+                                                                        4) RabbitMQ
+
+1) Comunicacion Sincrona: Es la comunicacion que usamos mediante el HttpClient, en donde un MS o un Middleware como el Http-Message-Handler realiza 
+una consulta a otro MicroServicio. En este caso se da tanto un REQUEST como un RESPONSE.
+
+2) Comunicacion Asincrona: Esta forma consiste en que una MS mande un mensaje a otra MS, sin saber si este mensaje fue o no recibido. La gran ventaja
+de esta comunicacion es la Disponibilidad del servicio. Generalmente las aplicaciones pueden fallar por servicios de terceros, por EJ el un servicio 
+de Mails caido lo que provocaria que se perdieran todos los MSG, para solucionar esto se crearon los BROKERS. El protocolo de comunicacion a diferencia 
+de la sincrona es TCP y no http.
+
+3.1) Brokers: Un Broker es un componente de Software intermediario que es capaz de recibir mensajes, de una MS por ejemplo, y enrutarlo a diferentes destinatarios.
+Este me permite almacenar fisicamente los mensajes que lleguen desde el MS en una Queue, es util para que en el caso de no haber podido enviar el mensaje exitosamente 
+quede guardado y se mantenga la data. El MS que envia el mensaje se lo conoce como PRODUCER y el que lo recibe CONSUMER.
+
+3.2) Queue: Son colas del Broker, lo que hace es almacenar en un orden de llegada los mensajes entrantes, esta tiene la capacidad de alamacenar multiples MSG.
+En el caso de que el Consumer no este habilitado para consumir los MSG Queue alamacenara estos esta que sean enviados. Los Queue en codigo seran representados por 
+una clase abstracta llamada evento, los elementos que quieran ser considerados eventos deberan heredar esta clase base.
+
+4) Event Bus: Cuando el PRODUCER envia el mensaje hacia el BROKER este no lo hace directamente sino que lo hace a traves del EVENT-BUS-API. Este Event Bus lo que 
+hara sera publicar el mensaje dentro de RabbitMQ (Broker) y guardarlo en un Queue. Basicamente el flujo es el siguiente: Un PRODUCER realiza un Pusblish hacia 
+el Event Bus y luego este publish sera receptado por un Suscriber y se enviara el MSG al CONSUMER.
+
+En resumen el EventBus es un intermediario que se encargar de recibir un mensaje de un MS llamado PRODUCER y entregarlo hacia sus respectivos CONSUMERS, basicamente 
+es un mensajero.
+
+Este tendra 3 eventos principales: 1) Publisher: este evento tomara el Objeto EventQueue y lo publicara/insertara en el EventBus. 2) Suscriber: En el momento que un 
+consumer reconozca la existencia de un EventQueue que le pertenece se ejecutara el Suscriber para leer el mensaje. 3) Handle: Automaticamente se lea el MSG recibido
+en el Suscriber se disparara este evento, este se encargara de manipular la data que le llegue al Consumer, basicamente implementar la logica de lo que quiera hacer,
+por EJ enviar un Email.
+
+5) Crear un Event-Bus: 1) Crear una interface (IRabbitEventBus) que defina el comportamiento (operaciones) de publisher, suscriber, y commands.
+2) Crearemos la interfaz (IEventHandler) que se encargue de manipular la data obtenida. 3) Crearemos las clases Base de los Eventos y Comandos.
+4) Crearemos las implementaciones. 5) Crearemos los EventoQueue, es decir los objetos que heredaran de Evento e implementaran mas propiedades personalizadas
+6) Despues de todo esto deberemos agregar el event-bus como dependencia de mis MS para poder acceder a sus elementos, primero configuraremos el PUBLISH.
+7) Luego para configurar el CONSUMER necesitamos una clase que sea la que se encargue de escuchar los QUEUE del event-bus, para poder capturarlos y consumir 
+su data, el objeto lo crearemos en base a la interfaz IEventHandler<T>.
+
+
+
+5.1) Interface IRabbitEventBus:
+
+public interface IRabbitEventBus
+{
+    Task EnviarComando<T>(T comando) where T : Comando;
+    Task Publish<T>(T @evento) where T : Evento;
+    Task Suscribe<T, TH>() where T : Evento 
+                           where TH : IEventHandler<T>;
+}
+
+
+5.2) Interface IEventHandler:
+
+public interface IEventHandler<in TEvent> : IEventHandler where TEvent : Evento
+{
+    Task Handle(TEvent @event);
+}
+
+public interface IEventHandler
+{}
+
+
+5.3) Clases Abstractas:
+
+// Eventos
+public abstract class Evento
+{
+    public DateTime TimeStamp { get; protected set; }
+    protected Evento()
+    {
+        TimeStamp = DateTime.Now;
+    }
+}
+
+public abstract class Message : IRequest<bool>
+{
+    public string? MessageType { get; protected set; }
+    protected Message()
+    {
+        MessageType = GetType().Name;
+    }
+}
+
+
+// Comandos
+public abstract class Comando : Message
+{
+    public DateTime TimeStamp { get; protected set; }
+    protected Comando()
+    {
+        TimeStamp = DateTime.Now;
+    }
+}
+
+
+5.4) RabbitEventBus:
+public class RabbitEventBus : IRabbitEventBus
+{
+    private readonly IMediator _mediator;
+    // En manejadores registraremos como KEY el nombre del evento y como Type el tipo del manejador
+    private readonly Dictionary<string, List<Type>> _manejadores;
+    private readonly List<Type> _eventTypes;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+
+
+    public RabbitEventBus(IMediator mediator, IServiceScopeFactory serviceScopeFactory)
+    {
+        _mediator = mediator;
+        _serviceScopeFactory = serviceScopeFactory;
+        _manejadores = new Dictionary<string, List<Type>>();
+        _eventTypes = new List<Type>();
+    }
+
+
+    public async Task Publish<T>(T evento) where T : Evento
+    {
+        // Crearemos una conexion con nuestro server de RabbitMQ
+        var factory = new ConnectionFactory() { HostName = "rabbit-web" };
+        using (var connection = await factory.CreateConnectionAsync())
+        {
+            using (var channel = await connection.CreateChannelAsync())
+            {
+                // Definire el nombre de mi Evento y Luego este sera el nombre de mi Queue, si no existe creara el Queue
+                // y si existe agregara el evento a la cola del Queue
+                var eventName = evento.GetType().Name;
+                await channel.QueueDeclareAsync(eventName, false, false, false, null);
+
+                // Convertiremos el Objeto EVENTO en un Mensaje JSON que se enviara al Event-Bus, realizando el Publish
+                var message = JsonConvert.SerializeObject(evento);
+                var body = Encoding.UTF8.GetBytes(message);
+                await channel.BasicPublishAsync(exchange: "", routingKey: eventName,body: body, CancellationToken.None);
+            }
+        }
+
+    }
+
+    // T es un Evento y TH es un Manejador de Eventos
+    public async Task Suscribe<T, TH>() where T : Evento where TH : IEventHandler<T>
+    {
+        // Aqui capturamos el evento y su manejador, verificaremos si estos existen o no en la lista de eventos y manejadores
+        var eventName = typeof(T).Name;
+        var manejadorEventoType = typeof(TH);
+        if(!_eventTypes.Contains(typeof(T))) _eventTypes.Add(typeof(T));
+        if (!_manejadores.ContainsKey(eventName))_manejadores.Add(eventName, new List<Type>());
+
+        // Verifico que no haya una misma Key en el diccionario
+        if (_manejadores[eventName].Any(x => x.GetType() == manejadorEventoType)) 
+            throw new ArgumentException($"El handler {manejadorEventoType.Name} fue registrado anteriormente por {eventName}");
+
+        _manejadores[eventName].Add(manejadorEventoType);
+
+        // Creo una conexion con RabbitMQ y agrego el EventName a la cola
+        var factory = new ConnectionFactory() { HostName = "rabbit-web" };
+        var connection = await factory.CreateConnectionAsync();
+        var channel = await connection.CreateChannelAsync();
+        await channel.QueueDeclareAsync(eventName, false, false, false, null);
+
+        // Creo el CONSUMER
+        var consumer = new AsyncEventingBasicConsumer(channel);
+        // Este delegate sera el encargado de leer los mensajes del QUEUE
+        consumer.ReceivedAsync += Consumer_Delegate;
+
+        // Realizare el consumo de los QUEUE del event-bus
+        await channel.BasicConsumeAsync(eventName, true, consumer);
+    }
+
+    public async Task EnviarComando<T>(T comando) where T : Comando
+    {
+        await _mediator.Send(comando);
+    }
+
+    // Este metodo sera el encargado de disparar el Handler
+    private async Task Consumer_Delegate(object sender, BasicDeliverEventArgs e)
+    {
+        // Capturo el nombre del evento y formateo su informacion en un string
+        var eventName = e.RoutingKey;
+        var message = Encoding.UTF8.GetString(e.Body.ToArray());
+
+        try
+        {
+            if(_manejadores.ContainsKey(eventName))
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var subscriptions = _manejadores[eventName];
+                    foreach (var sb in subscriptions)
+                    {
+                        // Este metodo permitira que los Handlers puedan inyectar objetos por el constructor
+                        var handler = scope.ServiceProvider.GetService(sb); //Activator.CreateInstance(sb);
+                        if (handler == null) continue;
+                        var eventType = _eventTypes.SingleOrDefault(x => x.Name == eventName);
+                        var @event = JsonConvert.DeserializeObject(message, eventType!);
+
+                        // Obtengo el Type de mi interfaz IEventHandler y lo utilizo para invocar su metodo Handle usando Reflection
+                        var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType!);
+                        await (Task)concreteType.GetMethod("Handle")!.Invoke(handler, new object[] { @event! })!;
+                    }
+                }       
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+}
+
+
+5.5) EventoQueue:
+public class EmailEventoQueue : Evento
+{
+    public string? Destinatario { get; set; }
+    public string? Titulo { get; set; }
+    public string? Contenido { get; set; }
+    public EmailEventoQueue(string? destinatario, string? titulo, string? contenido)
+    {
+        Destinatario = destinatario;
+        Titulo = titulo;
+        Contenido = contenido;
+    }
+}
+
+
+5.6) Implementacion de Publish con RabbitEventBus:
+// Microservice Libro
+public class Manejador : IRequestHandler<Ejecuta>
+{
+    private readonly ContextoLibreria contexto;
+    private readonly IRabbitEventBus rabbitEventBus;
+    public Manejador(ContextoLibreria contexto, IRabbitEventBus rabbitEventBus)
+    {
+        this.contexto = contexto;
+        this.rabbitEventBus = rabbitEventBus;
+    }
+
+    public async Task Handle(Ejecuta request, CancellationToken cancellationToken)
+    {
+        var libro = new LibreriaMaterial
+        {
+            AutorLibro = request.AutorLibro,
+            FechaPublicacion = request.FechaPublicacion,
+            Titulo = request.Titulo,
+            LibreriaMaterialId = Guid.NewGuid().ToString()
+        };
+        contexto.LibreriaMaterial.Add(libro);
+        var result = await contexto.SaveChangesAsync();
+        if (result == 0) throw new Exception("Error al insertar libro");
+
+        // ETAPA PUBLISH
+        var mail = new EmailEventoQueue("Vaxi", request.Titulo, "Hola");
+        await rabbitEventBus.Publish(mail);
+
+    }
+}
+
+5.7) Implementacion de Consumer con RabbitEventBus, Crear Clase que maneje las suscripciones:
+
+// El Generico es el objeto al cual debo detectar, a que objeto estara suscripto el consumer
+public class EmailEventHandler : IEventHandler<EmailEventoQueue>
+{
+    private readonly ILogger<EmailEventHandler> _logger;
+    public EmailEventHandler(ILogger<EmailEventHandler> logger)
+    {
+        _logger = logger;
+    }
+
+    // Este objeto sera el que se guardo en la Cola de QUEUES en el Broker (RabbitMQ)
+    public Task Handle(EmailEventoQueue @event)
+    {
+        _logger.LogInformation($"Email Info: {@event.Destinatario} {@event.Titulo} {@event.Contenido}");
+        return Task.CompletedTask;
+    }
+}
+
+
+5.8) DECLARAR SERVICIOS:
+// Para que esta clase se ejecute debemos registrarla en program, MS CONSUMER
+builder.Services.AddSingleton<IRabbitEventBus, RabbitEventBus>(sp =>
+{
+    // Configurare las Dependencias que requiere el constructor del RabbitEventBus
+    var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
+    return new RabbitEventBus(sp.GetRequiredService<IMediator>(), scopeFactory);
+}); => ESTA LINEA DE CONFIGURACION DEBE ESTAR TANTO EN EL CONSUMER COMO EN EL PRODUCER.
+
+builder.Services.AddTransient<EmailEventHandler>();
+builder.Services.AddTransient<IEventHandler<EmailEventoQueue>, EmailEventHandler>();
+
+// Middleware, MS CONSUMER
+var eventBus = app.Services.GetRequiredService<IRabbitEventBus>();
+await eventBus.Suscribe<EmailEventoQueue, EmailEventHandler>(); // El primer generico es el objeto a observar y el segundo el manejador
+
+
+                                                                        5) Enviar Correos con SendGrid
+
+// DataModel
+namespace TiendaServicios.Mensajeria.Email.SendGridLibreria.Modelo
+{
+    // Esta clase representara los elementos que tiene el Mensaje de Correo
+    public class SendGridDataModel
+    {
+        public string? SendGridAPIKey { get; set; }
+        public string? EmailOrigen { get; set; }
+        public string? NombreOrigen { get; set; }
+        public string? EmailDestinatario { get; set; }
+        public string? NombreDestinatario { get; set; }
+        public string? Titulo { get; set; }
+        public string? Contenido { get; set; }
+    }
+}
+
+// Interface
+namespace TiendaServicios.Mensajeria.Email.SendGridLibreria.Interface
+{
+    public interface ISendGridEnviar
+    {
+        Task<(bool resultado, string errorMessage)> EnviarEmail(SendGridDataModel data);
+    }
+}
+
+// Implement
+namespace TiendaServicios.Mensajeria.Email.SendGridLibreria.Implements
+{
+    public class SendGridEnviar : ISendGridEnviar
+    {
+        public async Task<(bool resultado, string? errorMessage)> EnviarEmail(SendGridDataModel data)
+        {
+			try
+			{
+                var sendGridCliente = new SendGridClient(data.SendGridAPIKey);
+                var destinatario = new EmailAddress(data.EmailDestinatario, data.NombreDestinatario);
+                var titulo = data.Titulo;
+                var sender = new EmailAddress(data.EmailOrigen, data.NombreOrigen);
+                var contenidoMensaje = data.Contenido;
+
+                var objMensaje = MailHelper.CreateSingleEmail(sender, destinatario, titulo, contenidoMensaje, contenidoMensaje);
+                await sendGridCliente.SendEmailAsync(objMensaje);
+                return (true, null);
+            }
+			catch (Exception ex)
+			{
+                return (false, ex.Message);
+			}
+        }
+    }
+}
+
+
+// Declarar Service
+builder.Services.AddSingleton<ISendGridEnviar, SendGridEnviar>();
+
+
+// Uso
+namespace TiendaServicios.Api.Autor.RabbitHandler
+{
+    // El Generico es el objeto al cual debo detectar, a que objeto estara suscripto el consumer
+    public class EmailEventHandler : IEventHandler<EmailEventoQueue>
+    {
+        private readonly ILogger<EmailEventHandler> _logger;
+        private readonly ISendGridEnviar _sendGridEnviar;
+        private readonly IConfiguration configuration;
+        public EmailEventHandler(ILogger<EmailEventHandler> logger, ISendGridEnviar sendGridEnviar, IConfiguration configuration)
+        {
+            _logger = logger;
+            _sendGridEnviar = sendGridEnviar;
+            this.configuration = configuration;
+        }
+
+        // Este objeto sera el que se guardo en la Cola de QUEUES en el Broker (RabbitMQ)
+        public async Task Handle(EmailEventoQueue @event)
+        {
+            _logger.LogInformation($"Email Info: {@event.Destinatario} {@event.Titulo} {@event.Contenido}");
+
+            var sendGridData = new SendGridDataModel
+            {
+                Contenido = @event.Contenido,
+                EmailDestinatario = @event.Destinatario,
+                NombreDestinatario = @event.Destinatario,
+                Titulo = @event.Titulo,
+                EmailOrigen = "santinopesyfifa@gmail.com",
+                NombreOrigen = "santinopesyfifa@gmail.com",
+                SendGridAPIKey = configuration["SendGrid:APIKey"]
+            };
+            var result = await _sendGridEnviar.EnviarEmail(sendGridData);
+            if(!result.resultado) throw new Exception("No se pudo enviar el correo");
+            await Task.CompletedTask;
+        }
+    }
+}
+
+
+
+
+                                                                                6) gRPC
+
+1) gRPC: es un Framework de comunicacion remote que utiliza HTTP/2 para la transferencia de mensajes (una evolucion de HTTP). Con una sintaxis sencilla, otorga un 
+alto rendimiento, una latencia minima y no importa el lenguaje que lo use (al igual que JSON). gRPC utiliza un Protocolo binario que permite reducir el tamaño de la 
+data enviada, reduciendo el ancho de banda.
+Grpc.AspNetCore y Grpc.AspNetCore.Server.Reflection
+
+
+1.1) Ventajas: 1) Frente a otros Frameworks de comunicacion remote gRPC posee una mayor velocidad de envio gracias al Protocolo HTTP/2. 2) Baja Latencia entre el tiempo 
+de envio y recepcion del mensaje gracias a HTTP/2. 3) Facil de usar, al tener una interfaz sencilla. 4) API First: Definicion de contrato utilizando Protocol Buffers, 
+lo que permite implementaciones independientes del lenguaje.
+
+1.2) Arquitectura y Flujo: Se tendre un gRPC Server, que sera quien reciba las PROTO-REQUEST desde un gRPC Client y sera quien devuelva una PROTO-RESPONSE, mediante 
+el protocolo HTTP/2 y mediante el formato de intercambio de datos Protocol-Buffers.
+
+
+2) Protocol Buffers: Es un formato de intercambio de datos (Como JSON) muy eficiente y facil de usar para la transmicion de estructuras de datos. Protobuf utiliza
+un formato de serializacion binario que facilita el intercambio de estructuras de datos entre aplicaciones, este formato binario combinado con HTTP/2 le permite 
+ser mas ligero y rapido que el uso de JSONs. Tambien son escalables porque permiten manejar estructuras de datos complejas y grandes volumenes de datos.
+
+2.1) Como Funcionan: 1) Primero se define el formato o estructura de datos en un archivo .proto, con estructura de datos nos referimos a que parametros tendra 
+la PROTO-REQUEST, estos parametros se encapsularan en un MESSAGE, que sera el parametro en forma de objeto que recibiremos en el gRPC server. 
+2) Compilacion: El .proto se compila en un codigo fuente para poder ser leido por el Lenguaje de programacion, es decir se convierte en codigo gRPC para poder 
+ser leido. 3) Serializacion: Los datos se serizalizan, se convierten en un stream binario para su transmicion, mediante HTTP/2. 4) Deserializacion: En el destino se 
+deserializan los datos para usarlos, es el momento donde el message definido se vuelve un Objeto de C#.
+
+2.2) Ventajas: 1) Alta Velocidad: Son mucho mas rapidos que otros formatos de transmicion de datos (JSON, XML). 2) Optimizacion del uso de ancho de banda: Al transmitir
+los datos de forma mas compacta disminuye el uso de ancho de banda. 3) Escalabilidad: Los cambios en la estructura de datos se pueden hacer sin afectar a la funcionalidad
+de la aplicacion.
+
+
+3) Anatomia de los archivos .proto: En estos archivos se define la interfaz de servicio (Se define la firma de un metodo) como la estructura de los mensajes 
+(la estructura de datos).
+
+EJ:
+// Esta es la definicion de un servicio.
+service OrderService{
+    // En la deficion de cada metodo debo utilizar la palabra reservada RPC. Luego defino el nombre del metodo y sus parametros y por ultimo lo que retorna
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+// Esta es la definicion de un Message.
+message CreateOrderRequest{
+    string id = 1;
+    string Symbol = 2;
+}
+
+
+3.1) Field Rules: A la hora de definir los campos de los Message les puedo definir diferentes Reglas: 1) Required. 2) Optional. 3) Repeated, este es un modificador
+que permite trabajar con campos de tipos Lista.
+
+3.2) Field Types: 1) Escalares: double, float, int32/64 (en C# el 32 es int y el 64 long), bool, string y bytes (en C# su equivalente es ByteString). 
+2) Enumeracion: Tipos de datos para enumeraciones. 3) Map: Tipo de dato para diccionarios (map<string,string>). 3) Tipos de datos de Google: google.protobuf.Timestamp 
+(DateTime) y google.protobuf.Duration (TimeSpan).
+
+
+4) Patrones de comunicacion en gRPC: 1) Unary RPCs, en este patron de comunicacion el cliente envia una sola solicitud al servidor y este le devuelve una unica 
+respuesta, es la forma de comunicacion mas comun. 2) Server streaming RPCs, en este patron el cliente envia una sola solicitud al servidor y este le devuelve 
+un flujo de datos (stream o transmision). gRPC garantiza la ordenacion de los MSG dentro de una llamada RPC individual. 3) Client streaming RPCs: Es el proceso inverso 
+del Server Streaming, una vez el servidor lee todos los MSG recien da una respuesta. 4) Bidireccional streaming RPCs: El cliente le pasa un Flujo de datos al servidor y 
+este le responde con otro flujo de datos, los flujos son independientes por lo cual los clientes y servidores pueden leer y escribir en el orden que deseen.
+
+4.1) Unary RPCs:
+service CustomerService{
+    rpc CreateCustomer (CustomerRequest) returns (CustomerResponse);
+}
+
+4.2) Server streaming RPCs:
+service CustomerService{
+    rpc QueryCustomer (QueryCustomerRequest) returns (stream QueryCustomerResponse);
+}
+
+4.3) Client streaming RPCs:
+service CustomerService{
+    rpc BulkCustomer (stream BulkCustomerRequest) returns (BulkCustomerResponse);
+}
+
+4.4) Bidireccional streaming RPCs:
+service CustomerService{
+    rpc TwoWayCustomer (stream TwoWayCustomerRequest) returns (stream TwoWayCustomerResponse);
+}
+
+
+5) gRPC vs REST: Ambos son arquitecturas que facilitan la comunicación entre clientes y servidores en aplicaciones distribuidas.
+
+Diferencias 1) Protocolo: gRPC usa HTTP/2 y REST HTTP/1.1. 2) Payload: el formato de intercambio de datos de gRPC es Protobuf (binario y mas compacto) y 
+REST usa JSON (mas legible pero mas pesado). 3) Api Contract: gRPC son estrictos y requeridos, esto es definido en el .proto, en REST son flexibles y opcionales,
+y se definen siguiendo la especificacion de Opea API. 4) Streaming: gRPC tien un flujo de datos Bidireccional, Rest solo permite peticiones del Cliente al servidor.
+5) Browser Support: gRPC requiere  gRPC Web para funcionar.
+
+5.1) Payload: En la terminología de la API, el payload se refiere a la parte de los datos transmitidos que es el mensaje real enviado entre el cliente y el servidor.
+Basicamente el formato de intercambio de datos entre el cliente y servidor.
+
+6) gRPC se desarrollara en la capa de presentacion junto a los controladores.
+
+7) Eventos de Dominio: Un evento es algo que ha sucedido en el pasado, un cambio de estado o actualizacion en una entidad y a partir de esto se requiere avisar de 
+este cambio a otro Microservicio el cual no se conoce. Estos se implementan usando el patron Publish y Suscriber.
+
+
+8) Event Sourcing CQRS: Este metodo de implementar CQRS dice que una vez que se ejecute un comando este disparara un evento de publicacion que guardara 
+directrices en una cola de Evento. Basicamente Event-Sourcing es la comunicacion entre MS, una vez que se actualice un MS quizas deba llamar a otro mediante 
+el Publish y Suscribe para disparar otra accion en otro MS.
+
+
+9) Clase Inmutable: sus objetos no pueden ser modificados una vez que han sido creados. Esto significa que todos los campos de la clase son constantes o solamente 
+tienen métodos de lectura (getters) y no de escritura (setters). Para definir a una clase como inmutable cambio CLASS por RECORD.
+
+public sealed record UpdateOrderCommand : IRequest<bool>
+{
+    public int Id { get; set; }
+    public int Quanty { get; set; }
+    public OrderType Type { get; set; }
+    public decimal Price { get; set; }
+    public string? Text { get; set; }
+}
+
+10) Services: Los services estaran ligado a mis protos, la clase de la que heredara sera el nombre de mi proto + protoBase. Aqui definire la logico del metodo que 
+defini en proto, debere utilizar OVERRIDE para escribir los metodos definidos en el .proto. Estos Services vienen a reemplazar a los controllers, aqui es donde 
+realizare mis transacciones y responses.
+
+
+11) gRPC Interceptors: Los interceptores son un concepto de gRPC que permite que las aplicaciones interactuen con llamadas gRPC entrantes o salientes. Los interceptores
+se configuran para un canal o servicio (Al igual que los Filters) y se ejecutan automaticamente para cada llamada gRPC. Tienen un funcionamiento similar a un Middleware, 
+en vez de interceptar todas las peticiones HTTP, estos interceptors solo interceptan peticiones HTTP/2 gRPC.
+
+Los Interceptores se pueden usar para clientes o servidores gRPC, creando una clase que herede del tipo Interceptor:
+
+11.1) ServerInterceptors: Interceptan solicitudes gRPC entrantes. Proporcionan acceso a la solicitud entrante, la respuesta saliente y el contexto de una 
+llamada del lado del servidor. Tipos de ServerInterceptors: 1) UnaryServerHandler. 2) ClientStremingServerHandler. 3) ServerStreamingServerHandler. 
+4) DuplexStreamingServerHandler.
+
+11.2) Client Interceptors:  Proporcionan acceso a la solicitud enviada, a la respuesta entrante y el contexto de una llamado del lado del cliente.
+Tipos de Client Interceptor: 1) BlockingUnaryCall: intercepta una invocacion de bloqueo de un RPC unario. 2) AsyncUnaryCall. 3) AsyncClientStreamingCall
+4) AsyncServerStreamingCall. 5) AsyncDuplexStreamingCall.
+
+
+11.3) gRPC Intercetors: 1) Funciona sobre la capa de abstraccion gRPC utilizando la clase ServerCallContext. 2) La Clase ServerCallContext proporciona acceso a 
+el mensaje desarializado a una llamada y/o el mensaje devuelto de la llamada antes de ser serializado (en los Middlewares solo puedo acceder a bytes de los flujos 
+de solicitud y respuesta). 3) Permite capturar y gestionar excepciones lanzadas desde los servicios gRPC.
+
+
+12) Pipeline Behaviors: es una serie de pasos o etapas organizadas de forma secuencial que describen como se debe comportar un sistema. Basicamente Pipeline
+Behaviors describe como es un flujo de trabajo.
+
+
+12.1) MediatR Pipeline Behaviors: Es una tuberia que nos ofrece el paquete MediatR que permite interceptar los mensajes que se procesan mediante los HANDLERS. 
+De esta forma podemos agregar funcionalidades como autorizacion, validacion, logs, manejo de excepciones o cualquier otra funcionalidad que necesitemos que se ejecute 
+antes y/o despues de que se procese el mensaje.
+
+Al igual que el Pipeline de ASP esto me permite centralizar las funcionalidades/cuestiones transversales en un unico punto y evitar tener que repetir la implementacion 
+de estas constantemente en los manejadores, basicamente centralizo validaciones/acciones comunes en un lugar para todas las peticiones MediatR.
+
+EJ: Generalmente los Pipeline manejan los Logs, el Manejo de excepciones, La validacion de los datos de entrada y el Caching.
+
+
+                                                                        7) gRPC Practico
+
+1) Archivo .proto:
+
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Pacagroup.Trade.Services.gRPC";
+
+service Order {
+	rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+	rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse);
+	rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+	rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+	rpc GetAllOrder(GetAllOrderRequest) returns (GetAllOrderResponse);
+}
+
+// GET
+message GetOrderRequest {
+	int32 Id = 1;
+}
+message GetOrderResponse {
+	ServerResponse Response = 1;
+	OrderResponse Data = 2;
+}
+
+
+// GET ALL
+message GetAllOrderRequest {
+}
+
+message GetAllOrderResponse {
+	ServerResponse Response = 1;
+	repeated OrderResponse Data = 2;
+}
+
+
+
+// CREATE
+message CreateOrderRequest {
+	int32 Id = 1;
+	string Symbol = 2;
+	OrderSide Side = 3;
+	google.protobuf.Timestamp TransactTime = 4;
+	int32 Quantity = 5;
+	OrderType Type = 6;
+	double Price = 7;
+	string Currency = 8;
+	string Text = 9;
+}
+message CreateOrderResponse {
+	ServerResponse Response = 1;
+	OrderResponse Data = 2;
+}
+
+
+// UPDATE
+message UpdateOrderRequest {
+	int32 Id = 1;
+	int32 Quantity = 2;
+	OrderType Type = 3;
+	double Price = 4;
+	string Text = 5;
+}
+message UpdateOrderResponse {
+	ServerResponse Response = 1;
+	OrderResponse Data = 2;
+}
+
+// DELETE
+message DeleteOrderRequest {
+	int32 Id = 1;
+}
+message DeleteOrderResponse {
+	ServerResponse Response = 1;
+}
+
+// Elementos Auxiliares
+enum OrderSide{
+	BUY = 0;
+	SELL = 1;
+}
+enum OrderType{
+	LIMIT = 0;
+	MARKET = 1;
+}
+
+message ServerResponse{
+	bool IsSuccess = 1;
+	string Message = 2;
+	string Errors = 3;
+}
+message OrderResponse{
+	int32 Id = 1;
+	string Symbol = 2;
+	OrderSide Side = 3;
+	google.protobuf.Timestamp TransactTime = 4;
+	int32 Quantity = 5;
+	OrderType Type = 6;
+	double Price = 7;
+	string Currency = 8;
+	string Text = 9;
+}
+
+
+2) Services:
+
+public class OrderService : Order.OrderBase
+{
+    private readonly IMediator mediator;
+    private readonly IMapper mapper;
+    public OrderService(IMediator mediator, IMapper mapper)
+    {
+        this.mediator = mediator;
+        this.mapper = mapper;
+    }
+
+    public override async Task<GetAllOrderResponse> GetAllOrder(GetAllOrderRequest request, ServerCallContext context)
+    {
+        // Traigo todas las ordenes mediante el Mediator
+        var ordersDTO = await mediator.Send(new GetAllOrderQuery());
+
+        // Creo mi Response y Server Response
+        var response = new GetAllOrderResponse();
+        var serverResponse = new ServerResponse();
+
+        // Si hay ordenes, mapeo y agrego la Data al response
+        if (ordersDTO != null && ordersDTO.Any())
+        {
+            serverResponse.IsSuccess = true;
+            serverResponse.Message = "Orders found";
+            response.Data.AddRange(mapper.Map<IEnumerable<OrderResponse>>(ordersDTO));
+        }
+        else
+        {
+            serverResponse.Message = "Orders not found";
+        }
+
+        response.Response = serverResponse;
+        return response;
+    }
+
+    public override async Task<GetOrderResponse> GetOrder(GetOrderRequest request, ServerCallContext context)
+    {
+        var order = await mediator.Send(new GetOrderQuery { Id = request.Id });
+        var response = new GetOrderResponse();
+        var serverResponse = new ServerResponse();
+
+        if (order != null)
+        {
+            serverResponse.IsSuccess = true;
+            serverResponse.Message = "Order found";
+            response.Data = mapper.Map<OrderResponse>(order);
+        }
+        else
+        {
+            serverResponse.IsSuccess = false;
+            serverResponse.Message = "Order not found";
+        }
+        response.Response = serverResponse;
+        return response;
+    }
+
+    public override async Task<CreateOrderResponse> CreateOrder(CreateOrderRequest request, ServerCallContext context)
+    {
+        // Convierto mi Request en un Command
+        var createOrderCommand = mapper.Map<CreateOrderCommand>(request);
+        // Verifico si el resultado es exitoso
+        var status = await mediator.Send(createOrderCommand);
+
+        var response = new CreateOrderResponse();
+        var serverResponse = new ServerResponse();
+
+        if (status)
+        {
+            var orderDTO = await mediator.Send(new GetOrderQuery { Id = request.Id });
+
+            response.Data = mapper.Map<OrderResponse>(orderDTO);
+            serverResponse.IsSuccess = true;
+            serverResponse.Message = "Order created";
+        }
+        else
+        {
+            serverResponse.IsSuccess = false;
+            serverResponse.Message = "Order not created";
+        }
+        response.Response = serverResponse;
+        return response;
+    }
+
+    public override async Task<UpdateOrderResponse> UpdateOrder(UpdateOrderRequest request, ServerCallContext context)
+    {
+        var updateCommand = mapper.Map<UpdateOrderCommand>(request);
+        var status = await mediator.Send(updateCommand);
+
+        var response = new UpdateOrderResponse();
+        var serverResponse = new ServerResponse();
+
+        if (status)
+        {
+            var orderDTO = await mediator.Send(new GetOrderQuery { Id = request.Id });
+            response.Data = mapper.Map<OrderResponse>(orderDTO);
+            serverResponse.IsSuccess = true;
+            serverResponse.Message = "Order updated";
+        }
+        else
+        {
+            serverResponse.IsSuccess = false;
+            serverResponse.Message = "Order not updated";
+        }
+        response.Response = serverResponse;
+        return response;
+    }
+
+    public override async Task<DeleteOrderResponse> DeleteOrder(DeleteOrderRequest request, ServerCallContext context)
+    {
+        var deleteCommand = new DeleteOrderCommand { Id = request.Id };
+        var status = await mediator.Send(deleteCommand);
+        var response = new DeleteOrderResponse();
+        var serverResponse = new ServerResponse();
+        if (status)
+        {
+            serverResponse.IsSuccess = true;
+            serverResponse.Message = "Order deleted";
+        }
+        else
+        {
+            serverResponse.IsSuccess = false;
+            serverResponse.Message = "Order not deleted";
+        }
+        response.Response = serverResponse;
+        return response;
+    }
+}
+
+
+3) Mapping:
+
+public class MappingsProfile : Profile
+{
+    public MappingsProfile()
+    {
+        CreateMap<DateTime, Timestamp>()
+            .ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
+        CreateMap<Timestamp, DateTime>()
+            .ConvertUsing(x => x.ToDateTime());
+
+
+        CreateMap<CreateOrderCommand, CreateOrderRequest>().ReverseMap();
+        CreateMap<UpdateOrderCommand, UpdateOrderRequest>().ReverseMap();
+        CreateMap<OrderResponse, GetOrderResponseDTO>().ReverseMap();
+        CreateMap<OrderResponse, GetAllOrderResponseDTO>().ReverseMap();
+    }
+}
+
+
+4) Configurar Servicios:
+
+// Services
+builder.Services.AddGrpcReflection();
+
+// Middlewares
+app.MapGrpcService<OrderService>();
+app.MapGrpcReflectionService();
+
+
+
+5) Interceptores Entity Framework:
+
+// Crear Interceptor 
+public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
+{
+    public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    {
+        UpdateEntities(eventData.Context!);
+        return base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+    {
+        UpdateEntities(eventData.Context!);
+        return base.SavedChanges(eventData, result);
+    }
+
+    private void UpdateEntities(DbContext context)
+    {
+        if(context is null) return;
+
+        foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
+        {
+            if(entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedBy = "System";
+                entry.Entity.Created = DateTime.Now;
+            }
+            else if(entry.State == EntityState.Modified)
+            {
+                entry.Entity.LastModifiedBy = "System";
+                entry.Entity.LastModified = DateTime.Now;
+            }
+        }
+    }
+}
+
+// Agregar interceptores al DbContext:
+
+private readonly AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor;
+public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) :base(options)
+{
+    this.auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+}
+
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
+    optionsBuilder.EnableSensitiveDataLogging();
+}
+
+// Inyectar Servicios desde otra capa:
+public static class PersistenceServices
+{
+    public static IServiceCollection AddPersistenceService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+        return services;
+    }
+}
+
+
+6) GlobalExceptionHandler - gRPC Interceptor: Este interceptara todas las peticiones GRPC y si ocurre algun excepcion sera el encargado de manejarlo.
+
+-- EJEMPLO DETALLADO ABAJO
+
+// Declarar servicio
+builder.Services.AddSingleton<ErrorHandlingInterceptor>();
+builder.Services.AddGrpc(opt =>
+{
+    opt.Interceptors.Add<GlobalExceptionHandler>();
+});
+
+
+
+7.1) Implementacion de Logs con MediatR Pipeline:
+
+namespace Pacagroup.Trade.Application.UsesCases.Commons.Behaviors
+{
+    public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse> // Aca definimos que el Request debe implementar la interfaz IRequest
+    {
+        private readonly ILogger<LoggingBehaviour<TRequest, TResponse>> _logger;
+        public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest, TResponse>> logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            var correlationId = Guid.NewGuid();
+            _logger.LogInformation("Handling: {correlationId} {name} {@request}", correlationId,typeof(TRequest).Name, JsonSerializer.Serialize(request));
+            var response = await next();
+            _logger.LogInformation("Handling: {correlationId} {name} {@response}", correlationId, typeof(TRequest).Name, JsonSerializer.Serialize(response));
+            return response;
+        }
+    }
+}
+
+
+// Registrar MediatR Pipeline Behaviours
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+});
+
+
+7.2) Implementacion de Validaciones con MediatR Pipeline:
+
+namespace Pacagroup.Trade.Application.UsesCases.Commons.Behaviors
+{
+    public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+    {
+        // Esta variable almacenara todas las reglas de validacion.
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+        {
+            _validators = validators;
+        }
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            if(!_validators.Any())
+            {
+                var context = new ValidationContext<TRequest>(request);
+
+                // Recupero las validaciones incumplidas y luego recupero sus errores
+                var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+                var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+
+                if (failures.Any()) throw new ValidationExceptionCustom(failures);
+            }
+            return await next();
+        }
+    }
+}
+
+
+// Exception Personalizada
+namespace Pacagroup.Trade.Application.UsesCases.Commons.Exceptions
+{
+    public class ValidationExceptionCustom : Exception
+    {
+        public List<string> Errors { get; set; }
+
+        public ValidationExceptionCustom() : base("One or more validation failures have occurred.")
+        {
+            Errors = [];
+        }
+
+        public ValidationExceptionCustom(IEnumerable<ValidationFailure> errors) : this()
+        {
+            Errors = errors.Select(x => x.ErrorMessage).ToList();
+        }
+    }
+}
+
+
+// Agregar Los FluentValidation como service
+services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+
+7.3) Implementacion de Behaviours personalizados en MediatR Pipeline:
+namespace Pacagroup.Trade.Application.UsesCases.Commons.Behaviors
+{
+    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+    {
+        private readonly Stopwatch _timer;
+        private readonly ILogger<TRequest> _logger;
+
+        public PerformanceBehaviour(ILogger<TRequest> logger)
+        {
+            _timer = new Stopwatch();
+            _logger = logger;
+        }
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            _timer.Start();
+            var response = await next();
+            _timer.Stop();
+            var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+            if (elapsedMilliseconds > 1000)
+            {
+                var requestName = typeof(TRequest).Name;
+                _logger.LogWarning("Trade Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
+                    requestName, elapsedMilliseconds, JsonSerializer.Serialize(request));
+            }
+            return response;
+        }
+    }
+}
+
+
+8) Paquetes Para Proyecto Grpc:
+
+Cliente: Google.Protobuf, Grpc.AspNetCore y Grpc.Net.Client.
+
+Servidor: Google.Protobuf, Grpc.AspNetCore, Grpc.AspNetCore.Reflection, Grpc.Net.Client y Grpc.Tools.
+
+
+                                                                    8) Manejo de Excepciones y Validaciones con gRPC
+
+1) Para el Manejo de excepciones primero implementaremos el GlobalExceptionHandler, este se encargara de que cualquier excepcion que se produzca en una 
+peticion gRPC sea capturada y manejada. Luego Configuraremos el Pipeline Behaviour de Validaciones, este revisara si hay alguna regla incumplida y 
+si es asi hara saltar la excepcion. Por ultimo crearemos una excepcion Personalizada para manejar los mensajes de error.
+
+1.1) // GlobalExceptionHandler - Capa Presentacion
+namespace PruebaMicroservicios.Autor.Presentation.Common.Exceptions
+{
+    public class GlobalExceptionHandler : Interceptor
+    {
+        public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(TRequest request, ServerCallContext context, UnaryServerMethod<TRequest, TResponse> continuation)
+        {
+            try
+            {
+                return await base.UnaryServerHandler(request, context, continuation);
+            }
+            catch (ValidationExceptionCustom ex)
+            {
+                var serverResponse = new ServerResponse
+                {
+                    IsSuccess = false,
+                    Message = "Errores en la ejecucion",
+                    Errors = String.Join("; ", ex.Errors)
+                };
+                return MapResponse<TRequest, TResponse>(serverResponse);
+            }
+        }
+
+        private TResponse MapResponse<TRequest, TResponse>(ServerResponse serverResponse)
+        {
+            var response = Activator.CreateInstance<TResponse>();
+            SetNestedPropertyValue(response, "Response.IsSuccess", serverResponse.IsSuccess);
+            SetNestedPropertyValue(response, "Response.Message", serverResponse.Message);
+            SetNestedPropertyValue(response, "Response.Errors", serverResponse.Errors);
+            return response;
+        }
+
+        private static void SetNestedPropertyValue<T>(T obj, string propertyPath, object value)
+        {
+            if (obj == null || string.IsNullOrEmpty(propertyPath))
+            {
+                throw new ArgumentNullException(nameof(obj), "El objeto o ruta de la propiedad no pueden ser nulls");
+            }
+
+            var properties = propertyPath.Split('.');
+            var currentObject = (object)obj;
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var propertyName = properties[i];
+                var property = currentObject!.GetType().GetProperty(propertyName);
+                if (property == null)
+                {
+                    throw new ArgumentException($"La propiedad {propertyName} no existe en el objeto {currentObject.GetType().Name}");
+                }
+
+                if (i == properties.Length - 1)
+                {
+                    property.SetValue(currentObject, value);
+                }
+                else
+                {
+                    var nextObject = property.GetValue(currentObject);
+                    if (nextObject == null)
+                    {
+                        nextObject = Activator.CreateInstance(property.PropertyType);
+                        property.SetValue(currentObject, nextObject);
+                    }
+                    currentObject = nextObject;
+                }
+            }
+        }
+    }
+}
+
+
+1.2) // ValidationBehaviour - Capa Application
+namespace PruebaMicroservicios.Autor.Application.Common
+{
+    public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+    {
+        // Esta variable almacenara todas las reglas de validacion
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+        {
+            _validators = validators;
+        }
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            if (_validators.Any())
+            {
+                var context = new ValidationContext<TRequest>(request);
+
+                // Recupero las validaciones incumplidas y luego recupero sus errores
+                var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+                var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+
+                if (failures.Any()) throw new ValidationExceptionCustom(failures);
+            }
+            return await next();
+        }
+    }
+}
+
+1.3) // Excepcion Personalizada - Capa Application
+namespace PruebaMicroservicios.Autor.Application.Common
+{
+    public class ValidationExceptionCustom : Exception
+    {
+        public List<string> Errors { get; set; }
+
+        public ValidationExceptionCustom() : base("One or more validation failures have occurred.")
+        {
+            Errors = [];
+        }
+
+        public ValidationExceptionCustom(IEnumerable<ValidationFailure> errors) : this()
+        {
+            Errors = errors.Select(x => x.ErrorMessage).ToList();
+        }
+    }
+}
+
+
+
+                                                                        9) Configurar Peticiones REST a gRPC
+
+1.1) Si vamos a crear un API Gateway para servicios gRPC estas peticiones Por el Gateway seran si o si por HTTP 1.1, y deberemos exporner endpoints HTTP 1.1 para 
+acceder a ellos. Esto debido a que gRPC es mayormente utilizado en la comunicacion interna entre servidores pero no tanto con clientes, esto se puede dar mediante 
+mayormente por REST.
+Para poder admitir peticiones REST a gRPC para que un Gateway pueda llamar a las peticiones deberemos instalar los paquetes: Microsoft.AspNetCore.Grpc.JsonTranscoding y 
+Google.Api.CommonProtos. 
+
+Luego diremos que se aceptan llamadas de ambos protocolos HTTP en el AppSetings:
+"Kestrel": {
+  "EndpointDefaults": {
+    "Protocols": "Http1AndHttp2"
+  }
+}
+
+
+Y por ultimo definiremos el endpoint en el .proto:
+
+import "google/api/annotations.proto";
+
+
+service Libro {
+	rpc GetLibro(GetLibroByIdRequest) returns (GetLibroByIdResponse) {
+		option (google.api.http) = {
+		  get: "/api/libro/{Id}"
+		};
+	}
+	rpc GetAllLibro(GetAllLibroRequest) returns (GetAllLibroResponse) {
+		option (google.api.http) = {
+		  get: "/api/libro"
+		};
+	}
+	rpc CreateLibro(CreateLibroRequest) returns (CreateLibroResponse){
+		option (google.api.http) = {
+		  post: "/api/libro"
+		  body: "*"
+		};
+	}
+	rpc UpdateLibro(UpdateLibroRequest) returns (UpdateLibroResponse) {
+		option (google.api.http) = {
+		  put: "/api/libro"
+		  body: "*"
+		};
+	}
+	rpc DeleteLibro(DeleteLibroRequest) returns (DeleteLibroResponse){
+		option (google.api.http) = {
+		  delete: "/api/libro/{Id}"
+		};
+	}
+}
+
+
+1.2) Ademas para que esto funcione el servidor debe tener un Certidicado TLS valido, sino forzara todas las llamadas al protocolo HTTP 1.1.
+
+
+2) Flujo de funcionamiento:
+
+1) Cliente: Realiza una llamada HTTP/1.1 (por ejemplo, enviando JSON) al API Gateway. 2) Gateway (YARP): Recibe la solicitud en HTTP/1.1 y la reenvía al microservicio 
+adecuado. 3) Recepción de la solicitud: El microservicio gRPC está configurado con JSON transcoding. Esto significa que, aunque el cliente envíe JSON sobre HTTP/1.1, gracias 
+a la configuración del transcoding (usualmente mediante atributos en el archivo .proto y configuraciones en ASP.NET Core), la solicitud se mapea internamente a una llamada 
+gRPC (es decir, se convierte al mensaje definido en Protobuf). No se “convierte el formato a .proto” de manera literal; lo que sucede es que el sistema mapea la estructura JSON 
+a los mensajes definidos en tu archivo .proto. La lógica del método se ejecuta como una llamada gRPC y, en ese entorno, el transporte es normalmente HTTP/2. Si el endpoint está 
+configurado para funcionar únicamente en HTTP/2, la solicitud JSON transcoded se atenderá vía HTTP/2. 4) Comunicación interna: Si este microservicio necesita llamar a otro 
+microservicio gRPC, esa comunicación se establecerá utilizando HTTP/2, aprovechando todas las ventajas que ofrece. 5) Una vez el microservicio procesa la solicitud y obtiene una 
+respuesta (como un mensaje gRPC), el JSON transcoding realiza el mapeo inverso, transformando el mensaje gRPC al formato JSON. Esa respuesta JSON es reenviada al Gateway, que a 
+su vez la devuelve al cliente.
+
+                                                                                    10) Yarp
+
+// Declarar servicio:
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
+app.MapReverseProxy();
+
