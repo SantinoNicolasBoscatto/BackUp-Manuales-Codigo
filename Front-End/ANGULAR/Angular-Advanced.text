@@ -1,0 +1,3792 @@
+                                                                                    
+                                                                                    1) Basics
+
+1) Angular Essentials: 1) Entender la estructura de un proyecto Angular. 2) Trabajar con Componentes. 3) Manejar Eventos de usuario. 4) Renderizar y actulizar 
+dinamicamente la UI y su contenido.
+
+2) Files:
+2.1) tsConfig Files: Estos archivos son los que se encargan de manejar la compilacion de TS hacia JS, generalmente no debemos modificarlos.
+2.2) package Files: En estos se encontraran las dependencias del proyecto.
+2.3) angular File: En este archivo se encontraran configuraciones de las herramientas de angular.
+
+3) En el caso de que falten dependencias de instalar ejecutaremos por consola "npm install"
+
+4) @Component: Es una caracteristica propia de TS con Angular, el decorador @Component nos permite definir una serie de metadatos que nos pueden ser utiles. Al
+definir este decorador declaramos que ese elemento es un componente de angular.
+
+5) Declarar un Componente en el index: Generalmente si yo quiero colocar un componente como una cabecera en mi index.html este no se mostrara, debido a que debera
+decirle explicitamente a angular que lo muestre, no me bastara declarar su etiqueta, para este debera declararlo en el main.ts.
+
+6) Property Binding: Basicamente es declarar el valor de una propiedad en angular mediante una variable creada en TS. Para hacer esto definiremos un propiedad HTML
+entre corchetes y colocaremos la varible que le dara el valor a esa propiedad. Tambien los valores podran ser definidos por operaciones logicas de T/F
+
+<img [src]="selectedUser.avatar" alt="">
+<img [ngSrc]="pelicula.poster" alt="" [priority]="$index===0" width="169" height="250">
+
+
+6.1) Aclaracion: El Property Binding es una técnica que te permite asignar valores dinámicos a las propiedades de los elementos HTML, no a sus atributos.
+Parece que estás cambiando el atributo src de la etiqueta <img>, pero en realidad estás modificando la propiedad src del objeto que representa esa imagen en el DOM.
+
+La diferencia radica en que los atributos HTML son valores estáticos definidos en el HTML y no cambian después de que la página se carga, y las propiedades son dinámicas 
+y pueden cambiar en tiempo real mediante JavaScript.
+
+En el caso de que no exista una propiedad equivalente en el DOM para modificar un attribute, utilizaremos el attribute de Angular:
+<div role="progressbar" [attr.aria-valuenow]="currentVal" [attr.aria-valuemax]="maxVal">...</div>
+
+
+7) Getter TS: Tanto en JS como TS existen funciones especiales que son los Getters y Setters, en este caso el Getter se podra ejecutar sin explicitar su llamada con 
+los parentesis, esta funcion solo se encarga de devolver un valor. Al ser una funcion GETTER esta no necesita ser ejecutada, es decir no se debe llamar a los parentesis.
+
+// Crear un Getter en TS
+  get imagePath(){
+    return 'assets/users/'+this.selectedUser.avatar;
+}
+// Uso el Getter
+<img [src]="imagePath" alt="">
+
+
+
+8) Deteccion de Cambios Angular: La deteccion de cambios en angular permite refrescar la UI sin recargar la pagina, tal y como funciona una SPA. Esto lo puede hacer
+mediante el script Zone.js, este script lo que hace es estar suscripta a todos los eventos posibles y una vez se ejecutan verificar si angular debe o no actualizar 
+la UI con nuevos valores.
+
+
+9) Output Function: En versiones modernas de angular existe otra forma de crear Outputs ademas del decorator, esto mediante la funcion output(). Lo unico que cambia 
+es que no usare el decorador, el resto del codigo se mantiene igual. La funcion de ambos Outputs es darnos la posibilidad de ejecutar eventos personalizados.
+
+select = output<string>();
+onSelectUser(){
+  this.select.emit(this.id);
+}
+
+
+
+10) Types e Interfaces en TypeScript: En ellas puedo definir la estructura de un objeto, basicamente serian como clases Modelo, defino propiedades y el tipo de 
+estas. La gran diferencia es que interface permite extender sus propiedades incluso cuando se alla inicializado y Type no permite esto. Generalmente es mas 
+comun el uso de interface. Al crear una interface, el nombre del archivo deber ser el nombreDeLaInterfaz.model.ts
+
+
+
+11) ngIf y ngFor:
+
+// NgFOR
+<li *ngFor="let user of objects">
+    <app-user [user]="user"(select)="onSelectUser($event)"/>
+</li>
+
+
+// NgIF
+<div *ngIf="user !== undefined else fallback" >
+  <app-tasks [userName]="user.name"/>
+</div>
+
+<ng-template #fallback>
+  <h2 id="fallback">Select a User</h2>
+</ng-template>
+
+
+13) Two-Way Binding: Es una técnica que permite mantener sincronizados un modelo de datos y la interfaz de usuario. Cualquier cambio en la UI se reflejará automáticamente 
+en el modelo y viceversa. De esta forma tendre trackeado en tiempo real los inputs del usuario. En resumen El Two-Way Binding es una gran herramienta cuando necesitas que 
+la UI reaccione de inmediato a cambios en el modelo, sin la necesidad de escribir eventos manuales. Facilita la sincronización de datos y hace que la experiencia del usuario 
+sea más fluida.
+
+<input [(ngModel)]="nombre">
+<p>Hola, {{ nombre }}!</p>
+
+
+13.1) Situaciones donde NO Usar Two-Way Binding: 1) Apps con llamadas frecuentes al backend (e-commerce, dashboards con datos en tiempo real). 2) Sistemas con lógica compleja 
+de actualización de estado (como validaciones en múltiples pasos). 3) Interfaces que dependen de filtros y búsquedas en la API.
+
+
+13.2) Situaciones donde SI Usar Two-Way Binding: 1) Formularios locales donde los datos se procesan solo en el frontend. 2) UI con cambios visuales en tiempo real, como 
+personalización de colores. 3) Componentes independientes que NO generan solicitudes a la API.
+
+
+
+
+14) Directivas: Las directivas vienen a ser elementos que extienden funciones, ejemplo de directivas son ngModel por ejemplo. Son similares a los componentes en el 
+sentido de que ambos extienden funcionalidades, la diferencia es que las directivas no tienen codigo HTML. Pero al final un componente es una directiva que incluye una 
+plantilla HTML.
+
+
+15) FormsModule: Es una libreria que trae integrada angular y que tiene en ella varias directivas que facilitan el manejo de formularios y entrada de datos por parte 
+de los usuarios.
+
+
+15.1) (ngSubmit): Por defecto en JS cuando ejecutamos un Submit en un formulario este tendra definido un evento por defecto que hara el envio de un formulario mediante 
+un metodo POST. Para poder evitar este metodo por defecto lo que deberemos hacer sera definir el evento (ngSubmit) de angular, este nos permitira evitar el evento 
+por defecto del Submit y manejarlos nosotros manualmente.
+
+
+
+16) Content-Projection: En el caso de que tengamos un componente el cual funciona como un contenedor para otro marcado, si hacemos el WRAP este sobrescribira nuestro 
+codigo HTML con el de la plantilla. Para evitar eso usamos <ng-content/>
+
+// USER COMPONENT 
+<app-card>
+    <button (click)="onSelectUser()" [class.active]="selected">
+        <img [alt]="user.name" [src]="imagePath">
+        <span>{{user.name}}</span>
+    </button>
+</app-card>
+
+
+// CARD COMPONENT
+<div>
+    <ng-content />
+</div>
+
+
+
+17) Pipes: Son elementos que me permiten manipular el formateo de datos de salida. Tambien tienen la capacidad de recibir parametros para cambiar el formateo.
+
+<time>{{task.dueDate | date: 'short' }}</time>
+
+
+18) Dependency Injection: Para inyectar dependencias en angular tenemos 2 versiones, mediante constructores o funciones. En aplicaciones StandAlone, lo mas 
+comun es mediante la funcion inject() aunque ambas opciones son validas.
+
+// Mediante Constructor
+constructor(private taskService: TasksService) 
+{}
+
+// Mediante Funcion
+private taskService = inject(TasksService);
+
+
+
+18.1) Como hacer una clase Inyectable: No todas las clases en angular pueden inyectarse, estas deben registrarse como inyectables. Para esto se debe usar el 
+decorador @Injectable.
+
+@Injectable({
+  providedIn: 'root' // El declarar root me permite inyectar el servicio en cualquier lugar
+})
+
+
+
+19) Componente: Un componente en angular es un elemento funcional y visual (a diferencia de las directivas que son elementos solo funcionales), que se crea combinando 
+codigo HTML, CSS y TS. Define cómo se muestra y se comporta una sección específica de la aplicación, la ventaja de los componentes es que son independientes
+y reutilizables.
+
+En sintesis un Componente algo que mejora a los elementos, extendiendo sus comportamientos, funcionalidades y/o configuraciones y ademas provee un template 
+(plantilla HTML), a diferencia de una directiva.
+
+
+                                                                                2) Angular Modules
+
+1) Los Angular Modules son una forma de organizar y estructurar una aplicación en Angular. Funcionan como contenedores que agrupan componentes, directivas, pipes y 
+servicios relacionados. Basicamente Angular Module busca crear grupos de componentes, directivas, pipes y servicios que esten relacionados entre si, viene a ser 
+una unidad organizativa de elementos relacionados.
+
+
+2) AppModule: Este sera el centro organizativo de una aplicacion AngularModule, en esta definiremos y registraremos todos los componentes que usaremos y que estos 
+deberan conocerse entre si. Mediante imports podemos combinar elementos StandAlone y NonStandAlone Components, ya que este acepta importaciones de ambos tipos.
+
+@NgModule({
+    //Aca declararemos y definiremos todos nuestros componentes que trabajaran juntos. Aca definire los componentes que se conoceran 
+    // entre si, si quiero combinar componentes estos deben conocerse entre si. Aqui iran solo NonStandAlone Components
+    declarations: [AppComponent], 
+
+    // Aca defino el archivo raiz de nuestra aplicacion de Angular, es el archivo con el que quiero inicializar mi aplicacion.
+    bootstrap: [AppComponent] ,
+
+    // Con esta propiedad podre importar tanto StandAlone y NonStandAlone Components a mis modulos
+    imports: [ BrowserModule ,HeaderComponent, UserComponent, TasksComponent]
+})
+
+export class AppModule {}
+
+
+3) Como Iniciar un Proyecto Angular Module: En el Main.ts por defecto tenemos configurado el inicio de un proyecto pero StandAlone. Pero en el caso de que creemos 
+una aplicacion Angular Module deberemos cambiar el codigo:
+
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+platformBrowserDynamic().bootstrapModule(AppModule); // AppModule es ahora nuestro archivo Root, es el lugar donde definimos los componentes que trabajaran juntos
+
+
+4) En Apps Complejas seguramente deberemos tener mas de un Module, para esto nuestro AppModule sera nuestro Module principal y los otros los secundarios. En los 
+Modules secundarios no definiremos la propiedad de bootstrap.
+
+// MODULO PRINCIPAL
+@NgModule({
+    declarations: [AppComponent, HeaderComponent, UserComponent, TasksComponent, IndividualTaskComponent, NewTaskComponent], 
+    bootstrap: [AppComponent],
+    imports: [BrowserModule, FormsModule, SharedModule]
+})
+export class AppModule {}
+
+@NgModule({
+    declarations: [CardComponent],
+    // Aca declararemos los componentes que estaran disponibles para usarse si importo el SharedModule
+    exports: [CardComponent] 
+})
+export class SharedModule {}
+
+
+
+5) Importacion de elementos en Modulos: Para tener en cuenta, si un moduloA importa componenteA y ademas importo un moduloB este moduloB no tendra acceso a las 
+importaciones del moduloA. Cada modulo sera independiente de otro en cuanto a lo que importe, no se compartiran las importaciones entre modulos.
+
+
+
+
+
+                                                                3) Angular Advanced: Profundizando en los componentes
+
+1) Conceptos a ver: 1) Conceptos y caracteristicas avanzadas de los componentes. 2) Trabar con The Host Element. 3) Interaccion entre Components Views & Content
+4) Ciclo de vida de un componente.
+
+
+2) Cuando y Como separar componentes: El saber cuando separar un componente de otro se basa en la regla de SOLID de Responsabilidad unica, donde una clase debe 
+encargarse de una sola tarea. Obviamente esto no siempre es necesario cumplirlo, generalmente en ocasiones especiales, pero normalmente es la norma a seguir. 
+Si mi componente hace varias tareas a la vez quizas deberia pensar en separarlo en pequeños componentes, en los que cada uno cumpla una Responsabilidad.
+
+
+3) Extender funcionamiento de un elemento existente: En el caso de por ejemplo quiera crear un componente app-button que busca extender funcionalidades de button
+deberemos hacerlo de otra forma a la que comunmente lo hacemos. Para esto en nuestro componente extensor no definiremos un selector comun, sino lo que haremos sera
+definir un CustomAttribute, que al incorporarlo al elemento ejecutara al componente y renderizara su contenido
+
+// CLASE QUE EXTIENDE LA FUNCION
+@Component({
+  selector: 'button[appButton], a[appButton]',
+  standalone: true,
+  imports: [],
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.css'
+})
+export class ButtonComponent {}
+
+
+// USO
+<button appButton></button>
+
+
+
+4) Multiple Content Projection: Con ng-content hacemos la Projection, el problema viene cuando tenemos multiples proyecciones de contenido angular no sabe automaticamente
+que contenido va en cada una. Para solucionar esto a cada <ng-content> tendra una atributo llamado "select", aca deberemos seleccionar elementos mediante las reglas de
+css.
+
+// Multiples NG-CONTENT
+<span>
+<ng-content />
+</span>
+<ng-content select=".icon, .iconic" />
+
+
+
+// Uso del Componente
+<button type="submit" appButton>
+    Submit
+    <span class="icon">=></span>
+</button>
+
+
+4.1) Variacion: En el caso de que no quiera usar selectores CSS tendre un atributo que me da angular que me permitira realizar la proyeccion. En este caso nosotros
+definimos un alias para la proyeccion.
+
+// DEFINO EL ALIAS QUE BUSCARA MI NG-CONTENT
+<button type="submit" appButton>
+    Submit
+    <span ngProjectAs="icon">=></span>
+</button>
+
+
+// USO DEL ALIAS
+<span>
+<ng-content />
+</span>
+<span class="icon">
+    <ng-content select="icon" />
+</span>
+
+
+5) Mostrar contenido Default con <ng-content>: En el caso de usar selectores se puede dar el caso de que no encontremos el elemento con el selector indicado pero 
+queramos dar un valor por defecto al contenido que proyectamos, para esto dejaremos entre la etiqueta del ng-content el contenido que se proyectara si no encontramos 
+elements con el selector indicado.
+
+<ng-content select="icon">
+  <span> => <span>
+</ng-content>
+
+
+
+6) Encapsulamiento CSS en Angular: Nos podemos tomar en angular problemas a la hora de querer configurar estilos dinamicos entre componentes a causa de la encapsulacion.
+Por EJ si yo defino un Style a Labels e Inputs dentro de un componente, en el cual proyectare esos campos mediante un ng-content (es decir no colocara explicitamente esos 
+campos, sino estos vendran de otro componente), los estilos que defina en mi componente principal no se aplicaran a los Inputs y Labels que vengan de mi componente 
+secundario.
+
+El encapsulamiento lo que hace es que el STYLE de cada componente solo afecte al componente en si, no a otro componente aunque este se termine proyectando. El 
+encapsulamiento genera que solo los elementos del componente se modifiquen por sus propias reglas de CSS, sin afectar a componentes terceros. Para modificar el 
+funcionamiento de la encapsulacion debo definir esa propiedad en @Component.
+
+
+6.1) ViewEncapsulation: Es un ENUM que define diferentes comportamientos en la encapsulacion de angular: 1) Emulated, es el valor por defecto, viene a simular el 
+comportamiento del shadowDOM. 2) ShadowDOM, en este caso angular utiliza el comportamiento real de shadowDOM. 3) None, desactiva el encapsulamiento de estilos de ese 
+componente. Esto tambien genera que no podamos usar el selector :host, ya que al eliminar la encapsulacion de alguna forma rompemos el vinculo con el Host-Element.
+
+
+6.2) Shadow DOM: Es una caracteristica del navegador que permite encapsular elementos y estilos dentro de un componente web sin que afecten al resto de la página. 
+
+
+
+7) Host Elements: Los Host Elements en Angular son los elementos del DOM que actúan como contenedores de los componentes. Cuando Angular crea una instancia de un componente, 
+lo inserta dentro de su host element, que es el elemento HTML que coincide con el selector del componente. Cada componente tiene un host element, que es el elemento HTML 
+que lo envuelve.
+
+Por EJ el componente app-header tiene de Host Element al <app-header> (basicamente el selector del componente sera el Host Element).
+
+
+7.1) Definir Estilo a un Host-Element: Esta es un selector que nos brinda angular para seleccionar Host-Elements y modificar su estilo.
+:host{
+  display: inline-block;
+}
+
+
+7.2) Host Property: Dentro de mi componente puedo definir propiedades y valores de estas propiedades de forma predeterminada a mis componentes. Esto es util cuando 
+por ejemplo quiero que todos mis componentes tengan definido una misma propiedad con el mismo valor, y en vez de tener que inicializarlo manualmente en cada 
+etiqueta esta propiedad lo hace automaticamente.
+
+// En este EJ defino que todos mis componentes "app-control" tendran definida la propiedad class con el valor de control:
+@Component({
+  selector: 'app-control',
+  standalone: true,
+  imports: [],
+  templateUrl: './control.component.html',
+  styleUrl: './control.component.css',
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    class: 'control'
+  }
+})
+
+// Cabe aclarar que el cambiar el STYLE de mi elemento con la clase 'control' es posible debido a la falta de encapsulacion, sino como vimos anteriormente, con la 
+encapsulacion habilitada, cualquier cosa que pueda modificar el estilo de mi componente por fuera mi componente sera ignorado.
+
+
+7.3) Host Event: Ademas de poder asignar propiedades y sus valores a los elementos host, tambien le podemos definir eventos:
+
+host: {
+  class: 'control',
+  '(click)': 'onClick()'
+}
+
+export class ControlComponent {
+  label = input.required<string>();
+  onClick(){}
+}
+
+
+7.4) Interactuar con Host-Elements desde TS: Se puede dar el caso de que necesitemos devolver alguna informacion o estado de nuestro Host-Element y para ello deberemos acceder 
+a el desde TS.
+
+export class ControlComponent {
+  // ElementRef define una referencia algun elemento renderizado en el HTML. Pero al inyectarlo en un componente 
+  // nos dara la referencia la referencia al HostElement
+  private el = inject(ElementRef); 
+
+  onClick(){
+    console.log(this.el)
+  }
+}
+
+
+8) CSS Binding: En el caso de que quiera agregar un style a un elemento de forma dinamica lo puedo hacer mediante el [class] acompañado de una condicion booleana que 
+diga si debe agregar o no un estilo. El [class.MyClass] me permite agregarle manualmente una clase segun la condicion.
+
+<button (click)="onSelectUser()" [class.active]="selected">
+
+
+8.1) CSS Binding con multiples clases: Sigue la logica del metodo anterior, solo que con varias clases y condiciones, en este caso definire llaves/valores, las 
+llaves seran los nombres de mis clases de CSS y los valores Boleanos que definiran si se agregan o no esas clases.
+
+<div [class]="{
+    status: true,
+    'status-online': currentStatus === 'online',
+    'status-offline': currentStatus === 'offline',
+    'status-unknown': currentStatus === 'unknown',
+}">
+
+<div/>
+
+
+8.2) CSS Binding para Styles en linea: Ademas de definir dinamicamente clases tambien lo podemos con los Estilos en linea.
+
+<div [style.height]="(dataPoint.value / maxTraffic) * 100 + '%'"></div>
+
+
+
+9) Literal Types: Es una funcion de TS que me permite definir Valores Strings Especificos que acepta mi variable, si le quiero poner un valor diferente de los que 
+defini saltara un error.
+
+// Con TS puedo definir una serie de valores que puede adoptar una variable, si no le paso 
+// alguno de esos 3 valores exactos tendre un error.
+currentStatus: 'online' | 'offline' | 'unknown' = 'online';
+
+
+10) Ciclo de Vida de un Componente: Los LifeCycle Hooks (Los ciclos de vida de un componente) en angular son métodos especiales que permiten ejecutar código en 
+diferentes etapas del ciclo de vida de un componente. Los hooks ayudan a controlar el comportamiento del componente desde su creación hasta su destrucción.
+https://angular.dev/guide/components/lifecycle
+
+
+10.1) ngOnInit(): Este Metodo se ejecuta despues de que Angular haya inicializado el componente. Generalmente en OnInit() deberan ir la mayoria de acciones que 
+quiero realizar en inicializacion de la aplicacion, por ejemplo los peticiones HTTPS a una API. El constructor por convencion tratan de dejarlo los mas limpio
+posible, ademas ngOnInit() tiene la ventaja que tiene acceso a los valores de los @Inputs() a diferencia del constructor (el @Input() devolvera undefined).
+
+export class ServerStatusComponent implements OnInit{
+  ngOnInit(): void {
+
+  }
+}
+
+
+10.2) ngOnChanges(): Se ejecuta cada vez que cambian las propiedades de entrada (@Input()) de un componente. Cuando un componente recibe datos desde su padre a través 
+de @Input(), Angular detecta cualquier cambio en esos valores y activa ngOnChanges(). Es útil para reaccionar a modificaciones en los datos antes de que el componente 
+se actualice en la vista.
+
+export class HijoComponent implements OnChanges {
+  @Input() dato!: string;
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Cambios detectados:', changes);
+  }
+}
+
+Casos de Uso: 1) Cuando necesitas ejecutar lógica cada vez que cambian los datos de entrada. 2) Para comparar valores previos y actuales de una propiedad.
+3) Para actualizar estados internos del componente en respuesta a cambios externos.
+
+
+
+10.3) ngDestroy(): Este metodo se ejecutara antes de que la instancia del componente se destruya. Por ejemplo es util cuando tengo componentes que se instancian 
+condicionalmente con @IF, cada vez que no se cumple la condicion estos elementos se destruyen, si necesitara hacer algo antes de que estos se destruyan podria 
+utilizar este Evento. 
+
+
+10.4) ngDoCheck(): Este metodo esta relacionado con la deteccion de cambios de angular, se ejecutara cuando angular detecte que la UI debe ser actualizada, pero no 
+atiende solo a la UI de ese componente donde se declara, sino a todos los componentes que se estan renderizando. Es decir se ejecuta cuando la UI debe actualizarse en 
+alguna parte de la Aplicacion.
+Al ser tan llamado es muy raro su uso, salvo para casos muy excepcionales.
+
+
+10.5) ngAfterContentInit(): Este se ejecuta cuando se termina de inicializar una proyeccion de contenido utilizando <ng-content>. Es util cuando estoy 
+utilizando @ContentChild ya que de esta forma no me devolvera undefined el valor que se almacena en esa variable al asegurarme que ocurre despues de que 
+se cargo el contenido proyectado.
+
+10.6) ngAfterContentChecked(): Este se ejecuta despues de que angular detecta un cambio en la proyeccion de contenido.
+
+
+10.7) ngAfterViewInit(): Este se ejecuta cuando se termina de inicializar la vista (el HTML) del componente actual, después de que Angular ha terminado de renderizar 
+la vista del componente. Es útil para realizar tareas que dependen de que los elementos de la vista estén disponibles, como acceder a elementos con @ViewChild().
+
+10.8) ngAfterViewChecked(): Se ejecuta cuando se detecta que la UI del componente debe actualizarse.
+
+
+10.9) DestroyRef: Es una alternativa moderna a ngOnDestroy, es una clase de angular. Esta al inyectarla y guardarla en una propiedad puedo configurar un metodo 
+que se ejecutara cuando el componente se este por destruir. Basicamente estamos definiento un evento que  se ejecutara antes de la destruccion del componente, 
+este lo puedo definir tantas veces como quiera sin superponer las acciones
+
+private destroyRef = inject(DestroyRef);
+ngOnInit(): void {
+  const interval = setInterval(() => {
+  }, 5000)
+  this.destroyRef.onDestroy(() => clearInterval(interval))
+}
+
+
+10.9) Limpiar un intervalor:
+private interval?: ReturnType<typeof setInterval>;
+ngOnInit(): void {
+  this.interval = setInterval(() => {
+  }, 5000)
+}
+
+ngOnDestroy(): void {
+  clearTimeout(this.interval);
+}
+
+
+
+
+11) Orden de ejecutacion de los ciclos de vida:
+          DURANTE LA INICIALIZACION
+
+                Constructor
+
+            *Change detection*
+
+                ngOnChanges
+
+                ngOnInit
+
+                ngDoCheck
+
+ngAfterContentInit --- ngAfterViewInit
+
+ngAfterContentChecked --- ngAfterViewChecked
+
+                *Rendering*
+
+
+        Actulizaciones Post Inicializacion
+
+                  ngOnChanges
+
+                  ngDoCheck
+
+ngAfterContentChecked --- ngAfterViewChecked
+
+
+
+
+12) Template Variable: Es una varible que puedo definir en el codigo HTML luego puedo llamarla desde esta misma plantilla. La variable sera del tipo HTML y el componente
+en el que estamos colocando la variable. Cabe aclarar que si el componente es uno nuestro o sobre un elemento HTML el cual le extendemos la funcionalidad en base a un 
+componente nuestro este sera del Tipo de mi componente y no HTML
+
+<form (ngSubmit)="onSubmit(titleInput.value)">
+  <input type="text" name="title" id="title" #titleInput />
+<form/>
+
+
+
+13) @ViewChild: es un decorador en Angular que permite acceder a elementos del DOM o componentes hijos dentro de un componente padre. Es especialmente útil cuando 
+necesitas manipular directamente un elemento o invocar métodos de un componente hijo. Solo accede al primer elemento que coincida con el selector. Si necesitas 
+acceder a múltiples elementos, usa @ViewChildren. Los Selectores pueden ser: IDs, CLASEs, TEMPLATE-VARIABLES, Tipo-Etiqueta,ETC.
+
+Como aclaracion no funciona con <ng-content>, ViewChild no seleccionara el contenido proyectado correctamente, ya que @ViewChild solo puede seleccionar elementos que 
+existan en el TEMPLATE.
+
+Basicamente es un elemento que me permite seleccionar mediante selectores (o la clase del componente) seleccionar un elemento de mi plantilla HTML y utilizarlo
+en el codigo de TS, generalmente se usa cuando desde el padre quiero ejecutar un metodo del hijo.
+
+export class NewTicketComponent {
+
+  // ACCEDO A UN ELEMENTO DE MI PLANTILLA HTML MEDIANTE VIEWCHILD
+  @ViewChild('form') form?: ElementRef<HTMLFormElement>; 
+  onSubmit(titleElement: string, ticketText: string){
+    this.form?.nativeElement.reset();
+  }
+}
+
+
+13.1) @ContentChild: Viene a solucionar el problema de @ViewChild ante la inaccesibilidad del contenido proyectado. A diferencia de @ViewChild, el selector que 
+deberemos usar debe ser una TEMPLATE variable, es decir deberemos definir en el contenido a proyectar una variable template y luego desde el @ContentChild usarla 
+como el selector.
+
+// HTML DEL CONTENIDO QUE SE VA A PROYECTAR 
+<app-control label="Title" class="control">
+    <input type="text" name="title" id="title" #titleInput #input/>
+</app-control>
+<app-control label="Request" class="control">
+    <textarea type="text" name="request" id="request" rows="3" #textInput #input></textarea>
+</app-control>
+
+
+// COMPONENTE PADRE QUE QUIERE ACCEDER AL CONTENIDO PROYECTADO 
+
+// Con ContentChild Puedo definir varios elementos con el mismo TEMPLATE-VARIABLE name, y luego ambos seran aceptados en el ContentChild, aunque por separado.
+@ContentChild('input') private control?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+onClick(){
+  console.log(this.control?.nativeElement.value)
+}
+
+
+14) AfterRender() y AfterNextRender(): Son LifeCycle Hooks nuevos, agregados a partir de angular 16. Estas a diferencia de los otros metodos los debo declarar 
+y construir en el constructor de la clase. 
+
+AfterRender(): Se ejecuta despues de cada render, atiende a cualquier componente de la aplicacion. Es util cuando quiero ejecutar una accion siempre que se 
+termine de renderizar algun componente.
+
+AfterNextRendered(): Solo después del primer render del componente. Ideal para inicializar elementos del DOM o ejecutar código que solo debe correr una vez.
+
+constructor(){
+  afterNextRender(() => {
+
+  });
+  afterRender(() => {
+    
+  });
+}
+
+
+15) Directivas Complementarias con @For: Existen directivas dentro de @For que nos permiten manejar mejor los elementos a mostrar:
+
+15.1) @empty(): Es una directiva que se usa como un else de un @for vacio, el contenido del @empty solo se mostrara
+@for (ticket of tickets; track ticket.id) {
+    <li>
+        <app-ticket />
+    </li>
+} @empty {
+    <p>No tickets available</p>
+}
+
+
+15.2) $first y $last: Dentro del @For podremos utilizar esta variable que devolvera un T/F, en base a si es el primer objeto de el array. $last hace lo mismo a la inversa
+
+@for (ticket of tickets; track ticket.id) {
+    <li>
+        <app-ticket /> {{$first}} {{$last}}
+    </li>
+}
+
+
+15.3) $count: Me devolvera la cantidad de elementos de mi array.
+
+@for (ticket of tickets; track ticket.id) {
+    <li>
+        <app-ticket /> {{$count}}
+    </li>
+}
+
+
+
+16) Two-Way Binding para componentes personalizados: Para poder generar un Two-Way Binding lo que tenemos que configurar es un @Input y @OutPut entre componente padre e 
+hijo. El Hijo recibira un @Input que alimentara su comportamiento y tambien devolvera un @Output cuando por ejemplo quiera resetear un valor. El detalle es que el 
+Input puede ser cualquier nombre pero el Output debe ser el mismo nombre del Input sumandole el 'change':
+
+// TS COMPONENTE PADRE
+export class AppComponent {
+  rectSize = {
+    width: '100',
+    height: '100',
+  };
+}
+
+// HTML COMPONENTE PADRE
+<div id="inputs">
+  <label>Width</label>
+  <input type="number" step="1.0" [(ngModel)]="rectSize.width" />
+
+  <label>Height</label>
+  <input type="number" step="1.0" [(ngModel)]="rectSize.height" />
+</div>
+<!-- El Size tendra la sintaxis del ngModel, al haberlo vuelto Two-Way Binding -->
+<app-rect [(size)]="rectSize"/> 
+
+
+// TS COMPONENTE HIJO
+export class RectComponent {
+  @Input({required: true}) size!: {width: string; height: string;}
+  @Output() sizeChange = new EventEmitter<{width: string; height: string;}>();
+
+  onReset() {
+    this.sizeChange.emit({height: '200', width: '100'})
+  }
+}
+
+
+// HTML COMPONENTE HIJO 
+<div
+  id="rect"
+  [style.width]="size.width +'px'"
+  [style.height]="size.height +'px'"
+  (click)="onReset()"
+></div>
+
+
+16.1) Forma moderna setear Two-Way Binding a un Elemento personalizado: Para angular 17 existe la funcion model que se encarga de hacer el trabajo de configuracion 
+del Two-Way binding. El componente padre se mantendra igual, solo el hijo cambia.
+
+export class RectComponent {
+  // ESTO VUELVE A SIZE UNA SIGNAL
+  size = model.required<{width: string; height: string;}>();
+  onReset() {
+    this.size.set({height: '200', width: '200'})
+  }
+}
+
+
+
+
+                                                                4) Angular Advanced: Profundizando en las Directivas
+
+1) Conceptos a ver: 1) Que es una directiva y que diferencia tiene de un componente. 2) Attribute Directives. 3) Structural Directives. 4) Built-In Directives (Directivas
+que vienen incluidas por defecto en angular, por ejemplo ngModel). 5) Building Custom Directives.
+
+
+2) Directiva: Las directivas son una mejora de los elementos que usamos, tanto elementos HTML como componentes propios, ambos pueden ser mejorados mediante directivas.
+Esta mejora se refiere a que los elementos tendran comportamientos extras o configuraciones extra a las que tendrian por defecto.
+
+En sintesis las directivas son una extension de comportamientos y/o configuraciones de un elemento. Son similares a un componente, pero la diferencia radica en que 
+estas no tienen un template (HTML)
+
+
+3) Attribute-Directive: Attribute-Directive son aquellas directivas que son agregadas/declaradas como un atributo dentro de un elemento existente y extentiende las 
+funcionalidades de ese elemento.
+
+
+4) Structural Directives: Se llama Structural Directives a aquellas directivas que tiene la capacidad de cambiar la estructura del DOM, algo que que las 
+Attribute-Directives no hacen. Cuando trabajamos con Structural Directives siempre llevan antes de su nombre un '*'.
+
+
+5) Built-In Directives: Son directivas que vienen incluidas por defecto en angular:
+
+
+5.1) ngModel: Es una directiva que simplemente que mejora los Inputs, Textareas y Selects, sincronizando los valores en ambas vias (Two-Way Binding), pero ademas 
+tambien provee otros comportamientos, que puedo usar ngModel sin usar Two-Way Binding, como por EJ  manejar dinamicamente Clases de CSS. Es un Attribute-Directive.
+
+
+5.2) ngIf: Es una directiva que se encarga de renderizar o no contenido segun una condicion. Esta por ejemplo es una directiva estructural.
+
+
+6) Crear un Attribute-Directive: La estructura de una directiva sera muy similar a la de un componente, pero por ejemplo utiliza el decorador @Directive y cambia 
+en pequñas configuraciones. Su selector generalmente sera un Attribute, ya que lo comun con las directivas es mejorar un componente existente.
+
+@Directive({
+    selector: 'a[appSafeLink]',
+    standalone: true,
+    host: {
+        '(click)': 'onConfirmLeavePage($event)'
+    }
+})
+
+export class SafeLinkDirective{
+
+    onConfirmLeavePage(event: MouseEvent){
+        const leave = window.confirm('Quiere ir a otra pagina');
+        if(leave) return;
+        event.preventDefault();
+    }
+}
+
+
+6.1) Agregar un Input a la directiva:
+
+// DIRECTIVA
+queryParam = input('myapp');
+
+// USO
+<a href="https://angular.dev" appSafeLink queryParam="myapp-docs-link">Angular Documentation</a>
+
+//VARIANTE
+
+// DIRECTIVA
+queryParam = input('myapp', {alias: 'appSafeLink'});
+
+// USO
+<a href="https://angular.dev" appSafeLink="myapp-docs-link">Angular Documentation</a>
+
+
+6.2) Accedera al Host-Element:
+
+private hostElement = inject<ElementRef<HTMLAnchorElement>>(ElementRef);
+
+onConfirmLeavePage(event: MouseEvent){
+    const leave = window.confirm('Quiere ir a otra pagina');
+    if(leave) {
+        const address = this.hostElement.nativeElement.href;
+        this.hostElement.nativeElement.href = address + '?from='+ this.queryParam();
+        return;
+    }
+    event.preventDefault();
+}
+
+
+
+7) Crear una Directiva Estructural: Para crear una directiva estructural la base en la misma, pero tiene algunas adiciones: 1) El contenido que mostrare o no 
+debe estar dentro de un ng-template, ya que este por defecto oculta este contenido y lo muestra condicionalmente, que es lo que necesitamos para una directiva 
+estructural. Esto puede ser omitido si ponemos un '*' en el nombre de la directiva, ya que por detras hara lo del ng-template automaticamente. 2) En el TS de 
+la directiva inyectaremos los siguientes elementos: TemplateRef (Con esto le decimos a angular que esta directiva sera usada en un ng-template y que queremos 
+obtener el contenido de ese ng-template) y ViewContainerRef (este es una referencia al lugar del DOM donde el ng-template esta siendo usado). Estas seran utiles 
+para decirle a angular que renderizar y donde. 3) Luego evaluaremos la condicion que define si mostrar o no el contenido y utilizaremos el ViewContainerRef con 
+el TemplateRef
+
+// HTML DEL COMPONENTE QUE CONSUME LA DIRECTIVA
+<ng-template appAuth="admin">
+  <p>Only Admins</p>
+</ng-template>
+
+
+// CODIGO TS DE LA DIRECTIVA ESTRUCTURAL 
+export class AuthDirective {
+  userType = input.required<Permission>({alias: 'appAuth'});
+  private authService = inject(AuthService);
+  private templateRef = inject(TemplateRef);
+  private viewContainerRef = inject(ViewContainerRef);
+  constructor(){
+    effect(() => {
+      if(this.authService.activePermission() === this.userType()){
+        // Es el metodo que le dice a Angular en que lugar del DOM debe renderizar algo, en este caso 
+        // renderizara el contenido del ng-template
+        this.viewContainerRef.createEmbeddedView(this.templateRef)
+      } else{
+         this.viewContainerRef.clear();
+      }
+    })
+  }
+}
+
+
+7.1) Uso de *:
+
+<p *appAuth="'admin'">Only Admins</p>
+
+
+
+8) En el caso de que tenga una directiva la cual quiero que sea utilizada en varios componentes, para evitar la repeticion de colocar esta 
+directiva en cada componente que la requiera podemos usar hostDirectives, en este definiremos la directiva que queremos que tenga el componente HOST. Tambien 
+es aplicable para Directivas Attribute. Las directivas Estructurales tambien las pueden usar pero de la forma comun.
+
+Cuando se habla de composición en Angular, se hace referencia a la capacidad de estructurar la lógica mediante múltiples componentes y directivas para 
+fusionar sus funcionalidades y crear sistemas más flexibles. Hay 3 formas de lograr la composicion: 1) Componentes como bloques reutilizables. 
+2) Directivas que extienden el funcionamiento de un elemento. 3) Fusionando componentes y directivas, es decir usar directivas dentro de componentes u
+otras directivas para extender su funcionalidad. Un componente puede depender de varias directivas para modificar su comportamiento sin necesidad de reescribir código.
+
+
+@Component({
+  selector: 'app-auth',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './auth.component.html',
+  styleUrl: './auth.component.css',
+  hostDirectives: [LogDirective]
+})
+
+@Directive({
+    selector: 'a[appSafeLink]',
+    standalone: true,
+    host: {
+        '(click)': 'onConfirmLeavePage($event)'
+    },
+    hostDirectives: [LogDirective]
+})
+
+
+<p *appAuth="'admin'" appLog>Only Admins</p>
+
+
+
+                                                                5) Angular Advanced: Profundizando en los Pipes
+
+1) Conceptos a ver: 1) Que son los Pipes. 2) Built-In Pipes. 3) Creando Pipes customizados. 4) Pipes Puros vs Pipes Impuros
+
+
+2) Pipes: los pipes son algo que se puede utilizar en el Template para transformar la forma en que la data es mostrada. Basicamente los Pipes sirven para 
+formatear data.
+
+3) Built-In Pipes: Son Pipes que ya vienen incluidos en angular, algunos de ellos son:
+
+3.1) Date-Pipe: Este pipe sirve para formatear datos de tipo DATE.
+
+<p>{{ currentDate | date:'dd/MM/yyyy'}}</p>
+<p>{{ currentDate | date:'short'}}</p>
+
+
+3.2) Decimal-Pipe: Este pipe sirve para formatear los tipos de datos que trabajen con numeros decimales.
+
+// El primer numero es el minimo de digitos antes de la coma y los segundos el minimo y maximo de numeros post coma
+<p>New York: {{ currentTemperaturs.newYork | number: '1.1-2' }}</p>
+
+
+4) Crear un Custom Pipe:
+
+// El value es el valor que le vamos a pasar.
+// Y el resto de argumentos son para la configuraciones extra del pipe
+transform(value: string | number, inputType: 'cel' | 'fah', outputType?: 'cel' | 'fah'): string {
+  let val: number;
+
+  if(typeof value === 'string') val = parseFloat(value);
+  else val = value;
+
+  let outputTemp: number;
+  if(inputType === 'cel' && outputType === 'fah') outputTemp = val * (9/5) + 32;
+  else if (inputType === 'fah' && outputType === 'cel') outputTemp = (val-32) * (5/9);
+  else outputTemp = val;
+
+  let symbol: 'ºC' | 'ºF';
+  if(!outputType) symbol = inputType === 'cel'? 'ºC' : 'ºF';
+  else symbol = outputType === 'cel'? 'ºC' : 'ºF';
+  
+  return `${outputTemp.toFixed(1)} ${symbol}`
+}
+
+// USO EN EL TEMPLATE
+<p>New York: {{ currentTemperaturs.newYork | temperature:'cel':'fah' }}</p> // Con los ':' encadeno los parametros
+
+
+
+5) Combinar Pipes: Para combinarlos debo concatener los Pipes con '|'. Debo tener en cuenta que el Orden de los Pipes Importa, debido a que el valor que devuelva 
+uno sera el valor que formatee el otro y asi consecutivamente.
+
+<p>New York: {{ currentTemperaturs.newYork | temperature:'fah':'cel' | number: '1.1-2'}}</p>
+
+
+6) SortPipe: Podemos crear un Pipe que reciba arrays y devolverlos ordenados. Luego de esto podemos formatear la lista de un @FOR. Generalmente no es lo 
+mas recomendable utilizar pipes para realizar ordenamientos.
+
+export class SortPipe implements PipeTransform {
+  transform(value: string[] | number[], direction: 'asc' | 'desc' = 'asc') {
+    const sorted = [...value];
+    // Sort ordenara mi Array existente, para ello debo usar una CallBack y devolverle un valor mayor o menor a 0
+    // con esto JS sabra como realizar el ordenamiento.
+    sorted.sort((a, b) => {
+      if(direction === 'asc') return a > b ? 1 : -1; 
+      else return a > b ? -1 : 1; 
+    });
+    return sorted;
+  }
+}
+
+@for (temperature of historicTemperatures | sort: 'desc'; track temperature) {
+  <li (click)="onReset($index)">{{ temperature }}</li>
+}
+
+
+7) Consideracion: Los pipes al formatear datos para la UI tienen una gran cantidad de ejecuciones, angular para no sobrecargar las ejecuciones de estos Pipes 
+define por defecto, que si el valor de entrada del Pipe no cambia, este no se ejecutara.
+
+Esto puede ser un problema si trabajamos con objetos en memoria (Arrays, Objects), ya que aunque los valores internos de estos cambien, JS no detecta que estos 
+cambiaron realmente, por lo que quizas los valores del array cambien pero el Pipe no se ejecutara y no formateara estos nuevos valores. Una solucion seria 
+crear un nuevo Array.
+
+onReset(index: number) {
+  // El Spread-Operator me permite crear una copia de los valores del Array en un 
+  // nuevo Array, no una referencia al Array existente.
+  const newTemps = [...this.historicTemperatures];
+  newTemps[index] = 18;
+  this.historicTemperatures = newTemps; // De esta forma historicTemperatures cambia al tener la referencia a otro Array
+}
+
+
+Esta es una forma en la que podemos hacer que Angular re-ejecute el pipe. Pero existe otra variante volver al pipe un Pipe Impuro.
+
+
+8) Pipes Puros y Pipes Impuros: Los pipes Puros son aquellos que utilizan el mecanismo para evitar la sobre-ejecucion de Pipes, por ende tiene la propiedad de 
+Pure en True, los impuros son aquellos que se saltan este mecanismo y tienen el Pure en false. Un Pipe Impuro puede dar lugar a malos rendiemientos, debido a que
+ejecutara el metodo del Pipe cada vez que algo cambie en el TEMPLATE, asi que debe usarse con cuidado.
+
+@Pipe({
+  name: 'sort',
+  standalone: true,
+  pure: true/false
+})
+
+
+9) Cuando Usar Pipes: Los pipes deben ser usados para formatear data, lo que queremos que el usuario vea en el template. NO debe usarse cuando este Pipe busca 
+extender funcionalidades y comportamientos.
+
+
+
+                                                                5) Angular Advanced: Servicios y Dependency Injection
+
+1) Conceptos a ver: 1) Revisitar Servicios. 2) Revisitar DI. 3) Mecanismo Jerarquico de Inyeccion y como resuelve las peticiones de inyecciones. 
+4) Injection Tokens & Values.
+
+
+2) Services: Un servicio es una clase que nos permite compartir logica y data a traves de la app. Accedemos a estos mediante la DI, son usados por componentes 
+y directivas.
+
+
+3) Dependency Injection: Con la DI no necesitas crear las instancias de los servicios manualmente, dejamos que angular se encargue de esto. En angular 
+declaramos los servicios que queremos que sean inyectados y cuando son solicitados los inyectores son los que se encargan de generar una instancia del 
+servicio que sera utilizada en los lugares que sea solicitada.
+
+
+4) Mecanismo Jerarquico de Inyeccion: Angular trabaja con 3 Inyectores, cuando hago un pedido por una dependencia voy pidiendo por jerarquia, del mas bajo 
+al mas alto de la cadena.
+
+4.1) PlatformEnvironmentInjector es un inyector de dependencias global que provee servicios compartidos entre múltiples aplicaciones dentro del mismo entorno de ejecución. 
+Si en main.ts se inicializan múltiples aplicaciones usando bootstrapApplication, el PlatformEnvironmentInjector es el responsable de proporcionar las instancias de 
+servicios (como HttpClient, Router, etc.) que puedan ser compartidas entre esas aplicaciones, en lugar de tener instancias duplicadas para cada una.
+
+
+4.2) Application root EnviromentInjector: El Application Root EnvironmentInjector es el inyector de dependencias principal y exclusivo de una aplicación Angular individual. 
+Es creado automáticamente cuando se arranca una aplicación usando bootstrapApplication(). Gestiona y resuelve las dependencias (servicios, interceptores, providers, etc.) 
+definidos a nivel de aplicación. Vive durante todo el ciclo de vida de la aplicación. Es la forma recomendada de proveer servicios singleton desde Angular v6+.
+(SIMILARES A UN SINGLETON)
+
+// ASI DECLARO LA INYECCION DE UN  Application root EnviromentInjector
+bootstrapApplication(AppComponent, {
+    providers: [TaskService]
+}).catch((err) => console.error(err));
+
+// UNA VARIENTE ES CON @Injectable
+@Injectable({
+  providedIn: 'root'
+})
+
+
+4.3) ElementInjector: El ElementInjector es el inyector de dependencias específico de un componente o directiva en Angular. Se asocia directamente a un elemento del DOM.
+Se encarga de resolver y proporcionar las dependencias que están declaradas directamente en el componente o directiva.
+Si no encuentra una dependencia localmente, delegará la búsqueda hacia arriba en la jerarquía de inyectores, buscando en el EnvironmentInjector del módulo o aplicación.
+(SIMILARES A UN SCOPED)
+
+// ASI DECLARO LA INYECCION DE UN ElementInjector
+@Component({
+  selector: 'app-tasks',
+  standalone: true,
+  templateUrl: './tasks.component.html',
+  imports: [NewTaskComponent, TasksListComponent], 
+  providers: [TaskService] // Puedo definir valores (elementos) que pueden ser inyectados en este 
+               // elemento. Los hijos de este componente tambien tendran acceso a esta inyeccion.
+})
+
+
+
+4.4) Problemas del ElementInjector: Si tengo 2 Elementos donde uso esta tecnica de inyeccion, ElementInjector, cada elemento tendra una instancia diferente de la inyeccion,
+diferente a lo que sucede con application que todos los elementos tendran la misma instancia del servicio. Solo los hijos del componente (o directiva) podran tener acceso 
+a su misma instacia. 
+Los SERVICES no podran usar esta tecnica de inyeccion, debido a que un SERVICE no es un elemento, no es un elemento del DOM y por ende no puede usar providers.
+
+
+
+4.5) JERARQUIA:
+
+NullInjector (Es aquel que hace saltar el error de que no se puede inyectar la dependencia)
+  └── PlatformEnvironmentInjector (opcional y compartido)
+        └── Application EnvironmentInjector (raíz de la app)
+              └── EnvironmentInjector de Módulo (si se usa NgModule)
+                    └── ElementInjector (por cada componente o directiva)
+
+
+
+5) Injection Token: Es un identificador que Angular utiliza internamente para localizar y proporcionar dependencias dentro del sistema de inyección.
+Puede ser una clase, o un InjectionToken (un string) explícito si necesitás más control o no usás clases concretas.
+
+5.1) Injection Token con Clases: Cuando utilizamos este metodo el identificador unico que reconoce angular es el nombre de la clase, de esa manera 
+identifica el elemento que debe inyectar.
+
+EJ: private myService = inject(MyService);
+
+
+5.2) Inyeccion con Objeto InjectionToken: Con este metodo podemos crear un Token manual, basicamente con este metodo podemos crear una inyeccion 
+personalizada. El Provide es un InjectionToken y el use sera el valor que devolverar ese injection token.
+
+export const API_URL = new InjectionToken<string>('API_URL'); // El String es solo por Situaciones de Debug
+@Component({
+  providers: [{ provide: API_URL, useValue: APIService }] // Para definir que elemento se inyectara lo definiremos con: 
+                                                                        // useClass, useValue, useFactory y useExisting
+})
+export class MyComponent {
+  private url = inject(API_URL);
+}
+
+
+
+6) Injectar Non-Class Values:
+
+// Preparamos el Objeto que queremos inyectar en nuestra APP y Su TOKEN
+export const TASK_STATUS_OPTIONS = new InjectionToken<{value: string, taskStatus: TaskStatus, text: string}[]>('task-status-options')
+export const TaskStatusOptions: {value: string, taskStatus: TaskStatus, text: string}[] = [
+  {
+    value: 'open',
+    taskStatus: 'OPEN',
+    text: 'Open'
+  },
+   {
+    value: 'in-progress',
+    taskStatus: 'IN_PROGRESS',
+    text: 'In-Progress'
+  },
+   {
+    value: 'done',
+    taskStatus: 'DONE',
+    text: 'Completed'
+  }
+]
+
+
+// LO USAMOS EN UN COMPONENTE
+@Component({
+  selector: 'app-tasks-list',
+  templateUrl: './tasks-list.component.html',
+  styleUrl: './tasks-list.component.css',
+  imports: [TaskItemComponent],
+  providers: [{
+    provide: TASK_STATUS_OPTIONS, useValue: TaskStatusOptions
+  }]
+})
+
+taskStatusOptions = inject(TASK_STATUS_OPTIONS);
+
+
+6.1) Variante para mantener el codigo del componente limpio:
+
+// Preparamos el Objeto que queremos inyectar en nuestra APP, Su TOKEN y Configuramos el Provider.
+
+export const TASK_STATUS_OPTIONS = new InjectionToken<{value: string, taskStatus: TaskStatus, text: string}[]>('task-status-options')
+export const TaskStatusOptions: {value: string, taskStatus: TaskStatus, text: string}[] = [
+  {
+    value: 'open',
+    taskStatus: 'OPEN',
+    text: 'Open'
+  },
+   {
+    value: 'in-progress',
+    taskStatus: 'IN_PROGRESS',
+    text: 'In-Progress'
+  },
+   {
+    value: 'done',
+    taskStatus: 'DONE',
+    text: 'Completed'
+  }
+]
+export const taskStatusOptionsProvider: Provider = {
+    provide: TASK_STATUS_OPTIONS, 
+    useValue: TaskStatusOptions
+}
+
+
+// LO USAMOS EN UN COMPONENTE
+@Component({
+  selector: 'app-tasks-list',
+  templateUrl: './tasks-list.component.html',
+  styleUrl: './tasks-list.component.css',
+  imports: [TaskItemComponent],
+  providers: [taskStatusOptionsProvider]
+})
+
+taskStatusOptions = inject(TASK_STATUS_OPTIONS);
+
+
+6.2) Como aclaracion si en el componente padre configure el provider no es necesario configurarlo en los hijos, solo debo realizar la inyeccion.
+
+
+
+                                                                6) Angular Advanced: Change Detection
+
+1) Conceptos a ver: 1) Que es la deteccion de cambios. 2) Entender el mecanismo de deteccion de cambios de angular. 3) Utilizar la estrategia de OnPush para 
+optimizar el mecanismo. 4) Deteccion de Cambios y Signals
+
+
+2) Como funciona el mecanismo de Deteccion de cambios: Por defecto, Angular organiza nuestra aplicación como un árbol de componentes, y los envuelve dentro 
+de una "zona". Esta funcionalidad es provista por la librería Zone.js. Su objetivo principal es notificar a Angular cuando ocurren eventos que podrían 
+modificar el estado de la aplicación, como eventos del usuario, timers, peticiones HTTP, entre otros.
+
+Por ejemplo, si un botón tiene un evento asociado (si no lo tiene, no reaccionará), al ejecutarse ese evento, Zone.js notificará a Angular, y este iniciará 
+su mecanismo de detección de cambios. Este mecanismo consiste en recorrer todos los componentes y verificar si alguno de los valores que se están mostrando 
+en el template ha cambiado. En caso de encontrar diferencias, Angular actualiza parcialmente el DOM, es decir, solo lo necesario para reflejar los nuevos 
+valores.
+
+Cuando hablemos de que revisa si algun valor cambio nos referimos a si cambio el valor de algun elemento que se esta mostrando en el TEMPLATE mediante algun 
+tipo de BINDING o STRING-INTERPOLATION
+
+
+2.1) Para ser eficientes se recomienda que en el TEMPLATE los valores que se usen vengan de variables o funciones super simples, nada que sea complejo y 
+pesado en la ejecucion, debido a que la deteccion de cambios se ejecuta muchas veces en angular y esto generara que esas funciones en el template se ejecuten
+muchas veces. Lo ideal es precalcular los valores en el componente (TypeScript) y referenciar variables directamente desde el template, evitando lógica 
+innecesaria en la vista.
+
+
+3) Explicitar que eventos no debe atender angular: Esta tecnica de optimizacion consiste en decirle a angular que eventos debe ignorar cuando se ejecutan ya 
+que estos no generaran un cambio en la UI. Esto es util cuando se ejecuta un evento no realizara cambios en lo UI.
+
+private zone = inject(NgZone);
+this.zone.runOutsideAngular(() => {
+  setTimeout(() => {
+    console.log("Hola");
+  }, 5000);
+})
+
+
+4) OnPush Strategy: Es una alternativa para la deteccion de cambios de Angular, que la provee el mismo angular. Es una característica que no está activada por defecto,
+pero puede ser activada por cada componente. Lo que busca esto es que la deteccion de cambios se ejecute menos de lo que normalmente lo hace.
+
+Lo que hace OnPush es que Angular solo va a revisar el componente si detecta que cambió algún dato que le llega desde afuera (por @Input) o si se ejecuta algún evento 
+dentro del componente (como un click o algo similar). 
+
+| Situación                                              | ¿Angular revisa el hijo?                                        |
+| ------------------------------------------------------ | --------------------------------------------------------------- |
+| Evento en el **padre**, y el `@Input` **cambia**       | ✅ **Sí**                                                       |
+| Evento en el **padre**, pero el `@Input` **no cambia** | ❌ **No**, si el hijo usa `OnPush`                              |
+| Evento en el **padre**, y el hijo **no recibe inputs** | ✅ Solo si el padre lo fuerza                                  |
+
+
+@Component({
+  selector: 'app-messages',
+  imports: [MessagesListComponent, NewMessageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+
+*Video 198*
+
+
+4.1) OnPush y Non-Signals Services: Usar ChangeDetectionStrategy.OnPush junto con servicios tradicionales no reactivos (Non-Signals Services) en Angular puede 
+generar varios problemas sutiles:
+
+4.1.1) Actualizaciones desde servicios no disparan ngOnChanges: Si usás servicios para compartir estado entre componentes, y esos servicios actualizan 
+datos sin notificar cambios por un @Input() y tampoco se ejecuta un evento dentro de este, el componente no se entera, y no re-renderiza. 
+
+Una de las soluciones a esto es disparar manualmente el Trigger. Pero antes debere saber DONDE debo ejecutar ese trigger manual, porque en el servicio 
+no es el lugar, ya que el ChangeDetectorRef se debe ejecutar en el lugar al que quiero notificar el cambio, no donde ocurrio. Para solucionar el problema de 
+DONDE ejecutar el trigger usaremos la libreria RxJS.
+
+
+// CONFIGURAR RxJS EN EL SERVICE:
+export class MessagesService {
+  private messages: string[] = [];
+  get allMessages(){
+    return [...this.messages]
+  }
+
+  // Nos permite envolver a un valor y avisarle a otros cuando este valor cambia, es basicamente un Observable.
+  messages$ = new BehaviorSubject<string[]>([]);
+  // El signo $ es una convencion para objetos RxJS
+
+  addMessage(message: string) {
+    this.messages = [...this.messages, message];
+    this.messages$.next([...this.messages]); // Emito un evento que dice que messages se actualizo
+  }
+}
+
+
+
+// SUSCRIBIRNOS AL EVENTO QUE GENERA EL RxJS DESDE EL COMPONENTE QUE DESEO ACTUALIZAR
+export class MessagesListComponent implements OnInit {
+  ngOnInit(): void {
+    // Me suscribo al 'messages$', esta funcion se ejecutara cada vez que 'messages$' ejecute algun metodo.
+    const suscription = this.msgService.messages$.subscribe((msgArray) => {
+      this.msg = msgArray;
+      this.cdRef.markForCheck();
+    });
+    // Si este componente se renderiza condicionalmente con esta funcion puede borrar la suscripcion cuando se des-renderice
+    this.destroyRef.onDestroy(() => {
+      suscription.unsubscribe();
+    })
+  }
+  // Este se debe utilizar en el Elemento al que quiero notificar del cambio, no en aquel que ocurra el cambio
+  private cdRef = inject(ChangeDetectorRef);
+  private msgService = inject(MessagesService);
+  private destroyRef = inject(DestroyRef);
+  msg: string[] = [];
+}
+
+
+4.2) Async Pipe: En angular existe una alternativa al metodo anterior para trabajar con Non-Signals Services y Components OnPush, que nos permite ahorrarnos 
+mucho codigo. Angular nos ofrece un Pipe especial que podemos usar en el template que lo que hara Crear y Limpiar la suscripcion sobre el BehaviorSubject, 
+este sera el Async Pipe. Este se utiliza con los Observables que nos ofrece RxJS.
+
+Async Pipe lo que hace es crear una suscripcion al Observable cuando se lo declara, y cuando el componente se esta por destruir automaticamente se desuscribe 
+de ese Observable. Ademas este tambien activa el Trigger de ChangeDetection cuando detecta que hay nuevos valores.
+
+// TS COMPONENT
+export class MessagesListComponent {
+  private msgService = inject(MessagesService);
+  // Este objeto es el BehaviorSubject<string[]> definido en el Service
+  messages$ = this.msgService.messages$;
+}
+
+// TEMPLATE
+@for (message of messages$ | async; track message) {
+  <li>{{ message }}</li>
+}
+
+
+5) Zoneless: Todo los conceptos que hemos visto sobre la deteccion de cambios en angular funcionan sobre Zone.js. Pero podriamos pensar sobre trabajar en angular sin 
+el uso de zone.js, esto seria posible si trabajamos con Signals y EventBindings() solamente, ya que angular no necesita de Zone.js para notificarse de estos eventos.
+Para poder usar este mecanismo debemos remover la referencia de zone.js de Angular.json y configurar un provider en el Main.ts
+
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+bootstrapApplication(AppComponent, {
+    providers: [provideExperimentalZonelessChangeDetection()]
+})
+.catch((err) => console.error(err));
+
+                                                                7) Angular Advanced: Introduccion RxJS y Observables
+
+1) Conceptos a ver: 1) Que es un Observable. 2) Crear y Usar un Observable. 3) Usar Operadores Observable para manipular valores creados por observadores 
+4) Observables vs Signals.
+
+
+2) Observable: Un Observable es un objeto que emite una secuencia de valores a lo largo del tiempo. Un consumidor (llamado Observer) puede suscribirse a este 
+Observable para recibir los valores (datos) de este. Basicamente el Observable emite datos y el Observer (suscriptor) reacciona/usa esos datos. Mediante el 
+metodo subscribe() es donde yo configuro/creo a los Observers.
+
+
+2.1) Funcionamiento: El Observable (El Observado) sera basicamente un valor y cual sera observado para saber cuando este cambia de valor. El Observer se creara 
+cuando realicemos una suscribe() al Observable. Al Suscribe le pasaremos un objeto Observer y este recibira 3 Callbacks. La Callback que defina en next() se 
+ejecutara cada vez que se detecte que El Observado cambia su valor, dentro de este metodo next() podremos utilizar el valor actualizado del Observable.
+Las otras 2 funcionas que recibiran una Callback seran error() y complete(). 
+
+
+3) Crear Observable:
+ngOnInit(): void {
+  interval(1000).subscribe({
+    next: (val) => console.log(val), // Se ejecuta cuando el Observable cambia su valor
+    complete: () => {}, // Se ejecuta cuando el Observable termina de ejecutar sus valores.
+    error: (err) => console.log(err) // Se ejecuta cuando ocurra un error.
+  })
+}
+
+
+
+4) Observables Operators: Los Operators son funciones puras que te permiten transformar, filtrar, combinar o manipular los valores que emite un Observable.
+
+ngOnInit(): void {
+  const subscription = interval(1000).pipe(
+    map((val) => val * 2)
+  ).subscribe({
+    next: (val) => console.log(val), // Se ejecuta cuando el Observable cambia su valor
+  })
+}
+| Tipo de operador      | Descripción                                 | Ejemplos                                |
+| --------------------- | ------------------------------------------- | --------------------------------------- |
+| **Transformación**    | Cambian los valores emitidos                | `map`, `pluck`                          |
+| **Filtrado**          | Eligen qué valores pasar                    | `filter`, `take`, `first`               |
+| **Combinación**       | Combinan múltiples observables              | `merge`, `concat`, `combineLatest`      |
+| **Creación**          | Generan nuevos observables                  | `of`, `from`, `interval`                |
+| **Control de tiempo** | Manipulan valores en función del tiempo     | `debounceTime`, `delay`, `throttleTime` |
+| **Errores**           | Manejan errores en la cadena de observables | `catchError`, `retry`                   |
+
+
+
+5) Subjects: Un Subject es un tipo especial de Observable que también actúa como Observer. Es decir, puede emitir valores (como un emisor) y ser observado 
+(como un Observable). Para poder emitir los valores manualmente se usa la funcion next(valor). Ademas estos Subjects son Multi-Casting, es decir que todas 
+las suscripciones reciben los mismos valores emitidos, al mismo tiempo, desde una única fuente compartida, a diferencia de un Observable comun.
+
+
+
+6) Signals vs Observables: Los Observables son valores en el tiempo, como un tubo por donde pasan valores que son emitidos de forma asincrónica. Para obtener 
+esos valores, es necesario suscribirse, y se reciben cada vez que el Observable emite un nuevo dato. Las Signals son un container de valores reactivo, a 
+diferencia de los Observables yo puedo LEER el valor de las signals() en cualquier momento y sin tener que usar una suscripcion.
+
+Por esto los Observables son buenos para el manejo de eventos asincrónicos (HTTP, streams de formularios, WebSockets), y las Signals son buenas para 
+manejar el estado de la aplicacion (el estado de la data.), especialmente para aquellos valores que cambian a lo largo de la App y estos deben 
+reflejarse en la UI.
+
+
+
+7) Convertir una Signal en un Observable:
+
+// SIGNAL TO OBSERVABLE
+clickCount = signal(0);
+clickCount$ = toObservable(this.clickCount);
+
+ngOnInit(){
+  this.clickCount$.suscribe({
+    next: (val) => console.log(val);
+  })
+}
+
+
+7.1) Convertir un Observable a una Signal:
+
+// OBSERVABLE TO SIGNAL
+interval$ = interval(1000);
+intervalSignal = toSignal(this.interval$, {initialValue: 0});
+
+
+// TEMPLATE
+<p>{{intervalSignal()}}</p>
+
+
+8) Crear Custom Observables desde 0:
+
+// Custom Interval, con esta clase Observable puedo crear un Observable de 0.
+// Dentro del constructor definire una callback en la cual definire cuando se 
+// Ejecutaran los metodos del Observable.
+customInterval$ = new Observable((subscriber) => {
+  let timesExecuted = 0;
+  const interval = setInterval(() => {
+    if(timesExecuted > 3){
+      clearInterval(interval);
+      subscriber.complete();
+      return;
+    }
+    subscriber.next({message: 'New Value'});
+    timesExecuted++;
+  }, 2000);
+}); 
+
+
+// EJECUCION 
+this.customInterval$.subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log("Se termino")
+})
+
+
+                                                                   8) Angular Advanced: Backend HTTP Request
+
+1) Conceptos a ver: 1) Como conectar Angular al Backend y a una BD. 2) Fetch Data (como traer data desde el Backend). 3) Send Data (Como enviar data).
+4) Manejar estados "Loading" y "Error"
+
+
+2) HttpClient: Este es el servicio que nos permitira realizar peticiones HTTP hacia el endpoint de una API y manejar sus respuestas.
+
+
+2.1) GET:
+
+export class AvailablePlacesComponent implements OnInit {
+  private httpClient = inject(HttpClient);
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    // En el Get puedo definir el TYPE de la data que se va a recibir
+    const subscription = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places')
+    .pipe(
+      map((resData) => resData.places) // UTILIZO UN PIPE PARA MANIPULAR LA DATA
+    )
+    .subscribe({
+      next: (places) => {
+        this.places.set(places);
+      }
+    })
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
+    })
+  }
+}
+
+
+2.3) PUT:
+onSelectPlace(place: Place){
+  this.httpClient.put('http://localhost:3000/user-places', {placeId: place.id}, {observe: 'response'})
+  .subscribe({
+    next: (response) => console.log(response)
+  });
+}
+
+
+3) Configurar Peticiones HTTP: Ademas del Endpoint, a las funciones HTTP les puedo pasar un segundo parametro para configurar la solicitud. Por ejemplo puedo pedir que 
+la respuesta no sea solo la data sino toda la peticion:
+
+const subscription = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places', {
+  observe: 'response'
+})
+.subscribe({
+  next: (response) => {
+    console.log(response.body?.places);
+  }
+})
+
+
+4) Mostrar un Loading Fallback: Esto nos servira para una pantalla de carga cuando estemos haciendo Fetching a la data. *En el siguiente codigo este el EJ*
+
+
+5) Manejar HTTP Errors: En el caso de que algo vaya mal, nuestro observer ejecutara la Callback que guardamos en error(). Para manejar los errores generalmente no 
+mandamos ese mensaje de error al usuario, ya que es no podria entender el problema realmente, sino lo ideal es que ese mensaje de error lo enviemos a nuestro 
+servidor de analitics y al usuario le devolvamos un error generico.
+
+// EN EL TS
+isFetching = signal(false);
+errorMsg = signal('');
+ngOnInit(): void {
+  this.isFetching.set(true);
+  // En el Get puedo definir el TYPE de la data que se va a recibir
+  const subscription = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places')
+  .pipe(
+    map((resData) => resData.places), 
+    catchError((err) => {
+      console.log(err);
+      return throwError(() => new Error('Something went wrong in the fetching')) // throwError() devuelve un Observable
+    }) 
+  )   
+  .subscribe({
+    next: (places) => {
+      this.places.set(places);
+    },
+    error: (error: Error) => {
+      this.errorMsg.set(error.message);
+    },
+    complete: () => {
+        this.isFetching.set(false)
+    }
+  });
+  this.destroyRef.onDestroy(() => {
+    subscription.unsubscribe();
+  })
+}
+
+// EN EL TEMPLATE
+<app-places-container title="Available Places">
+  @if(isFetching() && !errorMsg()){
+    <p class="fallback-text">Fetching Available places...</p>
+  }
+
+  @if(errorMsg()){
+    <p class="fallback-text"> {{errorMsg()}} </p>
+  }
+
+  @if (places()) {
+  <app-places [places]="places()!" />
+  } @else if (places()?.length === 0) {
+  <p class="fallback-text">Unfortunately, no places could be found.</p>
+  }
+</app-places-container>
+
+
+5.1) catchError(): Es un observable-operator que se encarga de capturar los errores que sucedan dentro de un observable. Este recibe un parametro, el error, y 
+un opcional segundo parametro, el observable donde ocurrio el error. Este observable-operator debe devolver un observable.
+
+
+5.2) tap(): Es otro observable-operator, sirve para ejecutar algun codigo que quisiera ejecutar en la suscripcion pero sin suscribirme. Basicamente aca voy 
+a definir acciones que se ejecutaran en todas las suscripciones a este Observable.
+
+// USAMOS EL TAP EN EL SERVICE
+loadUserPlaces() {
+  return this.fetchPlaces('http://localhost:3000/user-places', 
+    'Algo fue mal con los lugares favoritos')
+    // El Operador tap sirve para ejecutar algun codigo que quisiera ejecutar en la suscripcion pero sin suscribirme
+    .pipe(tap({ // TAP
+      next: (userPlaces) => this.userPlaces.set(userPlaces)
+    }))
+}
+
+
+// COMPONENTE
+private placesService = inject(PlacesService);
+places = this.placesService.loadedUserPlaces;
+ngOnInit(): void {
+  this.isFetching.set(true);
+  const subscription = this.placesService.loadUserPlaces()
+  .subscribe({
+    error: (error: Error) => {
+      this.errorMsg.set(error.message);
+    },
+    complete: () => {
+        this.isFetching.set(false)
+    }
+  });
+  this.destroyRef.onDestroy(() => {
+    subscription.unsubscribe();
+  })
+} 
+
+
+6) Separar Responsabilidades: Lo mejor es definir los llamados a los Endpoints y la configuracion de los Observable (Los Observable Operator) en un Service. 
+Mientras en el componente lo unico que hacemos es consumir ese Observable mediante la subscription(). Basicamente toda configuracion HTTP de la request la 
+debemos crear en el service y las suscripciones en el componente.
+
+
+// EN EL COMPONENTE
+isFetching = signal(false);
+errorMsg = signal('');
+private placesService = inject(PlacesService);
+ngOnInit(): void {
+  this.isFetching.set(true);
+  const subscription =  this.placesService.loadAvailablePlaces().subscribe({
+    next: (places) => {
+      this.places.set(places);
+    },
+    error: (error: Error) => {
+      this.errorMsg.set(error.message);
+    },
+    complete: () => {
+        this.isFetching.set(false)
+    }
+  });
+  this.destroyRef.onDestroy(() => {
+    subscription.unsubscribe();
+  })
+}
+
+
+
+// EN EL SERVICE
+loadAvailablePlaces() {
+  return this.fetchPlaces('http://localhost:3000/places', 
+    'Algo fue mal con los lugares disponibles');
+}
+private fetchPlaces(url: string, errorMessage: string){
+  return this.httpClient.get<{places: Place[]}>(url)
+  .pipe(
+    map((resData) => resData.places), 
+    catchError((err) => {
+      console.log(err);
+      return throwError(() => new Error(errorMessage)) // throwError() devuelve un Observable
+    }) 
+  )   
+}
+
+
+
+6.1) Actualizar data Sincronamente (Optimistic Update):
+addPlaceToUserPlaces(place: Place) {
+  return this.httpClient.put('http://localhost:3000/user-places', {placeId: place.id})
+  .pipe(tap({
+    next: () => {
+      if(this.userPlaces().some((p) => p.id === place.id)) return;
+      this.userPlaces.update(oldValues => [...oldValues, place])
+    }
+  }))
+}
+
+
+
+7) HTTP Interceptors: Son funciones que me permiten interceptar la REQUEST antes de que salga y la RESPONSE antes de que entre. Permiten interceptar, modificar, o 
+supervisar cualquier pedido HTTP, son herramientas que te permiten automatizar y centralizar comportamientos comunes en las solicitudes HTTP. Podés tener varios 
+interceptors encadenados, uno detrás del otro (como una cadena de middleware), basicamente son muy parecidos a los middlewares y Pipelines.
+
+Es util por EJ para trabajar con la autorizacion con JWT, ya que en vez de enviar en cada endpoint el token lo hago centralizadamente mediante un interceptor, ya que 
+cada vez que haga la solicitud a un endpoint le ligare el token.
+
+function loggingInterceptor(request: HttpRequest<unknown>, next: HttpHandlerFn) {
+    console.log('[Outgoing Request]')
+    console.log(request)
+    const req = request.clone({ // Con Clone puedo clonar y modificar una REQUEST existente, es decir manipularemos el REQUEST
+      setHeaders: {
+        'Authorization': 'Bearer ${token}'
+      }
+    })
+    return next(request)  // Esto devolvera un Observable que puedo manipular, a partir de esto podremos manipular el RESPONSE
+    .pipe(tap({
+        next: event => {
+            if(event.type === HttpEventType.Response){
+                console.log('Reponse: '+ event.body)
+            }
+        }
+    }));
+}
+
+bootstrapApplication(AppComponent, {
+    providers: [provideHttpClient(
+        withInterceptors([loggingInterceptor]) // AQUI DECLARARE MIS INTERCEPTORES
+    )]
+}).catch((err) => console.error(err));
+
+
+
+                                                                   8) Angular Advanced: Working with Forms
+
+1) Conceptos a ver: 1) Template-driven Forms. 2) Reactive Forms. 3) Manejar Inputs, Values y Validations
+
+
+2) Template-driven Forms: En este enfoque, la configuración del formulario se realiza principalmente en el template (HTML). Es fácil de implementar y adecuado para 
+formularios simples. La base de este enfoque es hacer que Angular sea consciente de los elementos del formulario mediante directivas como ngModel, required, 
+#myForm="ngForm", etc. Una vez que Angular reconoce esos elementos como parte de un formulario, podemos interactuar con ellos, obtener su estado, validar datos y 
+reaccionar a sus cambios. Es más declarativo, menos código en TypeScript pero Menos escalable que los Reactive Forms.
+
+
+2.1) Acceder a los Elementos del Forms: Para acceder a los elementos (inputs, textareas, selects) marcados en mi Forms debere volver a mi Forms un NgForm y 
+luego rescatar esa referencia:
+
+<!-- Este #form me permitira definir un Identificador, ngForm es un identificador que nos provee angular.
+  Esto hace que mi Form se convierta en un NgForm y a su vez reconocera los inputs que registre con ngModel-->
+<form #form="ngForm" (ngSubmit)="onSubmit(form)"> 
+
+  <div class="control-row">
+    <div class="control no-margin">
+      <label for="email">Email</label>
+      <!-- ngModel es el que me permite registrar mi Input para que sea conocido por angular -->
+       <!-- Los elementos que usen directivas deben tener un NAME ya que angular los registrara mediante este NAME -->
+      <input id="email" type="email" name="email" ngModel />  
+    </div>
+
+    <div class="control no-margin">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" ngModel />
+    </div>
+
+    <button class="button">Login</button>
+  </div>
+</form>
+
+// EN EL TS
+onSubmit(form: NgForm){
+  // El nombre de la propiedad que nos da acceso al VALUE sera el NAME del input. Estas propiedades son configuradas por ngModel,
+  // Por eso es que los definimos en el input
+  console.log(form.value["email"]); 
+  console.log(form.value["password"]);
+  console.log(form.controls); // Esto nos devolvera cada INPUT que esta registrado en mi FORMS y su detalle.
+}
+
+
+2.2) Validar Inputs del Forms: Para validar los inputs lo podemos hacer con elementos standard de HTML como 'requiered', pero si este esta registrado en un 
+input de un forms de angular, angular deshabilitara el funcionamiento por defecto que maneja el navegador para ese requiered y lo manejara internamente, lo 
+que hara es revisar si se cumplen o no las validaciones y eso hara que devuelve un status de 'VALID' OR 'INVALID' y tambien un Object de errores para saber 
+que regla de validacion se incumplio.
+Eso lo hara con todas los atributos de validacion que existen por defecto en html (requiered, email, minlength, maxlength,min, max, pattern)
+
+// INPUT
+<input id="email" type="email" name="email" ngModel required email minlength="5"/>  
+
+// VALIDAR EN EL TS EL FORMS
+onSubmit(formData: NgForm){
+  // El nombre de la propiedad que nos da acceso al VALUE sera el NAME del input
+  if(formData.form.valid){
+    const enteredEmail = formData.form.value.email;
+    const enteredPassword = formData.form.value.password;
+  }
+  else{
+    console.log(formData.form.controls['email'].status)
+    console.log(formData.form.controls['email'].errors)
+  }
+}
+
+// OBJECT OF ERRORES:
+errors: {required: true}
+
+
+2.3) Acceder individualmente a cada elemento: Para esto debo al igual que el Forms, darle una template-variable a los inputs si quiero acceder a ellos 
+manualmente sin pasar todo el forms, esto es util si quiero usar los inputs para validar algo en el TEMPLATE:
+
+<input id="email" type="email" name="email" ngModel required email minlength="5" #email="ngModel"/>  
+
+@if(email.touched &&  form.form.invalid){
+  <p class="control-error">Invalid values detected. Please check your inputs.</p>
+}
+
+
+2.4) Clases para manejar Estado: Angular automaticamente suele darle clases a los inputs del formulario, pero no son clases que les den un style necesariamente,
+sino que las usa para manejar un estado, por ejemplo si mi INPUT es INVALID, este tendra como clase ng-invalid. Aunque por defecto esto no agregue un styling, 
+nosotros a partir de esto podemos aprovecharnos y definir un styling, utilizando como base esas clases (ng-valid, ng-invalid, ng-touched, ng-untouched, 
+ng-pristine, ng-dirty).
+
+.control:has(.ng-invalid.ng-touched.ng-dirty) label {
+  color: #f98b75;
+}
+
+input.ng-invalid.ng-touched.ng-dirty {
+  background-color: #fbdcd6;
+  border-color: #f84e2c;
+}
+
+@if(email.touched && email.dirty && email.invalid){
+  <p class="control-error">Invalid email adress enter.</p>
+}
+@if(password.touched && password.dirty && password.invalid){
+  <p class="control-error">Invalid password enter.</p>
+}
+
+
+2.5) Mantener los valores de un Forms despues de una Recarga:
+
+// De esta forma selecciono manualmente el Forms de mi Template.
+private form = viewChild<NgForm>('form');
+private destroyRef = inject(DestroyRef);
+constructor(){
+  // Este se ejecuta luego del primer render, solo una vez.
+  afterNextRender(() => {
+    const savedForm = window.localStorage.getItem('saved-login-form');
+
+    if(savedForm){
+      const loadedFormData = JSON.parse(savedForm);
+      const savedEmail = loadedFormData.email;
+      // Si no ponemos un TimeOut, nuestro Forms no estara completamente iniciado y tendremos un error.
+      setTimeout(() => {
+        this.form()?.controls['email']?.setValue(savedEmail)    
+      }, 1);
+    }
+
+    // ValueChanges nos devuelve un Observable al que nos suscribiremos para manipular el nuevo valor que tiene el INPUT.
+    const sub = this.form()?.valueChanges?.pipe(debounceTime(1000)) 
+    // debounceTime() espera un tiempo sin que el usuario escriba antes de emitir el valor.
+    // Si el usuario sigue escribiendo, reinicia la espera. Solo cuando deja de tipear por un momento, se ejecuta el next().
+    .subscribe({ 
+      next: (value) => window.localStorage.setItem('saved-login-form', JSON.stringify({email: value.email}))
+    })
+    this.destroyRef.onDestroy(()=>sub?.unsubscribe())
+  }); 
+}
+
+
+
+3) Reactive Forms: Configuramos el Forms mediante el TS del componente, su configuracion es mas verborragica, pero suele ser mejor a la hora de crear 
+Forms mas complejos.
+
+// EN EL COMPONENTE
+export class LoginComponent {
+  // Declaramos el Forms
+  form = new FormGroup({
+    // Declaramos los inputs, su default value y sus validators
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email]
+    }), 
+    password: new FormControl('',{
+      validators: [Validators.required, Validators.minLength(6)]
+    })
+  });
+
+  // Este getter devolvera segun una serie de condiciones si mi Email Input es valido o no.
+  get emailIsInvalid(){
+    return this.form.controls.email.touched && this.form.controls.email.dirty && this.form.controls.email.invalid
+  }
+
+  onSubmit(){
+    const enteredEmail = this.form.value.email;
+    const enteredPassword = this.form.value.password;
+  }
+}
+
+
+// EN EL TEMPLATE
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h2>Login</h2>
+
+  <div class="control-row">
+    <div class="control no-margin">
+      <label for="email">Email</label>
+      <input id="email" type="email" [formControl]="form.controls.email"/>
+    </div>
+
+    <div class="control no-margin">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password"/> <!-- Una variante para pasar el control-->
+    </div>
+
+    <button class="button">Login</button>
+  </div>
+
+  @if(emailIsInvalid){
+    <p class="control-error">Please enter a valid email address.</p>
+  }
+</form>
+
+
+3.1) Crear Custom Validators:
+
+function mustCotainQuestionMark(control: AbstractControl) {
+  // Si el INPUT es valido la ValidationFunction devolvera Null
+  if(control.value.includes('?')) return null;
+  // Si es invalido devolvere un objeto que por convencion es una descripcion del error y un true
+  return {notQuestionMark: true}
+}
+password: new FormControl('',{
+  validators: [Validators.required, Validators.minLength(6), mustCotainQuestionMark]
+})
+
+
+3.2) AsyncValidators: Al igual que los validators son funciones, pero estas funciones deben devolver un Observable. Por EJ este tipo de validadores me permite 
+enviar una peticion HTTP hacia el Backend y verificar si el Mail que ingrese ya esta registrado.
+
+function emailIsUnique(control: AbstractControl){
+  if(control.value !== 'test@example.com') return of(null); // Devolvemos un Observable que retorna Null, gracias a of()
+  return of({notUnique: true})
+}
+
+email: new FormControl('', {
+  validators: [Validators.required, Validators.email],
+  asyncValidators: [emailIsUnique]
+})
+
+
+
+3.3) Mantener los valores de un Forms despues de una Recarga: El metodo es muy similar, lo unico que cambia es el momento de la ejecucion, mientras uno 
+utiliza el afterNextRender(), en este directamente podemos definir toda la logica en el ngOnInit(), ya que al declarar toda la logica del formulario 
+en el TS no necesito esperar a que el TEMPLATE cargue.
+
+private destroyRef = inject(DestroyRef);
+ngOnInit(): void {
+  const savedForm = window.localStorage.getItem('saved-login-form');
+
+  if(savedForm){
+    const loadedFormData = JSON.parse(savedForm);
+    const savedEmail = loadedFormData.email;
+    // Este metodo sirve reemplazar parcialmente los valores de un formulario
+    this.form.patchValue({
+      email: savedEmail,
+    })
+  }
+
+  const subs = this.form.valueChanges.pipe(debounceTime(500)) .subscribe({
+    next: value => {
+      window.localStorage.setItem('saved-login-form', JSON.stringify({email: value.email}))
+    }
+  });
+  this.destroyRef.onDestroy(() => subs.unsubscribe())
+}
+
+
+// Variante. Puedo Definir codigo de TS fuera del componente que igualmente se ejecutara.
+let initialEmailValue = '';
+const savedForm = window.localStorage.getItem('saved-login-form');
+if(savedForm){
+  const loadedForm = JSON.parse(savedForm);
+  initialEmailValue = loadedForm.email;
+}
+
+
+// En el mismo TS DENTRO del componente:
+private destroyRef = inject(DestroyRef);
+ngOnInit(): void {
+  const subs = this.form.valueChanges.pipe(debounceTime(500)) .subscribe({
+    next: value => {
+      window.localStorage.setItem('saved-login-form', JSON.stringify({email: value.email}))
+    }
+  });
+  this.destroyRef.onDestroy(() => subs.unsubscribe())
+}
+
+form = new FormGroup({
+  email: new FormControl(initialEmailValue, {
+    validators: [Validators.required, Validators.email],
+    asyncValidators: [emailIsUnique]
+  })
+});
+
+
+
+3.4) Manejar un DropDownList y un Required true CheckBox
+// Configurar un DropDownList, de esta forma definimos los valores aceptados por el DDL
+role: new FormControl<'student' | 'teacher' | 'employee' | 'founder' | 'other'>('student', {
+  validators: [Validators.required]
+}),
+// Configurar que un CheckBox deba ser true
+agree: new FormControl(false, {
+  validators: [Validators.requiredTrue]
+})
+
+
+
+3.5.1) Formularios Anidados: En el caso de que tenga que crear un formulario, en el que pueda identificar INPUTS que estan estrechamente relacionados con otros,
+pero otros no lo estan tanto, podria intentar crear FormGroups Anidados, con el fin de mejorar la estructura organizativa de mi FORMs. 
+
+form = new FormGroup({
+  email: new FormControl('', {
+    validators: [Validators.required, Validators.email]
+  }),
+  passwords: new FormGroup({
+      password: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6)]
+    }),
+    confirmPassword: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6)]
+    }),
+  }),
+  role: new FormControl<'student' | 'teacher' | 'employee' | 'founder' | 'other'>('student', {
+    validators: [Validators.required]
+  }),
+  agree: new FormControl(false, {
+    validators: [Validators.requiredTrue]
+  })
+})
+
+
+<div class="control-row" [formGroup]="form.controls.passwords">
+  <div class="control">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      name="password"
+      formControlName="password"
+    />
+  </div>
+
+  <div class="control">
+    <label for="confirm-password" >Confirm Password</label>
+    <input
+      id="confirm-password"
+      type="password"
+      name="confirm-password"
+      formControlName="confirmPassword"
+    />
+  </div>
+</div>
+
+
+
+3.5.2) Crear Validators para un FormGroup: Podemos crear Validators para elementos de un Mismo FormGroup. Para tener en cuenta que, si el Forms-Anidado es 
+invalido este sera marcado como invalido y no el forms-padre.
+
+passwords: new FormGroup({
+    password: new FormControl('', {
+    validators: [Validators.required, Validators.minLength(6)]
+  }),
+  confirmPassword: new FormControl('', {
+    validators: [Validators.required, Validators.minLength(6)]
+  }),
+}, {
+  validators: [equalsValues('password','confirmPassword')]
+}),
+
+function equalsValues(control1: string, control2: string){
+  return (control: AbstractControl) => {
+    // Para obtener las propiedades personalizadas de mi FORMs, utilizo el metodo GET.
+    const password = control.get(control1)?.value;
+    const confirmPassword = control.get(control2)?.value;
+
+    if(password === confirmPassword) return null;
+    return {notEqualsValue: true}
+  }
+}
+
+
+
+3.6) Trabajar con arrays en un Forms: Se lo usa cuando tienes una lista de controles que quieres evaluar en tu Formulario pero no necesitas guardarlos individualmente, 
+como lo puede ser un Multiple Choice de Checkbox.
+
+source: new FormArray([
+  new FormControl(false), 
+  new FormControl(false), 
+  new FormControl(false), 
+])
+
+<fieldset formArrayName="source"> <!-- con Esa propiedad Bindiamos el Array -->
+  <legend>How did you find us?</legend>
+  <div class="control">
+    <input type="checkbox" id="google" name="acquisition" value="google"
+      formControlName="0" /> <!-- El nombre para conectar los Inputs con los controls del Array seran las posiciones de Array -->
+    <label for="google">Google</label>
+  </div>
+
+  <div class="control">
+    <input type="checkbox" id="friend" name="acquisition" value="friend"
+      formControlName="1"
+    />
+    <label for="friend">Referred by friend</label>
+  </div>
+
+  <div class="control">
+    <input type="checkbox" id="other" name="acquisition" value="other"
+      formControlName="2"
+    />
+    <label for="other">Other</label>
+  </div>
+</fieldset>
+
+
+4) A tener en cuenta: Los Forms Reactive o Template en si son iguales, las diferencias entre si es la forma de configurarlos, pero al fin el cabo la data que 
+manejan, los TYPEs que usan y demas cosas son iguales, en escencia hacen lo mismo. Lo unico es que son 2 formas distintas de configurar los formularios, pero 
+que al final haran lo mismo.
+
+
+
+
+                                                                              9) Angular Advanced: Routing
+
+1) Conceptos a ver: 1) Que es routing? 2) Configuraciones de Ruta. 3) Rutas anidades. 4) Resolver Data y Controlar accesos
+
+
+2) Que es Routing: En angular construimos SPA, por lo que nunca nos trasladamos de una pagina a otra, solo trabajamos sobre el index.HTML y lo que se 
+renderice ahi sera lo que mostremos. Para simular el efecto de navegar entre pagina, en angular lo que hacemos es cambiar la UI que se renderiza en el 
+index.html, de esta forma simulamos que traslado de pagina.
+
+El Routing en angular consiste en que segun los valores de la URL y sus rutas mostrara unos u otros componentes, pero siempre todo renderizado sobre el 
+mismo index.HTML. Todo esto se produce en el navegador, por lo que no genera sobrecargas en el servidor.
+
+
+2.1) Activar Routing:
+
+// En el Main.TS
+import {provideRouter} from '@angular/router'
+import { routes } from './app/app.routes';
+bootstrapApplication(AppComponent, {
+    providers: [provideRouter(routes)]
+})
+.catch((err) => console.error(err));
+ 
+
+// Creamos y exportamos un Array con nuestras rutas configuradas 
+export const routes: Routes = 
+[{path: 'tasks',component: TasksComponent}]
+
+
+2.2) Renderizar estas rutas: Para indicarle a angular donde quiero que renderice dinamicamente componentes segun la ruta debere usar el router-outlet, 
+generalmente en el app.component.ts:
+
+// TS
+imports: [HeaderComponent, UsersComponent, RouterOutlet],
+
+// TEMPLATE 
+<div>
+  <!-- Este sera un placeholder que le dira a angular donde debe renderizar las rutas -->
+  <router-outlet />
+</div>
+
+
+3) RouterLink: Una vez configuradas las rutas necesito configurar los <a> para poder navegar, esto estan simple como agregar la directiva RouterLink en el TS en el que 
+y luego agregar el attribute a los Anchor. Lo que hace routerlink es prevenir el comportamiento por default del anchor y luego buscar la ruta que se cargo en la 
+configuracion de rutas en el app.routes.ts:
+
+// En TS
+imports: [RouterLink]
+
+// En el TEMPLATE
+<a routerLink="tasks"></a>
+
+
+3.1) RouterLinkActive: esta directiva me permite saber sin un Anchor a sido seleccionado, dentro de este atributo definire clases de CSS que quiero que se aplican 
+a ese anchor mientras este seleccionado. Cabe aclarar que si los anchor tienen la misma direccion el estilado se aplicara a todos aquellos que tengan esa direccion.
+
+// En TS
+imports: [RouterLink, RouterLinkActive]
+
+// En el TEMPLATE
+<a [routerLink]="'/tasks/'+user().id" routerLinkActive="selected">
+
+
+4) Configurar Routes dinamicas: En casos como el ejemplo anterior tendre rutas que reciben parametros en las cuales debere crearlas dinamicamente, por ejemplo 
+mediante un ID, para estos casos debemos configurar nuestra ruta para que pueda ser dinamica:
+
+// En el Route TS
+{path: 'users/:userId',component: UserTasksComponent},
+
+// En el TEMPLATE
+<a [routerLink]="'/users/'+user().id" routerLinkActive="selected"></a>
+
+
+4.1) Como rescatar los valores de las rutas dinamicas: En el caso de que necesitemos trabajar con los valores dinamicos de esas rutas podremos capturarlos mediante 
+Inputs:
+
+// Primero Configuramos el poder acceder a los parametros por ruta con withComponentInputBinding()
+bootstrapApplication(AppComponent, {
+    providers: [provideRouter(routes, withComponentInputBinding())]
+}).catch((err) => console.error(err));
+
+
+// Luego configuramos el Input en el Componente al que nos traslado la ruta:
+export class UserTasksComponent {
+  userId = input.required<string>();
+}
+
+
+// Configurar el Input en caso de que sea un valor Number
+export class EditarGeneroComponent {
+    @Input({transform: numberAttribute})
+    id! : number;
+}
+
+
+4.2) Rescatar los valores de las rutas dinamicas con Observers: Esta es la forma en la que se trabajan con rutas en versiones antiguas de angular, para usarla 
+inyectaremos el ActivatedRoute, este posee una seria de observables que maneja angular. El que nos interesa en este caso es el paramMap, al que si nos 
+suscribimos se activara cada vez cambien los valores de los ParamsRoutes.
+
+private activatedRoute = inject(ActivatedRoute);
+ngOnInit(): void {
+  this.activatedRoute.paramMap.subscribe({
+    next: paramMap => {
+      this.userName = this.userService.users.find(x => x.id === paramMap.get('userId'))?.name || ''
+    }
+  })
+}
+
+
+
+5) Rutas Anidadas: Las rutas anidadas en simples palabras son rutas hijas de otras rutas. En Angular esta caracteristica nos permite trabajar con router-oulets 
+dentro del router-outlet principal. Es decir trabajar con un componente que se carga mediante un router-oulet dentro de otro componente que tambien es cargado 
+por otro router-oulet. El router-oulet secundario debe estar en una ruta padre, asi le decimos a las rutas hijas donde renderizar sus componentes
+
+// DEFINO LAS RUTAS HIJAS
+{
+    path: 'users/:userId',
+    component: UserTasksComponent,
+    children: [
+        {
+            path: 'tasks', // este path se concatenara con el path padre
+            component: TasksComponent
+        }
+    ]
+ },
+
+
+// Importa RouterOutlet al componente padre
+imports: [RouterOutlet]
+export class UserTasksComponent{}
+
+// Uso el RouterOutlet en el TEMPLATE
+<section id="tasks">
+  <header>
+    <h2>{{userName}} Tasks</h2>
+  </header>
+
+  <router-outlet /> // Aqui se renderizaran las rutas hijas.
+</section>
+
+
+5.1) Relative Links: este concepto es que las rutas hijas tendran sus rutas padres implicitas a la hora de que yo defina un routerLink, no me hara falta construir 
+toda la url, ya heredare la base del padre.
+
+// Este TEMPLATE es una child route
+<a routerLink="tasks/new">Add Task</a> // la ruta sera: my.domain/users/:userId/tasks/new
+
+
+// Tambien puedo volver un '/' atras con la sintaxis '../':
+<a routerLink="../">Cancel</a> // Si estoy en '/users/u3/tasks/new' al presionar en cancelar mi ruta se actualiza a '/users/u3/tasks'
+
+5.2) Acceder a parametros de ruta en rutas hijas: Esta funcion por defecto no se encuentra activada, deberemos activara desde el main.TS en la configuracion del 
+router. Alternativamente usar Observables funcionaria como siempre.
+
+bootstrapApplication(AppComponent, {
+    providers: [provideRouter(routes, withComponentInputBinding(), 
+        withRouterConfig({
+            paramsInheritanceStrategy: 'always' // esto permitira a rutas hijas acceder a los parametros de rutas padres
+        }))]
+}).catch((err) => console.error(err));
+
+
+
+5.3) Programatic Navigation: Es la forma en que enrutamos mediante el codigo TS y no usando el routerLink, puede ser util en algunos casos.
+
+onSubmit() {
+  this.tasksService.addTask(
+    {},
+    this.userId()
+  );
+  this.router.navigate(['/users/'+this.userId()+'/tasks'],{
+    replaceUrl: true // Esto sirve para el usuario no use el BackButton para volver al formulario, especialmente si ya 
+    // Publique el forms
+  })
+}
+
+
+6) Rutas no encontradas: Para las rutas no encontradas podemos usar un Wild-Card, seria como un atrapa todo, es decir si ingreso una ruta invalida sere trasladado al 
+Wild-Card. Este debe ser colocado en la lista de rutas pero siempre al ultimo.
+
+export const routes: Routes = [
+    // El resto de rutas
+    {path: '**', component: NotFoundComponent}
+];
+
+
+7) RedirectTo: En el caso de que nuestro usario caiga en una determinada ruta podremos redirigirlo a otra. Por EJ en la rutas anidadas podemos hacer esto:
+
+{
+  path: 'users/:userId',
+  component: UserTasksComponent,
+  children: [
+      {
+          path: '',
+          redirectTo: 'tasks', // aca defino la ruta a la que quiero redireccionar al usuario, esto se concatenara con el path padre
+          pathMatch: "prefix" // 
+      },
+      {
+          path: 'tasks', // este path se concatenara con el path padre
+          component: TasksComponent
+      },
+      {
+          path: 'tasks/new', 
+          component: NewTaskComponent
+      }
+  ]
+},
+
+
+7.1) PathMatch: Es una propiedad que se usa en el archivo de rutas (app-routing.module.ts) para decirle a Angular cómo debe comparar la URL del navegador 
+con el path definido en una ruta.
+
+prefix: Coincide si la URL empieza con el valor del path. Se usa normalmente para rutas con hijos o layouts principales. No exige que la URL coincida 
+completamente, solo que empiece igual.
+
+EJ:
+{ path: 'admin', component: AdminComponent, pathMatch: 'prefix' }
+coincide con: /admin, /admin/usuarios y /admin/config
+
+
+full: Coincide solo si la URL coincide exactamente con el valor del path. Se usa mucho para rutas vacías (path: ''), como la página de inicio o redirecciones.
+
+EJ:
+{ path: '', redirectTo: 'home', pathMatch: 'full' }
+Coincide solo con /, no con /home ni /home/otra-cosa.
+
+| Opción                | Coincide si...                          | ¿Para qué sirve?                           |
+| --------------------- | --------------------------------------- | ------------------------------------------ |
+| `pathMatch: 'prefix'` | La URL **empieza** con ese path         | Rutas con hijos, layouts, prefijos comunes |
+| `pathMatch: 'full'`   | La URL es **exactamente igual** al path | Redirecciones y páginas específicas        |
+
+
+
+
+8) Dividir las rutas en varios archivos: En el caso de que tengamos muchas rutas quiezas queramos separar estas en grupo de varios archivos. O tambien separar 
+definiciones de rutas padres de rutas hijas.
+
+// Rutas Hijas
+export const userRoutes: Routes =
+[
+  {
+      path: '',
+      redirectTo: 'tasks', // aca defino la ruta a la que quiero redireccionar al usuario, esto se concatenara con el path padre
+      pathMatch: "prefix" // 
+  },
+  {
+      path: 'tasks', // este path se concatenara con el path padre
+      component: TasksComponent
+  },
+  {
+      path: 'tasks/new', 
+      component: NewTaskComponent
+  }
+]
+
+
+// Rutas Padres
+export const routes: Routes = 
+[
+ {path: '',component: NoTaskComponent},
+ {
+    path: 'users/:userId',
+    component: UserTasksComponent,
+    children: userRoutes
+ },
+]
+
+
+9) ActivatedRoute vs ActivatedRoute Snapshot: ActivatedRoute es un servicio de Angular que te permite acceder a la información de la ruta actual dentro de un componente.
+ActivatedRoute tiene acceso a una propiedad que es Snapshot, que a simple vista es lo mismo, pero tienen una diferencia crucial, Snapshot viene a ser una foto de los 
+valores actuales de la Ruta activa, pero esta solo devuelve valores, no observables, por cual no puedo suscribirme a los cambios.
+
+
+
+10) Agregar Query Params: El router de angular me permite trabajar facilmente y extraer los valores de un Query Params:
+<p>
+<!-- Con './' le digo a angular que quiero mantenerme en esta pagina -->
+  <a routerLink="./" [queryParams]="{order: 'asc'}"> <!-- Al hacer click sobre el Anchor nuestra URL agregara los queryParams y los valores que definimos. -->
+    Sort Ascending / Descending
+  </a>
+</p>
+
+
+10.1) Extraer valores de un Query Params: Para extraerlos es muy similar a como lo hacemos con los parametros por ruta, mediante un Input.
+
+// TEMPLATE
+<!-- Con './' le digo a angular que quiero mantenerme en esta pagina -->
+<a routerLink="./" [queryParams]="{order: order() === 'asc'? 'desc' : 'asc'}">
+  Sort {{order() === 'asc'? 'Descending' : 'Ascending'}}
+</a>
+
+// Componente
+order = input<'asc' | 'desc'>();
+
+
+
+10.2) Extraer Query Params con Observers:
+
+order?: 'asc' | 'desc'; 
+ngOnInit(): void {
+  this.activatedRoute.queryParams.subscribe({
+    next: (params) => {
+      this.order = params['order'];
+    }
+  })
+}
+
+
+
+11) Agregar Data Estetica a mis rutas: Desde el archivo configurador de rutas puedo definir data estatica para mis rutas. En el caso de que una ruta trabaje con datos 
+puedo utilizar esto. El objeto Data me permite trabajar con elementos de llave-valor.
+
+// Setear la data estatica
+{
+  path: 'users/:userId',
+  component: UserTasksComponent,
+  children: userRoutes,
+  data: {
+    message: 'Hello!'
+  }
+}
+
+
+// Recuperar esa data en el componente
+message = input.required<string>();
+
+
+12) Resolver una Ruta con Data Dinamica: Para manejar data-dinamica en vez de data usaremos resolve. El formato de resolve es igual que data, pero los valores de 
+resolve deben ser validados por los Angular's resolvers, que basicamente son funciones. Esta funcion se ejecutara cada vez que los parametros de ruta cambien
+Esta es una variante a resolver data dinamica con Inputs-Signals y Observables, la ventaja de esto es que me mantiene el componente limpio ya que el manejo de 
+data (Fetching) lo hago fuera del componente.
+
+// Este Resolve sera llamado cada vez que se produzca una navegacion o Cambie un parametro de ruta, por ello le pasamos 
+// la snapshot del ActivatedRoute, ya que es innecesaria la suscripcion.
+export const resolveUserName: ResolveFn<string> = (activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot) => 
+{
+  const userService = inject(UsersService);
+  const userName = userService.users.find(x => x.id === activatedRoute.paramMap.get('userId'))?.name || '';
+  // Esta funcion debe devolver la data que genera esta funcion, esa data se almacenara en el Resolve
+  return userName;
+}
+
+// Declaro el resolve
+{
+  path: 'users/:userId',
+  component: UserTasksComponent,
+  children: userRoutes,
+  data: {
+    message: 'Hello!'
+  },
+  resolve: {
+    userName: resolveUserName
+  }
+}
+
+
+// Accedo a la data desde el componente
+userName = input.required<string>();
+
+
+12.1) Problemas con Resolve: Sabemos que resolve se ejecutara siempre que un parametro de ruta cambie, pero no lo hara si se produce un cambio en un Query Parameter. Para 
+solucionar esto debemos agregar los siguiente en la configuracion de la ruta: 
+
+{
+  path: 'tasks', // <your-domain>/users/<uid>/tasks
+  component: TasksComponent,
+  runGuardsAndResolvers: 'paramsOrQueryParamsChange', // Esto hara que las funciones de Resolve se ejecuten cuando cambien los Params y QueryParams
+  resolve: {
+      userTasks: resolveUserTasks,
+  },
+}
+
+
+13) Otra forma de acceder a Data Estatica y Variable:
+
+ngOnInit(): void {
+  // Me dara un Observable que a su vez contendra la DATA (Tanto la estatica como la dinamica)
+  this.activatedRoute.data.subscribe({
+    next: data => {
+      console.log(data);
+    }
+  })
+}
+
+
+
+14) Actualizar el Title entre rutas: Esto lo puedo hacer desde la configuracion de rutas, mediante la propiedad title. Esta acepta un string (cuando mi Title va 
+a ser estatico) o un ResolveFn (para data dinamica).
+
+// Archivo de configuracion de rutas
+{
+    path: '',
+    redirectTo: 'tasks',
+    pathMatch: 'full',
+    title: 'No Tasks Selected'  
+},
+{
+    path: 'tasks', // <your-domain>/users/<uid>/tasks
+    component: TasksComponent,
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    resolve: {
+        userTasks: resolveUserTasks,
+    },
+    title: resolveTitle 
+}
+
+// Funcion Resolver
+export const resolveTitle: ResolveFn<string> = (activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot) => 
+{
+  return resolveUserName(activatedRoute, routerState) + '\'s Tasks'
+}
+
+
+15) RouteGuards: Los RoutesGuards son funciones que controlan el acceso a una ruta, util para la autenticacion y autorizacion. Tenemos distintos tipos de 
+guards:
+
+
+15.1) CanMatch: Determina si una ruta debe coincidir o no, antes de siquiera instanciar componentes o cargar módulos. Es útil cuando querés prevenir que 
+una ruta siquiera se considere válida (a diferencia de CanActivate, que se ejecuta después de que la ruta ya fue resuelta como coincidente). 
+Es util para acceso basado en permisos, roles, configuración, o estado de la app. Es una version moderna del CanLoad. Usá CanMatch solo si estás 
+haciendo cosas más complejas con LazyLoading (loadChildren), o necesitás evitar incluso el matching de la ruta.
+
+// Las funciones de validacion pueden Utilizar Services/Observables y demas elementos, estas deben devolver un T/F.
+// Generalmente si la direccion es aceptada madaremos TRUE y la ruta cargara un componente, en caso de denegar el acceso,
+// En vez de FALSE debemos hacer una redireccion.
+const dummyCanMath: CanMatchFn = (route, segments) => {
+    const router = inject(Router);
+    return new RedirectCommand(router.parseUrl('/unauthorized'));
+}
+
+// Routes Config TS
+{
+  path: 'tasks', // <your-domain>/users/<uid>/tasks
+  component: TasksComponent,
+  runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+  resolve: {
+      userTasks: resolveUserTasks,
+  },
+  title: resolveTitle,
+  canMatch: [dummyCanMath]
+}
+
+
+15.2) CanActivate: Se utiliza para controlar si se puede activar una ruta específica. Se ejecuta después de que Angular hace match con la URL, pero antes 
+de cargar el componente asociado a la ruta. Si el guardia devuelve true, Angular continúa y activa la ruta. Si devuelve false, el acceso se bloquea y el 
+componente no se carga. Util para proteger rutas según condiciones como autenticación, permisos o roles. Usá CanActivate si querés bloquear el acceso a 
+una ruta a usuarios que no estén logueados.
+
+En la mayoría de los casos de autenticación, CanActivate es suficiente y más claro.
+
+
+15.3) CanActivateChild: Similar a CanActivate pero para rutas hijas.
+
+
+15.4) CanDeactivate: Define si un usuario puede salir de una ruta.
+
+// Recibe como parametro el Componente del que me quiero ir.
+export const canLeaveEditPAge: CanDeactivateFn<NewTaskComponent> = (component) => {
+  if(component.submited()) return true;
+  if(component.enteredTitle() || component.enteredDate() || component.enteredSummary()){
+    return window.confirm('Do you really want to leave? You will lose you data');
+  }
+  return true;
+}
+
+
+
+15.5) CanMatch vs CanActivate: Ambos sirven para control de acceso basado en lógica de negocio. CanMatch hace la pregunta de 
+¿Permito que esta ruta sea considerada como coincidencia para esta URL? Si CanMatch devuelve false, Angular ni siquiera carga el módulo o evalúa sus rutas hijas.
+Es decir, "esta ruta ni existe para este usuario".
+CanActivate se ejecuta después de que la ruta hizo match, y antes de activar el componente o módulo. Es como decir: "Sí, esta es la ruta correcta, pero 
+¿tenés permiso para entrar?".
+
+CanMatch: ¿Tenés permiso para ver esta puerta y que se te muestre en el pasillo?
+CanActivate: ¿Tenés la llave para abrir la puerta y entrar?
+
+
+16) Ejecutar resolvers en la recarga de la misma pagina:
+
+// Configurar la navegacion a la misma pagina
+onComplete() {
+  this.tasksService.removeTask(this.task().id);
+  // Este es un metodo para refrescar mi pagina navegando a la misma ruta
+  this.router.navigate(['./'], {
+    relativeTo: this.activatedRoute,
+    onSameUrlNavigation: 'reload', // Esto permitira re-ejecutar los resolvers
+    queryParamsHandling: 'preserve' // Esto permite que al recargar y navegar pueda conservar los QueryParams
+  })
+}
+
+
+// Configurar los Resolvers para que se activen SIEMPRE
+{
+    path: 'tasks', // <your-domain>/users/<uid>/tasks
+    component: TasksComponent,
+    runGuardsAndResolvers: 'always',
+    resolve: {
+        userTasks: resolveUserTasks,
+    },
+    title: resolveTitle,
+    canMatch: [dummyCanMath]
+}
+
+
+                                                                    10) Angular Advanced: Optimization & Lazy Loading
+
+1) Conceptos a ver: 1) Que es LazyLoading y para que sirve?. 2) Defferable Views. 3) Lazy Loaded Routes
+
+2) LazyLoading: El LazyLoading en angular busca que de los componentes que creamos en nuestra aplicacion solo se carguen y ejecuten cuando se los requiera. La idea 
+es no cargar todo el codigo de una, sino dividiendo estos componentes en bloques/pedazos que se cargaran y ejecutaran. La ventaja de esto es que tendremos un
+menor Bundle-Size inicial (es decir menos codigo que debe descargar el usuario al entrar al sitio web) y la app correra mas rapido.
+
+
+2.1) Angular ofrece 2 enfoques para trabajar con LazyLoading (aunque puedo usar ambos a la vez): 1) Route-Based LazyLoading. 2) Deferrable Views.
+
+
+3) Route-Based LazyLoading: es una técnica fundamental para mejorar el rendimiento de aplicaciones grandes. Su objetivo es cargar módulos de forma diferida, 
+es decir, solo cuando el usuario navega a una ruta específica que requiere ese módulo. Para decidir que rutas deben tener LazyLoading debemos elegir aquellas 
+rutas que no deben ser cargadas desde el inicio de la APP.
+
+const resolveUserTasks: ResolveFn<Task[]> = (activatedRouteSnapshot, routerState) => 
+{};
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'tasks',
+    pathMatch: 'full',
+  },
+  {
+    path: 'tasks',
+
+    // Esta forma de importar el componente no producira un EagerLoading, debido a que el import solo se 
+    // ejecutara cuando esta ruta sea activada
+    loadComponent: () => import('../tasks/tasks.component').then(module => module.TasksComponent), 
+
+    runGuardsAndResolvers: 'always',
+    resolve: {
+      // Esta funcion que estaba en el archivo del componente la migramos aca para evitar el EagerLoading
+      userTasks: resolveUserTasks,
+    },
+  },
+];
+
+
+3.1) Usar LazyLoading en un Grupo de rutas: Usar LazyLoading en un grupo de rutas, por EJ un grupo de rutas hijas, puede salvarnos de tener que declarar LazyLoading
+en cada ruta. Con esto solo declaro el LazyLoading en el Padre y los hijos pueden implementar la logica del EagerLoading sin que esto se ejecute:
+
+// MAIN ROUTE 
+export const routes: Routes = [
+  {
+    path: '',
+    component: NoTaskComponent,
+    title: 'No task selected',
+  },
+  {
+    path: 'users/:userId',
+    component: UserTasksComponent,
+    loadChildren: () => import('./users/users.routes').then((module) => module.userRoutes),
+    canMatch: [dummyCanMatch],
+  },
+];
+
+
+// CHILD ROUTE
+export const userRoutes: Routes = [
+  {
+    path: '',
+    redirectTo: 'tasks',
+    pathMatch: 'full',
+  },
+  {
+    path: 'tasks', // <your-domain>/users/<uid>/tasks
+    component: TasksComponent,
+    runGuardsAndResolvers: 'always',
+    resolve: {
+      userTasks: resolveUserTasks,
+    },
+  },
+  {
+    path: 'tasks/new',
+    component: NewTaskComponent,
+    canDeactivate: [canLeaveEditPage]
+  },
+];
+
+
+3.2) LazyLoading de Services: Es util cuando tengo servicios que no necesariamente deben estar disponibles al inicio de la aplicacion. Para poder hacer esto debemos 
+borrar la configuracion del servicio de que es inject en el root y tener la siguiente configuracion en las rutas:
+
+// Para el LazyLoading de un servicio lo que hacemos es agregar una ruta extra en la definicion de las rutas
+// que funcionara de Wrapper para todas las rutas que usen nuestro service. Dentro de esta ruta definiremos el 
+// El service mediante providers. El service estara disponible en todos mis Childrens
+export const userRoutes: Routes = [
+  {
+    path: '',
+    providers: [TasksService], // Esto no produce EagleLoading ya que UserRoutes es cargado con LazyLoading
+    children: [
+      {
+        path: '',
+        redirectTo: 'tasks',
+        pathMatch: 'full',
+      },
+      {
+        path: 'tasks', // <your-domain>/users/<uid>/tasks
+        component: TasksComponent,
+        runGuardsAndResolvers: 'always',
+        resolve: {
+          userTasks: resolveUserTasks,
+        },
+      },
+      {
+        path: 'tasks/new',
+        component: NewTaskComponent,
+        canDeactivate: [canLeaveEditPage]
+      },
+    ]
+  }
+];
+
+
+4) Deferrable Views: Es la forma mas moderna de manejar LazyLoading en angular. Esto me permite cargar elementos de forma Lazy dentro de un mismo TEMPLATE, 
+a diferencia de las ROUTES que el LazyLoading se Hacia por componente o grupos de componentes.
+
+<!-- Con la config por default, @defer lo que hara sera cargar este componente recien cuando el navegador esta en estado IDLE,
+ Es decir cuando el navegador no esta haciendo acciones pesadas -->
+@defer {
+  <app-offer-preview />
+}
+
+
+<!-- Con esta configuracion el elemento solo cargara cuando vaya a ser visible en pantalla. Lo que si, debemos crear un @placeholder
+ que se muestre en caso de no cargar el @defer-->
+@defer(on viewport){
+  <app-offer-preview />
+} @placeholder {
+  <p>Cargando</p>
+}
+
+
+<!-- Con esta configuracion el elemento solo cargara cuando el usuario interactue con el @PlaceHolder -->
+@defer(on interaction){
+  <app-offer-preview />
+} @placeholder {
+  <p style="text-align: center; cursor: pointer;">Click aqui para ver la oferta</p>
+}
+
+
+4.1) Prefetch: Es otra instruccion que define en que momento el codigo del defer debe ser cargado. La diferencia con 'on' es que define cuando se muestra y 
+Prefetch cuando se descarga el contenido pero no cuando se muestra.
+
+@defer(on interaction; prefetch on hover){
+  <app-offer-preview />
+} @placeholder {
+  <p style="text-align: center; cursor: pointer;">Click aqui para ver la oferta</p>
+}
+
+
+4.2) Doc Oficial: https://angular.dev/guide/templates/defer
+
+
+
+                                                                            11) Deploying Angular Apps 
+
+1) Conceptos a ver: 1) SPA, SSR, SSG. 2) Cuando y porque usar cada una.
+
+
+2) Deployment: Para publicar una app de angular debo seguir una serie de pasos: 1) Terminar y Testear mi aplicacion. 2) Compilar y optimizar todo nuestro codigo para 
+produccion, esto lo hacemos mediante el comando 'ng build' (si queremos una SPA). Esto dejara una carpeta llamada 'dist' y dentro estar una carpeta con nuestro 
+proyecto compilado y listo para subir a produccion.
+
+
+2.1) Automatic Deployment con Angular CLI: Podemos usar la CLI de angular para realizar deploys mas automaticos. Con el como 'ng add' puedo agregar libreria de 
+terceros que soporten este comando a angular. Esto lo que hara sera instalar los paquetes y configurar mi proyecto para esas librerias.
+
+Documentacion: https://angular.dev/tools/cli/deployment
+
+'ng add @angular/fire' // este comando agrega firebase y lo configura en mi proyecto de angular
+'ng deploy'
+
+
+3) SPA: Las SPA son paginas client-side only, esto quiere decir que son paginas que utilizan el navegador del usuario para renderizar la UI, esto mediante el codigo 
+JS. Gracias a esto no necesitamos un Servidor-Web-Dinamico, solo nos basta con un servidor estatico. Recomendable para apps que no dependan de SEO.
+
+Desventajas: Como todo se renderiza en el navegador del usuario esto pueda dar lugar a que el contenido cargue lento y no se muestre completamente al principio.
+Ademas el SEO lo vera como un sitio vacio, ya que el SEO no espera que el codigo de JS cargue la pagina, y no lo recomendara.
+
+*Como subir una app a firebase se ve en el video 313*
+
+
+4) Server Side Rendered: Las rutas de la aplicacion son rederizadas a pedido (on-demand) en un servidor web dinamico. Basicamente el servidor es quien hace el 
+trabajo de renderizar las vistas de angular y servirlas al navegador. Esto nos permite que el navegador no recibe un HTML vacio y que luego deba renderizarlo, 
+sino el servidor sirve (segun la ruta) contenido HTML totalmente renderizado al navegador. Cuando la Pagina es activada, se vuelve una SPA luego de la 
+renderizacion inicial, es decir que luego de carga y renderizacion inicial que provee el servidor, el manejo de la APP pasara a ser cuestion del navegador,
+por ende se vuelve una SPA. Esta forma mejora el SEO considerablemente.
+
+Desventajas: Tareas largas en la carga puede causar una pagina vacia por unos segundos. Aumenta la complejidad al tener que usar un servidor web dinamico.
+
+
+4.1) Hacer Deploy de una SSR Page: 1) Primero ejecutaremos un comando que preparara nuestro proyecto para que sea SSR: 'ng add @angular/ssr'. 
+2) Ejecutamos ng build, automaticamente creara una build para una SSR. 3) Esto nos creara la carpeta DIST, pero esta tendra 2 carpetas dentro 
+de tu proyecto, browser (la misma que aparecia en una SPA) y server. 4) Dentro del package.json tendre un comando que me permitira ejecutar localmente 
+ese proyecto SSR: 'npm run serve:ssr:MyProject'
+
+
+4.2) LocalStorage Problem: Si uso localStorage en una app SSR, esto terminara dano un error, debido a que localStorage es una caracteristica del navegador que 
+no esta disponible en el servidor. Una solucion para esto es declarar la asignacion y funcion del localStorage luego de que se renderice la pagina totalmente, 
+que es el momento en el que el navegador toma control de la pagina y el localStorage es reconocido:
+
+constructor() {
+  afterNextRender(()=> {
+    const tasks = localStorage.getItem('tasks');
+    if (tasks) {
+      this.tasks.set(JSON.parse(tasks));
+    }
+  })   
+}
+
+
+5) Static Site Generation: Es una combinacion de las 2 anteriores, los rutas estan pre-renderizadas en el tiempo de construccion. Por EJ un usuario visita una 
+ruta y esta puede existir ya que ya estaba pre-renderizada durante el proceso de construccion, y por ende np necesita ser renderizada dinamicamente por el 
+servidor. El navegador al igual que en SSR recibe paginas ya renderizadas y el HTML no esta vacio. Igualmente despues de la cargar y renderizacion inicial esta 
+actuara como una SPA. Un Servidor Web Dinamico es requerido, salvo que todas mis rutas se encuentren pre-renderizadas.
+
+Desventajas: Si tengo data consultada en un componente esta se mantedra igual hasta que volvamos a hacer un BUILD.
+
+5.1) Hacer Deploy de una SSG Page: 1) Primero ejecutaremos un comando que preparara nuestro proyecto para que sea SSG: 'ng add @angular/ssr'. La razon para 
+correr este comando de SSR es que SSG es una variante similar de SSR. 2) *Detallado en el 321*
+
+
+
+                                              12) Authentication & Route Protection *Esto se Complementa con la seccion seguridad del otro curso*
+
+1) Como funciona la Autenticacion: Basicamente al trabajar con Angular y un Servidor, la autenticacion suele ser mediante un Token, un JSON-Web-Token.
+Este JWT sera solicitado por nuestro backend en cada peticion HTTP si sus endpoints asi lo requieren. El funcionamiento es el siguiente, ante un login 
+exitoso el Backend nos devuelve un token, desde angular recibimos ese token y lo almacenamos (puede ser en el localStorage o en cookies) y luego 
+cuando hagamos peticiones HTTP colocaremos este token en el Header de la request, para que sea validado por el Backend.
+
+
+2) Manejar Errores: Para manejar errores en peticiones HTTP debemos hacer lo siguiente: 1) Crear una propiedad error en el componente, que este null/undefined 
+pero que acepte type string. 2) En el caso de ocurrir un error en la peticion lo capturaremos y definiremos el mensaje de error. 3) Para definir el tipo de 
+mensaje hay 2 variantes, que el API tenga un mensaje personalizado para el error y usemos ese (el caso mas sencillo) o la otra es que verifiquemos el statusCode 
+o Msg de error y en base a eso mandemos un MSJ de error, lo podemos armar con un SwitchCase para segun el codigo un MSJ. 4) Por ultimo creamos en el 
+TEMPLATE una etiqueta que muestre nuestro error.
+
+
+2.1) Variante: En el caso de que tengamos mucha logica en el manejo de la Callback del error, quizas lo mejor seria trabajar con el .pipe() y .catchError() 
+directamente, de esta forma no hacemos que nuestro componente deba tener mas codigo del que debe.
+
+// EN EL SERVICE
+registrar(credenciales: CredencialesUsuarioDTO): Observable<RespuestaAutenticacionDTO>{
+  return this.httpClient.post<RespuestaAutenticacionDTO>(`${this.urlBase}/registrar`, credenciales)
+  .pipe(
+    tap(respuestaAutenticacion => this.guardarToken(respuestaAutenticacion)),
+    catchError(this.handleError)
+  );
+}
+
+private handleError(errorRes: HttoErrorResponse) // CREAMOS UNA FUNCION QUE MANEJE LOS ERRORES DE AUTH
+{
+  let errorMsg = 'Un error desconocido a sucedido';
+
+  // Este if verifica si respuesta de error tiene un objeto de errores o un Msg de este, quizas puede ser un error desconocido.
+  if(!errorRes.error || !errorRes.error.error) return thorwError(errorMessage);
+
+  switch(errorRes.error.error.message){
+    case 'Unauthorized':
+      errorMessage = 'Usted No tiene permisos'
+      break;
+  }
+  return throwError(errorMessage); // Esto devolvera un Observable que tendra como valor el mensaje de error
+}
+
+
+// En el COMPONENTE
+error?: string;
+isLoading = false;
+onSubmit(){
+  isLoading = true;
+  this.authService.registrar({email: form.email, password: form.password}).subscribe({
+    next: () => {
+      console.log('Exitos');
+    },
+    error: (errorMsg) => {
+      console.log(errorMsg) // Esto imprimira 'Usted No tiene permisos' o 'Un error desconocido a sucedido'
+      this.error = errorMsg;
+    },
+    complete: () => {
+      isLoading = false;
+    }
+  })
+}
+
+
+2.2) Un Observable para Login y Register: En el caso de que mis funciones tengan el mismo manejo y se ejecuten sobre el mismo forms, podemos evitar duplicar el 
+codigo si que manejan su suscripcion igual:
+
+error?: string;
+isLoading = false;
+isLogin = false;
+
+onSubmit(){
+  isLoading = true;
+  let authObservable?: Observable<RespuestaAutenticacionDTO>;
+
+  if(isLogin) authObservable = this.authService.login({});
+  else authObservable = this.authService.registrar({email: form.email, password: form.password});
+
+  authObservable.subscribe({
+    next: () => {
+      console.log('Exitos');
+    },
+    error: (errorMsg) => {
+      console.log(errorMsg) // Esto imprimira 'Usted No tiene permisos' o 'Un error desconocido a sucedido'
+      this.error = errorMsg;
+    },
+    complete: () => {
+      isLoading = false;
+    }
+  })
+}
+
+
+
+3) Auto-Login: La idea de como implementar un auto-login en angular es la siguiente: 1) Crear una funcion que se encargue de extraer el token guardado y luego 
+verificar que su ExpirationDate sea valida. 2) Si todo es valido permitiremos el login, sino devolveremos al usuario al menu de login. 3) Esto debe ejecutarse 
+en el OnInit de el App.Component.ts
+
+
+4) Auto-Logout: El Auto-Logout lo podemos implementar mediante un timer, este recibira la fecha de mi expirationToken, y en base a eso creara un timer que 
+hara la cuenta y cuando llegue a 0 se encargara de borrar el token del localStorage.
+
+// Todo esto dentro de UserService/AuthService
+
+private tokenExpirationTimer: any;
+
+logOut(){
+  localStorage.removeItem(this.llaveToken);
+  localStorage.removeItem(this.llaveExpiracion);
+  if(this.tokenExpirationTimer){
+    clearTimeout(this.tokenExpirationTimer);
+  }
+  this.tokenExpirationTimer = null;
+}
+
+autoLogout(expirationDuration: number){
+  this.tokenExpirationTimer = setTimeout(() => {
+    this.logout();
+  }, expirationDuration)
+}
+// A autoLogout() lo llamaremos cuando nuestra funcion de registro, login y renovarToken sean exitosas. Tambien al ngOnInit del AppComponent
+
+
+export class AppComponent implements OnInit {
+  title = 'Notes-App';
+  ngOnInit(): void {
+    const exp = this.token.obtenerExpToken();
+    if(exp){
+       this.token.autoLogout(new Date(exp).getTime() - new Date().getTime());
+    }
+    this.router.events.subscribe(event => {
+      if(event instanceof NavigationEnd){
+        this.token.renovarToken();
+      }
+    })
+  }
+  private router = inject(Router);
+  private token = inject(UsersService);
+}
+
+5) Renovar Token:
+// Declarar la renovacion del Token en el App.Component.ts
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+    this.router.events.subscribe(event => {
+      if(event instanceof NavigationEnd){
+        this.token.renovarToken();
+      }
+    })
+  }
+  private router = inject(Router);
+  private token = inject(UsersService);
+}
+
+// El service que permite la renovacion
+public renovarToken(){
+  const token = localStorage.getItem(this.llaveToken); 
+  const tokenExpiration = localStorage.getItem(this.llaveExpiracion);
+  if (token && tokenExpiration) { 
+    const expirationDate = new Date(tokenExpiration); 
+    const now = new Date(); 
+    const timeDiff = expirationDate.getTime() - now.getTime(); 
+    const hoursDiff = timeDiff / (1000 * 60 * 60); 
+    if (hoursDiff < 2) {
+      this.renovarTokenEndpoint().subscribe();
+    }
+  }
+}
+
+
+private renovarTokenEndpoint(): Observable<RespuestaAutenticacion>{
+  let token = this.httpClient.get<RespuestaAutenticacion>(`${this.urlBase}/renovartoken`)
+  .pipe(tap(respuestaAutenticacion => {
+    this.guardarToken(respuestaAutenticacion)
+    if(this.tokenExpirationTimer){
+      clearTimeout(this.tokenExpirationTimer);
+    }
+    this.autoLogout(new Date(respuestaAutenticacion.expiracion).getTime() - new Date().getTime()); 
+  }));
+  return token;
+}
+
+
+6) URL Tree Para la navegacion:
+
+export const estaLogueadoGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  const userService = inject(UsersService);
+  let results = userService.estaLogueado();
+  if(results) return true;
+  return router.createUrlTree(['']);
+};
+
+
+                                                                                  13) Signals
+                                                                                  
+0) Change Detection: La deteccion de cambios con Zone.js ocurre cuando se ejecuta un evento, Zone.js notifica a Angular, que ejecuta su mecanismo de detección de cambios. 
+El mecanismo de detección de cambios hace que Angular revise todos los componentes para ver si se realizo el cambio en alguna variable que se este renderizando 
+en el TEMPLATE, parar actualizarla y volver a renderizar la UI. Esto aunque es muy automatizado y facil de usar, puede generar problemas de rendimiento en apps grandes.
+
+
+1) Signals: Son una nueva forma de gestionar el estado y la reactividad en Angular, como alternativa al enfoque basado en Zone.js y detección de cambios tradicional.
+Una Signal es una función que almacena un valor reactivo y notifica automáticamente a Angular cuando ese valor cambia. Esta notificación es precisa y específica: 
+Angular sabe exactamente qué Signal cambió y qué partes del template dependen de ella, por lo tanto, solo actualiza esas partes de la UI, en lugar de recorrer todos 
+los componentes como hace el sistema tradicional. Esto mejora significativamente la eficiencia y el rendimiento, ya que se evita el recorrido por todos los componentes.
+
+La ventaja de esto frente a Zone.js es que Zone al ejecutarse un evento se fija componente por Componente a ver cual de todos debe actualizar, lo que 
+puede llegar a ser ineficiente. En cambio con Signals solo voy a revisar y actualizar aquella Signal cuyo valor cambio y por ende debe volver a renderizar 
+la UI.
+
+| Característica              | Zone.js                      | Signals                          |
+| --------------------------- | ---------------------------- | -------------------------------- |
+| Tipo de detección           | Implícita (automática)       | Explícita (reactiva)             |
+| Qué se actualiza            | Todo el árbol de componentes | Solo lo que depende de la Signal |
+| Rendimiento en apps grandes | Puede degradarse             | Escalable y eficiente            |
+| Control del flujo de datos  | Menor control                | Mayor control y predictibilidad  |
+
+
+export class UserComponent {
+  selectedUser = signal(DUMMY_USERS[randomIndex]);
+  imagePath = computed(() => 'assets/users/'+this.selectedUser().avatar);
+
+  onSeletectUser(){
+    const randomIndex = Math.floor(Math.random()* DUMMY_USERS.length)
+    this.selectedUser.set(DUMMY_USERS[randomIndex]); // CAMBIAR EL VALOR DE UNA SIGNAL
+  }
+}
+
+
+2) Acceder a los Valores de Signals: Si quiero acceder a las propiedades de Signal esto devolvera un error, para esto a mi Propiedad la debo llamar como un metodo 
+para acceder a sus propiedades. 
+
+<button (click)="onSeletectUser()">
+  <img [src]="imagePath()" alt="">
+  <span>{{selectedUser().name}}</span>
+</button>
+
+
+
+3) Computed signals: son señales de solo lectura que dependen de otras señales. Se actualizan automáticamente cuando cambia alguna de las Signals que usa, 
+sin necesidad de suscripción manual. Es decir, las Computed signals estan suscriptas a las signal que usan, y si estas actualizan su valor tambien se actualizara el 
+de las computed.
+
+const count = signal(2);
+const doubleCount = computed(() => count() * 2);
+
+console.log(doubleCount()); // 4
+count.set(5);
+console.log(doubleCount()); // 10 (se actualiza automáticamente)
+
+
+4) Signal Inputs: Es una forma de ingresar parametros pero mediante signals. Fuera del componente el ingreso del parametro no cambia nada, el usar Signal Inputs solo 
+cambiara dentro del componente. Un detalle a tener en cuenta es que estas Signal Inputs son propiedades READONLY, solo variaran por fueran del componente, su valor solo 
+cambiara en la inicializacion del componente.
+
+avatar = input.required<string>();
+name = input<string>('default');
+
+
+5) Marcar una Signal como Readonly: en este caso "resultData" es la signal y la marcaremos como solo lectura. Esta funcion es anterior a las computed Signals.
+
+results = this.investmentService.resultData.asReadonly();
+
+
+
+6) ViewChild Signal:
+
+private form = viewChild.required<ElementRef<HTMLFormElement>>('form');
+onSubmit(titleElement: string, ticketText: string){
+  this.form().nativeElement.reset();
+}
+
+
+7) ContentChild Signal: 
+
+private control = contentChild.required<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('input');
+
+
+8) Effect(): Para forzar la suscripcion al cambio de una SIGNAL usamos este metodo. Effect() detecta automáticamente las señales a las que debe suscribirse 
+cuando las usas dentro de su callback. Al suscribirnos a SIGNALs con effect lo que hacemos es que cada vez que esas SIGNALs cambien se ejecutara el contenido 
+dentro de effect.
+
+// Si lo defino en mi constructor se ejecutara cada vez que currentStatus haya cambiado.
+constructor(){
+  effect(() => {
+    console.log(this.currentStatus())
+  })
+}
+
+
+8.1) Effect Cleanup: Es una funcion que me permite definir una accion que se ejecutara antes del siguiente Effect(), se lo usa para limpiar.
+
+
+9) set(): este metodo me permitira definir un valor a mi signal:
+
+this.counter.set(0);
+
+
+10) update(): es una funcion de las signals que me permite actualizar el valor pero usando una callback que tiene el valor anterior de la signal y 
+retornara el nuevo valor:
+
+onToggle(){
+  this.detailVisible.update((oldValue) => !oldValue)
+}
+
+
+
+                                                                    14) NgRx para el manejo de estado
+
+1) Conceptos a ver: 1) Que es NgRx? Como funciona?. 2) Basic: State, Reducers & Selectors. 3) Trabajando con NgRx Effects.
+
+
+2) NgRx: Es una libreria de terceros para el manejo de estado en angular. Es una solucion para el manejo de estado en Angular. Esta opcion no viene a 
+reemplazar el sistema de manejo de estado y deteccion de cambios de Angular, pero si puede ser util para el manejo de estados complejos de componentes 
+o servicios.
+
+
+2.1) Store: Una vez instalado este paquete lo primero que deberemos hacer es crear un Data-Store, que sera la base de NgRx, ya que en este Store es donde 
+se guardara y manejaran la data. Los Componentes/Servicios prodran consumir este Store para acceder a la data que ahi almacenamos. Para acceder a 
+una data especifica deberemos utilizar un Selector.
+
+
+2.2) Actions: Para que la Data se pueda actualizar deberemos enviarle esta informacion al Store. Esto lo hacemos mediante Actions, que envian la informacion 
+necesaria para que esa data cambie. Esto Actions le envian la informacion a un Reducer.
+
+
+2.3) Reducer: Este contiene la Logica para generar el cambio de estado de la data en los Stores. Este recibe los valores que debe actualizar de los actions.
+Los Reducers no pueden llevar a cabo acciones asincrónas, siempre deben ejecutar acciones sincronas. Para acciones asincronas usamos effects.
+
+
+2.4) Effects: Son 'efectos secundarios', que ante la ejecucion de una Action deben disparar una accion que no esta directamente relacionada con el cambio en la UI.
+Generalmente se ejecutan acciones asincronas.
+
+
+2.5) Instalacion: 'ng add @ngrx/store'
+
+
+3) Crear un Reducer: Luego de instalar el paquete crearemos una carpeta llamada Store, y dentro un archivo TS: 'name.reducer.ts'. Creamos la logica del reducer 
+para actualizar el estado de nuestra data. Luego registramos el Reducer en el main.ts
+
+
+// Creamos un reducer y le damos un valor inicial. Este se ejecuta cuando se dispara un Action o cuando se inicializa un Store
+const initialState = 0;
+export const counterReducer = createReducer(
+    initialState,
+    // Esta funcion recibira la action que si se ejecuta disparar este reducer. El State sera el que le pase la action
+    on(increment, (state) => state + 1)
+);
+
+
+// Registramos el Reducer
+bootstrapApplication(AppComponent, {
+    // Registramos los reducers
+    providers: [provideStore({
+        counter: counterReducer // counter sera la KEY que usare para rescatar el valor de counterReducer.
+    })]
+});
+
+
+
+4) Leer Data desde un Store:
+
+// En el componente
+export class CounterOutputComponent {
+  // El $ es una convencion para variables que guardan un Observable
+  count$?: Observable<number>;
+  private store = inject(Store<{counter: number}>); // Caso de necesitarlo puedo definir el tipo de datos que contiene mi Store
+
+  constructor(){
+    // El metodo Select es el que me permite seleccionar que data quiere recibir de Store.
+    // Esto no me devolvera la data, sino un observable. La ventaja es que cada vez que la 
+    // Data cambie, esto se nos notificara automaticamente.
+    this.count$ = this.store.select('counter'); 
+  }
+}
+
+// En el template
+<p class="counter">{{ count$ | async }}</p>
+
+
+
+5) Actions: Para crear un action lo haremos dentro de la carpeta store con el nombre de 'nombre.actions.ts'. En las actions definire los eventos que hacen
+que mi data se deba actualizar:
+
+// Este recibe 1-2 Argumentos, el primero es un identificador de la Action
+export const increment = createAction(
+    '[Counter] Increment'
+) 
+// En las actions definire los eventos que hacen que mi data se deba actualizar
+
+
+// Ejecutar la Action en un componente
+export class CounterControlsComponent {
+  private store = inject(Store);
+  increment() {
+    this.store.dispatch(increment());
+  }
+}
+
+
+5.1) Adjuntar Data a las Actions: Es comun que las actions lleven data extra consigo. Esto lo consigo definiendo su segundo argumento:
+
+// Este recibe 1-2 Argumentos, el primero es un identificador de la Action. El segundo definira que data estara adjuna a la action
+export const increment = createAction(
+    '[Counter] Increment',
+    props<{value: number}>() // Attached Data
+) 
+// En las actions definire los eventos que hacen que mi data se deba actualizar
+
+
+// Usar esa data en el Reducer
+// Creamos un reducer y le damos un valor inicial. Este se ejecuta cuando se dispara un Action o cuando se inicializa un Store
+const initialState = 0;
+export const counterReducer = createReducer(
+    initialState,
+    // Esta funcion recibira la action que si se ejecuta disparar este reducer. El State sera el que le pase la action
+    on(increment, (state, action) => state + action.value)
+);
+
+
+// Ejecutamos el Action en un componente
+export class CounterControlsComponent {
+  private store = inject(Store);
+
+  increment() {
+    this.store.dispatch(increment({value: 10}));
+  }
+}
+
+
+6) Manejar Actions y Reducers sin createReducer() y createAction(): Esto nos servira para entender que es lo que realmente sucede por detras al ejecutar las 
+funciones createReducer() y createAction():
+
+// Esta funcion Reducer recibe el State y una Action. Cualquier Dispatch que se produzca ejecutara este 
+// reducer, por ende cualquier action ejecuta este reducer. Por ello es importante verificar que action
+// nos disparo y si nos interesa hacer algo con ella.
+const initialState = 0;
+export function counterReducer(state = initialState, action: CounterActions | Action) {
+    if(action.type === '[Counter] Increment') return state + (action as IncrementAction).value;
+    return state;
+}
+
+// La Action
+export class IncrementAction implements Action {
+    readonly type = '[Counter] Increment';
+    constructor(public value: number) {}
+}
+// Aca exportamos los Types de todas las Actions que deben ser manejadas por los counter.reducers
+export type CounterActions = IncrementAction;
+
+// Ejecutar Action 
+export class CounterControlsComponent {
+  private store = inject(Store);
+
+  increment() {
+    this.store.dispatch(new IncrementAction(5));
+  }
+}
+
+
+7) Selectors: Un selector es una funcion que recibe el State de todo nuestro Store. Los selectors pueden ser utiles si quiero modificar salida de la data 
+antes de que esta me esa enviada desde Store. Por EJ la funcion de mi DoubleCounter:
+
+// El Type del State sera toda mi Store, definida en el Main.ts
+// El Type del State sera toda mi Store, definida en el Main.ts
+export const selectCount = (state: {counter: number}) => state.counter; // Forma Antigua de crear Selectors
+export const selectDoubleCount = createSelector( // Forma Actual de crear Selectors
+    selectCount,
+    (state: number) => { // El State sera el return de selectCount()
+        return state * 2;
+    }
+)
+
+// Usando el Selector
+export class CounterOutputComponent {
+  // El $ es una convencion para variables que guardan un Observable
+  count$?: Observable<number>;
+  doubleCount$?: Observable<number>;
+  private store = inject(Store<{counter: number}>); // Caso de necesitarlo puedo definir el tipo de datos que contiene mi Store
+
+  constructor(){
+    // El metodo Select es el que me permite seleccionar que data quiere recibir de Store.
+    // Esto no me devolvera la data, sino un observable. La ventaja es que cada vez que la 
+    // Data cambie, esto se nos notificara automaticamente.
+    this.count$ = this.store.select('counter'); 
+    this.doubleCount$ = this.store.select(selectDoubleCount); 
+  }
+}
+
+
+// Usando ese Observable en el template
+<p class="counter">{{ count$ | async }}</p>
+<p class="counter">Double: {{ doubleCount$ | async }}</p>
+
+
+
+8) Effects: Un EJ de side-effect seria por EJ mandar un HTTP Request, almacenar algo en el localStorage o loggear en la consola. Son acciones que no 
+tienen que ver directamente con la actualizacion de la UI. Esto existe debido a que debemos evitar hacer estas side-effects dentro de un reducer.
+Los Reducers no pueden llevar a cabo acciones asincrónas, siempre deben ejecutar acciones sincronas. Dentro de store crearemos un archivo para el 
+effect llamado: myname.effect.ts
+
+Instalar effects: 'ng add @ngrx/effects'
+
+
+8.1) Crear Effect: Para crear un Effect lo haremos mediante una clase. Dentro de esta inyectare un objeto llamado Actions que devolvera un Observable, este me 
+permitira acceder a todas las Acciones que sean disparadas por NgRx. Luego por cada Propiedad que definamos en mi clase podremos crear un Effect, para 
+crearlo deberemos usar el Observable y en el Pipe() definir a que Actions atendera y luego definiremos con Tap() el comportamiento si se ejecutan esas 
+Actions.
+
+@Injectable({providedIn: 'root'})
+
+// Esta clase puede contener multiples propiedades, y cada propiedad define un pipeline que debe ejecutar ciertas acciones
+export class CounterEffects {
+    // Actions nos devuelve un Observable, se ejecutara cada vez que una accion que sean disparadas por NgRx.
+    private actions$ = inject(Actions);
+    private store = inject(Store<{counter: number}>);
+
+    saveCount = createEffect(() => this.actions$.pipe(
+        // Permite filtrar que action se ejecuto, y segun la action que se ejecuto decido si ejecutar mi Effect.
+        ofType(decrement, increment),
+
+        // Esto nos permitira rescatar el ultimo valor del contador y no solo la Action.value
+        withLatestFrom(this.store.select(selectCount)), 
+
+        // Aqui definimos que hara el Effect
+        tap(([action, counter]) => {
+            localStorage.setItem('count', counter.toString())
+        })
+    ), {dispatch: false}); // Este Effect es de los que no disparan una nueva Action. Con esto definivos claramente que este Effect no disparara una nueva action
+}
+
+// Registrar el Effect:
+bootstrapApplication(AppComponent, {
+    // Registramos los reducers y Effects
+    providers: [provideStore({
+        counter: counterReducer
+    }), provideEffects([CounterEffects])]
+});
+
+8.2) Crear un Effect que Dispara otra action:
+
+// Esta Action se ejecutara al iniciar la App.
+export const init = createAction(
+    '[Counter] Init'
+)
+
+// Una vez ejecutada Init, un Effect la disparara
+export const set = createAction(
+    '[Counter] Set',
+    props<{value: number}>()
+)
+
+
+// Creamos el Effect
+export class CounterEffects {
+    // Actions nos devuelve un Observable, se ejecutara cada vez que una accion que sean disparadas por NgRx.
+    private actions$ = inject(Actions);
+    private store = inject(Store<{counter: number}>);
+
+    loadCount = createEffect(() => this.actions$.pipe(
+        ofType(init),
+        // Esta funcion creara una nueva cadena de observables. El valor que este devuelva se mantendra en la cadena de observables que le sigan.
+        // Es por esto que mantendra el valor del contador.
+        switchMap(() => {
+            // Aqui llamaremos a la otra Action que querramos disparar al ejecutarse init, en este caso set().
+            const storedCounter = localStorage.getItem('item');
+            if(storedCounter)return of(set({value: +storedCounter})); 
+            return of(set({value: 0})); // of() permite crear un obsevable sobre un valor
+        })
+    ))
+}
+
+
+// Ejecutamos Init
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+    this.store.dispatch(init())
+  }
+  private store = inject(Store);
+}
+
+
+
+
+                                                                           15) Angular Animations
+
+0) Instalar paquete animations: npm install @angular/animations
+
+1) Animations, Triggers y State: La idea de Angular Animations es la de transcionar de un estado a otro. Esto con CSS normal se nos podria dificultar, por 
+ello Angular facilita esto. La idea es definir 2 o mas estados para un elemento, cada estado tendra un Style, y este segun triggers ira cambiando de Style 
+y por ende de Animations.
+
+// Inicializamos el paquete
+import { provideAnimations } from '@angular/platform-browser/animations'
+bootstrapApplication(AppComponent, {
+    providers: [provideAnimations()]
+});
+
+
+// En el componente
+@Component({
+  selector: 'app-counter-controls',
+  templateUrl: './counter-controls.component.html',
+
+  // Aca definimos las reglas, estados y estilos de la animacion
+  animations: [
+    // Al trigger le pasaremos una referencia a un elemento del template, dentro de cada state definimos una Key-string y una Value como codigo CSS
+    trigger('divState', [
+      state('normal', style({
+        'background-color': 'red',
+        transform: 'translateX(0)'
+      })),
+      state('highlighted', style({
+        'background-color': 'blue',
+         transform: 'translateX(100px)'
+      })),
+      state('shrunken', style({
+        'background-color': 'green',
+         transform: 'translateX(0) scale(0.5)'
+      })),
+      // Definimos de que estado a otro sera la transicion y el tiempo que dura
+      transition('normal <=> highlighted', animate(500)),
+      transition('shrunken <=> *', animate(500)), // el * indica cualquier estado
+    ])
+  ]
+})
+export class CounterControlsComponent {
+  // Esta propiedad sera usada para cambiar entre States
+  state = 'normal';
+  onAnimate() {
+    this.state == 'normal' ? this.state = 'highlighted' : this.state = 'normal';
+  }
+}
+
+
+// En el template
+<div style="width: 200px; height: 200px;" [@divState]="state"></div>
+<button (click)="onAnimate()">Animar</button>
+
+
+
+2) Advanced Transitions: Quizas necesitemos controlar el Estilo del elemento durante la transition, no solo al inicio y final. Para ello haremos uso de las 
+Fases de transicion. 
+
+transition('shrunken <=> *', [ 
+  style({
+    'background-color': 'orange'
+  }),
+  animate(1000, style({
+    'border-radius': '50px'
+  })),
+  animate(500)
+]),
+
+
+3) Void State: Es un estado que se utiliza para declarar un elemento que no tiene un estado inicial y quiere transicionar a uno.
+*REVISAR PORQUE EL ESTADO DE 'IN' NUNCA SE APLICA*
+
+trigger('list1', [
+  state('in', style({ 
+    opacity: 1,
+    transform: 'translateX(0)'
+  })),
+  // Definimos de que estado a otro sera la transcision y el tiempo que dura
+  transition('void => *', [
+    style({ // es obligatorio definir un style inicial sino la animacion no funcionara
+      opacity: 0,
+      'background-color': 'blue',
+      transform: 'translateX(-100px)',
+    }),
+    animate(500)
+  ]),
+  transition('* => void', [
+    style({
+      opacity: 0,
+      'background-color': 'green',
+      transform: 'translateX(100px)',
+    }),
+    animate(500)
+  ]),
+]),
+
+
+
+4) KeyFrames: Los Keyframes basicamente permiten declarar estilos durante la animacion, por EJ puedo controlar que a los  200MS tenga un estilo, a los 500MS otro
+y al final otro, todo animado.
+
+transition('void => *', [
+  animate(2000, keyframes([
+    style({
+      transform: 'translateX(-100px)',
+      opacity: 0,
+      offset: 0
+    }),
+    style({
+      transform: 'translateX(100px)',
+      opacity: 1,
+      offset: 0.7
+    }),
+    style({
+      transform: 'translateX(0px)',
+      opacity: 1,
+      offset: 1
+    }),
+  ]))
+]),
+
+
+
+5) Group(): Es una funcion que me permite ejecutar animaciones de forma sincrona, a la vez.
+
+transition('* => void', [
+  group([
+    animate(500, style({
+      color: 'red'
+    })),
+    animate(500, style({
+      transform: 'translateX(100px)',
+      opacity: 0
+    })),
+  ])
+]),
+
+
+
+6) Animation Callbacks: Tambien al ejecutar o al terminar una animacion puedo ejecutar cierto codigo, esto lo hacemos usando las animation callbacks.
+
+// En el Template
+<div style="width: 200px; height: 200px;" [@divState]="state" (@divState.start)="onAlert($event)"></div>
+<div style="width: 200px; height: 200px;" [@divState]="state" (@divState.done)="onAlert($event)"></div>
+
+// En el componente
+onAlert(event: any){
+    console.log(event)
+}
+
+
+                                                                     16) Service Workers 
+
+1) Service Worker: El navegador ejecuta el codigo de JS en un hilo, pero nos permite a su vez ejecutar un Service Worker en otro hilo. Este hilo que ejecuta 
+el service worker esta desacoplado del HTML de tu pagina, es decir que este se puede seguir ejecutando en el background. Por EJ para enviar notificaciones 
+con en los navegadores mobiles. Este Service Worker puede guardar en un specialCache data, data de distinto tipo, data de una API a la que consultamos, 
+Codigo CSS, codigo de JS, ETC.
+
+El Service-Worker se puede decir que es una specie de Proxy entre las peticiones y respuestas del cliente, por EJ de una API este puede manejar la salida
+de la peticion como la entrada de esta.
+
+Instalar: 'ng add @angular/pwa'
+
+
+2) El comportamiento de que archivos o URLs deberemos cachear y segun que reglas se deben aplicar estos cacheos lo definimos en el ngsw-config.json. Aqui definire 
+el cacheo de elementos, tanto estaticos, generalmente archivos HTML, CSS, JS, imagenes e icons (tambien lo pueden ser Fonts que vienen por URL), como dinamicos
+como la data que procede de una API.
+
+// Archivo de configuracion de carga de cache estatico.
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.csr.html",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/**/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "posts",
+      "urls": ["https://jsonplaceholder.com/posts"],
+      "cacheConfig": {
+        // Configura cuantas REQUEST quiero cachear, es decir cuantos diferentes endpoints debo cachear
+        "maxSize": 5,
+
+        // El tiempo maximo que debe durar esa data en cache antes de ser borrada
+        "maxAge":  "12h",
+
+        // El Timeout me permite usar el cache si la respuesta no es satisfactoria, en este configuraremos cuantos tiempo debo esperar antes de usar el cache
+        "timeout": "10s",
+
+        // freshness: siempre trata de comunicarse con el Back para traer la data mas actualizada, solo usara el cache si esta offline o se supera el timeout
+        // performance: Trata de devolver algo lo mas rapido posible en pantalla haciendo uso del cache, siempre y cuando respete el maxAge
+        "strategy": "freshness"
+      }
+    }
+  ]
+}
+
+
+3) Official Angular Service Worker Docs: https://angular.io/guide/service-worker-intro
+
+
+
+
+                                                                      17) Unit Testing en Angular
+
+1) Escribir Unit-Test para nuestros componentes nos permitira saber si estos funcionan como nosotros esperemos que lo hagan. Estos Unit-Test nos seran 
+util para: 1) Asegurarnos que todo sigue funcionando igual con una nueva version de Angular. 2) Analizar el comportamiento del codigo. 
+3) Descubrir fallos de diseño al crear o usar el Test.
+
+// Esta funcion viene a ser el SetUp(), es el que prepara el entorno global para realizar los Unit-Tests.
+// En este configurare que Componentes quiero testear.
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+    }).compileComponents();
+  });
+
+  // Cada It() sera un tests, este tendra una descripcion de que testea y una Callback con el metodo a testear.
+  it('should create the app', () => {
+    // Creamos una instancia del componente a testear
+    const fixture = TestBed.createComponent(AppComponent);
+    // Verificamos que nuestro componente tenga una instancia
+    const app = fixture.componentInstance;
+    // Verificamos el resultado
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have the 'testing-project' title`, () => {
+    // Creamos una instancia del componente a testear
+    const fixture = TestBed.createComponent(AppComponent);
+    // Verificamos que nuestro componente tenga una instancia
+    const app = fixture.componentInstance;
+    // Verificamos que la variable title sea igual a testing-project
+    expect(app.title).toEqual('testing-project');
+  });
+
+  it('should render title', () => {
+    // Creamos una instancia del componente a testear
+    const fixture = TestBed.createComponent(AppComponent);
+    // Ejecutamos el OnChanges manualmente para ver si el componente renderizo algo
+    fixture.detectChanges();
+    // Seleccionamos el HTML del componente
+    const compiled = fixture.nativeElement as HTMLElement;
+    // Verificamos que el titulo exista y contenga la data
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, testing-project');
+  });
+});
+
+
+
+2) Ejecutar Tests: 'ng test'
+
+
+3) Utilizar e Inyectar Services en los testings:
+
+beforeEach(async () => {
+  await TestBed.configureTestingModule({
+    imports: [UserComponent],
+    providers: [UserService] // Esta inyeccion no es necesaria si inyecto mi service con root
+  }).compileComponents();
+
+  fixture = TestBed.createComponent(UserComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+});
+
+it('Should display the user name if user is logged in', () => {
+    component.isLoggin = true;
+
+    fixture.detectChanges(); 
+    let compiled = fixture.nativeElement;
+    expect(compiled.querySelector('p')?.textContent).toContain(component.user?.name)
+});
+
+it('Should NOT display the user name if user is logged in', () => {
+    fixture.detectChanges(); 
+    let compiled = fixture.nativeElement;
+    expect(compiled.querySelector('p')?.textContent).not.toContain(component.user?.name)
+});
+
+
+4) Testear tareas Asincronas: Si queremos testear tareas asincronas como normalmente lo hacemos siempre recibiremos un UNDEFINED, y seguramente fallaremos nuestro
+test. Para poder simular esto usaremos el waitForAsync() y el whenStable(), este ultimo espera a verificar mi fixture cuando haya terminado la tarea Async
+
+// Cuando creamos un Testing sobre un servicio de terceros como una API no quiero
+// que la consulta sea hacia la API necesariamente, sino quiero simularla.
+it('Should Fetch data successfully if not called async', waitForAsync(() => {
+    let dataService = TestBed.inject(DataService);
+
+    // Con Spy basicamente hacemos un Mock, en vez de ejecutar getDetails, simularemos su ejecucion y devolveremos un valor.
+    let spy = spyOn(dataService, 'getDetails').and.returnValue(Promise.resolve('Data'));
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(component.data).toBe('Data');
+    });
+}))
+
+
+4.1) FakeAsync: Esta una variante para manejar funciones asincronas en los tests. Se usa para envolver funciones en una zona de ejecución especial donde los microtasks 
+y timers se manejan de forma controlada. *Revisar 
+
+
+5.1) Isolated Tests: Son tests que se ejecutan sin usar el framework Angular. No se cargan componentes, módulos, ni se hace TestBed. Solo se testea la lógica pura de 
+clases o funciones. No usan TestBed, no hay dependencia de Angular ni del DOM, son rápidas y fáciles de mantener y son Tests de logica de negocio. Basicamente se los 
+utiliza para testear Funciones de logica de negocio que no necesiten de dependencias.
+
+5.2) Non-Isolated Tests: Tests que sí usan Angular y su entorno de pruebas (TestBed). Simulan lo que pasa en tiempo de ejecución, incluyendo inyecciones de dependencias, 
+ciclo de vida de componentes, bindings, etc. Usan TestBed y ComponentFixture, se pueden testear componentes, plantillas (HTML), inyección de servicios, etc, 
+son más lentas que las aisladas y son más cercanas al comportamiento real de la aplicación
+
+EJ:
+
+
+
+5.3) Comparacion:
+
+| Aspecto                 | Isolated                    | Non-Isolated                      |
+| ----------------------- | --------------------------- | --------------------------------- |
+| Usa Angular (`TestBed`) | ❌ No                        | ✅ Sí                           |
+| Velocidad               | 🚀 Muy rápida               | 🐢 Más lenta                     |
+| Realismo                | 🔧 Lógica pura              | 🎭 Comportamiento real de Angular|
+| Ideal para              | Servicios, pipes, funciones | Componentes, directivas, bindings |
+
+
+
+
+6) Official Docs: https://angular.io/docs/ts/latest/guide/testing.html
+
+
+
+
+
+                                                                              18) Extras
+
+0) A ver: 1) Proyectos de Angular y sus configuraciones. 2) Crear y Manejar Angular Projects. 3) Schematics & Builders. 4) Projects, Apps & Libraries
+
+
+1) Comandos de CLI de Angular: 
+
+
+1.1) npm install -g @angular/cli@latest: Sirve para instalar la ultima version de la CLI de Angular.
+
+
+1.2) ng new my-project: Sirve para crear una proyecto de angular nuevo. Este tiene varias flags: 1) --dry-run: muestra lo que hara el comando que estamos 
+escribiendo pero sin hacerlo realmente, es para asegurarse que el comando es correcto antes de una ejecucion real. 2) --skip-tests. 3) --help
+
+
+1.3) ng serve: Este comando me permite ejecutar mi app de angular. Este tiene varias flags: 1) --port: me permite decirle por que puerto se ejecutara 
+la app. 2) --prod: Sirve para ejecutar la App en modo de produccion. 3) -o.
+
+
+1.4) ng generate: Con este podemos generar elementos de angular, como: Componente, Directivas, Services, enums, guards, interceptors, interfaces, pipes, libraries,
+etc.
+
+
+1.5) ng build --prod: Este me permitira compilar mi aplicacion y generar los archivos para subirla a produccion.
+
+
+1.6) ng add @some/library: Este comando me permite agregar librerias a mi proyecto.
+
+
+1.7) ng deploy: este comando sirve para publicar nuestra aplicacion en algun Hosting automaticamente. Solo funciona con algunos hosting (firebase, azure, github pages).
+
+
+2) Archivos de Configuracion:
+
+
+2.1) Angular.json: Este archivo de configuracion se crea automaticamente cuando creamos el proyecto. Algunas configuraciones intersantes: 1) projectType: esta propiedad
+me permite definir que tipo de proyecto estoy construyendo, si una Application o una Library. 2) root: Define cual es la ruta base del proyecto. 
+3) sourceRoot: Define donde es la ruta donde guardaremos mis sources/src. 4) Build: Aqui puedo modificar elementos que tienen que ver con los pasos y configuraciones de 
+mi aplicacion al compilarse. 5) Configurations: Aqui puedo configurar los distintos enviroments de mi app y por ende modificar los archivos generados por ng build.
+
+
+2.2) Package.json: En este archivo de configuracion estaran los paquetes/librerias que tenemos instalados en nuestro proyecto y sus versiones. Las versiones que ves en 
+package.json son las declaradas. Las versiones exactas instaladas están en el archivo package-lock.json, y los paquetes se guardan físicamente en la carpeta node_modules/.
+
+
+2.3) tsconfig.json: Tenemos varios archivos de tsconfig, estos lo que hacen es configurar el compilador de TypeScript.
+
+
+3) Angular Schematics: Son plantillas automatizadas que Angular usa para generar, modificar o mantener archivos de un proyecto, como componentes, servicios, módulos, 
+rutas, etc., siguiendo buenas prácticas y estructura predefinida. EJ de esto son ng generate que me permite crear elementos, ng add que me permite agregar 
+librerias y ng update que me permite actualizar proyectos y librerias. Son plantillas que me permiten agregar cosas a mi proyecto basicamente, ya sea crear, agregar 
+o actualizar.
+
+Para algunas librerias como Angular Material podemos usar CUSTOM Schematics que me facilitan la creacion de elementos personalizados:
+'ng generate @angular/material:nav main -nav' => esto creara un componente nav pero especialmente personalizado para que sea un NAV.
+
+
+4) Builders: son herramientas que definen cómo se construye, ejecuta, prueba o analiza un proyecto Angular en distintos enviroments. Funcionan como comandos 
+personalizados que Angular CLI puede ejecutar en diferentes fases del ciclo de desarrollo. Se configuran en el archivo angular.json. EJ de estos son ng build 
+y ng test, realizan ciertos pasos de construcción de nuestra app. Luego tenemos el build de ng deploy, que se encarga de publicar nuestra app en un servidor,
+realiza ciertos pasos de deploy.
+
+
+// Builder para Compilar la app
+"architect": {
+  "build": {
+    "builder": "@angular-devkit/build-angular:browser"
+  }
+}
+
+// Builder para Levantar el servidor de desarrollo
+"serve": {
+  "builder": "@angular-devkit/build-angular:dev-server"
+}
+
+// Builder para ejecutar unit-tests
+"test": {
+  "builder": "@angular-devkit/build-angular:karma"
+}
+
+
+
+5) Crear una libreria: Para crear una libreria usaremos 'ng generate library my-button'. A diferencia de una App no libreria no busca ejecutarse sola, esta 
+tiene el proposito de ser compartida y reutilizada por distintas Apps.
+
+

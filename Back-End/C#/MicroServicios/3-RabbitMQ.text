@@ -1,0 +1,40 @@
+
+1) RabbitMQ: Es un Message-Broker o Service-Bus, es el lugar donde publicamos y almacenamos los mensajes cuando usamos comunicacion asincrona entre MS. Este 
+cuenta con 2 elementos claves: 1) Queue: Son colas del Broker, lo que hace es almacenar en un orden de llegada los mensajes entrantes, esta tiene la capacidad 
+de alamacenar multiples MSG. En el caso de que el Consumer no este habilitado para consumir los MSG estos permaneceran en la cola. Los Queue tendran un 
+Producer y un Consumer (Un MS lo publica y uno solo lo consume). 2) Exchanges: Los exchanges son los lugares donde publicamos los MSG cuando queremos tener 
+mas de un CONSUMER. A diferencia de las colas estos no almacenan la informacion, solo la transportan de A - B, si el exchange no encuentra consumers los MSG 
+se pierden. Pero no puedo consumir directamente de un exchange, lo que se hace es que el exchange trasporte el MSG a X cantidad de colas y que luego estas 
+colas almacenen y deriven los MSG a los CONSUERS. El proceso de transformar la data del exchange al los QUEUE se llama BINDING.
+
+
+2) Routing Key: Se llama routing key al valor del EVENT publicado que define que CONSUMER la consumira. 
+
+
+3) Tipos de exchange: 1) Direct, este exchange esta directamente ligado a la RoutingKey, ya que este exchange solo realizara el BINDING a las colas con las que 
+coincida su RoutingKey. 2) Topic, este utiliza la routingKey para Matchear, es decir solo realizara el BINDING a las colas que contengan la RoutingKey o que 
+usen una WildCard (*) sobre la RoutingKey. Otra opcion es usar la palabra HAS para saber si tiene o no una palabra. 3) Header, nace de la necesidad de darle 
+mas de una propiedad de verificacion al BINDING. Para evitar RoutingKey enormes lo que hacemos es pasarle argumentos al MSG y despues los verificamos en el 
+BINDING, si ambos argumentos concuerdan pasan a la cola. 4) Fanout, el exchange que publica a todos los BINDINGs, sin atender a ninguna regla.
+
+
+4) Arquitectura: A la hora de crear un Broker lo puedo hacer de 2 formas: 1) Lazy-Creation: esta consiste en ir creando Queue, Exchanges y Bindings a medida que lo 
+vayamos necesitando mediante el codigo de .NET (La creacion y publicacion de los EVENTS). 2) Incluir la infraestructura en un archivo de configuracion de RabbitMQ 
+de Docker Compose, este se llama definition.json.
+
+4.1) Docker Compose:
+
+services: 
+    rabbitmq:
+        image: rabbitmq:3.9-management-alpine
+        container_name: rabbitmq
+        enviroment:
+            - RABBITMQ_DEFAULT_USER=Guest
+            - RABBITMQ_DEFAULT_PASS=Guest
+        ports:
+            - 5672:5672
+            - 15672:15672
+        volumes:
+            - ./tools/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+            - ./tools/rabbitmq/definitions.json:/etc/rabbitmq/definitions.config
+        

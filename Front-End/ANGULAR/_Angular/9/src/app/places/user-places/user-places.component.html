@@ -1,0 +1,15 @@
+<app-places-container title="Your Favorite Places">
+  @if(isFetching() && !errorMsg()){
+    <p class="fallback-text">Fetching favourite places...</p>
+  }
+
+  @if(errorMsg()){
+    <p class="fallback-text"> {{errorMsg()}} </p>
+  }
+
+  @if (places()) {
+  <app-places [places]="places()!" (selectPlace)="onDeletePlace($event)"/>
+  } @else if (places()?.length === 0) {
+  <p class="fallback-text">Unfortunately, no places could be found.</p>
+  }
+</app-places-container>

@@ -1,0 +1,11 @@
+@if (isLoggin) {
+    <div>
+        <h1>User Logged In</h1>
+        <p>User is {{user?.name}}</p>
+    </div>
+} @else {
+    <div>
+        <h1>User not Logged In</h1>
+        <p>Please log in first</p>
+    </div>
+}
