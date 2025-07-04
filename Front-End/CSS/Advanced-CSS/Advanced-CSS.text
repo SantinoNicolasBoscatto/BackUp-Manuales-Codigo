@@ -1,0 +1,40 @@
+
+                                                                0) Introduccion
+
+1) 
+
+2) FLEXBOX: Es una seccion de CSS que permite crear cajas flexibles y adaptables al tamaño de un contenedor.
+
+3) Grid-Layaout: Seccion de CSS que permite crear diseños complejos, estableciendo filas y columnas.
+
+4) SASS: Es un preprocesador de CSS, nos permite darle a CSS caracteristicas de un lenguaje de programacion y hacer mas eficiente su 
+codigo.  
+
+5) FONT AWESOME LINK: <script src="https://kit.fontawesome.com/525da0697a.js" crossorigin="anonymous"></script>
+
+
+
+
+
+
+                                                                    1) CSS
+
+1) CSS Funciona en base a selectores, es decir que nosotros vamos a ir a seleccionar elementos que se encuentren en nuestro codigo HTML 
+y modificarlos desde CSS. Podemos Seleccionar un elemento, varios o todos, depende de lo que queramos hacer. A estos elementos 
+seleccionados los modificaremos mediante propiedades (border, height, background-color) y esto modificare el style de los elementos. 
+
+2) Selectores: 
+2.1) Etiquetas: div{}, p{}. 
+
+2.2) Id: #MyId{}, #InputId{}. 
+
+2.3) Clases: .MyClass{}, .MyParrafoClass{}. 
+
+3.1) Clases Concatenadas: .MyClass.AnotherClass{} (Este estilo se aplicara a los elementos que tengan ambas clases).
+
+4) Selector General: *{} (Este lo que hara sera aplicar ese estilo a todas mis etiquetas, es util para resetear los valores por defecto de las etiquetas). 
+
+5) Selectores Agrupados: h1, p, .myClass{} (Esto lo que hara sera aplicarle el mismo estilo a los selectores que defina separados 
+por coma).
+
+6) Selectores Descendientes:

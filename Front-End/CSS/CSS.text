@@ -2,7 +2,7 @@ CSS: Cascading Style Sheets (Describe la presentacion de un documento escrito en
 puede tener multiples estilos con CSS. 
 CSS Funciona en base a selectores, es decir que nosotros vamos a ir a seleccionar elementos que se encuentren 
 en nuestro codigo HTML y modificarlos desde CSS. Podemos Seleccionar un elemento, varios o todos, depende 
-de lo que queramos hacer. Uno lo referenciamos con ?????????, a un grupo mediante una clase y a todos mediante
+de lo que queramos hacer. Uno lo referenciamos con, a un grupo mediante una clase y a todos mediante
 el "*". Una vez seleccionado abrimos "{}" y ahi dentro iran las propiedades que asignaremos al elemento (Estilos).
 
 A tener en cuenta que lo escribamos en nuestro codigo CSS Tendra un orden de ejecucion, y  la prioridad siempre la tendra
