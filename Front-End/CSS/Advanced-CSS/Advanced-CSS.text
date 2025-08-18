@@ -390,7 +390,7 @@ h1{
 }
 
 
-18) Object Fit: Esta propiedad nos permitira manipular las imagenes de un contenedor y ajustarla para que se vea bien.
+18) Object Fit: Esta propiedad nos permitira manipular las imagenes de un contenedor y ajustarla para que se vea bien. A tener en cuenta, solo funciona si la imagen tiene un alto definido, si su alto es auto no tendra efecto.
 
 img{
     // Esto es para que la imagen ocupe el 100% de su contenedor
@@ -1321,6 +1321,8 @@ items:nth-child(1){
 }
 
 
+6) Flex vs Inline-flex:  El contenedor "display: flex;" se comporta como un bloque (block) y ocupa todo el ancho disponible, gracias a esto si se puede utilizar el margin auto. En cambio El contenedor "display: inline-flex;" se comporta como un elemento en línea (inline), ocupando solo el espacio necesario para contener el contenido.
+
                                                                 7) Grid Layout
 
 1) Grid Layout: Con Grid podremos crear layouts complejos, sin utilizar cajas flexibles ni posicionamiento. Grid trabaja con un sistema de filas y columnas, en las cuales les especificare tamaños maximos y minimos.  
@@ -2122,14 +2124,1174 @@ p{
 
 
 
-                                                               11) Bootstrap
+                                                               11) Bootstrap - Estilos Basicos
 
 1) Bootstrap: Es el framework de CSS3 mas utilizado para crear paginas web. Un framework de CSS3 es codigo de CSS ya desarrollado/creado y que lo reutilizo mediante clases que le agrego a mis elementos.
 
 
+2) Breakpoints: Son puntos de quiebre definidos por el framework que permiten adaptar el diseño de una página web a diferentes tamaños de pantalla. Son fundamentales para crear interfaces responsive
+
+| Nombre del breakpoint | Ancho mínimo | Dispositivo típico         |
+|-----------------------|--------------|-----------------------------|
+| xs                    | 0px          | Teléfonos pequeños          |
+| sm                    | 576px        | Teléfonos grandes           |
+| md                    | 768px        | Tablets                     |
+| lg                    | 992px        | Laptops                     |
+| xl                    | 1200px       | Escritorios grandes         |
+| xxl                   | 1400px       | Pantallas extra grandes     |
 
 
-                                                                X) Ejercicios
+
+3) Bootstrap Containers: Son clases de bootstrap, que segun la resolucion centran el contenido ocupando una determinada cantidad de espacio en 
+pantalla.
+
+| Clase            | <576px (xs) | ≥576px (sm) | ≥768px (md) | ≥992px (lg) | ≥1200px (xl) | ≥1400px (xxl) |
+|------------------|-------------|-------------|-------------|-------------|--------------|---------------|
+| .container       | 100%        | 540px       | 720px       | 960px       | 1140px       | 1320px        |
+| .container-sm    | 100%        | 540px       | 720px       | 960px       | 1140px       | 1320px        |
+| .container-md    | 100%        | 100%        | 720px       | 960px       | 1140px       | 1320px        |
+| .container-lg    | 100%        | 100%        | 100%        | 960px       | 1140px       | 1320px        |
+| .container-xl    | 100%        | 100%        | 100%        | 100%        | 1140px       | 1320px        |
+| .container-xxl   | 100%        | 100%        | 100%        | 100%        | 100%         | 1320px        |
+| .container-fluid | 100%        | 100%        | 100%        | 100%        | 100%         | 100%          |
+
+IMPORTANTE: Se lee, a partir de una resolucion SM, se aplica el centrado. A partir de una resolucion MD se aplica centrado, etc.
+
+4) Spacing - Margin y Padding: Al margin y padding tambien le puedo agregar Breakpoints, basicamente a partir de X tamaño se aplicara o no un margin y padding.
+
+| Clase base | Dirección     | Breakpoints disponibles     | Valores posibles       |
+|------------|---------------|-----------------------------|------------------------|
+| m          | margin        | sm, md, lg, xl, xxl         | 0, 1, 2, 3, 4, 5, auto |
+| p          | padding       | sm, md, lg, xl, xxl         | 0, 1, 2, 3, 4, 5       |
+| mt         | margin-top    | sm, md, lg, xl, xxl         | 0–5, auto              |
+| mb         | margin-bottom | sm, md, lg, xl, xxl         | 0–5, auto              |
+| ms         | margin-start  | sm, md, lg, xl, xxl         | 0–5, auto              |
+| me         | margin-end    | sm, md, lg, xl, xxl         | 0–5, auto              |
+| mx         | margin-x      | sm, md, lg, xl, xxl         | 0–5, auto              |
+| my         | margin-y      | sm, md, lg, xl, xxl         | 0–5, auto              |
+| pt         | padding-top   | sm, md, lg, xl, xxl         | 0–5                    |
+| pb         | padding-bottom| sm, md, lg, xl, xxl         | 0–5                    |
+| ps         | padding-start | sm, md, lg, xl, xxl         | 0–5                    |
+| pe         | padding-end   | sm, md, lg, xl, xxl         | 0–5                    |
+| px         | padding-x     | sm, md, lg, xl, xxl         | 0–5                    |
+| py         | padding-y     | sm, md, lg, xl, xxl         | 0–5                    |
+
+
+4.1) Combinacion con Breakpoints: Aqui lo que hacemos es darle un margin 5 en resoluciones medium para arriba, ignorando los ms-2 y mt-2, una vez que la resolucion sea menor a medium se aplicaran los estilos de ms-2 y mt-2.
+
+<div class="ms-md-5 mt-md-5 ms-2 mt-2"></div>
+
+
+5) Sizing: El Sizing se encarga de darle tamaños a nuestros contendores. Tanto para Width como para Height.
+
+| Clase     | Propiedad aplicada | Valor relativo           | Descripción                          |
+|-----------|--------------------|--------------------------|--------------------------------------|
+| w-25      | width              | 25%                      | 25% del contenedor padre             |
+| w-50      | width              | 50%                      | 50% del contenedor padre             |
+| w-75      | width              | 75%                      | 75% del contenedor padre             |
+| w-100     | width              | 100%                     | 100% del contenedor padre            |
+| w-auto    | width              | auto                     | Ancho automático                     |
+| h-25      | height             | 25%                      | 25% del contenedor padre             |
+| h-50      | height             | 50%                      | 50% del contenedor padre             |
+| h-75      | height             | 75%                      | 75% del contenedor padre             |
+| h-100     | height             | 100%                     | 100% del contenedor padre            |
+| h-auto    | height             | auto                     | Alto automático                      |
+| mw-100    | max-width          | 100%                     | Máximo ancho del contenedor padre    |
+| mh-100    | max-height         | 100%                     | Máximo alto del contenedor padre     |
+| vw-100    | width              | 100vw                    | 100% del ancho del viewport          |
+| vh-100    | height             | 100vh                    | 100% del alto del viewport           |
+| min-vw-100| min-width          | 100vw                    | Mínimo ancho igual al viewport       |
+| min-vh-100| min-height         | 100vh                    | Mínimo alto igual al viewport        |
+
+
+6) Encabezados: Son clases que permiten darle un estilo de titulos y subtitulos a mis etiquetas. Las clases display-* son ideales para títulos destacados, como en hero sections o landing pages.
+
+| Clase     | Estilo aplicado        | Equivalente HTML | Tamaño de fuente (aprox.) |
+|-----------|------------------------|------------------|----------------------------|
+| h1        | font-size: 2.5rem      | <h1>             | 40px                       |
+| h2        | font-size: 2rem        | <h2>             | 32px                       |
+| h3        | font-size: 1.75rem     | <h3>             | 28px                       |
+| h4        | font-size: 1.5rem      | <h4>             | 24px                       |
+| h5        | font-size: 1.25rem     | <h5>             | 20px                       |
+| h6        | font-size: 1rem        | <h6>             | 16px                       |
+| display-1 | font-size: 5rem        | Ninguno          | 80px                       |
+| display-2 | font-size: 4.5rem      | Ninguno          | 72px                       |
+| display-3 | font-size: 4rem        | Ninguno          | 64px                       |
+| display-4 | font-size: 3.5rem      | Ninguno          | 56px                       |
+| display-5 | font-size: 3rem        | Ninguno          | 48px                       |
+| display-6 | font-size: 2.5rem      | Ninguno          | 40px                       |
+
+
+
+
+7) Estilo de textos:
+
+| Clase                     | Propiedad aplicada                                | Tamaño aprox. | Descripción breve                                      |
+|---------------------------|----------------------------------------------------|----------------|--------------------------------------------------------|
+| fs-1                      | font-size: 2.5rem                                  | 40px           | Muy grande                                             |
+| fs-2                      | font-size: 2rem                                    | 32px           | Grande                                                 |
+| fs-3                      | font-size: 1.75rem                                 | 28px           | Mediano-grande                                         |
+| fs-4                      | font-size: 1.5rem                                  | 24px           | Mediano                                                |
+| fs-5                      | font-size: 1.25rem                                 | 20px           | Mediano-pequeño                                        |
+| fs-6                      | font-size: 1rem                                    | 16px           | Pequeño                                                |
+| fs-sm                     | font-size: 0.875rem                                | 14px           | Texto pequeño                                          |
+| fs-base                   | font-size: 1rem                                    | 16px           | Tamaño base (por defecto)                              |
+| fs-lg                     | font-size: 1.25rem                                 | 20px           | Texto grande                                           |
+| lead                      | font-size: 1.25rem; font-weight: 300               | 20px           | Texto destacado, ideal para introducciones             |
+| text-muted                | color: #6c757d                                   | —              | Texto apagado, útil para notas o subtítulos          |
+| blockquote                | font-size: 1.25rem; margin: 1rem 0                 | 20px           | Cita destacada con estilo especial                     |
+| blockquote-footer         | display: block; font-size: 0.875rem                | 14px           | Pie de cita, se usa dentro de blockquote               |
+| text-start                | text-align: start                                  | —              | Alinea el texto a la izquierda (LTR)                   |
+| text-center               | text-align: center                                 | —              | Centra el texto                                        |
+| text-end                  | text-align: end                                    | —              | Alinea el texto a la derecha (LTR)                     |
+| text-lowercase            | text-transform: lowercase                          | —              | Convierte todo el texto a minúsculas                   |
+| text-uppercase            | text-transform: uppercase                          | —              | Convierte todo el texto a mayúsculas                   |
+| text-capitalize           | text-transform: capitalize                         | —              | Capitaliza la primera letra de cada palabra            |
+| fw-bold                   | font-weight: bold                                  | —              | Texto en negrita                                       |
+| fw-bolder                 | font-weight: bolder                                | —              | Texto más negrita que bold                             |
+| fw-semibold               | font-weight: 600                                   | —              | Seminegrita                                            |
+| fw-normal                 | font-weight: normal                                | —              | Peso normal                                            |
+| fw-light                  | font-weight: light                                 | —              | Texto más liviano                                      |
+| fw-lighter                | font-weight: lighter                               | —              | Texto aún más liviano                                  |
+| fst-italic                | font-style: italic                                 | —              | Texto en cursiva                                       |
+| fst-normal                | font-style: normal                                 | —              | Quita la cursiva                                       |
+| lh-1                      | line-height: 1                                     | —              | Altura de línea compacta                               |
+| lh-sm                     | line-height: 1.25                                  | —              | Altura de línea pequeña                                |
+| lh-base                   | line-height: 1.5                                   | —              | Altura de línea estándar                               |
+| lh-lg                     | line-height: 2                                     | —              | Altura de línea amplia                                 |
+| text-decoration-none      | text-decoration: none                              | —              | Quita subrayado                                        |
+| text-decoration-underline | text-decoration: underline                         | —              | Agrega subrayado                                       |
+| text-break                | word-wrap: break-word                              | —              | Fuerza el quiebre de palabras largas                   |
+| text-nowrap               | white-space: nowrap                                | —              | Evita el quiebre de línea                              |
+| text-wrap                 | white-space: wrap                                  | —              | Permite el quiebre de línea                            |
+| text-truncate             | overflow: hidden + text-overflow: ellipsis         | —              | Trunca el texto con puntos suspensivos                 |
+| user-select-all           | user-select: all                                   | —              | Selecciona todo el contenido al hacer clic             |
+| user-select-auto          | user-select: auto                                  | —              | Selección automática según el navegador                |
+| user-select-none          | user-select: none                                  | —              | Impide que el texto sea seleccionado                   |
+| pe-none                   | pointer-events: none                               | —              | Desactiva interacción con mouse/touch                  |
+| pe-auto                   | pointer-events: auto                               | —              | Activa interacción con mouse/touch                     |
+
+
+
+8) Colores: Los colores se pueden usar en textos, backgrounds y borders.
+
+| Clase         | Color aplicado       | Uso común                      |
+|---------------|----------------------|--------------------------------|
+| primary       | Azul Bootstrap       | Elementos principales          |
+| secondary     | Gris Bootstrap       | Elementos secundarios          |
+| success       | Verde                | Éxito, confirmación            |
+| danger        | Rojo                 | Errores, advertencias graves   |
+| warning       | Amarillo             | Advertencias suaves            |
+| info          | Celeste              | Información general            |
+| light         | Gris muy claro       | Fondos suaves                  |
+| dark          | Gris oscuro          | Fondos o texto contrastante    |
+| muted         | Gris apagado         | Texto desactivado o sutil      |
+| white         | Blanco               | Fondos o texto claro           |
+| black         | Negro                | Texto o fondo oscuro           |
+| trasparent    | trasparente          | Texto o fondo trasparente      |
+
+
+EJEMPLOS DE USO:
+<p class="text-primary">Texto azul Bootstrap</p>
+<div class="bg-warning text-dark">Fondo amarillo con texto oscuro</div>
+<span class="border-danger">Borde rojo</span>
+
+
+
+9) Border:
+
+| Clase               | Propiedad aplicada              | Descripción breve                                      |
+|---------------------|----------------------------------|--------------------------------------------------------|
+| border              | border: 1px solid               | Aplica borde a todos los lados                         |
+| border-0            | border: none                    | Elimina todos los bordes                               |
+| border-top          | border-top: 1px solid           | Solo borde superior                                    |
+| border-end          | border-right (LTR)              | Solo borde derecho                                     |
+| border-bottom       | border-bottom: 1px solid        | Solo borde inferior                                    |
+| border-start        | border-left (LTR)               | Solo borde izquierdo                                   |
+| border-top-0        | border-top: none                | Elimina solo el borde superior                         |
+| border-end-0        | border-right: none              | Elimina solo el borde derecho                          |
+| border-bottom-0     | border-bottom: none             | Elimina solo el borde inferior                         |
+| border-start-0      | border-left: none               | Elimina solo el borde izquierdo                        |
+| border-primary      | border-color: azul Bootstrap    | Borde azul                                             |
+| border-secondary    | border-color: gris Bootstrap    | Borde gris                                             |
+| border-success      | border-color: verde             | Borde verde                                            |
+| border-danger       | border-color: rojo              | Borde rojo                                             |
+| border-warning      | border-color: amarillo          | Borde amarillo                                         |
+| border-info         | border-color: celeste           | Borde celeste                                          |
+| border-light        | border-color: gris claro        | Borde claro                                            |
+| border-dark         | border-color: gris oscuro       | Borde oscuro                                           |
+| border-white        | border-color: blanco            | Borde blanco                                           |
+| border-1            | border-width: 1px               | Grosor fino                                            |
+| border-2            | border-width: 2px               | Grosor medio                                           |
+| border-3            | border-width: 3px               | Grosor más grueso                                      |
+| border-4            | border-width: 4px               | Grosor grande                                          |
+| border-5            | border-width: 5px               | Grosor muy grande                                      |
+| rounded             | border-radius: .25rem           | Bordes redondeados                                     |
+| rounded-0           | border-radius: 0                | Sin redondeo                                           |
+| rounded-1           | border-radius: .2rem            | Redondeo pequeño                                       |
+| rounded-2           | border-radius: .25rem           | Redondeo estándar (igual que `rounded`)                |
+| rounded-3           | border-radius: .3rem            | Redondeo más amplio                                    |
+| rounded-top         | border-radius solo arriba       | Redondea solo el borde superior                        |
+| rounded-end         | border-radius solo derecha      | Redondea solo el borde derecho                         |
+| rounded-bottom      | border-radius solo abajo        | Redondea solo el borde inferior                        |
+| rounded-start       | border-radius solo izquierda    | Redondea solo el borde izquierdo                       |
+| rounded-circle      | border-radius: 50%              | Forma circular                                         |
+| rounded-pill        | border-radius: 50rem            | Forma de píldora (ovalado)                             |
+
+
+EJEMPLOS DE USO:
+<span class="border border-primary"></span>
+<span class="border-top-0"></span>
+<span class="border border-1"></span>
+<img src="..." class="rounded-circle" alt="...">
+
+
+10) Sombras:
+| Clase         | Propiedad aplicada                  | Descripción breve                                 |
+|---------------|--------------------------------------|---------------------------------------------------|
+| shadow        | box-shadow: estándar                | Sombra suave por defecto                          |
+| shadow-sm     | box-shadow: pequeña                 | Sombra más sutil que la estándar                  |
+| shadow-lg     | box-shadow: grande                  | Sombra más intensa y extendida                    |
+| shadow-none   | box-shadow: none                    | Elimina cualquier sombra                          |
+
+
+
+11) Overflow:
+| Clase           | Propiedad aplicada        | Descripción breve                                      |
+|-----------------|---------------------------|--------------------------------------------------------|
+| overflow-auto   | overflow: auto            | Agrega scroll solo si es necesario                     |
+| overflow-hidden | overflow: hidden          | Oculta el contenido que se desborda                    |
+| overflow-visible| overflow: visible         | Muestra el contenido aunque se desborde                |
+| overflow-scroll | overflow: scroll          | Fuerza scroll siempre, aunque no sea necesario         |
+
+
+12) Display:
+
+COMBINACION CON BREAKPOINTS: d-{breakpoint}-{valor}
+
+| Clase             | Propiedad aplicada     | Descripción breve                                 |
+|-------------------|------------------------|---------------------------------------------------|
+| d-none            | display: none          | Oculta el elemento y no mantiene su espacio       |
+| d-block           | display: block         | Elemento tipo bloque                              |
+| d-inline          | display: inline        | Elemento en línea                                 |
+| d-inline-block    | display: inline-block  | En línea pero con propiedades de bloque           |
+| d-flex            | display: flex          | Contenedor flexible                               |
+| d-inline-flex     | display: inline-flex   | Flex en línea                                     |
+| d-grid            | display: grid          | Contenedor de cuadrícula                          |
+| d-inline-grid     | display: inline-grid   | Grid en línea                                     |
+
+
+EJEMPLO DE USO: En este caso el DIV tendra un display flex siempre y cuando tenga de minimo el tamaño de large (mayor o igual a 992px), si la resolucion es menor a large y mayor o igual a medium (768px) tendra un display block, si es menor a medium no se vera.
+
+<div class="d-none d-md-block d-lg-flex">Visible solo en md o mayor</div>
+
+
+13) Visibility:
+
+| Clase           | Propiedad aplicada     | Descripción breve                                  |
+|-----------------|------------------------|----------------------------------------------------|
+| visible         | visibility: visible    | El elemento es visible y ocupa espacio             |
+| invisible       | visibility: hidden     | El elemento no se ve pero sigue ocupando espacio   |
+
+
+
+14) Positions:
+
+| Clase               | Propiedad aplicada               | Valor (%) o fijo | Descripción breve                                                |
+|---------------------|----------------------------------|------------------|------------------------------------------------------------------|
+| position-static      | position: static                 | —                | Posición por defecto, sin desplazamiento manual                 |
+| position-relative    | position: relative               | —                | Permite mover el elemento respecto a su posición normal         |
+| position-absolute    | position: absolute               | —                | Se posiciona respecto al contenedor posicionado                 |
+| position-fixed       | position: fixed                  | —                | Se fija respecto a la ventana del navegador                     |
+| position-sticky      | position: sticky                 | —                | Se comporta como relativa hasta que se “pega”                   |
+| top-0                | top: 0                           | 0%               | Pega al borde superior                                          |
+| top-50               | top: 50%                         | 50%              | Mitad del contenedor vertical                                   |
+| top-100              | top: 100%                        | 100%             | Parte inferior del contenedor                                   |
+| bottom-0             | bottom: 0                        | 0%               | Pega al borde inferior                                          |
+| bottom-50            | bottom: 50%                      | 50%              | Mitad desde abajo                                               |
+| bottom-100           | bottom: 100%                     | 100%             | Parte superior desde abajo                                      |
+| start-0              | left: 0 (LTR)                    | 0%               | Pega al borde izquierdo                                         |
+| start-50             | left: 50%                        | 50%              | Mitad horizontal desde la izquierda                             |
+| start-100            | left: 100%                       | 100%             | Extremo derecho desde la izquierda                              |
+| end-0                | right: 0 (LTR)                   | 0%               | Pega al borde derecho                                           |
+| end-50               | right: 50%                       | 50%              | Mitad desde la derecha                                          |
+| end-100              | right: 100%                      | 100%             | Extremo izquierdo desde la derecha                              |
+| translate-middle     | transform: translate(-50%, -50%)| —                 | Centra el elemento respecto a su posición                       |
+| fixed-top            | position: fixed + top: 0         | —                | Fija el elemento al borde superior de la ventana                |
+| fixed-bottom         | position: fixed + bottom: 0      | —                | Fija el elemento al borde inferior de la ventana                |
+| sticky-top           | position: sticky + top: 0        | —                | Se “pega” al borde superior al hacer scroll                     |
+
+
+
+
+
+EJEMPLO DE USO:
+<div class="position-absolute top-50 start-50 translate-middle">
+  <!-- Elemento centrado -->
+</div>
+
+
+
+15) Float:
+
+float-{breakpoint}-{valor}
+
+| Clase           | Propiedad aplicada     | Descripción breve                                 |
+|-----------------|------------------------|---------------------------------------------------|
+| float-start     | float: left (LTR)      | Flota el elemento a la izquierda                 |
+| float-end       | float: right (LTR)     | Flota el elemento a la derecha                   |
+| float-none      | float: none            | Elimina cualquier flotación                      |
+
+EJEMPLO DE USO:
+<div class="float-md-end">Flota a la derecha en pantallas medianas o mayores</div>
+
+
+16) Opacity:
+
+| Clase         | Valor aplicado | Descripción breve                          |
+|---------------|----------------|--------------------------------------------|
+| opacity-0     | opacity: 0     | Totalmente transparente                    |
+| opacity-25    | opacity: 0.25  | 25% de opacidad                            |
+| opacity-50    | opacity: 0.5   | 50% de opacidad                            |
+| opacity-75    | opacity: 0.75  | 75% de opacidad                            |
+| opacity-100   | opacity: 1     | Totalmente opaco                           |
+
+
+
+
+
+                                                                12) Bootstrap - Layaout
+
+1) Bootstrap Layaout: Bootstrap trabaja con un sistema de grid en su layaout que permite administrar y maquetar las paginas web de forma mas sencilla. Esto lo podemos combinar con los Breakpoints, pudiendo crear layaouts responsivos sencillamente.
+
+<div class="container">
+  <div class="row gx-2 gy-md-3 gy-4">
+    <div class="col-12 col-sm-6  col-md-4 bg-primary text-white">Columna 1</div>
+    <div class="col-12 col-sm-6  col-md-4 bg-success text-white">Columna 2</div>
+    <div class="col-12 col-md-4 bg-warning text-dark">Columna 3</div>
+  </div>
+</div>
+
+
+1.1) Gutters: Esta clase me permite darle separacion entre si a mis columnas.
+
+| Clase         | Propiedad aplicada              | Descripción breve                                |
+|---------------|---------------------------------|--------------------------------------------------|
+| g-0           | gap: 0                          | Sin espacio entre columnas                       |
+| g-1           | gap: .25rem (4px)               | Espacio mínimo                                   |
+| g-2           | gap: .5rem (8px)                | Espacio pequeño                                  |
+| g-3           | gap: 1rem (16px)                | Espacio medio                                    |
+| g-4           | gap: 1.5rem (24px)              | Espacio amplio                                   |
+| g-5           | gap: 3rem (48px)                | Espacio muy amplio                               |
+| gx-0 to gx-5  | column-gap: 0–3rem              | Controla solo el espacio horizontal              |
+| gy-0 to gy-5  | row-gap: 0–3rem                 | Controla solo el espacio vertical                |
+
+<div class="container">
+  <div class="row row-cols-2">
+    <div class="col bg-primary text-white">Columna 1</div>
+    <div class="col bg-success text-white">Columna 2</div>
+    <div class="col bg-warning text-dark">Columna 3</div>
+    <div class="col bg-warning text-dark">Columna 4</div>
+    <div class="col bg-warning text-dark">Columna 5</div>
+  </div>
+</div>
+
+
+1.2) Row-Cols - Otra forma de trabajar con columnas: Esta clase me permitira definir cuantas columnas quiero que tenga mi contenedor, solo funcionara si mis columnas tiene un "col" automatico. Es decir que si dentro 6 columnas y defino un row-cols-2 mi contenido se organizara en columnas de 2, util para definir maquetados estrictos. Igualmente se puede combinar con breakpoints:
+
+// Para resoluciones mayores a 768px se acomodaran en los columnas de 3, entre 768px y 576px seran 2 columnas y menor a eso una sola columna
+<div class="container">
+    <div class="row row-cols-md-3 row-cols-sm-2 row-cols-1">
+        <div class="col bg-primary text-white">Columna 1</div>
+        <div class="col bg-success text-white">Columna 2</div>
+        <div class="col bg-warning text-dark">Columna 3</div>
+        <div class="col bg-warning text-dark">Columna 4</div>
+        <div class="col bg-warning text-dark">Columna 5</div>
+        <div class="col bg-primary text-white">Columna 1</div>
+        <div class="col bg-success text-white">Columna 2</div>
+        <div class="col bg-warning text-dark">Columna 3</div>
+        <div class="col bg-warning text-dark">Columna 4</div>
+        <div class="col bg-warning text-dark">Columna 5</div>
+    </div>
+</div>
+
+2) Alineacion Vertical: Bootstrap utiliza flexbox para realizar los alineamientos verticales. Al usar flexbox se necesita que el contenedor padre tenga una altura definida sino no funcionara el alineamiento vertical. Tambien son combinables con los breakpoints.
+
+| Clase              | Propiedad CSS equivalente     | Descripción / Uso común                          |
+|--------------------|-------------------------------|--------------------------------------------------|
+| align-items-start  | align-items: flex-start       | Alinea los ítems al inicio del eje vertical      |
+| align-items-center | align-items: center           | Centra los ítems verticalmente                   |
+| align-items-end    | align-items: flex-end         | Alinea los ítems al final del eje vertical       |
+| align-items-stretch| align-items: stretch          | Estira los ítems para llenar el contenedor       |
+
+| align-self-start   | align-self: flex-start        | Alinea un ítem individual al inicio              |
+| align-self-center  | align-self: center            | Centra un ítem individual verticalmente          |
+| align-self-end     | align-self: flex-end          | Alinea un ítem individual al final               |
+| align-self-baseline| align-self: baseline          | Línea base individual                            |
+| align-self-stretch | align-self: stretch           | Estira un ítem individual                        |
+
+| vh-100             | height: 100vh                 | Útil para centrar verticalmente en pantalla      |
+| h-100              | height: 100%                  | Requiere que el contenedor padre tenga altura    |
+| d-flex             | display: flex                 | Necesario para que las clases de alineación funcionen |
+
+
+EJEMPLO DE USO:
+<style>
+    .row{
+        height: 100vh;
+    }
+    .row div{
+        height: 33%; // Opcional, sin altura el stretch si funciona
+        background-color: red;
+    }
+</style>
+<div class="container">
+    <div class="row align-items-center align-items-lg-start">
+        <div class="col align-self-start">Col 1</div>
+        <div class="col">Col 2</div>
+        <div class="col align-self-end">Col 3</div>
+    </div>
+</div>
+
+
+3) Alineacion Horizontal: Bootstrap utiliza flexbox para realizar los alineamientos horizontales. Como condicion las cols no deben ser automaticas, sino estas ocuparan todo el contenedor. Tambien son combinables con los breakpoints.
+
+| Clase                   | Propiedad CSS equivalente     | Descripción breve                                      |
+|-------------------------|-------------------------------|--------------------------------------------------------|
+| justify-content-start   | justify-content: flex-start   | Alinea los ítems al inicio del eje horizontal          |
+| justify-content-center  | justify-content: center       | Centra los ítems horizontalmente                       |
+| justify-content-end     | justify-content: flex-end     | Alinea los ítems al final del eje horizontal           |
+| justify-content-between | justify-content: space-between| Espacio entre ítems, extremos pegados                  |
+| justify-content-around  | justify-content: space-around | Espacio igual alrededor de cada ítem                   |
+| justify-content-evenly  | justify-content: space-evenly | Espacio igual entre todos los ítems                    |
+
+| justify-self-start      | justify-self: start           | Alinea un ítem individual al inicio                    |
+| justify-self-center     | justify-self: center          | Centra un ítem individual                              |
+| justify-self-end        | justify-self: end             | Alinea un ítem individual al final                     |
+
+| d-flex                  | display: flex                 | Necesario para que las clases de alineación funcionen  |
+
+EJEMPLO DE USO:
+<div class="container">
+    <div class="row justify-content-md-around justify-content-center">
+        <div class="col-3 bg-danger">Col 1</div>
+        <div class="col-3 bg-danger">Col 1</div>
+        <div class="col-3 bg-danger">Col 1</div>
+    </div>
+</div>
+
+
+4) Offset: Permite mover una columna una cierta cantidad de columnas. Combinable con Breakpoints
+
+offset-{breakpoint}-{n}
+
+| Clase             | Propiedad aplicada           | Descripción breve                                     |
+|-------------------|------------------------------|-------------------------------------------------------|
+| offset-0          | margin-left: 0               | Sin desplazamiento                                   |
+| offset-1          | margin-left: 8.333%          | Desplaza 1 de 12 columnas                            |
+| offset-2          | margin-left: 16.666%         | Desplaza 2 columnas                                  |
+| offset-3          | margin-left: 25%             | Desplaza 3 columnas                                  |
+| offset-4          | margin-left: 33.333%         | Desplaza 4 columnas                                  |
+| offset-5          | margin-left: 41.666%         | Desplaza 5 columnas                                  |
+| offset-6          | margin-left: 50%             | Desplaza 6 columnas                                  |
+| offset-7          | margin-left: 58.333%         | Desplaza 7 columnas                                  |
+| offset-8          | margin-left: 66.666%         | Desplaza 8 columnas                                  |
+| offset-9          | margin-left: 75%             | Desplaza 9 columnas                                  |
+| offset-10         | margin-left: 83.333%         | Desplaza 10 columnas                                 |
+| offset-11         | margin-left: 91.666%         | Desplaza 11 columnas                                 |
+
+
+EJEMPLO DE USO:
+<div class="col-md-4 offset-md-2">Columna desplazada 2 espacios en pantallas medianas</div>
+
+
+5) Column Break: Es un truco en bootstrap que me permite romper una fila de columnas o dar una especie de salto de linea entre columnas. Para esto lo que debo hacer es agregar un div de width 100
+
+<div class="container">
+  <div class="row">
+    <div class="col-6 col-sm-3">.col-6 .col-sm-3</div>
+    <div class="col-6 col-sm-3">.col-6 .col-sm-3</div>
+
+    <!-- Force next columns to break to new line -->
+    <div class="w-100"></div>
+
+    <div class="col-6 col-sm-3">.col-6 .col-sm-3</div>
+    <div class="col-6 col-sm-3">.col-6 .col-sm-3</div>
+  </div>
+</div>
+
+
+6) Margin Utilities - Margenes En el Layaout: Implementa el sistema de centrado mediante margin AUTO. Con auto puedo definir un espaciado entre elementos.
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">.col-md-4</div>
+    <div class="col-md-4 ms-auto">.col-md-4 .ms-auto</div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 ms-md-auto">.col-md-3 .ms-md-auto</div>
+    <div class="col-md-3 ms-md-auto">.col-md-3 .ms-md-auto</div>
+  </div>
+  <div class="row">
+    <div class="col-auto me-auto">.col-auto .me-auto</div>
+    <div class="col-auto">.col-auto</div>
+  </div>
+</div>
+
+
+7) Order: Me permite determinar el orden de salida de mis elementos HTML.
+
+| Clase         | Propiedad aplicada     | Descripción breve                                 |
+|---------------|------------------------|---------------------------------------------------|
+| order-0       | order: 0               | Prioridad más baja - default                      |
+| order-1       | order: 1               | Orden bajo                                        |
+| order-2       | order: 2               | Orden medio                                       |
+| order-3       | order: 3               | Orden alto                                        |
+| order-first   | order: -1              | Fuerza al elemento a ir primero                   |
+| order-last    | order: 6               | Fuerza al elemento a ir último                    |
+
+
+
+
+8) Flex con Bootstrap: La utlizacion es muy similar a la de CSS vainilla. Todas las clases FLEX de bootstrap 5 son modificables por los breakpoints.
+
+| Clase                        | Propiedad aplicada             | Descripción técnica breve                          |
+|------------------------------|--------------------------------|----------------------------------------------------|
+| d-flex                       | display: flex                  | Activa Flexbox en bloque                          |
+| flex-row                     | flex-direction: row            | Dirección horizontal estándar                     |
+| flex-row-reverse             | flex-direction: row-reverse    | Dirección horizontal invertida                    |
+| flex-column                  | flex-direction: column         | Dirección vertical estándar                       |
+| flex-column-reverse          | flex-direction: column-reverse | Dirección vertical invertida                      |
+| flex-wrap                    | flex-wrap: wrap                | Permite que los ítems se ajusten en varias líneas|
+| flex-nowrap                  | flex-wrap: nowrap              | Fuerza una sola línea, sin ajuste                 |
+| flex-wrap-reverse            | flex-wrap: wrap-reverse        | Ajuste en varias líneas, en orden inverso         |
+| justify-content-start        | justify-content: flex-start    | Alinea ítems al inicio del eje principal          |
+| justify-content-end          | justify-content: flex-end      | Alinea ítems al final del eje principal           |
+| justify-content-center       | justify-content: center        | Centra ítems horizontalmente                      |
+| justify-content-between      | justify-content: space-between | Distribuye ítems con espacio entre ellos          |
+| justify-content-around       | justify-content: space-around  | Espacio alrededor de cada ítem                    |
+| justify-content-evenly       | justify-content: space-evenly  | Espacio uniforme entre todos los ítems            |
+| align-items-start            | align-items: flex-start        | Alinea ítems al inicio del eje secundario         |
+| align-items-end              | align-items: flex-end          | Alinea ítems al final del eje secundario          |
+| align-items-center           | align-items: center            | Centra ítems verticalmente                        |
+| align-items-baseline         | align-items: baseline          | Alinea ítems según la línea base del texto        |
+| align-items-stretch          | align-items: stretch           | Estira ítems para ocupar todo el alto disponible  |
+| align-self-start             | align-self: flex-start         | Alineación individual al inicio                   |
+| align-self-end               | align-self: flex-end           | Alineación individual al final                    |
+| align-self-center            | align-self: center             | Alineación individual centrada                    |
+| align-self-baseline          | align-self: baseline           | Alineación individual por línea base              |
+| align-self-stretch           | align-self: stretch            | Alineación individual estirada                    |
+| order-0                      | order: 0                       | Orden visual base                                 |
+| order-1                      | order: 1                       | Orden visual bajo                                 |
+| order-2                      | order: 2                       | Orden visual medio                                |
+| order-3                      | order: 3                       | Orden visual alto                                 |
+| order-4                      | order: 4                       | Orden visual más alto                             |
+| order-5                      | order: 5                       | Orden visual máximo                               |
+| order-first                  | order: -1                      | Fuerza al ítem a ir primero                       |
+| order-last                   | order: 6                       | Fuerza al ítem a ir último                        |
+| flex-grow-0                  | flex-grow: 0                   | El ítem no crece                                  |
+| flex-grow-1                  | flex-grow: 1                   | El ítem puede crecer                              |
+| flex-shrink-0                | flex-shrink: 0                 | El ítem no se reduce                              |
+| flex-shrink-1                | flex-shrink: 1                 | El ítem puede reducirse                           |
+| flex-fill                    | flex: 1 1 auto                 | El elemento crecera y ocupara todo el espacio disponible|
+| align-content-start          | align-content: flex-start     | Alinea las líneas al inicio del eje secundario    |
+| align-content-end            | align-content: flex-end       | Alinea las líneas al final del eje secundario     |
+| align-content-center         | align-content: center         | Centra las líneas verticalmente                   |
+| align-content-between        | align-content: space-between  | Espacio entre líneas, extremos pegados            |
+| align-content-around         | align-content: space-around   | Espacio alrededor de cada línea                   |
+| align-content-stretch        | align-content: stretch        | Estira las líneas para llenar el contenedor       |
+
+
+8.1) flex-fill: El elemento crecera y ocupara todo el espacio disponible, su objetivo es rellenar todo el contenedor.
+
+8.2) flex-grow: Con el valor de 0 el elemento no crecerá más allá de su tamaño base, aunque haya espacio disponible. Con el valor de 1 el elemento crecerá proporcionalmente para ocupar el espacio disponible junto con otros ítems que también tengan flex-grow.
+
+8.3) flex-shrink: determina si un ítem puede reducir su tamaño cuando el espacio disponible en el contenedor es insuficiente. Con el valor en 0 el elemento no se encogerá, mantendrá su tamaño base aunque se desborde. Con un valor de 1 el elemento se encogerá proporcionalmente junto con otros ítems para ajustarse
+
+
+9) Imagenes:
+
+| Clase                  | Función                                                                 | Código CSS generado                                      |
+|------------------------|-------------------------------------------------------------------------|----------------------------------------------------------|
+| `.img-fluid`           | Vuelve la imagen responsive                                             | `max-width: 100%; height: auto;`                         |
+| `.img-thumbnail`       | Aplica borde, padding y esquinas redondeadas estilo miniatura           | --------                                                 |
+| `.rounded`             | Bordes redondeados uniformes                                            | `border-radius: .25rem;`                                 |
+| `.rounded-circle`      | Convierte la imagen en círculo (si es cuadrada)                         | `border-radius: 50%;`                                    |
+| `.object-fit-*`        | Ajuste de imagen (`cover`, `contain`, `fill`, etc.)                     | `object-fit: cover | contain | fill | none | scale-down;`|
+| `.shadow` / `.shadow-*`| Aplica sombra (`sm`, `lg`, `none`)                                      | `box-shadow: var(--bs-box-shadow);`                      |
+| `.border` / `.border-*`| Aplica bordes (`border-0`, `border-primary`, etc.)                      | `border: 1px solid; border-color: var(--bs-border-color);`|
+| `.mx-auto .d-block`    | Centra horizontalmente la imagen como bloque                            | `margin-left: auto; margin-right: auto; display: block;` |
+| `.float-start`         | Flota la imagen a la izquierda                                          | `float: left;`                                           |
+| `.float-end`           | Flota la imagen a la derecha                                            | `float: right;`                                          |
+
+
+
+10) Tablas:
+
+| Clase                        | Descripción                                                                 | Responsive | Ejemplo visual               |
+|------------------------------|-----------------------------------------------------------------------------|------------|----------------------------- |
+| `.table`                     | Estilo base de tabla con bordes y espaciado                                 | No         | Tabla estándar               |
+| `.table-striped`             | Alterna colores de fondo por fila                                           | No         | Rayado horizontal            |
+| `.table-bordered`            | Agrega bordes a todas las celdas                                            | No         | Bordes visibles              |
+| `.table-borderless`          | Elimina todos los bordes                                                    | No         | Tabla limpia                 |
+| `.table-hover`               | Resalta fila al pasar el mouse                                              | No         | Efecto hover                 |
+| `.table-sm`                  | Reduce el padding interno de las celdas                                     | No         | Tabla compacta               |
+| `.table-responsive`          | Scroll horizontal en pantallas pequeñas                                     | Sí         | Scroll horizontal            |
+| `.table-responsive-{break}`  | Scroll horizontal activado solo en el breakpoint (`sm`, `md`, `lg`, etc.)   | Sí         | Ej: `.table-responsive-md`   |
+| `.caption-top`               | Mueve el `<caption>` al inicio de la tabla                                  | No         | Título arriba                |
+| `.align-middle`              | Centra verticalmente el contenido de la celda                               | No         | Texto centrado vertical      |
+| `.text-nowrap`               | Evita que el texto se corte o salte de línea                                | No         | Texto continuo               |
+| `.table-{context}`           | Aplica color de fondo según contexto (`primary`, `success`, etc.)           | No         | Fila coloreada               |
+
+
+
+11) Formularios:
+
+| Clase                    | Aplicación / Elemento                       | Descripción                                                                |
+|--------------------------|---------------------------------------------|----------------------------------------------------------------------------|
+| `.form-control`          | `<input>`, `<textarea>`, `<select>`        | Estilo base para campos de formulario                                       |
+| `.form-label`            | `<label>`                                  | Estilo para etiquetas de campos                                             |
+| `.form-text`             | `<small>`, `<div>`                         | Texto auxiliar debajo del campo                                             |
+| `.form-check`            | `<div>` envolvente                         | Agrupa checkbox o radio con su etiqueta                                     |
+| `.form-check-input`      | `<input type="checkbox">`,`<input type="radio">` | Estilo para checkbox y radio buttons                                  |
+| `.form-check-label`      | `<label>`                                  | Etiqueta asociada a checkbox o radio                                        |
+| `.form-select`           | `<select>`                                 | Estilo personalizado para menús desplegables                                |
+| `.form-range`            | `<input type="range">`                     | Estilo para sliders                                                         |
+| `.form-floating`         | `<div>` envolvente                         | Activa etiquetas flotantes sobre los campos                                 |
+| `.input-group`           | `<div>` envolvente                         | Agrupa campos con botones o texto adicional                                 |
+| `.input-group-text`      | `<span>`                                   | Texto dentro de un grupo de input                                           |
+| `.col-form-label`        | `<label>` en formularios horizontales      | Alinea etiquetas con el sistema de columnas                                 |
+| `.form-control-plaintext`| `<input readonly>`                         | Muestra el campo como texto plano                                           |
+| `.was-validated`         | `<form>`                                   | Activa estilos de validación al enviar                                      |
+| `.is-valid` / `.is-invalid`| `<input>`, `<select>`                    | Marca campos como válidos o inválidos visualmente                           |
+| `.disabled` / `disabled` | Cualquier campo                            | Desactiva el campo (atributo HTML o clase para estilo)                      |
+| `.readonly` / `readonly`| `<input>`                                   | Campo solo lectura (atributo HTML)                                          |
+
+
+
+11.1) Inputs:
+
+| Clase                      | Aplicación / Tipo de input                  | Efecto CSS generado o comportamiento visual                      |
+|----------------------------|---------------------------------------------|------------------------------------------------------------------|
+| `.form-control`            | Todos los `<input>`, `<textarea>`, `<select>` | Estilo base: ancho completo, padding, borde, fuente uniforme     |
+| `.form-control-sm`         | `<input>`                                   | Input más compacto (padding reducido, fuente más chica)          |
+| `.form-control-lg`         | `<input>`                                   | Input más grande (padding ampliado, fuente más grande)           |
+| `.form-control-plaintext`  | `<input readonly>`                          | Muestra el input como texto plano, sin borde ni fondo            |
+| `.is-valid`                | `<input>`                                   | Borde verde + icono de validación si está habilitado             |
+| `.is-invalid`              | `<input>`                                   | Borde rojo + icono de error si está habilitado                   |
+| `.disabled` / `disabled`   | `<input>`                                   | Desactiva el campo (estilo gris, no editable)                    |
+| `.readonly` / `readonly`   | `<input>`                                   | Solo lectura (no editable, pero visible)                         |
+| `.form-range`              | `<input type="range">`                      | Estilo para sliders                                              |
+| `.form-select`             | `<select>`                                  | Estilo personalizado para menús desplegables                     |
+| `.form-floating`           | `<div>` envolvente                          | Activa etiqueta flotante sobre el input                          |
+
+
+
+11.2) Checkbutton & RadioButton:
+
+| Clase                   | Tipo de input        | Efecto / Comportamiento visual                                   |
+|-------------------------|----------------------|------------------------------------------------------------------|
+| `.form-check`           | Ambos (`checkbox`, `radio`) | Contenedor que aplica margen, alineación y estilo base    |
+| `.form-check-input`     | Ambos                | Estilo Bootstrap para el input: tamaño, borde, espaciado         |
+| `.form-check-label`     | Ambos                | Estilo para la etiqueta asociada al input                        |
+| `.form-check-inline`    | Ambos                | Muestra los inputs en línea (horizontal)                         |
+| `.form-switch`          | Solo `checkbox`      | Convierte el checkbox en un switch visual (toggle)               |
+| `.is-valid`             | Ambos                | Borde verde + icono si está habilitado (validación positiva)     |
+| `.is-invalid`           | Ambos                | Borde rojo + icono si está habilitado (validación negativa)      |
+| `disabled` / `.disabled`| Ambos                | Desactiva el input (grisado, no editable)                        |
+
+
+
+11.3) Inputs-Groups: Son clases de Bootstrap que buscan agrupar elementos dentro de un input, fusionar spans, buttons, dropdowns, radiobuttos, etc con mis inputs. La clase principal para trabajar con esto es: .form-group.
+
+
+11.4) Floating Labels: Esta clase me permitira trabajar con los labels flotantes dentro de mis inputs de formulario. Para esto al contenedor del input y label le daremos la clase: .form-floating.
+
+
+
+
+
+                                                            13) Bootstrap - Componentes
+
+1) Accordion:
+
+| Clase                      | Elemento aplicado           | Función / Comportamiento visual                                  |
+|----------------------------|-----------------------------|------------------------------------------------------------------|
+| `.accordion`               | `<div>` contenedor general  | Agrupa todos los ítems del acordeón                              |
+| `.accordion-item`          | Cada bloque del acordeón    | Define un ítem individual con su header y contenido              |
+| `.accordion-header`        | `<h2>` o similar            | Encabezado del ítem, contiene el botón de activación             |
+| `.accordion-button`        | `<button>` dentro del header| Botón que activa el colapso, con estilos y transiciones          |
+| `.accordion-collapse`      | `<div>` contenedor del body | Área colapsable que se muestra/oculta                            |
+| `.collapse` / `.show`      | Dentro de `.accordion-collapse` | Controla visibilidad del contenido (`.show` lo expande)      |
+| `.accordion-body`          | Contenido interno           | Área visible al expandir el ítem                                 |
+| `.accordion-flush`         | `<div class="accordion">`   | Elimina bordes y fondo para estilo más limpio                    |
+| `data-bs-toggle="collapse"`| En el botón                 | Activa el comportamiento colapsable                              |
+| `data-bs-target="#id"`     | En el botón                 | Indica qué panel se debe expandir                                |
+| `data-bs-parent="#id"`     | En `.accordion-collapse`    | Hace que solo un ítem esté abierto a la vez                      |
+
+
+2) Alerts:
+
+| Clase                         | Elemento aplicado        | Función / Comportamiento visual                                  |
+|------------------------------|--------------------------|------------------------------------------------------------------|
+| `.alert`                     | `<div>` contenedor       | Clase base, aplica padding, borde y fondo según variante         |
+| `.alert-primary`             | `<div class="alert">`    | Fondo azul claro, texto azul oscuro                              |
+| `.alert-secondary`           |                          | Gris claro                                                       |
+| `.alert-success`             |                          | Verde claro, indica éxito o confirmación                         |
+| `.alert-danger`              |                          | Rojo claro, indica error o advertencia grave                     |
+| `.alert-warning`             |                          | Amarillo claro, para advertencias                                |
+| `.alert-info`                |                          | Celeste claro, para información neutral                          |
+| `.alert-light`               |                          | Fondo blanco con texto gris claro                                |
+| `.alert-dark`                |                          | Fondo gris oscuro con texto blanco                               |
+| `.alert-link`                | Dentro del alert         | Aplica estilo destacado a enlaces dentro de la alerta            |
+| `.alert-heading`             | `<h4>` u otro heading    | Aplica estilo tipográfico especial al encabezado de la alerta    |
+| `.alert-dismissible`         | `<div class="alert">`    | Permite incluir botón de cierre con animación                    |
+| `.fade`                      |                          | Agrega transición suave al ocultar la alerta                     |
+| `.show`                      |                          | Muestra la alerta (usado junto con `.fade`)                      |
+| `role="alert"`               | `<div>`                  | Mejora accesibilidad, indica que es una alerta                   |
+| `<button class="btn-close">` | Dentro del alert         | Botón de cierre, requiere JS para funcionalidad completa         |
+| `data-bs-dismiss="alert"`    | En el botón              | Activa el cierre automático de la alerta                         |
+
+
+3) Badge:
+
+| Clase                         | Elemento aplicado        | Función / Comportamiento visual                                  |
+|------------------------------|--------------------------|------------------------------------------------------------------|
+| `.badge`                     | `<span>` o `<div>`       | Clase base, aplica estilo compacto y redondeado                  |
+| `.bg-*      `                |                          | Cambiara el color del badge                                      |
+| `.text-bg-*`                 | `<span class="badge">`   | Variante combinada de fondo y texto (ej: `.text-bg-success`)     |
+| `.rounded-pill`              |                          | Aplica forma ovalada al badge                                    |
+| `.position-absolute`         |                          | Posiciona el badge sobre otro elemento (usado con `.top-0`, etc.)|
+| `.top-0`, `.start-100`       |                          | Ubicación del badge en esquinas (requiere `position-relative`)   |
+| `role="status"`              | `<span>`                 | Mejora accesibilidad cuando se usa como contador o indicador     |
+
+
+
+4) Breadcrumb: Los Breadcrumbs en Bootstrap 5 son un componente de navegación que indica la ubicación actual del usuario dentro de la jerarquía de un sitio web. Son especialmente útiles en sitios con estructura profunda o múltiples niveles, ya que permiten volver fácilmente a páginas anteriores sin usar el botón “Atrás”.
+
+| Clase                         | Elemento aplicado        | Función / Comportamiento visual                                  |
+|------------------------------|--------------------------|------------------------------------------------------------------|
+| `.breadcrumb`                | `<ol>` dentro de `<nav>` | Clase base, aplica estilo horizontal con separadores             |
+| `.breadcrumb-item`           | `<li>` dentro del `<ol>` | Cada ítem del breadcrumb, puede ser enlace o texto               |
+| `.breadcrumb-item.active`    | Último `<li>`            | Indica la página actual, sin enlace                              |
+| `aria-label="breadcrumb"`    | `<nav>` contenedor       | Mejora accesibilidad, describe el tipo de navegación             |
+| `aria-current="page"`        | En ítem activo           | Indica que ese ítem representa la página actual                  |
+| `--bs-breadcrumb-divider`    | En `<nav style>`         | Permite personalizar el separador (ej: `'>'`, `'/'`, SVG, etc.)  |
+
+
+
+5) Buttons:
+
+| Clase                      | Elemento aplicado        | Función / Comportamiento visual                                  |
+|----------------------------|--------------------------|------------------------------------------------------------------|
+| `.btn`                     |`<button>`, `<a>`, `<input>`| Clase base para todos los botones                              |
+| `.btn-primary`             |                          | Fondo azul, texto blanco (acción principal)                      |
+| `.btn-secondary`           |                          | Fondo gris, texto blanco                                         |
+| `.btn-success`             |                          | Fondo verde, indica éxito o confirmación                         |
+| `.btn-danger`              |                          | Fondo rojo, indica error o acción destructiva                    |
+| `.btn-warning`             |                          | Fondo amarillo, texto oscuro                                     |
+| `.btn-info`                |                          | Fondo celeste, texto blanco                                      |
+| `.btn-light`               |                          | Fondo blanco, texto gris oscuro                                  |
+| `.btn-dark`                |                          | Fondo gris oscuro, texto blanco                                  |
+| `.btn-link`                |                          | Estilo de enlace, sin fondo ni borde                             |
+| `.btn-outline-*`           |                          | Variante con borde de color y fondo transparente (`*` = color)   |
+| `.btn-sm`                  |                          | Botón compacto (padding reducido, fuente más chica)              |
+| `.btn-lg`                  |                          | Botón grande (padding ampliado, fuente más grande)               |
+| `.active`                  |                          | Marca el botón como activo visualmente                           |
+| `.disabled` / `disabled`   |                          | Desactiva el botón (grisado, no clickeable)                      |
+| `data-bs-toggle="button"`  |                          | Activa comportamiento de botón toggle (interactivo)              |
+| `aria-pressed="true"`      |                          | Indica estado activo para accesibilidad                          |
+
+
+6) Cards:
+
+| Clase                      | Elemento aplicado        | Función / Comportamiento visual                                  |
+|----------------------------|--------------------------|------------------------------------------------------------------|
+| `.card`                    | `<div>` contenedor       | Clase base, aplica borde, sombra y padding                       |
+| `.card-body`               | `<div>` dentro de `.card`| Contenedor principal del contenido textual                       |
+| `.card-title`              | `<h5>` u otro heading    | Título destacado dentro de `.card-body`                          |
+| `.card-subtitle`           | `<h6>` u similar         | Subtítulo debajo del título                                      |
+| `.card-text`               | `<p>` o `<div>`          | Texto descriptivo o contenido principal                          |
+| `.card-img-top`            | `<img>` arriba de `.card-body` | Imagen en la parte superior de la card                    |
+| `.card-img-bottom`         | `<img>` debajo de `.card-body` | Imagen en la parte inferior de la card                    |
+| `.card-img`                | `<img>` dentro de `.card`| Imagen que ocupa todo el ancho del card sin posición específica  |
+| `.card-img-overlay`        | `<div>` sobre `.card-img`| Superpone contenido sobre una imagen de fondo                    |
+| `.card-header`             | `<div>`                  | Encabezado separado, antes del body                              |
+| `.card-footer`             | `<div>`                  | Pie de la card, útil para botones o info adicional               |
+| `.card-link`               | `<a>` dentro de `.card-body` | Estilo especial para enlaces dentro de la card             |
+| `.card-group`              | Contenedor de varias `.card` | Agrupa cards con altura igual y layout horizontal         |
+| `.bg-*` / `.text-*`        | En `.card`               | Personaliza fondo y color de texto (`primary`, `dark`, etc.)     |
+| `.h-100` / `.w-100`        | En `.card`               | Fuerza altura o ancho completo                                   |
+
+
+7) Carousel:
+
+
+| Clase / Atributo / ID           | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|--------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .carousel                      | <div> contenedor principal         | Inicializa el componente Carousel                                                        |
+| .slide                         | <div> contenedor principal         | Agrega transición animada entre slides                                                   |
+| id="carouselExample"           | <div> contenedor principal         | ID único para vincular controles e indicadores                                           |
+| data-bs-ride="carousel"        | <div> contenedor principal         | Activa el carrusel automáticamente al cargar                                             |
+| data-bs-interval="5000"        | <div> o .carousel-item             | Tiempo entre slides en milisegundos (puede ser false para desactivar auto-slide)         |
+| .carousel-inner                | <div> dentro del contenedor        | Agrupa todos los slides del carrusel                                                     |
+| .carousel-item                 | Cada slide individual              | Define cada slide; uno debe tener .active para mostrarse inicialmente                    |
+| .active                        | Slide activo (.carousel-item)      | Marca el slide visible al cargar                                                         |
+| data-bs-target="#carouselExample" | Botones de control e indicadores | Vincula el botón o indicador al carrusel por su ID                                       |
+| data-bs-slide="prev"/"next"    | Botones de control                 | Indica la dirección del cambio de slide                                                  |
+| data-bs-slide-to="0"           | Indicadores                        | Indica el índice del slide al que se debe ir                                             |
+| .carousel-indicators           | <div> para los indicadores         | Contiene los botones que indican y navegan entre slides                                  |
+| .carousel-control-prev         | Botón de navegación izquierda      | Permite ir al slide anterior                                                             |
+| .carousel-control-next         | Botón de navegación derecha        | Permite ir al siguiente slide                                                            |
+| .carousel-control-prev-icon    | Dentro del botón "prev"            | Ícono visual para el botón de navegación izquierda                                       |
+| .carousel-control-next-icon    | Dentro del botón "next"            | Ícono visual para el botón de navegación derecha                                         |
+| .carousel-caption              | Dentro de .carousel-item           | Muestra texto o contenido superpuesto sobre la imagen del slide                          |
+| .img-fluid                     | Imagen dentro del slide            | Vuelve la imagen responsive                                                              |
+| .w-100                         | Imagen dentro del slide            | Fuerza que la imagen ocupe el 100% del ancho del contenedor                              |
+
+
+
+
+8) Collapse: permite mostrar u ocultar contenido de forma dinámica, ideal para ahorrar espacio y mejorar la organización visual. Puede activarse tanto con atributos data-bs-* como mediante JavaScript. Internamente, manipula clases como .collapse, .collapsing y .show para animar la transición de altura.
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .collapse                        | <div> contenedor del contenido     | Oculta el contenido por defecto; se expande al activarse                                 |
+| .collapse-horizontal             | <div> contenedor del contenido     | Modificador que permite colapsar horizontalmente (anima el ancho en vez de la altura)    |
+| .show                            | <div> contenedor del contenido     | Muestra el contenido (se puede aplicar manualmente o por JS)                             |
+| .collapsing                      | <div> contenedor del contenido     | Clase temporal durante la animación de apertura/cierre                                   |
+| id="collapseExample"             | <div> contenedor del contenido     | ID único para vincular el botón o enlace que lo activa                                   |
+| data-bs-toggle="collapse"        | <button> o <a>                     | Indica que el botón activa un Collapse                                                   |
+| data-bs-target="#collapseExample"| <button>                           | Vincula el botón con el contenido a mostrar/ocultar                                      |
+| href="#collapseExample"          | <a>                                | Alternativa a data-bs-target para enlaces                                                |
+| aria-expanded="false"/"true"     | <button> o <a>                     | Indica el estado actual del Collapse (accesibilidad)                                     |
+| aria-controls="collapseExample"  | <button> o <a>                     | Relaciona el botón con el contenido controlado                                           |
+| data-bs-parent="#accordion"      | <div> dentro de acordeón           | Cierra otros Collapse dentro del mismo contenedor al abrir uno nuevo                     |
+| style="width:300px;"             | Elemento hijo dentro de collapse   | Define el ancho del contenido para que la animación horizontal funcione correctamente    |
+
+
+
+9) Dropdowns:
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .dropdown                        | <div> contenedor principal         | Define el grupo Dropdown                                                                 |
+| .dropdown-toggle                 | <button> o <a>                     | Elemento que activa el menú desplegable                                                  |
+| .dropdown-menu                   | <ul> o <div>                       | Contenedor de las opciones del menú                                                      |
+| .dropdown-item                   | <a> o <button> dentro de .menu     | Cada opción individual dentro del menú                                                   |
+| .dropdown-divider               | <hr> dentro de .menu               | Línea divisoria entre grupos de opciones                                                 |
+| .dropdown-header                | <h6> o <span> dentro de .menu      | Título o encabezado dentro del menú                                                      |
+| .dropup                         | <div> contenedor principal         | Variante que abre el menú hacia arriba                                                   |
+| .dropend                        | <div> contenedor principal         | Variante que abre el menú hacia la derecha                                               |
+| .dropstart                      | <div> contenedor principal         | Variante que abre el menú hacia la izquierda                                             |
+| .dropdown-menu-end              | <ul> o <div> .dropdown-menu         | Alinea el menú desplegable a la derecha del botón                                        |
+| .dropdown-menu-start            | <ul> o <div> .dropdown-menu         | Alinea el menú desplegable a la izquierda del botón (por defecto)                        |
+| .dropdown-menu-xxl-end/start    | <ul> o <div> .dropdown-menu         | Alineación condicional según breakpoint (`sm`, `md`, `lg`, `xl`, `xxl`)                  |
+| data-bs-toggle="dropdown"       | <button> o <a>                     | Activa el comportamiento JS del Dropdown                                                 |
+| aria-expanded="false"/"true"    | <button> o <a>                     | Indica si el menú está abierto (accesibilidad)                                           |
+| id="dropdownMenuButton"         | <button>                           | ID único para vincular el menú si se usa aria-labelledby                                |
+| aria-labelledby="dropdownMenuButton" | <div> .dropdown-menu         | Relaciona el menú con el botón que lo activa                                             |
+
+
+
+10) List-Groups:
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .list-group                     | <ul>, <ol> o <div> contenedor      | Define el grupo de lista                                                                 |
+| .list-group-item               | <li>, <a> o <button>               | Cada ítem individual dentro del grupo                                                    |
+| .active                         | .list-group-item                   | Marca el ítem como activo (resaltado)                                                    |
+| .disabled                       | .list-group-item                   | Desactiva el ítem visual y funcionalmente (requiere JS extra si es <a>)                 |
+| .list-group-item-action         | <a> o <button>                     | Convierte el ítem en interactivo (hover, foco, clic)                                     |
+| .list-group-flush               | <ul> o <div> .list-group           | Elimina bordes y esquinas redondeadas del grupo                                          |
+| .list-group-numbered            | <ol> .list-group                   | Agrega numeración automática a los ítems                                                 |
+| .list-group-horizontal          | <ul> o <div> .list-group           | Muestra los ítems en fila horizontal                                                     |
+| .list-group-horizontal-sm/md/lg | <ul> o <div> .list-group           | Muestra ítems en horizontal solo desde cierto breakpoint (`sm`, `md`, `lg`, etc.)        |
+| id="listGroupExample"           | <ul>, <div>, etc.                  | ID único para vincular con JS o accesibilidad                                            |
+| aria-current="true"             | .list-group-item activo            | Indica que el ítem es el actual (accesibilidad)                                          |
+| aria-disabled="true"            | .list-group-item deshabilitado     | Indica que el ítem está deshabilitado (accesibilidad)                                    |
+
+
+
+11) Modals: Los Modals son las ventanas emergentes.
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .modal                          | <div> contenedor principal         | Define el modal; debe tener `id` para ser invocado                                       |
+| .fade                           | <div> .modal                       | Agrega animación de entrada/salida con opacidad                                          |
+| id="exampleModal"               | <div> .modal                       | ID único para vincular el botón que lo activa                                            |
+| tabindex="-1"                   | <div> .modal                       | Permite cerrar el modal con tecla ESC                                                    |
+| aria-labelledby="modalLabel"   | <div> .modal                       | Relaciona el modal con su título (accesibilidad)                                         |
+| aria-hidden="true"              | <div> .modal                       | Indica que el modal está oculto (accesibilidad)                                          |
+| .modal-dialog                   | <div> hijo de .modal               | Define el contenedor del contenido del modal                                             |
+| .modal-dialog-centered          | <div> .modal-dialog                | Centra el modal vertical y horizontalmente                                               |
+| .modal-dialog-scrollable        | <div> .modal-dialog                | Permite scroll interno si el contenido es largo                                          |
+| .modal-content                  | <div> dentro de .modal-dialog      | Contiene el contenido completo del modal                                                 |
+| .modal-header                   | <div> dentro de .modal-content     | Encabezado del modal, suele incluir título y botón de cierre                             |
+| .modal-title                    | <h5> dentro de .modal-header       | Título del modal                                                                          |
+| .btn-close                      | <button> dentro de .modal-header   | Botón para cerrar el modal                                                               |
+| .modal-body                     | <div> dentro de .modal-content     | Contenido principal del modal                                                            |
+| .modal-footer                   | <div> dentro de .modal-content     | Pie del modal, suele incluir botones de acción                                           |
+| data-bs-toggle="modal"         | <button> o <a>                     | Activa el modal al hacer clic                                                            |
+| data-bs-target="#exampleModal" | <button> o <a>                     | Vincula el botón con el modal por su ID                                                  |
+| data-bs-dismiss="modal"        | <button>                           | Cierra el modal al hacer clic                                                            |
+| .modal-sm / .modal-lg / .modal-xl | <div> .modal-dialog             | Define el tamaño del modal (small, large, extra large)                                   |
+| .modal-fullscreen               | <div> .modal-dialog                | Modal ocupa toda la pantalla                                                            |
+| .modal-fullscreen-md-down      | <div> .modal-dialog                | Fullscreen solo en pantallas menores a `md`                                              |
+
+
+12) Navs y Tabs: Me permite trabajar con menus y un esquema de pestañas.
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .nav                            | <ul>, <nav> o <div> contenedor     | Componente base para navegación (usa Flexbox)                                            |
+| .nav-item                       | <li> o <div> dentro de .nav        | Agrupa cada ítem de navegación                                                           |
+| .nav-link                       | <a> o <button> dentro de .nav-item | Estilo para cada enlace de navegación                                                    |
+| .active                         | .nav-link                          | Marca el ítem como activo                                                                |
+| .disabled                       | .nav-link                          | Desactiva el ítem visual y funcionalmente                                                |
+| .nav-tabs                       | <ul> .nav                          | Convierte la navegación en estilo pestañas                                               |
+| .nav-pills                      | <ul> .nav                          | Convierte la navegación en estilo pills (botones redondeados)                            |
+| .nav-justified                  | <ul> .nav-tabs o .nav-pills        | Distribuye los ítems con el mismo ancho                                                  |
+| .flex-column                    | <ul> .nav                          | Convierte la navegación en vertical                                                      |
+| .justify-content-center         | <ul> .nav                          | Centra los ítems horizontalmente                                                         |
+| .justify-content-end            | <ul> .nav                          | Alinea los ítems a la derecha                                                            |
+| .dropdown                       | <li> .nav-item                     | Permite incluir un dropdown dentro de la navegación                                      |
+| .dropdown-toggle                | <a> .nav-link                      | Activa el menú desplegable                                                               |
+| .dropdown-menu                  | <ul> dentro de .dropdown           | Contiene las opciones del dropdown                                                       |
+| .dropdown-item                  | <a> dentro de .dropdown-menu       | Cada opción del dropdown                                                                 |
+| data-bs-toggle="tab"            | <a> .nav-link                      | Activa el comportamiento de pestaña (requiere estructura de contenido con .tab-pane)     |
+| data-bs-toggle="pill"           | <a> .nav-link                      | Activa el comportamiento de pill                                                         |
+| id="myTab"                      | <ul> .nav                          | ID único para vincular con contenido tabulado                                            |
+| aria-current="page"             | .nav-link activa                   | Indica que el ítem representa la página actual (accesibilidad)                          |
+| aria-disabled="true"            | .nav-link deshabilitada            | Indica que el ítem está deshabilitado (accesibilidad)                                    |
+
+
+
+13) Navbar:
+
+| Clase / Atributo / ID               | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|------------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .navbar                            | <nav> o <div>                      | Componente base de barra de navegación                                                   |
+| .navbar-expand-{sm|md|lg|xl|xxl}   | .navbar                            | Define el breakpoint donde se colapsa la navbar                                          |
+| .navbar-light / .navbar-dark       | .navbar                            | Define el color del texto según fondo claro u oscuro                                     |
+| .bg-{color}                        | .navbar                            | Establece el color de fondo (ej: bg-primary, bg-dark, etc.)                              |
+| .fixed-top                         | .navbar                            | Fija la navbar en la parte superior de la pantalla con `position: fixed; top: 0`         |
+| .container / .container-fluid      | <div> dentro de .navbar            | Define el ancho del contenido interno                                                    |
+| .navbar-brand                      | <a> o <span>                       | Logo o nombre del sitio                                                                  |
+| .navbar-nav                        | <ul>                               | Contenedor de los ítems de navegación                                                    |
+| .navbar-nav-scroll                 | <ul> .navbar-nav                   | Permite scroll vertical en el contenido de navegación expandido (usa `--bs-scroll-height`) |
+| .nav-item                          | <li>                               | Ítem individual de navegación                                                            |
+| .nav-link                          | <a> dentro de .nav-item            | Enlace de navegación                                                                     |
+| .active                            | .nav-link                          | Marca el enlace como activo                                                              |
+| .disabled                          | .nav-link                          | Desactiva el enlace visual y funcionalmente                                              |
+| .navbar-toggler                    | <button>                           | Botón para colapsar la navbar en pantallas pequeñas                                      |
+| .navbar-toggler-icon              | <span>                             | Ícono hamburguesa por defecto                                                            |
+| .collapse.navbar-collapse          | <div>                              | Contenedor colapsable de los ítems                                                       |
+| data-bs-toggle="collapse"          | .navbar-toggler                    | Activa el colapso de la navbar                                                           |
+| data-bs-target="#idNavbar"         | .navbar-toggler                    | Vincula el botón con el contenido colapsable                                             |
+| id="idNavbar"                      | .collapse.navbar-collapse          | ID único para vincular con el botón toggler                                              |
+| .navbar-text                       | <span>                             | Texto alineado vertical dentro de la navbar                                              |
+| .dropdown                          | <li>                               | Ítem con menú desplegable                                                                |
+| .dropdown-toggle                   | <a> .nav-link                      | Activa el dropdown                                                                       |
+| .dropdown-menu                     | <ul>                               | Contenedor de opciones desplegables                                                      |
+| .dropdown-item                     | <a> dentro de .dropdown-menu       | Opción individual del dropdown                                                           |
+| aria-current="page"                | .nav-link activa                   | Indica que el ítem representa la página actual (accesibilidad)                          |
+| aria-disabled="true"               | .nav-link deshabilitada            | Indica que el ítem está deshabilitado (accesibilidad)                                    |
+
+
+
+14) Offcanvas: Viene a ser una especie de menu lateral que se situa por encima de la pantalla, basicamente seria un modal pero en version aside. 
+
+| Clase / Atributo / ID               | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|------------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .offcanvas                         | <div>                              | Contenedor base del componente offcanvas (oculto por defecto)                            |
+| .offcanvas-start / -end / -top / -bottom | .offcanvas                    | Define la posición desde donde aparece (izquierda, derecha, arriba, abajo)              |
+| .offcanvas-sm|md|lg|xl|xxl         | .offcanvas                         | Define el breakpoint donde se oculta automáticamente                                     |
+| .show                              | .offcanvas                         | Muestra el offcanvas (se aplica dinámicamente)                                           |
+| .offcanvas-header                  | <div> dentro de .offcanvas         | Encabezado del offcanvas                                                                 |
+| .offcanvas-title                   | <h5> o <h1> dentro de header       | Título del offcanvas                                                                     |
+| .offcanvas-body                    | <div> dentro de .offcanvas         | Contenido principal del offcanvas                                                        |
+| .btn-close                         | <button> dentro de header          | Botón para cerrar el offcanvas                                                           |
+| .btn-close-white                   | <button>                           | Variante para fondo oscuro                                                               |
+| .text-bg-dark                      | .offcanvas                         | Fondo oscuro con texto claro                                                             |
+| data-bs-toggle="offcanvas"         | <button> o <a>                     | Activa el offcanvas al hacer clic                                                        |
+| data-bs-target="#idOffcanvas"      | <button>                           | Vincula el botón con el offcanvas                                                        |
+| href="#idOffcanvas"                | <a>                                | Alternativa para activar el offcanvas desde un enlace                                   |
+| data-bs-dismiss="offcanvas"        | <button> dentro de .offcanvas      | Cierra el offcanvas                                                                      |
+| data-bs-backdrop="false"           | <div> .offcanvas                   | Desactiva el fondo oscuro detrás del offcanvas                                      |
+| id="idOffcanvas"                   | .offcanvas                         | ID único para vincular con el botón o enlace                                             |
+| aria-controls="idOffcanvas"        | <button> o <a>                     | Accesibilidad: indica qué controla el botón                                              |
+| aria-labelledby="idLabel"         | .offcanvas                         | Accesibilidad: vincula el título                                                         |
+| tabindex="-1"                      | .offcanvas                         | Permite que el offcanvas no sea enfocable por defecto                                    |
+
+
+
+15) Paginacion:
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .pagination                     | <ul> contenedor principal          | Define el bloque de paginación                                                           |
+| .page-item                      | <li> dentro de .pagination         | Cada ítem de la paginación                                                               |
+| .page-link                      | <a> o <button> dentro de .page-item| Enlace o botón de navegación                                                             |
+| .active                         | .page-item                         | Marca el ítem como página actual                                                         |
+| .disabled                       | .page-item                         | Desactiva el ítem visual y funcionalmente                                                |
+| .pagination-lg                  | <ul> .pagination                   | Variante de paginación grande                                                            |
+| .pagination-sm                  | <ul> .pagination                   | Variante de paginación pequeña                                                           |
+| .justify-content-center         | <ul> .pagination                   | Centra horizontalmente los ítems                                                         |
+| .justify-content-end            | <ul> .pagination                   | Alinea los ítems a la derecha                                                            |
+| aria-label="Page navigation"    | <nav> envolvente                   | Accesibilidad: describe la función del bloque                                            |
+| aria-current="page"             | .page-link activa                  | Accesibilidad: indica la página actual                                                   |
+| tabindex="-1"                   | .page-link deshabilitada           | Evita que el ítem deshabilitado sea enfocable                                            |
+| id="paginationExample"          | <ul> o <nav>                       | ID único para vincular con JS o accesibilidad                                            |
+
+
+
+16) Placeholders: Vienen a ocupar espacio de contenido, util cuando tengo un elemento sin data pero quiero mostrar su maquetacion
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| .placeholder                    | <span>, <div>, etc.                | Crea un bloque visual que simula contenido cargando                                      |
+| .placeholder-glow               | Contenedor de placeholders         | Agrega animación de brillo suave                                                         |
+| .placeholder-wave               | Contenedor de placeholders         | Agrega animación de onda                                                                 |
+| .placeholder-xs / -sm / -lg     | .placeholder                       | Define el tamaño del placeholder                                                         |
+| .col-{n}                        | .placeholder                       | Define el ancho usando sistema de columnas                                               |
+| .w-{25|50|75|100}               | .placeholder                       | Define el ancho usando utilidades de `width`                                             |
+| .btn.disabled.placeholder       | <a> o <button>                     | Simula un botón cargando                                                                 |
+| aria-hidden="true"              | .placeholder                       | Oculta el elemento para lectores de pantalla (accesibilidad)                            |
+| tabindex="-1"                   | <a> o <button> .placeholder         | Evita que el elemento sea enfocable                                                      |
+| id="placeholderExample"         | Contenedor o elemento              | ID único para vincular con JS o accesibilidad                                            |
+
+
+17) Popovers: son pequeños cuadros emergentes que muestran información adicional cuando el usuario hace clic (o interactúa) con un elemento. Son similares a los tooltips, pero pueden contener más contenido. Para funcionar debo agregar un codigo extra de JS.
+
+| Clase / Atributo / ID             | Elemento donde se aplica           | Función / Comportamiento                                                                 |
+|----------------------------------|------------------------------------|------------------------------------------------------------------------------------------|
+| data-bs-toggle="popover"        | <button>, <a>, etc.                | Activa el popover en el elemento                                                        |
+| title="..."                     | Elemento activador                 | Define el encabezado del popover                                                         |
+| data-bs-title="..."             | Elemento activador                 | Alternativa para definir el título                                                      |
+| data-bs-content="..."           | Elemento activador                 | Define el contenido del popover                                                          |
+| data-bs-placement="top|bottom|left|right" | Elemento activador     | Posiciona el popover respecto al elemento                                                |
+| data-bs-trigger="click|hover|focus|manual" | Elemento activador     | Define cómo se activa el popover                                                         |
+| data-bs-container="body|#id"    | Elemento activador                 | Define dónde se renderiza el popover en el DOM                                           |
+| data-bs-custom-class="..."      | Elemento activador                 | Agrega clases personalizadas al popover                                                  |
+| data-bs-offset="..."            | Elemento activador                 | Ajusta la posición del popover con offset                                                |
+| data-bs-html="true"             | Elemento activador                 | Permite contenido HTML dentro del popover                                                |
+| id="popoverExample"             | Elemento activador                 | ID único para inicializar por JS                                                         |
+
+
+18) Progress Bar:
+
+| Clase / Atributo                        | Elemento donde se aplica     | Función / Comportamiento                                                  |
+|----------------------------------------|------------------------------|---------------------------------------------------------------------------|
+| progress                               | <div> contenedor             | Define el contenedor del progress bar                                    |
+| progress-bar                           | <div> interno                | Representa la barra de progreso                                          |
+| style="width:XX%"                      | .progress-bar                | Define el porcentaje de progreso visible                                 |
+| aria-valuenow="XX"                     | .progress-bar                | Valor actual del progreso (accesibilidad)                                |
+| aria-valuemin="0"                      | .progress-bar                | Valor mínimo del progreso                                                |
+| aria-valuemax="100"                    | .progress-bar                | Valor máximo del progreso                                                |
+| bg-primary / bg-success / ...          | .progress-bar                | Cambia el color de fondo (ver variantes abajo)                           |
+| progress-bar-striped                   | .progress-bar                | Agrega efecto de rayas horizontales                                      |
+| progress-bar-animated                  | .progress-bar + striped      | Anima las rayas para simular movimiento                                  |
+| w-25 / w-50 / w-75 / w-100             | .progress-bar                | Alternativa con clases utilitarias para ancho                            |
+| style="height:XXpx"                    | .progress                    | Cambia la altura del contenedor                                          |
+| Texto dentro de .progress-bar          | .progress-bar                | Muestra porcentaje o mensaje dentro de la barra                          |
+
+
+19) ScrollSpy: es una funcionalidad que permite resaltar automáticamente los enlaces de navegación según la sección visible en pantalla mientras el usuario hace scroll. Ideal para páginas largas con navegación interna, como portfolios, documentaciones o landing pages. A medida que el usuario se desplaza, Bootstrap actualiza la clase .active en el enlace correspondiente, sincronizando la navegación con el contenido visible.
+
+| Clase / Atributo               | Elemento donde se aplica     | Función / Comportamiento                                                  |
+|-------------------------------|------------------------------|---------------------------------------------------------------------------|
+| data-bs-spy="scroll"          | <body> o contenedor scroll   | Activa ScrollSpy en el elemento                                           |
+| data-bs-target="#id"          | <body> o contenedor scroll   | Define el nav que se actualizará con .active                             |
+| data-bs-offset="XX"           | <body> o contenedor scroll   | Ajusta el offset desde el top para calcular visibilidad                  |
+| position-relative             | Contenedor scroll            | Requisito CSS para que funcione correctamente                            |
+| nav / nav-pills / nav-tabs    | <ul> o <nav>                 | Estructura de navegación compatible con ScrollSpy                        |
+| nav-link                      | <a> dentro del nav           | Enlaces que se activan según la sección visible                          |
+| active                        | <a> dentro del nav           | Clase que se aplica automáticamente al enlace activo                     |
+| id="sectionX"                 | Secciones del contenido      | Identificador único que vincula con los enlaces                          |
+
+
+20) Loaders - Spinners:
+<div class="spinner-border text-primary" role="status">
+  <span class="visually-hidden">Cargando...</span>
+</div>
+
+<div class="spinner-grow text-success" role="status">
+  <span class="visually-hidden">Cargando...</span>
+</div>
+
+
+21) Toasts: Son una especie de alerta avanzada, parecidos a un PopUp. Tambien requiere un codigo de JS adicional para funcionar.
+
+| Clase / Atributo               | Elemento donde se aplica         | Función / Comportamiento                                                  |
+|-------------------------------|----------------------------------|---------------------------------------------------------------------------|
+| .toast                        | `<div>`                          | Contenedor principal del toast                                           |
+| .toast-container              | `<div>`                          | Agrupa múltiples toasts con posicionamiento                              |
+| .toast-header                 | `<div>` dentro de `.toast`       | Encabezado con título, hora y botón de cierre                            |
+| .toast-body                   | `<div>` dentro de `.toast`       | Cuerpo del mensaje                                                       |
+| .show / .hide                 | `.toast`                         | Muestra u oculta el toast                                                |
+| .btn-close                    | `<button>` dentro de `.toast-header` | Botón para cerrar el toast                                          |
+| data-bs-dismiss="toast"       | `<button>`                       | Cierra el toast al hacer clic                                            |
+| .position-fixed               | `.toast-container`               | Posicionamiento fijo en pantalla                                         |
+| .top-0 / .bottom-0            | `.toast-container`               | Posición vertical (arriba / abajo)                                       |
+| .start-0 / .end-0             | `.toast-container`               | Posición horizontal (izquierda / derecha)                                |
+| .p-3                          | `.toast-container`               | Padding interno del contenedor                                           |
+| role="alert"                  | `.toast`                         | Indica que es una alerta para accesibilidad                              |
+| aria-live="assertive"         | `.toast`                         | Prioridad de lectura por lectores de pantalla                            |
+| aria-atomic="true"            | `.toast`                         | Lee el contenido completo como una unidad                                |
+
+
+22) Tooltip: Tambien requiere un codigo de JS adicional para funcionar.
+ 
+| Clase / Atributo               | Elemento donde se aplica         | Función / Comportamiento                                                  |
+|-------------------------------|----------------------------------|---------------------------------------------------------------------------|
+| data-bs-toggle="tooltip"      | Cualquier elemento interactivo   | Activa el tooltip en ese elemento                                        |
+| title="Texto del tooltip"     | Cualquier elemento               | Define el contenido del tooltip                                          |
+| data-bs-placement="top|bottom|left|right" | Elemento con tooltip        | Posiciona el tooltip en relación al elemento                             |
+| data-bs-html="true"           | Elemento con tooltip             | Permite contenido HTML dentro del tooltip                                |
+| data-bs-customClass="clase"   | Elemento con tooltip             | Aplica clase personalizada al tooltip (requiere inicialización JS)       |
+| .tooltip                      | Generado por Bootstrap           | Contenedor del tooltip (se crea dinámicamente)                           |
+| .tooltip-inner                | Dentro de `.tooltip`             | Contenido visible del tooltip                                            |
+| .fade                         | `.tooltip`                       | Aplica transición de aparición/desaparición                             |
+| .show                         | `.tooltip`                       | Muestra el tooltip                                                       |
+| bootstrap.Tooltip(el)         | Inicialización JS                | Activa el tooltip vía JavaScript                                         |
+| aria-describedby="id"         | Elemento con tooltip             | Relación accesible con el contenido del tooltip                          |
+
+
+23) Personalizacion de Bootstrap 5: Para poder personalizar estilos de BS 5 debemos instalarlo como NPM y luego importarlos mediante SASS. Puedo importar todos los estilos y desde mi MAIN SASS modificarlos, haciendo un override.
+
+- VIDEO 323
+ 
+
+
+
+X) Margin Auto: Calcula automáticamente el margen que falta para ocupar el espacio disponible. Esto no significa que siempre se centre, sino que reparte el espacio sobrante en la dirección en la que se aplica.
+
+x.1) Eje horizontal (left / right): Para que "margin-left: auto" y "margin-right:" auto centren horizontalmente un elemento: 1) El elemento debe ser de display: block o display: flex (no inline). 2) Debe tener un ancho definido (width fijo o calculable, no 100%). 3) Su contenedor debe tener un ancho mayor que el del elemento.
+
+Con margin-left: auto; pegare el contenido a la derecha, con margin-right: auto; pegare el contenido a la izquierda y con margin: 0 auto; centrare mi contenedor.
+
+x.2) Eje vertical (top / bottom): Aquí es donde mucha gente se confunde, "margin-top: auto;" y "margin-bottom: auto;" no centran verticalmente a menos que el contenedor tenga altura fija y se use un contexto de alineación especial (como flexbox o grid).
+
+
+x.3) En Flexbox:
+
+margin-left: auto empuja un ítem hacia la derecha.
+margin-right: auto lo empuja hacia la izquierda.
+margin-top: auto lo empuja hacia abajo.
+margin-bottom: auto lo empuja hacia arriba.
+Si usas ambos (margin: auto), el ítem se centra en ambas direcciones (si el contenedor tiene espacio).
+
+
+.container {
+    display: flex;
+    height: 400px;
+}
+.box {
+    margin: auto;
+}
+
+                                                                14) Ejercicios
 
 1) Skew para deformar cabecera - Video 82: 
 

@@ -1,0 +1,16 @@
+/* ====================
+	* BACKGROUND *
+==================== */
+
+@each $nombre, $color in $colores {
+     .bg-#{$nombre}{
+          background: $color;
+     }
+}
+
+// Escala de grises
+@each $valor, $color in $grays {
+     .bg-gray-#{$valor}{
+          background: $color;
+     }
+}
